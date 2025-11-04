@@ -78,12 +78,17 @@
         var CONVERSION_SEND_TO = 'AW-1021062139/eWBbCPil_7kbEPvX8OYD';
         var CONVERSION_VALUE = 6.9;
 
-        function fireConversion() {
-            var key = 'convFired_' + orderId;
-            if (orderId && !localStorage.getItem(key)) {
-                gtag('event', 'conversion', { send_to: CONVERSION_SEND_TO, value: CONVERSION_VALUE, currency: 'BRL' });
-                localStorage.setItem(key, '1');
-            }
+        function fireConversionOnce() {
+            if (!orderId) return;
+            var key = 'conv_' + orderId;
+            if (localStorage.getItem(key)) return;
+            gtag('event', 'conversion', {
+                send_to: CONVERSION_SEND_TO,
+                value: CONVERSION_VALUE,
+                currency: 'BRL',
+                transaction_id: orderId
+            });
+            localStorage.setItem(key, '1');
         }
 
         function hideRetry() {
@@ -206,7 +211,7 @@
                 if (st && st.status === 'paid') {
                     info.textContent = 'Pagamento confirmado. Gerando seu documento...';
                     await gerarFinal();
-                    gtag('event', 'conversion', { send_to: 'AW-1021062139/eWBbCPil_7kbEPvX8OYD', value: 6.9, currency: 'BRL' });
+                    fireConversionOnce();
                     info.textContent = '';
                     return;
                 }
