@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Gerador de Cartas e Documentos</title>
+    <title>Gerador de Cartas</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="/style.css" />
 </head>
@@ -11,33 +11,23 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Gerador de Cartas</h1>
-            <span class="badge">MVP</span>
+            <h1>Gerador de Cartas</h1> <span class="badge">MVP</span>
         </div>
         <div class="card" style="margin-bottom:16px">
-            <p>Gere cartas formais (cancelamento, reclamação) em minutos. Prévia grátis — compra liberada na próxima
-                fase.</p>
+            <p>Gere cartas formais (cancelamento, reclamação) em minutos. Prévia grátis — compra liberada após o
+                pagamento.</p>
             <p class="small">Atenção: este serviço não é aconselhamento jurídico.</p>
+            <div class="searchbar">
+                <input class="input" id="q" placeholder="Buscar por marca/termo (ex.: smart fit, vivo, cancelamento)" />
+            </div>
         </div>
+
         <script src="/slugs.js"></script>
+
         <h2>Modelos populares</h2>
         <div class="grid" id="grid"></div>
     </div>
-    <script>
-        const grid = document.getElementById('grid');
-        window.SLUGS.forEach(s => {
-            const a = document.createElement('a');
-            a.href = `/doc/${s.slug}`;
-            a.innerHTML = `
-        <div class="card">
-          <h3 style="margin:0 0 6px">${s.title}</h3>
-          <div class="small">Tipo: ${s.tipo} · Entidade: ${s.brand}</div>
-          <div style="margin-top:10px"><button class="btn btn-outline">Gerar agora</button></div>
-        </div>`;
-            a.style.textDecoration = 'none';
-            grid.appendChild(a);
-        });
-    </script>
+    <script> const grid = document.getElementById('grid'); const q = document.getElementById('q'); function render(list) { grid.innerHTML = ''; list.forEach(s => { const a = document.createElement('a'); a.href = `/doc/${s.slug}`; a.className = 'card-link'; a.innerHTML = ` <div class="card"> <h3 class="card-title">${s.title}</h3> <div class="tags"> <span class="tag tag--type">${s.tipo}</span> <span class="tag tag--brand">${s.brand}</span> </div> <div class="small">Clique para gerar com seus dados</div> <div style="margin-top:12px"> <button class="btn btn-sm">Gerar agora</button> </div> </div>`; grid.appendChild(a); }); } const SL = (window.SLUGS || []); render(SL); // filtro simples q.addEventListener('input', () => { const term = q.value.toLowerCase().trim(); if (!term) return render(SL); const out = SL.filter(s => s.title.toLowerCase().includes(term) || (s.brand||'').toLowerCase().includes(term) || (s.tipo||'').toLowerCase().includes(term) || (s.slug||'').toLowerCase().includes(term) ); render(out); }); </script>
 </body>
 
 </html>
