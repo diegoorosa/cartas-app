@@ -9,7 +9,7 @@
             var s = list[i];
             var a = document.createElement('a');
             var t = encodeURIComponent(s.title);
-            a.href = '/doc/' + s.slug + '?t=' + t;
+            a.href = '/doc.html?slug=' + encodeURIComponent(s.slug) + '&t=' + t;
             a.className = 'card-link';
             a.innerHTML =
                 '<div class="card">' +

@@ -11,8 +11,11 @@
 
 <body>
     <div class="container">
-        <div class="header"> <a href="/" class="small" style="text-decoration:none;color:#93c5fd">← Voltar</a> <span
-                class="badge">Prévia grátis</span> </div>
+        <div class="header">
+            <a href="/" class="small" style="text-decoration:none;color:#93c5fd">← Voltar</a>
+            <span class="badge">Prévia grátis</span>
+        </div>
+
         <div class="card" id="card">
             <h1 id="docTitle">Gerar Carta</h1>
             <p class="small">Preencha os campos e gere a prévia. Não é aconselhamento jurídico.</p>
@@ -50,8 +53,160 @@
             </div>
         </div>
     </div>
+
     <script src="/slugs.js"></script>
-    <script> // Utilidades function getParam(name){ const u = new URL(location.href); return u.searchParams.get(name); } function normalizeSlug(pathname){ // remove barras finais e decodifica const clean = pathname.replace(/\/+$/, ''); return decodeURIComponent(clean.split('/').slice(2).join('/')); } // 1) Determina título e cfg de forma robusta const slug = normalizeSlug(location.pathname); const titleParam = getParam('t'); // vindo do index const cfg = (window.SLUGS || []).find(s => s.slug === slug); const docTitle = document.getElementById('docTitle'); const formArea = document.getElementById('formArea'); // Prioriza o título via parâmetro (mais rápido e garante em qualquer cache) if (titleParam) { document.title = `${titleParam} | Gerador de Cartas`; docTitle.textContent = titleParam; const md = document.getElementById('metaDesc'); if (md) md.setAttribute('content', `Gere ${titleParam} preenchendo seus dados e baixe em .DOC em minutos.`); } else if (cfg) { document.title = `${cfg.title} | Gerador de Cartas`; docTitle.textContent = cfg.title; const md = document.getElementById('metaDesc'); if (md) md.setAttribute('content', `Gere ${cfg.title} preenchendo seus dados e baixe em .DOC em minutos.`); } else { docTitle.textContent = "Modelo não encontrado"; formArea.style.display = 'none'; } // 2) Referências const btnPreview = document.getElementById('btnPreview'); const btnPagar = document.getElementById('btnPagar'); const previewWrap= document.getElementById('previewWrap'); const previewBox = document.getElementById('previewBox'); const nomeInput = document.getElementById('nome'); const cpfInput = document.getElementById('cpf'); const cpfError = document.getElementById('cpfError'); const cidadeInput = document.getElementById('cidade'); const contratoInput = document.getElementById('contrato'); const motivoInput = document.getElementById('motivo'); // 3) CPF — máscara e validação function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; } function isValidCPF(cpf) { let s = (cpf || '').replace(/\D/g, ''); if (s.length !== 11) return false; if (/^(\d)\1{10}$/.test(s)) return false; let sum = 0, rest; for (let i = 1; i <= 9; i++) sum += parseInt(s.substring(i-1, i)) * (11 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(9, 10))) return false; sum = 0; for (let i = 1; i <= 10; i++) sum += parseInt(s.substring(i-1, i)) * (12 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(10, 11))) return false; return true; } function assertCPF() { cpfInput.value = maskCPF(cpfInput.value); const valid = isValidCPF(cpfInput.value); cpfError.style.display = valid ? 'none' : 'block'; if (!valid) cpfInput.focus(); return valid; } cpfInput.addEventListener('input', () => { cpfInput.value = maskCPF(cpfInput.value); cpfInput.setSelectionRange(cpfInput.value.length, cpfInput.value.length); }); cpfInput.addEventListener('blur', assertCPF); // 4) Payload function getPayload() { cpfInput.value = maskCPF(cpfInput.value); return { slug, tipo: cfg?.tipo, entidade: cfg?.brand, nome: nomeInput.value.trim(), cpf: cpfInput.value.trim(), cidade_uf: cidadeInput.value.trim(), contrato: contratoInput.value.trim(), motivo: motivoInput.value.trim() }; } // 5) Prévia btnPreview.addEventListener('click', async () => { btnPreview.disabled = true; btnPreview.textContent = 'Gerando...'; try { const payload = getPayload(); if (!payload.nome || !payload.cidade_uf || !assertCPF()) { alert('Preencha Nome, Cidade/UF e informe um CPF válido.'); btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; return; } const r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload, preview: true }) }); if (!r.ok) throw new Error('Falha ao gerar'); const data = await r.json(); const out = data.output || data; const p = out.corpo_paragrafos || []; const keep = Math.max(1, Math.ceil(p.length * 0.6)); const parcial = p.slice(0, keep).join('\n\n') + '\n\n[...]'; const saud = out.saudacao || ''; const fech = out.fechamento || ''; previewBox.textContent = `${saud}\n\n${parcial}\n\n${fech}\n\nChecklist de anexos: ${(out.check_list_anexos||[]).join('; ')}`; previewWrap.style.display = 'block'; localStorage.setItem('pendingPayload', JSON.stringify(payload)); btnPagar.disabled = false; } catch (e) { alert('Erro ao gerar prévia.'); console.error(e); } finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; } }); // 6) Pagamento btnPagar.addEventListener('click', async () => { try { const payload = getPayload(); if (!payload.nome || !payload.cidade_uf || !assertCPF()) { alert('Preencha Nome, Cidade/UF e informe um CPF válido.'); return; } localStorage.setItem('pendingPayload', JSON.stringify(payload)); btnPagar.disabled = true; btnPagar.textContent = 'Redirecionando...'; const r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug, price: 6.9 }) }); const data = await r.json(); if (!r.ok || !data.init_point) throw new Error('Falha ao abrir pagamento'); window.location.href = data.init_point; } catch (e) { alert('Não foi possível abrir o pagamento.'); console.error(e); btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)'; } }); </script>
+    <script>
+        function getParam(name) { var u = new URL(location.href); return u.searchParams.get(name); }
+
+        var slug = getParam('slug');
+        var titleParam = getParam('t');
+        var cfg = null;
+        if (window.SLUGS && slug) {
+            for (var i = 0; i < window.SLUGS.length; i++) {
+                if (window.SLUGS[i].slug === slug) { cfg = window.SLUGS[i]; break; }
+            }
+        }
+
+        var docTitle = document.getElementById('docTitle');
+        var formArea = document.getElementById('formArea');
+
+        if (titleParam) {
+            document.title = titleParam + ' | Gerador de Cartas';
+            docTitle.textContent = titleParam;
+            var md = document.getElementById('metaDesc');
+            if (md) md.setAttribute('content', 'Gere ' + titleParam + ' preenchendo seus dados e baixe em .DOC em minutos.');
+        } else if (cfg) {
+            document.title = cfg.title + ' | Gerador de Cartas';
+            docTitle.textContent = cfg.title;
+            var md2 = document.getElementById('metaDesc');
+            if (md2) md2.setAttribute('content', 'Gere ' + cfg.title + ' preenchendo seus dados e baixe em .DOC em minutos.');
+        } else {
+            docTitle.textContent = 'Modelo não encontrado';
+            formArea.style.display = 'none';
+        }
+
+        var btnPreview = document.getElementById('btnPreview');
+        var btnPagar = document.getElementById('btnPagar');
+        var previewWrap = document.getElementById('previewWrap');
+        var previewBox = document.getElementById('previewBox');
+
+        var nomeInput = document.getElementById('nome');
+        var cpfInput = document.getElementById('cpf');
+        var cpfError = document.getElementById('cpfError');
+        var cidadeInput = document.getElementById('cidade');
+        var contratoInput = document.getElementById('contrato');
+        var motivoInput = document.getElementById('motivo');
+
+        function maskCPF(v) {
+            v = (v || '').replace(/\D/g, '').slice(0, 11);
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            return v;
+        }
+        function isValidCPF(cpf) {
+            var s = (cpf || '').replace(/\D/g, '');
+            if (s.length !== 11) return false;
+            if (/^(\d)\1{10}$/.test(s)) return false;
+            var sum = 0, rest, i;
+            for (i = 1; i <= 9; i++) sum += parseInt(s.substring(i - 1, i)) * (11 - i);
+            rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0;
+            if (rest !== parseInt(s.substring(9, 10))) return false;
+            sum = 0;
+            for (i = 1; i <= 10; i++) sum += parseInt(s.substring(i - 1, i)) * (12 - i);
+            rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0;
+            if (rest !== parseInt(s.substring(10, 11))) return false;
+            return true;
+        }
+        function assertCPF() {
+            cpfInput.value = maskCPF(cpfInput.value);
+            var valid = isValidCPF(cpfInput.value);
+            cpfError.style.display = valid ? 'none' : 'block';
+            if (!valid) cpfInput.focus();
+            return valid;
+        }
+        cpfInput.addEventListener('input', function () {
+            cpfInput.value = maskCPF(cpfInput.value);
+            cpfInput.setSelectionRange(cpfInput.value.length, cpfInput.value.length);
+        });
+        cpfInput.addEventListener('blur', assertCPF);
+
+        function getPayload() {
+            cpfInput.value = maskCPF(cpfInput.value);
+            return {
+                slug: slug,
+                tipo: cfg ? cfg.tipo : '',
+                entidade: cfg ? cfg.brand : '',
+                nome: nomeInput.value.trim(),
+                cpf: cpfInput.value.trim(),
+                cidade_uf: cidadeInput.value.trim(),
+                contrato: contratoInput.value.trim(),
+                motivo: motivoInput.value.trim()
+            };
+        }
+
+        btnPreview.addEventListener('click', function () {
+            btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+            (async function () {
+                try {
+                    var payload = getPayload();
+                    if (!payload.nome || !payload.cidade_uf || !assertCPF()) {
+                        alert('Preencha Nome, Cidade/UF e informe um CPF válido.');
+                        btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
+                        return;
+                    }
+                    var r = await fetch('/.netlify/functions/generate-doc', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ payload: payload, preview: true })
+                    });
+                    if (!r.ok) throw new Error('Falha ao gerar');
+                    var data = await r.json();
+                    var out = data.output || data;
+                    var p = out.corpo_paragrafos || [];
+                    var keep = Math.max(1, Math.ceil(p.length * 0.6));
+                    var parcial = p.slice(0, keep).join('\n\n') + '\n\n[...]';
+                    var saud = out.saudacao || '';
+                    var fech = out.fechamento || '';
+                    previewBox.textContent = saud + '\n\n' + parcial + '\n\n' + fech + '\n\nChecklist de anexos: ' + (out.check_list_anexos || []).join('; ');
+                    previewWrap.style.display = 'block';
+                    localStorage.setItem('pendingPayload', JSON.stringify(payload));
+                    btnPagar.disabled = false;
+                } catch (e) {
+                    alert('Erro ao gerar prévia.');
+                    console.error(e);
+                } finally {
+                    btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
+                }
+            })();
+        });
+
+        btnPagar.addEventListener('click', function () {
+            (async function () {
+                try {
+                    var payload = getPayload();
+                    if (!payload.nome || !payload.cidade_uf || !assertCPF()) {
+                        alert('Preencha Nome, Cidade/UF e informe um CPF válido.');
+                        return;
+                    }
+                    localStorage.setItem('pendingPayload', JSON.stringify(payload));
+                    btnPagar.disabled = true; btnPagar.textContent = 'Redirecionando...';
+                    var r = await fetch('/.netlify/functions/mp-checkout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ slug: slug, price: 6.9 })
+                    });
+                    var data = await r.json();
+                    if (!r.ok || !data.init_point) throw new Error('Falha ao abrir pagamento');
+                    window.location.href = data.init_point;
+                } catch (e) {
+                    alert('Não foi possível abrir o pagamento.');
+                    console.error(e);
+                    btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)';
+                }
+            })();
+        });
+    </script>
 </body>
 
 </html>
