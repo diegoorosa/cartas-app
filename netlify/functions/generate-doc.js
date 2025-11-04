@@ -36,7 +36,7 @@ function parseJson(text) {
     }
 }
 
-const SYSTEM = 'Você gera cartas e requerimentos formais no padrão brasileiro.\nResponda SOMENTE em JSON válido no formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}\nTom: formal, claro e objetivo; português do Brasil.\nNão forneça aconselhamento jurídico. Não inclua comentários fora do JSON.';
+const SYSTEM = 'Você gera cartas e requerimentos formais no padrão brasileiro. Responda SOMENTE em JSON válido no formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e objetivo, português do Brasil, sem jargão excessivo. Gere corpo_paragrafos com 4 a 6 parágrafos claros e completos (70 a 120 palavras cada). Estruture: 1) identificação do remetente e do contrato/unidade, 2) pedido expresso de cancelamento a partir da data do envio, 3) solicitação de cessação de cobranças futuras e exclusão de débito automático, 4) pedido de confirmação por escrito com número de protocolo, 5) se houver valores cobrados indevidamente, solicite estorno em até 7 dias úteis, 6) prazo de resposta de até 10 dias corridos e canais de contato. Inclua check_list_anexos com itens pertinentes (documento, comprovantes, contrato). Em observacoes_legais, mencione de forma genérica o amparo no Código de Defesa do Consumidor (Lei 8.078/90), sem aconselhamento jurídico.';
 
 exports.handler = async (event) => {
     try {

@@ -23,7 +23,7 @@
 
             <p id="info" class="small"></p>
 
-            <div id="retry" style="display:none; margin:10px 0; display:flex; gap:8px; flex-wrap:wrap">
+            <div id="retry" style="display:none; margin:10px 0; gap:8px; flex-wrap:wrap">
                 <button class="btn" id="btnBack">Voltar ao documento</button>
                 <button class="btn btn-outline" id="btnPay">Pagar agora</button>
             </div>
@@ -86,6 +86,12 @@
             }
         }
 
+        function hideRetry() {
+            retry.style.display = 'none';
+            btnPay.disabled = true;
+            btnPay.style.display = 'none';
+        }
+
         function buildText(opts) {
             if (!OUT || !PAYLOAD) return '';
             var partes = [];
@@ -121,6 +127,8 @@
             });
             var data = await r.json();
             OUT = data.output || data;
+
+            hideRetry();
 
             options.style.display = 'flex';
             docBox.style.display = 'block';
@@ -198,7 +206,7 @@
                 if (st && st.status === 'paid') {
                     info.textContent = 'Pagamento confirmado. Gerando seu documento...';
                     await gerarFinal();
-                    fireConversion();
+                    gtag('event', 'conversion', { send_to: 'AW-1021062139/eWBbCPil_7kbEPvX8OYD', value: 6.9, currency: 'BRL' });
                     info.textContent = '';
                     return;
                 }
