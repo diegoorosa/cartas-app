@@ -13,24 +13,24 @@ Regras:
 - Não forneça aconselhamento jurídico. Não inclua comentários fora do JSON.`;
 
 exports.handler = async (event) => {
-  try {
-    if (event.httpMethod !== 'POST') {
-      return { statusCode: 405, body: 'Method not allowed' };
-    }
-    const { payload, preview } = JSON.parse(event.body || '{}');
-    if (!payload || !payload.nome || !payload.cpf || !payload.cidade_uf) {
-      return { statusCode: 400, body: 'Payload inválido' };
-    }
+    try {
+        if (event.httpMethod !== 'POST') {
+            return { statusCode: 405, body: 'Method not allowed' };
+        }
+        const { payload, preview } = JSON.parse(event.body || '{}');
+        if (!payload || !payload.nome || !payload.cpf || !payload.cidade_uf) {
+            return { statusCode: 400, body: 'Payload inválido' };
+        }
 
-    const user = {
-      tipo: payload.tipo || 'cancelamento',
-      entidade: payload.entidade || 'Academia',
-      nome: payload.nome, cpf: payload.cpf, cidade_uf: payload.cidade_uf,
-      contrato: payload.contrato || '', motivo: payload.motivo || '',
-      slug: payload.slug || ''
-    };
+        const user = {
+            tipo: payload.tipo || 'cancelamento',
+            entidade: payload.entidade || 'Academia',
+            nome: payload.nome, cpf: payload.cpf, cidade_uf: payload.cidade_uf,
+            contrato: payload.contrato || '', motivo: payload.motivo || '',
+            slug: payload.slug || ''
+        };
 
-    const userPrompt = `Dados do documento:
+        const userPrompt = `Dados do documento:
 Tipo: ${user.tipo}
 Entidade/Empresa: ${user.entidade}
 Pessoa: ${user.nome} (CPF ${user.cpf}), residente em ${user.cidade_uf}
@@ -43,29 +43,29 @@ Instruções de conteúdo:
 - Inclua uma saudação inicial adequada e um fechamento educado.
 - Inclua checklist de anexos relevantes (documento, comprovantes, etc.).`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
-    const resp = await model.generateContent([SYSTEM, userPrompt].join('\n\n'));
-    const text = await resp.response.text();
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+        const resp = await model.generateContent([SYSTEM, userPrompt].join('\n\n'));
+        const text = await resp.response.text();
 
-    let output;
-    try { output = JSON.parse(text); }
-    catch { 
-      // tentativa de reparar JSON simples
-      const clean = text.replace(/```json|```/g, '').trim();
-      output = JSON.parse(clean);
+        let output;
+        try { output = JSON.parse(text); }
+        catch {
+            // tentativa de reparar JSON simples
+            const clean = text.replace(/```json|```/g, '').trim();
+            output = JSON.parse(clean);
+        }
+
+        // log no Supabase (não bloqueia caso falhe)
+        try {
+            await supabase.from('generations').insert({
+                order_id: null, slug: user.slug, input_json: user, output_json: output
+            });
+        } catch (e) { /* ignora erros de log */ }
+
+        // Se preview: nada a mudar aqui; ocultação acontece no front
+        return { statusCode: 200, body: JSON.stringify({ output }) };
+    } catch (e) {
+        console.error(e);
+        return { statusCode: 500, body: JSON.stringify({ error: 'Falha na geração' }) };
     }
-
-    // log no Supabase (não bloqueia caso falhe)
-    try {
-      await supabase.from('generations').insert({
-        order_id: null, slug: user.slug, input_json: user, output_json: output
-      });
-    } catch (e) { /* ignora erros de log */ }
-
-    // Se preview: nada a mudar aqui; ocultação acontece no front
-    return { statusCode: 200, body: JSON.stringify({ output }) };
-  } catch (e) {
-    console.error(e);
-    return { statusCode: 500, body: JSON.stringify({ error: 'Falha na geração' }) };
-  }
 };

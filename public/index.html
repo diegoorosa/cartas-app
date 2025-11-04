@@ -1,39 +1,43 @@
 <!doctype html>
 <html lang="pt-br">
+
 <head>
-  <meta charset="utf-8" />
-  <title>Gerador de Cartas e Documentos</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="/style.css" />
+    <meta charset="utf-8" />
+    <title>Gerador de Cartas e Documentos</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="/style.css" />
 </head>
+
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>Gerador de Cartas</h1>
-      <span class="badge">MVP</span>
+    <div class="container">
+        <div class="header">
+            <h1>Gerador de Cartas</h1>
+            <span class="badge">MVP</span>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+            <p>Gere cartas formais (cancelamento, reclamação) em minutos. Prévia grátis — compra liberada na próxima
+                fase.</p>
+            <p class="small">Atenção: este serviço não é aconselhamento jurídico.</p>
+        </div>
+        <script src="/slugs.js"></script>
+        <h2>Modelos populares</h2>
+        <div class="grid" id="grid"></div>
     </div>
-    <div class="card" style="margin-bottom:16px">
-      <p>Gere cartas formais (cancelamento, reclamação) em minutos. Prévia grátis — compra liberada na próxima fase.</p>
-      <p class="small">Atenção: este serviço não é aconselhamento jurídico.</p>
-    </div>
-    <script src="/slugs.js"></script>
-    <h2>Modelos populares</h2>
-    <div class="grid" id="grid"></div>
-  </div>
-  <script>
-    const grid = document.getElementById('grid');
-    window.SLUGS.forEach(s => {
-      const a = document.createElement('a');
-      a.href = `/doc/${s.slug}`;
-      a.innerHTML = `
+    <script>
+        const grid = document.getElementById('grid');
+        window.SLUGS.forEach(s => {
+            const a = document.createElement('a');
+            a.href = `/doc/${s.slug}`;
+            a.innerHTML = `
         <div class="card">
           <h3 style="margin:0 0 6px">${s.title}</h3>
           <div class="small">Tipo: ${s.tipo} · Entidade: ${s.brand}</div>
           <div style="margin-top:10px"><button class="btn btn-outline">Gerar agora</button></div>
         </div>`;
-      a.style.textDecoration = 'none';
-      grid.appendChild(a);
-    });
-  </script>
+            a.style.textDecoration = 'none';
+            grid.appendChild(a);
+        });
+    </script>
 </body>
+
 </html>

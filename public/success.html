@@ -1,26 +1,92 @@
 <!doctype html>
 <html lang="pt-br">
+
 <head>
-  <meta charset="utf-8" />
-  <title>Documento pronto</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="/style.css" />
+    <meta charset="utf-8" />
+    <title>Documento pronto</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="/style.css" />
 </head>
+
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>Seu documento</h1>
-      <div id="doc" class="preview"></div>
-      <div style="display:flex; gap:8px; margin-top:12px">
-        <button class="btn" id="btnCopiar">Copiar tudo</button>
-        <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
-        <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
-      </div>
-      <p class="small" style="margin-top:8px">Dica: envie para o e-mail da empresa e leve impresso se necessário.</p>
+    <div class="container">
+        <div class="card">
+            <h1>Seu documento</h1>
+            <div id="doc" class="preview"></div>
+            <div style="display:flex; gap:8px; margin-top:12px">
+                <button class="btn" id="btnCopiar">Copiar tudo</button>
+                <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
+                <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
+            </div>
+            <p class="small" style="margin-top:8px">Dica: envie para o e-mail da empresa e leve impresso se necessário.
+            </p>
+        </div>
     </div>
-  </div>
-  <script>
-    // Esta página será preenchida na Fase 3 (pós-checkout).
-  </script>
+    <script>
+        const docBox = document.getElementById('doc');
+        const btnCopiar = document.getElementById('btnCopiar');
+        const btnDoc = document.getElementById('btnDoc');
+        const btnZap = document.getElementById('btnZap');
+
+        function qs(name) { const u = new URL(location.href); return u.searchParams.get(name); }
+
+        async function gerarFinal() {
+            try {
+                const payloadStr = localStorage.getItem('pendingPayload');
+                if (!payloadStr) {
+                    docBox.textContent = 'Não encontramos seus dados. Volte e gere novamente.';
+                    return;
+                }
+                const payload = JSON.parse(payloadStr);
+
+                const r = await fetch('/.netlify/functions/generate-doc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ payload, preview: false })
+                });
+                const data = await r.json();
+                const out = data.output || data;
+
+                const partes = [
+                    out.saudacao || '',
+                    ...(out.corpo_paragrafos || []),
+                    out.fechamento || '',
+                    '\nChecklist de anexos: ' + (out.check_list_anexos || []).join('; ')
+                ];
+                const fullText = partes.filter(Boolean).join('\n\n');
+                docBox.textContent = fullText;
+
+                // ações
+                btnCopiar.onclick = async () => {
+                    try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(() => btnCopiar.textContent = 'Copiar tudo', 1200); } catch { }
+                };
+
+                btnDoc.onclick = () => {
+                    const html = `
+          <html><head><meta charset="utf-8"></head><body>
+          ${partes.map(p => `<p>${(p || '').replace(/\n/g, '<br/>')}</p>`).join('')}
+          </body></html>`;
+                    const blob = new Blob([html], { type: 'application/msword' });
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = 'documento.doc';
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                };
+
+                btnZap.onclick = () => {
+                    const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText);
+                    window.open(url, '_blank');
+                };
+            } catch (e) {
+                docBox.textContent = 'Erro ao gerar o documento. Tente novamente.';
+                console.error(e);
+            }
+        }
+
+        // opcional: checar se MP retornou approved (mas mesmo sem, geramos no MVP)
+        gerarFinal();
+    </script>
 </body>
+
 </html>
