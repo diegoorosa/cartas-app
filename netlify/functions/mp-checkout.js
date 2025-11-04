@@ -26,8 +26,8 @@ exports.handler = async (event) => {
             binary_mode: true,
             back_urls: {
                 success: `${SITE_URL}/checkout/sucesso`,
-                failure: `${SITE_URL}/checkout/falha`,
-                pending: `${SITE_URL}/checkout/pending`
+                failure: `${SITE_URL}/doc/${slug}`,
+                pending: `${SITE_URL}/doc/${slug}`
             },
             metadata: { order_id: order.id, slug }
         };
