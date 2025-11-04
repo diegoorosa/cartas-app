@@ -1,0 +1,15 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+# Rota amigável: /doc/slug -> doc.html
+[[redirects]]
+  from = "/doc/*"
+  to = "/doc.html"
+  status = 200
+
+# Página de sucesso do checkout (vamos usar na Fase 3)
+[[redirects]]
+  from = "/checkout/sucesso"
+  to = "/success.html"
+  status = 200

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Gerar Carta</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="/" class="small" style="text-decoration:none;color:#93c5fd">← Voltar</a>
+      <span class="badge">Prévia grátis</span>
+    </div>
+    <div class="card" id="card">
+      <h1 id="docTitle">Gerar Carta</h1>
+      <p class="small">Preencha os campos e gere a prévia. Não é aconselhamento jurídico.</p>
+
+      <div id="formArea">
+        <label class="label">Nome completo</label>
+        <input class="input" id="nome" placeholder="Ex.: João da Silva" />
+
+        <label class="label">CPF</label>
+        <input class="input" id="cpf" placeholder="Ex.: 123.456.789-00" />
+
+        <label class="label">Cidade/UF</label>
+        <input class="input" id="cidade" placeholder="Ex.: São Paulo/SP" />
+
+        <label class="label">Unidade/Contrato (opcional)</label>
+        <input class="input" id="contrato" placeholder="Ex.: Unidade Vila Mariana, Contrato 12345" />
+
+        <label class="label">Motivo ou resumo do caso (opcional)</label>
+        <textarea class="input" id="motivo" rows="3" placeholder="Ex.: cobrança de mensalidade após solicitação de cancelamento em 10/05"></textarea>
+
+        <div style="margin-top:12px; display:flex; gap:8px">
+          <button class="btn" id="btnPreview">Gerar prévia</button>
+          <button class="btn btn-outline" id="btnPagar" disabled title="Pagamento entra na próxima fase">Gerar documento completo (R$ 6,90)</button>
+        </div>
+      </div>
+
+      <div id="previewWrap" style="display:none; margin-top:16px">
+        <h2>Prévia do documento</h2>
+        <div class="preview" id="previewBox"></div>
+        <p class="small" style="margin-top:8px">As últimas linhas foram ocultadas. Na versão completa você poderá copiar, baixar .doc e enviar no WhatsApp.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/slugs.js"></script>
+  <script>
+    // Parse do slug a partir da URL /doc/{slug}
+    const slug = decodeURIComponent(location.pathname.split('/').slice(2).join('/'));
+    const cfg = (window.SLUGS || []).find(s => s.slug === slug);
+    const docTitle = document.getElementById('docTitle');
+    if (!cfg) {
+      docTitle.textContent = "Modelo não encontrado";
+      document.getElementById('formArea').style.display = 'none';
+    } else {
+      docTitle.textContent = cfg.title;
+    }
+
+    const btnPreview = document.getElementById('btnPreview');
+    const previewWrap = document.getElementById('previewWrap');
+    const previewBox = document.getElementById('previewBox');
+
+    btnPreview.addEventListener('click', async () => {
+      btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+      try {
+        const payload = {
+          slug,
+          tipo: cfg.tipo,
+          entidade: cfg.brand,
+          nome: document.getElementById('nome').value.trim(),
+          cpf: document.getElementById('cpf').value.trim(),
+          cidade_uf: document.getElementById('cidade').value.trim(),
+          contrato: document.getElementById('contrato').value.trim(),
+          motivo: document.getElementById('motivo').value.trim()
+        };
+
+        // validação simples
+        if (!payload.nome || !payload.cpf || !payload.cidade_uf) {
+          alert('Preencha Nome, CPF e Cidade/UF.'); btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; return;
+        }
+
+        const r = await fetch('/.netlify/functions/generate-doc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ payload, preview: true })
+        });
+        if (!r.ok) throw new Error('Falha ao gerar');
+        const data = await r.json();
+        const out = data.output || data;
+
+        // monta a prévia ocultando 40% final
+        const p = out.corpo_paragrafos || [];
+        const keep = Math.max(1, Math.ceil(p.length * 0.6));
+        const parcial = p.slice(0, keep).join('\n\n') + '\n\n[...]';
+        const saud = out.saudacao || '';
+        const fech = out.fechamento || '';
+
+        previewBox.textContent = `${saud}\n\n${parcial}\n\n${fech}\n\nChecklist de anexos: ${(out.check_list_anexos||[]).join('; ')}`;
+        previewWrap.style.display = 'block';
+
+        // guarda payload para próxima fase (checkout)
+        localStorage.setItem('pendingPayload', JSON.stringify(payload));
+      } catch (e) {
+        alert('Erro ao gerar prévia. Verifique mais tarde.'); console.error(e);
+      } finally {
+        btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
+      }
+    });
+  </script>
+</body>
+</html>
