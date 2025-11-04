@@ -25,12 +25,15 @@ exports.handler = async (event) => {
             auto_return: 'approved',
             binary_mode: true,
             back_urls: {
-                success: `${SITE_URL}/checkout/sucesso`,
-                failure: `${SITE_URL}/doc/${slug}`,
-                pending: `${SITE_URL}/doc/${slug}`
+                success: `${SITE_URL}/checkout/sucesso ? o = ${order.id}& slug=${slug}`,
+                failure: `${SITE_URL} /checkout/sucesso ? o = ${order.id}& slug=${slug}& s=failure`,
+                pending: `${SITE_URL} /checkout/sucesso ? o = ${order.id}& slug=${slug}& s=pending`
             },
+            notification_url: `${SITE_URL} /.netlify/functions / mp - webhook`,
+            external_reference: order.id,
             metadata: { order_id: order.id, slug }
         };
+
 
         const r = await fetch('https://api.mercadopago.com/checkout/preferences', {
             method: 'POST',

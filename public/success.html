@@ -29,63 +29,89 @@
         const btnZap = document.getElementById('btnZap');
 
         function qs(name) { const u = new URL(location.href); return u.searchParams.get(name); }
+        const orderId = qs('o');
+        const slug = qs('slug');
+        const statusParam = qs('s'); // pending/failure se veio assim
 
-        async function gerarFinal() {
-            try {
-                const payloadStr = localStorage.getItem('pendingPayload');
-                if (!payloadStr) {
-                    docBox.textContent = 'Não encontramos seus dados. Volte e gere novamente.';
-                    return;
-                }
-                const payload = JSON.parse(payloadStr);
+        const waiting = document.createElement('p');
+        waiting.className = 'small';
+        waiting.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
+        document.querySelector('.card').insertBefore(waiting, docBox);
 
-                const r = await fetch('/.netlify/functions/generate-doc', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ payload, preview: false })
-                });
-                const data = await r.json();
-                const out = data.output || data;
-
-                const partes = [
-                    out.saudacao || '',
-                    ...(out.corpo_paragrafos || []),
-                    out.fechamento || '',
-                    '\nChecklist de anexos: ' + (out.check_list_anexos || []).join('; ')
-                ];
-                const fullText = partes.filter(Boolean).join('\n\n');
-                docBox.textContent = fullText;
-
-                // ações
-                btnCopiar.onclick = async () => {
-                    try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(() => btnCopiar.textContent = 'Copiar tudo', 1200); } catch { }
-                };
-
-                btnDoc.onclick = () => {
-                    const html = `
-          <html><head><meta charset="utf-8"></head><body>
-          ${partes.map(p => `<p>${(p || '').replace(/\n/g, '<br/>')}</p>`).join('')}
-          </body></html>`;
-                    const blob = new Blob([html], { type: 'application/msword' });
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = 'documento.doc';
-                    a.click();
-                    URL.revokeObjectURL(a.href);
-                };
-
-                btnZap.onclick = () => {
-                    const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText);
-                    window.open(url, '_blank');
-                };
-            } catch (e) {
-                docBox.textContent = 'Erro ao gerar o documento. Tente novamente.';
-                console.error(e);
-            }
+        async function getOrderStatus() {
+            // usamos uma function server-side para ler o status com service_role
+            const r = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
+            if (!r.ok) return null;
+            return r.json();
         }
 
-        // opcional: checar se MP retornou approved (mas mesmo sem, geramos no MVP)
-        gerarFinal();
+        async function gerarFinal() {
+            const payloadStr = localStorage.getItem('pendingPayload');
+            if (!payloadStr) { docBox.textContent = 'Não encontramos seus dados. Volte e gere novamente.'; return; }
+            const payload = JSON.parse(payloadStr);
+
+            const r = await fetch('/.netlify/functions/generate-doc', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ payload, preview: false })
+            });
+            const data = await r.json();
+            const out = data.output || data;
+
+            const partes = [
+                out.saudacao || '',
+                ...(out.corpo_paragrafos || []),
+                out.fechamento || '',
+                '\nChecklist de anexos: ' + (out.check_list_anexos || []).join('; ')
+            ];
+            const fullText = partes.filter(Boolean).join('\n\n');
+            docBox.textContent = fullText;
+
+            btnCopiar.onclick = async () => {
+                try {
+                    await navigator.clipboard.writeText(fullText);
+                    btnCopiar.textContent = 'Copiado!'; setTimeout(() => btnCopiar.textContent = 'Copiar tudo', 1200);
+                } catch { }
+            };
+
+            btnDoc.onclick = () => {
+                const html = `<html><head><meta charset="utf-8"></head><body>${partes.map(p => `<p>${(p || '').replace(/\n/g, '<br/>')}</p>`).join('')
+                    }</body></html>`;
+                const blob = new Blob([html], { type: 'application/msword' });
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click();
+                URL.revokeObjectURL(a.href);
+            };
+
+            btnZap.onclick = () => {
+                const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText);
+                window.open(url, '_blank');
+            };
+        }
+
+        async function flow() {
+            // Se não veio orderId por algum motivo, gera direto (MVP)
+            if (!orderId) { await gerarFinal(); waiting.remove(); return; }
+
+            // Polling por 60s (Pix costuma aprovar em segundos)
+            const start = Date.now();
+            while (Date.now() - start < 60000) {
+                const st = await getOrderStatus().catch(() => null);
+                if (st && st.status === 'paid') {
+                    waiting.textContent = 'Pagamento confirmado ✔ Gerando seu documento...';
+                    await gerarFinal(); waiting.remove(); return;
+                }
+                await new Promise(r => setTimeout(r, 2000));
+            }
+
+            // fallback para testes
+            waiting.innerHTML = 'Ainda não conseguimos confirmar. Se você já pagou, clique abaixo para gerar mesmo assim.';
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-outline'; btn.textContent = 'Gerar mesmo assim (teste)';
+            btn.onclick = async () => { await gerarFinal(); waiting.remove(); };
+            document.querySelector('.card').insertBefore(btn, docBox);
+        }
+
+        flow();
     </script>
 </body>
 

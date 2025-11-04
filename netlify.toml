@@ -13,3 +13,12 @@
   from = "/checkout/sucesso"
   to = "/success.html"
   status = 200
+
+  [[redirects]]
+from = "/checkout/pending"
+to = "/pending.html"
+status = 200
+[[redirects]]
+from = "/checkout/falha"
+to = "/failure.html"
+status = 200
