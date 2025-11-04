@@ -6,6 +6,14 @@
     <title>Documento pronto</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="/style.css" />
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'AW-1021062139');
+    </script>
 </head>
 
 <body>
@@ -66,6 +74,17 @@
 
         var OUT = null;
         var PAYLOAD = null;
+
+        var CONVERSION_SEND_TO = 'AW-1021062139/eWBbCPil_7kbEPvX8OYD';
+        var CONVERSION_VALUE = 6.9;
+
+        function fireConversion() {
+            var key = 'convFired_' + orderId;
+            if (orderId && !localStorage.getItem(key)) {
+                gtag('event', 'conversion', { send_to: CONVERSION_SEND_TO, value: CONVERSION_VALUE, currency: 'BRL' });
+                localStorage.setItem(key, '1');
+            }
+        }
 
         function buildText(opts) {
             if (!OUT || !PAYLOAD) return '';
@@ -179,6 +198,7 @@
                 if (st && st.status === 'paid') {
                     info.textContent = 'Pagamento confirmado. Gerando seu documento...';
                     await gerarFinal();
+                    fireConversion();
                     info.textContent = '';
                     return;
                 }
