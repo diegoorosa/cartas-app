@@ -12,107 +12,25 @@
     <div class="container">
         <div class="card">
             <h1>Seu documento</h1>
-            <div id="doc" class="preview"></div>
-            <div style="display:flex; gap:8px; margin-top:12px">
-                <button class="btn" id="btnCopiar">Copiar tudo</button>
-                <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
-                <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
+            <div style="display:flex; gap:12px; margin:10px 0; align-items:center">
+                <label class="small"><input type="checkbox" id="includeChecklist" checked> Incluir checklist no
+                    documento</label>
+                <label class="small"><input type="checkbox" id="includeSignature" checked> Incluir local, data e
+                    assinatura</label>
             </div>
-            <p class="small" style="margin-top:8px">Dica: envie para o e-mail da empresa e leve impresso se necessário.
+
+            <div id="doc" class="preview"></div>
+
+            <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap">
+                <button class="btn" id="btnCopiar">Copiar (respeita as opções)</button>
+                <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
+                <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp (sem checklist)</button>
+            </div>
+            <p class="small" style="margin-top:8px">Dica: envie por e-mail para a empresa e leve impresso se necessário.
             </p>
         </div>
     </div>
-    <script>
-        const docBox = document.getElementById('doc');
-        const btnCopiar = document.getElementById('btnCopiar');
-        const btnDoc = document.getElementById('btnDoc');
-        const btnZap = document.getElementById('btnZap');
-
-        function qs(name) { const u = new URL(location.href); return u.searchParams.get(name); }
-        const orderId = qs('o');
-        const slug = qs('slug');
-        const statusParam = qs('s'); // pending/failure se veio assim
-
-        const waiting = document.createElement('p');
-        waiting.className = 'small';
-        waiting.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
-        document.querySelector('.card').insertBefore(waiting, docBox);
-
-        async function getOrderStatus() {
-            // usamos uma function server-side para ler o status com service_role
-            const r = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
-            if (!r.ok) return null;
-            return r.json();
-        }
-
-        async function gerarFinal() {
-            const payloadStr = localStorage.getItem('pendingPayload');
-            if (!payloadStr) { docBox.textContent = 'Não encontramos seus dados. Volte e gere novamente.'; return; }
-            const payload = JSON.parse(payloadStr);
-
-            const r = await fetch('/.netlify/functions/generate-doc', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ payload, preview: false })
-            });
-            const data = await r.json();
-            const out = data.output || data;
-
-            const partes = [
-                out.saudacao || '',
-                ...(out.corpo_paragrafos || []),
-                out.fechamento || '',
-                '\nChecklist de anexos: ' + (out.check_list_anexos || []).join('; ')
-            ];
-            const fullText = partes.filter(Boolean).join('\n\n');
-            docBox.textContent = fullText;
-
-            btnCopiar.onclick = async () => {
-                try {
-                    await navigator.clipboard.writeText(fullText);
-                    btnCopiar.textContent = 'Copiado!'; setTimeout(() => btnCopiar.textContent = 'Copiar tudo', 1200);
-                } catch { }
-            };
-
-            btnDoc.onclick = () => {
-                const html = `<html><head><meta charset="utf-8"></head><body>${partes.map(p => `<p>${(p || '').replace(/\n/g, '<br/>')}</p>`).join('')
-                    }</body></html>`;
-                const blob = new Blob([html], { type: 'application/msword' });
-                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click();
-                URL.revokeObjectURL(a.href);
-            };
-
-            btnZap.onclick = () => {
-                const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText);
-                window.open(url, '_blank');
-            };
-        }
-
-        async function flow() {
-            // Se não veio orderId por algum motivo, gera direto (MVP)
-            if (!orderId) { await gerarFinal(); waiting.remove(); return; }
-
-            // Polling por 60s (Pix costuma aprovar em segundos)
-            const start = Date.now();
-            while (Date.now() - start < 60000) {
-                const st = await getOrderStatus().catch(() => null);
-                if (st && st.status === 'paid') {
-                    waiting.textContent = 'Pagamento confirmado ✔ Gerando seu documento...';
-                    await gerarFinal(); waiting.remove(); return;
-                }
-                await new Promise(r => setTimeout(r, 2000));
-            }
-
-            // fallback para testes
-            waiting.innerHTML = 'Ainda não conseguimos confirmar. Se você já pagou, clique abaixo para gerar mesmo assim.';
-            const btn = document.createElement('button');
-            btn.className = 'btn btn-outline'; btn.textContent = 'Gerar mesmo assim (teste)';
-            btn.onclick = async () => { await gerarFinal(); waiting.remove(); };
-            document.querySelector('.card').insertBefore(btn, docBox);
-        }
-
-        flow();
-    </script>
+    <script> const docBox = document.getElementById('doc'); const btnCopiar = document.getElementById('btnCopiar'); const btnDoc = document.getElementById('btnDoc'); const btnZap = document.getElementById('btnZap'); const includeChecklistEl = document.getElementById('includeChecklist'); const includeSignatureEl = document.getElementById('includeSignature'); function qs(name) { const u = new URL(location.href); return u.searchParams.get(name); } const orderId = qs('o'); const slug = qs('slug'); // status helper async function getOrderStatus() { const r = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)); if (!r.ok) return null; return r.json(); } let OUT = null; // JSON da IA let PAYLOAD = null; // dados do usuário function buildText(opts = { checklist:true, signature:true }) { if (!OUT || !PAYLOAD) return ''; const partes = [ OUT.saudacao || '', ...(OUT.corpo_paragrafos || []), OUT.fechamento || '' ]; if (opts.signature) { const hoje = new Date().toLocaleDateString('pt-BR'); partes.push(`${PAYLOAD.cidade_uf || ''}, ${hoje}`, PAYLOAD.nome || ''); } if (opts.checklist) { const ck = (OUT.check_list_anexos || []).join('; '); if (ck) partes.push('Checklist de anexos: ' + ck); } return partes.filter(Boolean).join('\n\n'); } async function gerarFinal() { const payloadStr = localStorage.getItem('pendingPayload'); if (!payloadStr) { docBox.textContent = 'Não encontramos seus dados. Volte e gere novamente.'; return; } PAYLOAD = JSON.parse(payloadStr); const r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: PAYLOAD, preview: false }) }); const data = await r.json(); OUT = data.output || data; // render inicial com checklist e assinatura docBox.textContent = buildText({ checklist: includeChecklistEl.checked, signature: includeSignatureEl.checked }); } // re-render quando mudar as opções includeChecklistEl.addEventListener('change', () => { docBox.textContent = buildText({ checklist: includeChecklistEl.checked, signature: includeSignatureEl.checked }); }); includeSignatureEl.addEventListener('change', () => { docBox.textContent = buildText({ checklist: includeChecklistEl.checked, signature: includeSignatureEl.checked }); }); // ações dos botões btnCopiar.onclick = async () => { const txt = buildText({ checklist: includeChecklistEl.checked, signature: includeSignatureEl.checked }); try { await navigator.clipboard.writeText(txt); btnCopiar.textContent = 'Copiado!'; setTimeout(()=>btnCopiar.textContent='Copiar (respeita as opções)',1200);} catch{} }; btnDoc.onclick = () => { const partes = buildText({ checklist: includeChecklistEl.checked, signature: includeSignatureEl.checked }).split('\n\n'); const html = `<html><head><meta charset="utf-8"></head><body>${ partes.map(p => `<p>${p.replace(/\n/g,'<br/>')}</p>`).join('') }</body></html>`; const blob = new Blob([html], { type: 'application/msword' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click(); URL.revokeObjectURL(a.href); }; btnZap.onclick = () => { // WhatsApp SEM checklist por padrão, e sem assinatura (fica mais curto) const txt = buildText({ checklist: false, signature: false }); const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(txt); window.open(url, '_blank'); }; async function flow() { const info = document.createElement('p'); info.className = 'small'; info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...'; document.querySelector('.card').insertBefore(info, docBox); if (!orderId) { await gerarFinal(); info.remove(); return; } const start = Date.now(); while (Date.now() - start < 60000) { const st = await getOrderStatus().catch(()=>null); if (st && st.status === 'paid') { info.textContent = 'Pagamento confirmado ✔ Gerando seu documento...'; await gerarFinal(); info.remove(); return; } await new Promise(r => setTimeout(r, 2000)); } info.innerHTML = 'Ainda não conseguimos confirmar. Se você já pagou, clique para gerar mesmo assim (teste).'; const btn = document.createElement('button'); btn.className='btn btn-outline'; btn.textContent='Gerar mesmo assim (teste)'; btn.onclick = async ()=>{ await gerarFinal(); info.remove(); }; document.querySelector('.card').insertBefore(btn, docBox); } flow(); </script>
 </body>
 
 </html>

@@ -14,6 +14,7 @@
             <a href="/" class="small" style="text-decoration:none;color:#93c5fd">← Voltar</a>
             <span class="badge">Prévia grátis</span>
         </div>
+
         <div class="card" id="card">
             <h1 id="docTitle">Gerar Carta</h1>
             <p class="small">Preencha os campos e gere a prévia. Não é aconselhamento jurídico.</p>
@@ -23,7 +24,9 @@
                 <input class="input" id="nome" placeholder="Ex.: João da Silva" />
 
                 <label class="label">CPF</label>
-                <input class="input" id="cpf" placeholder="Ex.: 123.456.789-00" />
+                <input class="input" id="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
+                <div id="cpfError" class="small" style="display:none; color:#fca5a5">CPF inválido. Verifique os dígitos.
+                </div>
 
                 <label class="label">Cidade/UF</label>
                 <input class="input" id="cidade" placeholder="Ex.: São Paulo/SP" />
@@ -35,10 +38,9 @@
                 <textarea class="input" id="motivo" rows="3"
                     placeholder="Ex.: cobrança de mensalidade após solicitação de cancelamento em 10/05"></textarea>
 
-                <div style="margin-top:12px; display:flex; gap:8px">
+                <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
                     <button class="btn" id="btnPreview">Gerar prévia</button>
-                    <button class="btn btn-outline" id="btnPagar" disabled title="Pagamento entra na próxima fase">Gerar
-                        documento completo (R$ 6,90)</button>
+                    <button class="btn btn-outline" id="btnPagar" disabled>Gerar documento completo (R$ 6,90)</button>
                 </div>
             </div>
 
@@ -53,6 +55,7 @@
 
     <script src="/slugs.js"></script>
     <script>
+        // Descobre o slug a partir da URL /doc/{slug}
         const slug = decodeURIComponent(location.pathname.split('/').slice(2).join('/'));
         const cfg = (window.SLUGS || []).find(s => s.slug === slug);
         const docTitle = document.getElementById('docTitle');
@@ -68,16 +71,63 @@
         const previewWrap = document.getElementById('previewWrap');
         const previewBox = document.getElementById('previewBox');
 
+        // Referências de campos
+        const nomeInput = document.getElementById('nome');
+        const cpfInput = document.getElementById('cpf');
+        const cpfError = document.getElementById('cpfError');
+        const cidadeInput = document.getElementById('cidade');
+        const contratoInput = document.getElementById('contrato');
+        const motivoInput = document.getElementById('motivo');
+
+        // Máscara e validação de CPF
+        function maskCPF(v) {
+            v = (v || '').replace(/\D/g, '').slice(0, 11);
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            return v;
+        }
+        function isValidCPF(cpf) {
+            let s = (cpf || '').replace(/\D/g, '');
+            if (s.length !== 11) return false;
+            if (/^(\d)\1{10}$/.test(s)) return false;
+            let sum = 0, rest;
+            for (let i = 1; i <= 9; i++) sum += parseInt(s.substring(i - 1, i)) * (11 - i);
+            rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0;
+            if (rest !== parseInt(s.substring(9, 10))) return false;
+            sum = 0;
+            for (let i = 1; i <= 10; i++) sum += parseInt(s.substring(i - 1, i)) * (12 - i);
+            rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0;
+            if (rest !== parseInt(s.substring(10, 11))) return false;
+            return true;
+        }
+        function assertCPF() {
+            cpfInput.value = maskCPF(cpfInput.value);
+            const valid = isValidCPF(cpfInput.value);
+            cpfError.style.display = valid ? 'none' : 'block';
+            if (!valid) cpfInput.focus();
+            return valid;
+        }
+        cpfInput.addEventListener('input', () => {
+            const before = cpfInput.selectionStart;
+            cpfInput.value = maskCPF(cpfInput.value);
+            // posiciona o cursor simples (fim)
+            cpfInput.setSelectionRange(cpfInput.value.length, cpfInput.value.length);
+        });
+        cpfInput.addEventListener('blur', assertCPF);
+
         function getPayload() {
+            // garante CPF mascarado no payload
+            cpfInput.value = maskCPF(cpfInput.value);
             return {
                 slug,
                 tipo: cfg?.tipo,
                 entidade: cfg?.brand,
-                nome: document.getElementById('nome').value.trim(),
-                cpf: document.getElementById('cpf').value.trim(),
-                cidade_uf: document.getElementById('cidade').value.trim(),
-                contrato: document.getElementById('contrato').value.trim(),
-                motivo: document.getElementById('motivo').value.trim()
+                nome: nomeInput.value.trim(),
+                cpf: cpfInput.value.trim(),
+                cidade_uf: cidadeInput.value.trim(),
+                contrato: contratoInput.value.trim(),
+                motivo: motivoInput.value.trim()
             };
         }
 
@@ -85,8 +135,8 @@
             btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
             try {
                 const payload = getPayload();
-                if (!payload.nome || !payload.cpf || !payload.cidade_uf) {
-                    alert('Preencha Nome, CPF e Cidade/UF.');
+                if (!payload.nome || !payload.cidade_uf || !assertCPF()) {
+                    alert('Preencha Nome, Cidade/UF e informe um CPF válido.');
                     btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
                     return;
                 }
@@ -106,10 +156,10 @@
                 const saud = out.saudacao || '';
                 const fech = out.fechamento || '';
 
-                previewBox.textContent = `${saud}\n\n${parcial}\n\n${fech}\n\nChecklist de anexos: ${(out.check_list_anexos || []).join('; ')}`;
+                previewBox.textContent =
+                    `${saud}\n\n${parcial}\n\n${fech}\n\nChecklist de anexos: ${(out.check_list_anexos || []).join('; ')}`;
                 previewWrap.style.display = 'block';
 
-                // guarda para pós-compra
                 localStorage.setItem('pendingPayload', JSON.stringify(payload));
                 btnPagar.disabled = false;
             } catch (e) {
@@ -122,8 +172,8 @@
         btnPagar.addEventListener('click', async () => {
             try {
                 const payload = getPayload();
-                if (!payload.nome || !payload.cpf || !payload.cidade_uf) {
-                    alert('Preencha Nome, CPF e Cidade/UF antes de pagar.'); return;
+                if (!payload.nome || !payload.cidade_uf || !assertCPF()) {
+                    alert('Preencha Nome, Cidade/UF e informe um CPF válido.'); return;
                 }
                 localStorage.setItem('pendingPayload', JSON.stringify(payload));
                 btnPagar.disabled = true; btnPagar.textContent = 'Redirecionando...';
@@ -136,7 +186,7 @@
                 const data = await r.json();
                 if (!r.ok || !data.init_point) throw new Error('Falha ao abrir pagamento');
 
-                window.location.href = data.init_point; // envia para o MP
+                window.location.href = data.init_point;
             } catch (e) {
                 alert('Não foi possível abrir o pagamento.'); console.error(e);
                 btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)';
