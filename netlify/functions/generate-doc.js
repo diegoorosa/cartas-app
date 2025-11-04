@@ -43,7 +43,7 @@ Instruções de conteúdo:
 - Inclua uma saudação inicial adequada e um fechamento educado.
 - Inclua checklist de anexos relevantes (documento, comprovantes, etc.).`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
     const resp = await model.generateContent([SYSTEM, userPrompt].join('\n\n'));
     const text = await resp.response.text();
 
