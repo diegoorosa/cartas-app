@@ -6,6 +6,13 @@
     <title>Gerador de Cartas</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="/style.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'AW-1021062139');
+    </script>
 </head>
 
 <body>
@@ -20,11 +27,12 @@
                 após o pagamento.</p>
             <p class="small">Atenção: este serviço não é aconselhamento jurídico.</p>
             <div class="searchbar">
-                <input class="input" id="q" placeholder="Buscar por marca/termo (ex.: smart fit, vivo, cancelamento)" />
+                <input class="input" id="q"
+                    placeholder="Buscar por termo (ex.: smart fit, vivo, bagagem, viagem, cancelamento)" />
             </div>
         </div>
 
-        <div class="grid" style="margin-bottom:16px">
+        <div id="section-viagem-card" class="grid" style="margin-bottom:16px">
             <a href="/viagem.html" class="card-link">
                 <div class="card">
                     <h3 class="card-title">Autorização de Viagem para Menor</h3>
@@ -37,8 +45,9 @@
                 </div>
             </a>
         </div>
-        <h2>Guias de viagem</h2>
-        <div class="grid" style="margin-bottom:16px">
+
+        <h2 id="h2-guias-viagem">Guias de viagem</h2>
+        <div id="section-guias-viagem" class="grid" style="margin-bottom:16px">
             <a href="/menor-nacional-um-responsavel.html" class="card-link">
                 <div class="card">
                     <h3 class="card-title">Menor – Nacional (1 responsável)</h3>
@@ -75,8 +84,9 @@
                 </div>
             </a>
         </div>
-        <h2>Problemas com bagagem</h2>
-        <div class="grid" style="margin-bottom:16px">
+
+        <h2 id="h2-bagagem">Problemas com bagagem</h2>
+        <div id="section-bagagem" class="grid" style="margin-bottom:16px">
             <a href="/bagagem-extraviada.html" class="card-link">
                 <div class="card">
                     <h3 class="card-title">Bagagem extraviada</h3>
@@ -92,12 +102,19 @@
                 </div>
             </a>
         </div>
-        <script src="/slugs.js"></script>
 
-        <h2>Modelos populares</h2>
+        <h2 id="h2-populares">Modelos populares</h2>
         <div class="grid" id="grid"></div>
+
+        <div id="searchResults" style="display:none; margin-top:16px">
+            <h2>Resultados</h2>
+            <div class="grid" id="searchGrid"></div>
+            <p id="noResults" class="small" style="display:none">Nenhum resultado encontrado. Tente outro termo (ex.:
+                “cancelamento vivo”, “bagagem”, “autorização viagem”).</p>
+        </div>
     </div>
 
+    <script src="/slugs.js"></script>
     <script src="/home.js"></script>
 </body>
 
