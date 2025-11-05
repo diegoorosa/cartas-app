@@ -63,9 +63,18 @@
 
     <script src="/slugs.js"></script>
     <script>
+        function getSlug() {
+            var u = new URL(location.href);
+            var qs = u.searchParams.get('slug');
+            if (qs) return qs;
+            var seg = location.pathname.replace(/\/+$/, '').split('/');
+            if (seg[1] === 'doc') return decodeURIComponent(seg.slice(2).join('/'));
+            return '';
+        }
+
         function getParam(name) { var u = new URL(location.href); return u.searchParams.get(name); }
 
-        var slug = getParam('slug');
+        var slug = getSlug();
         var titleParam = getParam('t');
         var cfg = null;
         if (window.SLUGS && slug) {

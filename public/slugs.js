@@ -41,7 +41,24 @@ window.SLUGS = [
     { slug: "carta-cancelamento-sky-tv", title: "Carta de Cancelamento — SKY TV", brand: "SKY", tipo: "cancelamento" },
     { slug: "carta-reclamacao-sky-cobranca-indevida", title: "Reclamação por Cobrança Indevida — SKY", brand: "SKY", tipo: "reclamacao" },
 
-    // Planos de saúde (muito buscado)
+    // Planos de saúde
     { slug: "carta-cancelamento-plano-de-saude", title: "Carta de Cancelamento — Plano de Saúde", brand: "Plano de Saúde", tipo: "cancelamento" },
-    { slug: "carta-reclamacao-plano-de-saude-negativa-de-atendimento", title: "Reclamação — Negativa de Atendimento (Plano de Saúde)", brand: "Plano de Saúde", tipo: "reclamacao" }
+    { slug: "carta-reclamacao-plano-de-saude-negativa-de-atendimento", title: "Reclamação — Negativa de Atendimento (Plano de Saúde)", brand: "Plano de Saúde", tipo: "reclamacao" },
+
+    // Operadoras (genéricos adicionais)
+    { slug: "carta-cancelamento-internet", title: "Carta de Cancelamento — Internet (genérico)", brand: "Operadora", tipo: "cancelamento" },
+    { slug: "carta-cancelamento-tv-por-assinatura", title: "Carta de Cancelamento — TV por Assinatura", brand: "Operadora", tipo: "cancelamento" },
+    { slug: "carta-cancelamento-telefonia-movel", title: "Carta de Cancelamento — Telefonia Móvel", brand: "Operadora", tipo: "cancelamento" },
+    { slug: "carta-reclamacao-cobranca-indevida-internet", title: "Reclamação — Cobrança Indevida (Internet)", brand: "Operadora", tipo: "reclamacao" },
+    { slug: "carta-reclamacao-cobranca-indevida-tv", title: "Reclamação — Cobrança Indevida (TV)", brand: "Operadora", tipo: "reclamacao" },
+
+    // Consumo
+    { slug: "carta-direito-arrependimento-ecommerce", title: "Carta — Direito de Arrependimento (7 dias, e‑commerce)", brand: "Consumo", tipo: "cancelamento" },
+    { slug: "carta-troca-ou-devolucao-produto", title: "Carta — Troca/Devolução de Produto", brand: "Consumo", tipo: "reclamacao" },
+
+    // Academias (variações com unidade)
+    { slug: "carta-cancelamento-smart-fit-unidade", title: "Carta de Cancelamento — Smart Fit (informar unidade)", brand: "Smart Fit", tipo: "cancelamento" },
+    { slug: "carta-cancelamento-bluefit-unidade", title: "Carta de Cancelamento — Bluefit (informar unidade)", brand: "Bluefit", tipo: "cancelamento" },
+    { slug: "carta-cancelamento-selfit-unidade", title: "Carta de Cancelamento — Selfit (informar unidade)", brand: "Selfit", tipo: "cancelamento" },
+    { slug: "carta-cancelamento-bodytech-unidade", title: "Carta de Cancelamento — Bodytech (informar unidade)", brand: "Bodytech", tipo: "cancelamento" }
 ];
