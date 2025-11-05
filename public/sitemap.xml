@@ -1,39 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> <url><loc>https://cartasapp.netlify.app/</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-smart-fit</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-smart-fit-cobranca-indevida</loc></url>
-
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-bluefit</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-bluefit-cobranca-indevida</loc></url>
-
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-selfit</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-selfit-cobranca-indevida</loc></url>
-
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-bodytech</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-bodytech-cobranca-indevida</loc></url>
-
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-academia-por-mudanca-de-cidade</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-academia-por-motivo-de-saude</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-academia-fim-de-fidelidade</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-academia-fechamento-da-unidade</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-academia-servico-nao-prestado</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-academia-problema-na-cobranca</loc></url>
-
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-vivo-fibra</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-vivo-movel</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-vivo-cobranca-indevida</loc></url>
-
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-claro-net</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-claro-movel</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-claro-cobranca-indevida</loc></url>
-
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-tim</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-tim-cobranca-indevida</loc></url>
-
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-oi</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-oi-cobranca-indevida</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-sky-tv</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-sky-cobranca-indevida</loc></url>
-
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-plano-de-saude</loc></url>
-<url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-plano-de-saude-negativa-de-atendimento</loc></url>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://cartasapp.netlify.app/</loc></url>
+  <url><loc>https://cartasapp.netlify.app/viagem.html</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-smart-fit</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-smart-fit-cobranca-indevida</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-bluefit</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-bluefit-cobranca-indevida</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-selfit</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-selfit-cobranca-indevida</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-bodytech</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-bodytech-cobranca-indevida</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-academia-por-mudanca-de-cidade</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-academia-por-motivo-de-saude</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-academia-fim-de-fidelidade</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-academia-fechamento-da-unidade</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-academia-servico-nao-prestado</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-reclamacao-academia-problema-na-cobranca</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-vivo-fibra</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-claro-net</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-tim</loc></url>
+  <url><loc>https://cartasapp.netlify.app/doc.html?slug=carta-cancelamento-plano-de-saude</loc></url>
 </urlset>
