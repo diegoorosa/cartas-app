@@ -71,7 +71,6 @@
             if (seg[1] === 'doc') return decodeURIComponent(seg.slice(2).join('/'));
             return '';
         }
-
         function getParam(name) { var u = new URL(location.href); return u.searchParams.get(name); }
 
         var slug = getSlug();
@@ -190,7 +189,6 @@
                     btnPagar.disabled = false;
                 } catch (e) {
                     alert('Erro ao gerar prévia.');
-                    console.error(e);
                 } finally {
                     btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
                 }
@@ -217,7 +215,6 @@
                     window.location.href = data.init_point;
                 } catch (e) {
                     alert('Não foi possível abrir o pagamento.');
-                    console.error(e);
                     btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)';
                 }
             })();
