@@ -27,21 +27,20 @@
             <p class="small">Preencha os dados e gere a autorização em minutos. Documento em .DOC pronto para imprimir e
                 assinar.</p>
             <p class="small" style="margin-top:6px;color:#9fb0c7">
-                Nacional: certidão de nascimento (original/cópia autenticada) ou RG do menor. Internacional: passaporte
-                (RG pode ser aceito no Mercosul, mas recomenda‑se passaporte). CPF não substitui documento de
-                identidade.
+                Nacional: certidão de nascimento (original/cópia) ou RG do menor. Internacional: passaporte do menor (RG
+                pode ser aceito no Mercosul, mas recomenda‑se passaporte). CPF não substitui documento de identidade.
             </p>
 
             <div id="formArea">
                 <h2>Dados do menor</h2>
                 <label class="label">Nome completo do menor</label>
                 <input class="input" id="menor_nome" placeholder="Ex.: Ana Souza" />
-
                 <label class="label">Data de nascimento</label>
-                <input class="input" id="menor_nasc" placeholder="Ex.: 15/09/2011" />
-
+                <input class="input" id="menor_nasc" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" />
+                <div id="err_menor_nasc" class="small" style="display:none;color:#fca5a5">Data de nascimento inválida.
+                </div>
                 <label class="label">Documento do menor (certidão/RG/passaporte)</label>
-                <input class="input" id="menor_doc" placeholder="Ex.: Certidão de Nascimento – Livro X, Folha Y" />
+                <input class="input" id="menor_doc" placeholder="Ex.: Certidão – Livro X, Folha Y" />
 
                 <h2>Viagem</h2>
                 <label class="label">Tipo</label>
@@ -54,11 +53,17 @@
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
                     <div>
                         <label class="label">Data de ida</label>
-                        <input class="input" id="data_ida" placeholder="Ex.: 20/12/2025" />
+                        <input class="input" id="data_ida" placeholder="DD/MM/AAAA" inputmode="numeric"
+                            maxlength="10" />
+                        <div id="err_data_ida" class="small" style="display:none;color:#fca5a5">Data de ida inválida.
+                        </div>
                     </div>
                     <div>
                         <label class="label">Data de volta</label>
-                        <input class="input" id="data_volta" placeholder="Ex.: 05/01/2026" />
+                        <input class="input" id="data_volta" placeholder="DD/MM/AAAA" inputmode="numeric"
+                            maxlength="10" />
+                        <div id="err_data_volta" class="small" style="display:none;color:#fca5a5">Data de volta inválida
+                            ou anterior à ida.</div>
                     </div>
                 </div>
 
@@ -75,11 +80,15 @@
                 <input class="input" id="resp1_nome" placeholder="Ex.: Maria Souza" />
                 <label class="label">Responsável 1 — CPF</label>
                 <input class="input" id="resp1_cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
+                <div id="err_resp1_cpf" class="small" style="display:none;color:#fca5a5">CPF do Responsável 1 inválido.
+                </div>
 
                 <label class="label">Responsável 2 — Nome completo (opcional)</label>
                 <input class="input" id="resp2_nome" placeholder="Ex.: Carlos Souza" />
                 <label class="label">Responsável 2 — CPF (opcional)</label>
                 <input class="input" id="resp2_cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
+                <div id="err_resp2_cpf" class="small" style="display:none;color:#fca5a5">CPF do Responsável 2 inválido.
+                </div>
 
                 <h2>Outras informações</h2>
                 <label class="label">Cidade/UF de emissão</label>
@@ -107,48 +116,57 @@
             <div id="previewWrap" style="display:none; margin-top:16px">
                 <h2>Prévia do documento</h2>
                 <div class="preview" id="previewBox"></div>
-                <p class="small" style="margin-top:8px">As últimas linhas foram ocultadas. Na versão completa você
-                    poderá copiar, baixar .doc e enviar no WhatsApp.</p>
+                <p class="small" style="margin-top:8px">Prévia parcial. Na versão completa você poderá copiar, baixar
+                    .DOC e enviar no WhatsApp.</p>
             </div>
         </div>
     </div>
 
     <script>
-        function getParam(name) { var u = new URL(location.href); return u.searchParams.get(name); }
         function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; }
         function isValidCPF(cpf) { var s = (cpf || '').replace(/\D/g, ''); if (s.length !== 11) return false; if (/^(\d)\1{10}$/.test(s)) return false; var i, sum = 0, rest; for (i = 1; i <= 9; i++) sum += parseInt(s.substring(i - 1, i)) * (11 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(9, 10))) return false; sum = 0; for (i = 1; i <= 10; i++) sum += parseInt(s.substring(i - 1, i)) * (12 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(10, 11))) return false; return true; }
+        function maskDate(v) { v = (v || '').replace(/\D/g, '').slice(0, 8); if (v.length >= 5) v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3'); else if (v.length >= 3) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2'); return v; }
+        function isValidDateBR(s) { if (!/^\d{2}\/\d{2}\/\d{4}$/.test(s || '')) return false; var d = parseInt(s.substr(0, 2), 10), m = parseInt(s.substr(3, 2), 10), y = parseInt(s.substr(6, 4), 10); if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return false; var md = [31, (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0 ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; if (d > md[m - 1]) return false; return true; }
+        function dateToISO(s) { var d = s.substr(0, 2), m = s.substr(3, 2), y = s.substr(6, 4); return y + '-' + m + '-' + d; }
 
-        var r1 = document.getElementById('resp1_cpf');
-        var r2 = document.getElementById('resp2_cpf');
-        r1.addEventListener('input', function () { r1.value = maskCPF(r1.value); r1.setSelectionRange(r1.value.length, r1.value.length); });
-        r2.addEventListener('input', function () { r2.value = maskCPF(r2.value); r2.setSelectionRange(r2.value.length, r2.value.length); });
+        var ids = ['menor_nome', 'menor_nasc', 'menor_doc', 'viagem_tipo', 'destino', 'data_ida', 'data_volta', 'acomp_nome', 'acomp_doc', 'acomp_parentesco', 'resp1_nome', 'resp1_cpf', 'resp2_nome', 'resp2_cpf', 'cidade', 'email', 'telefone', 'observacoes'];
+        var SAVE_KEY = 'viagem_form_v1';
+
+        function saveForm() { var o = {}; for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (el) { o[ids[i]] = el.value; } } localStorage.setItem(SAVE_KEY, JSON.stringify(o)); }
+        function loadForm() { try { var o = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); for (var k in o) { if (document.getElementById(k)) document.getElementById(k).value = o[k]; } } catch (e) { } }
+
+        function attachAutosave() { for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (el) { el.addEventListener('input', saveForm); el.addEventListener('change', saveForm); } } }
+
+        function applyMasks() {
+            var fn = ['menor_nasc', 'data_ida', 'data_volta'];
+            for (var i = 0; i < fn.length; i++) { var el = document.getElementById(fn[i]); if (el) { el.addEventListener('input', function (e) { e.target.value = maskDate(e.target.value); }); } }
+            var c1 = document.getElementById('resp1_cpf'), c2 = document.getElementById('resp2_cpf');
+            if (c1) { c1.addEventListener('input', function () { c1.value = maskCPF(c1.value); }); }
+            if (c2) { c2.addEventListener('input', function () { c2.value = maskCPF(c2.value); }); }
+        }
 
         function getPayload() {
-            r1.value = maskCPF(r1.value);
-            r2.value = maskCPF(r2.value);
+            var c1 = document.getElementById('resp1_cpf'); var c2 = document.getElementById('resp2_cpf');
+            if (c1) c1.value = maskCPF(c1.value);
+            if (c2) c2.value = maskCPF(c2.value);
             return {
                 slug: 'autorizacao-viagem-menor',
                 tipo: 'autorizacao_viagem',
                 entidade: 'Viagem',
-
                 menor_nome: document.getElementById('menor_nome').value.trim(),
                 menor_nasc: document.getElementById('menor_nasc').value.trim(),
                 menor_doc: document.getElementById('menor_doc').value.trim(),
-
                 viagem_tipo: document.getElementById('viagem_tipo').value,
                 destino: document.getElementById('destino').value.trim(),
                 data_ida: document.getElementById('data_ida').value.trim(),
                 data_volta: document.getElementById('data_volta').value.trim(),
-
                 acomp_nome: document.getElementById('acomp_nome').value.trim(),
                 acomp_doc: document.getElementById('acomp_doc').value.trim(),
                 acomp_parentesco: document.getElementById('acomp_parentesco').value.trim(),
-
                 resp1_nome: document.getElementById('resp1_nome').value.trim(),
                 resp1_cpf: document.getElementById('resp1_cpf').value.trim(),
                 resp2_nome: document.getElementById('resp2_nome').value.trim(),
                 resp2_cpf: document.getElementById('resp2_cpf').value.trim(),
-
                 cidade_uf: document.getElementById('cidade').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 telefone: document.getElementById('telefone').value.trim(),
@@ -156,22 +174,45 @@
             };
         }
 
+        function validateAll(p) {
+            var ok = true;
+            function show(id, show) { var el = document.getElementById(id); if (el) el.style.display = show ? 'block' : 'none'; }
+            if (!isValidDateBR(p.menor_nasc)) { show('err_menor_nasc', true); ok = false; } else show('err_menor_nasc', false);
+            if (!isValidDateBR(p.data_ida)) { show('err_data_ida', true); ok = false; } else show('err_data_ida', false);
+            if (!isValidDateBR(p.data_volta)) { show('err_data_volta', true); ok = false; } else {
+                var di = new Date(dateToISO(p.data_ida)); var dv = new Date(dateToISO(p.data_volta));
+                if (isNaN(di.getTime()) || isNaN(dv.getTime()) || dv.getTime() < di.getTime()) { show('err_data_volta', true); ok = false; } else show('err_data_volta', false);
+            }
+            if (!isValidCPF(p.resp1_cpf)) { show('err_resp1_cpf', true); ok = false; } else show('err_resp1_cpf', false);
+            if (p.resp2_cpf && !isValidCPF(p.resp2_cpf)) { show('err_resp2_cpf', true); ok = false; } else show('err_resp2_cpf', false);
+            if (!p.menor_nome || !p.resp1_nome || !p.destino || !p.cidade_uf) ok = false;
+            return ok;
+        }
+
         var btnPreview = document.getElementById('btnPreview');
         var btnPagar = document.getElementById('btnPagar');
         var previewWrap = document.getElementById('previewWrap');
         var previewBox = document.getElementById('previewBox');
+
+        loadForm();
+        attachAutosave();
+        applyMasks();
+
+        (function () {
+            var p = new URL(location.href).searchParams.get('pref');
+            if (!p) return;
+            var tipo = document.getElementById('viagem_tipo');
+            if (!tipo) return;
+            if (p === 'nat1' || p === 'nat2' || p === 'terc_nac') tipo.value = 'nacional';
+            if (p === 'int1' || p === 'int2' || p === 'terc_int') tipo.value = 'internacional';
+        })();
 
         btnPreview.addEventListener('click', function () {
             (async function () {
                 btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
                 try {
                     var payload = getPayload();
-                    if (!payload.menor_nome || !payload.menor_nasc || !payload.resp1_nome || !payload.resp1_cpf || !payload.destino || !payload.data_ida || !payload.data_volta || !payload.cidade_uf) {
-                        alert('Preencha: Menor (nome e nascimento), Responsável 1 (nome e CPF), Destino, Datas e Cidade/UF.');
-                        btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
-                        return;
-                    }
-                    if (!isValidCPF(payload.resp1_cpf)) { alert('CPF do Responsável 1 inválido.'); btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; return; }
+                    if (!validateAll(payload)) { alert('Verifique os campos destacados.'); btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; return; }
 
                     var r = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -180,14 +221,21 @@
                     if (!r.ok) throw new Error('Falha ao gerar');
                     var data = await r.json();
                     var out = data.output || data;
-                    var p = out.corpo_paragrafos || [];
-                    var keep = Math.max(1, Math.ceil(p.length * 0.6));
-                    var parcial = p.slice(0, keep).join('\n\n') + '\n\n[...]';
+
+                    var pars = out.corpo_paragrafos || [];
+                    var keep = Math.max(1, Math.min(2, pars.length));
+                    var parcialText = pars.slice(0, keep).join('\n\n') + '\n\n[...]';
                     var saud = out.saudacao || '';
-                    var fech = out.fechamento || '';
-                    previewBox.textContent = (saud ? saud + '\n\n' : '') + parcial + (fech ? '\n\n' + fech : '') + '\n\nChecklist de anexos: ' + (out.check_list_anexos || []).join('; ');
+                    var checklist = out.check_list_anexos || [];
+                    var chkShow = checklist.slice(0, 2);
+                    if (checklist.length > 2) chkShow.push('...');
+
+                    var finalPreview = (saud ? saud + '\n\n' : '') + parcialText + '\n\nChecklist de anexos (parcial): ' + chkShow.join('; ');
+                    previewBox.textContent = finalPreview;
                     previewWrap.style.display = 'block';
+
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
+                    saveForm();
                     btnPagar.disabled = false;
                 } catch (e) {
                     alert('Erro ao gerar prévia.');
@@ -201,11 +249,9 @@
             (async function () {
                 try {
                     var payload = getPayload();
-                    if (!payload.menor_nome || !payload.menor_nasc || !payload.resp1_nome || !payload.resp1_cpf || !payload.destino || !payload.data_ida || !payload.data_volta || !payload.cidade_uf) {
-                        alert('Preencha os campos obrigatórios.'); return;
-                    }
-                    if (!isValidCPF(payload.resp1_cpf)) { alert('CPF do Responsável 1 inválido.'); return; }
+                    if (!validateAll(payload)) { alert('Verifique os campos obrigatórios.'); return; }
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
+                    saveForm();
                     btnPagar.disabled = true; btnPagar.textContent = 'Redirecionando...';
 
                     var r = await fetch('/.netlify/functions/mp-checkout', {
@@ -221,16 +267,6 @@
                 }
             })();
         });
-    </script>
-    <script>
-        (function () {
-            var p = new URL(location.href).searchParams.get('pref');
-            if (!p) return;
-            var tipo = document.getElementById('viagem_tipo');
-            if (!tipo) return;
-            if (p === 'nat1' || p === 'nat2' || p === 'terc_nac') tipo.value = 'nacional';
-            if (p === 'int1' || p === 'int2' || p === 'terc_int') tipo.value = 'internacional';
-        })();
     </script>
 </body>
 
