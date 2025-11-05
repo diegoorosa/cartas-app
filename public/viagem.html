@@ -36,9 +36,10 @@
                 <label class="label">Nome completo do menor</label>
                 <input class="input" id="menor_nome" placeholder="Ex.: Ana Souza" />
                 <label class="label">Data de nascimento</label>
-                <input class="input" id="menor_nasc" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" />
-                <div id="err_menor_nasc" class="small" style="display:none;color:#fca5a5">Data de nascimento inválida.
-                </div>
+                <input class="input" id="menor_nascimento" placeholder="DD/MM/AAAA" inputmode="numeric"
+                    maxlength="10" />
+                <div id="err_menor_nascimento" class="small" style="display:none;color:#fca5a5">Data de nascimento
+                    inválida.</div>
                 <label class="label">Documento do menor (certidão/RG/passaporte)</label>
                 <input class="input" id="menor_doc" placeholder="Ex.: Certidão – Livro X, Folha Y" />
 
@@ -67,13 +68,23 @@
                     </div>
                 </div>
 
-                <h2>Acompanhante (se houver)</h2>
-                <label class="label">Nome do acompanhante</label>
-                <input class="input" id="acomp_nome" placeholder="Ex.: João Silva" />
-                <label class="label">Documento do acompanhante</label>
-                <input class="input" id="acomp_doc" placeholder="Ex.: RG 1.234.567-8" />
-                <label class="label">Parentesco/relação</label>
-                <input class="input" id="acomp_parentesco" placeholder="Ex.: Tio, Avó, Responsável legal" />
+                <h2>Acompanhante</h2>
+                <label class="label">Acompanhado por</label>
+                <select class="input" id="acompanhado_por">
+                    <option value="nenhum">Sem acompanhante</option>
+                    <option value="resp1">Responsável 1</option>
+                    <option value="resp2">Responsável 2</option>
+                    <option value="terceiro">Parente/Terceiro</option>
+                </select>
+
+                <div id="terceiroBox" style="display:none">
+                    <label class="label">Nome do acompanhante</label>
+                    <input class="input" id="acomp_nome" placeholder="Ex.: Tia Carla" />
+                    <label class="label">Documento do acompanhante</label>
+                    <input class="input" id="acomp_doc" placeholder="Ex.: RG 99.888.777-6" />
+                    <label class="label">Parentesco</label>
+                    <input class="input" id="acomp_parentesco" placeholder="Ex.: Tia / Avó / Madrinha" />
+                </div>
 
                 <h2>Responsável(veis) que autorizam</h2>
                 <label class="label">Responsável 1 — Nome completo</label>
@@ -82,17 +93,41 @@
                 <input class="input" id="resp1_cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
                 <div id="err_resp1_cpf" class="small" style="display:none;color:#fca5a5">CPF do Responsável 1 inválido.
                 </div>
+                <label class="label">Responsável 1 — Documento (RG/Passaporte) [opcional]</label>
+                <input class="input" id="resp1_doc" placeholder="Ex.: RG 11.222.333-4" />
+                <label class="label">Parentesco</label>
+                <select class="input" id="resp1_parentesco">
+                    <option>Mãe</option>
+                    <option>Pai</option>
+                    <option>Responsável legal</option>
+                    <option>Tutor(a)</option>
+                </select>
 
-                <label class="label">Responsável 2 — Nome completo (opcional)</label>
-                <input class="input" id="resp2_nome" placeholder="Ex.: Carlos Souza" />
-                <label class="label">Responsável 2 — CPF (opcional)</label>
-                <input class="input" id="resp2_cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
-                <div id="err_resp2_cpf" class="small" style="display:none;color:#fca5a5">CPF do Responsável 2 inválido.
+                <div style="margin-top:12px"><label class="small"><input type="checkbox" id="dois_resps" /> Dois
+                        responsáveis assinam</label></div>
+                <div id="resp2Box" style="display:none">
+                    <h3>Responsável 2</h3>
+                    <label class="label">Nome completo</label>
+                    <input class="input" id="resp2_nome" placeholder="Ex.: João Souza" />
+                    <label class="label">CPF</label>
+                    <input class="input" id="resp2_cpf" placeholder="000.000.000-00" inputmode="numeric"
+                        maxlength="14" />
+                    <div id="err_resp2_cpf" class="small" style="display:none;color:#fca5a5">CPF do Responsável 2
+                        inválido.</div>
+                    <label class="label">Documento (RG/Passaporte) [opcional]</label>
+                    <input class="input" id="resp2_doc" placeholder="Ex.: RG 55.666.777-8" />
+                    <label class="label">Parentesco</label>
+                    <select class="input" id="resp2_parentesco">
+                        <option>Pai</option>
+                        <option>Mãe</option>
+                        <option>Responsável legal</option>
+                        <option>Tutor(a)</option>
+                    </select>
                 </div>
 
-                <h2>Outras informações</h2>
+                <h2>Local e contatos</h2>
                 <label class="label">Cidade/UF de emissão</label>
-                <input class="input" id="cidade" placeholder="Ex.: Blumenau/SC" />
+                <input class="input" id="cidade_uf_emissao" placeholder="Ex.: Blumenau/SC" />
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
                     <div>
                         <label class="label">E-mail (opcional)</label>
@@ -100,7 +135,7 @@
                     </div>
                     <div>
                         <label class="label">Telefone (opcional)</label>
-                        <input class="input" id="telefone" placeholder="Ex.: (47) 9 9999-9999" />
+                        <input class="input" id="telefone" placeholder="Ex.: (47) 99999-9999" />
                     </div>
                 </div>
                 <label class="label">Observações (opcional)</label>
@@ -129,45 +164,57 @@
         function isValidDateBR(s) { if (!/^\d{2}\/\d{2}\/\d{4}$/.test(s || '')) return false; var d = parseInt(s.substr(0, 2), 10), m = parseInt(s.substr(3, 2), 10), y = parseInt(s.substr(6, 4), 10); if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return false; var md = [31, (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0 ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; if (d > md[m - 1]) return false; return true; }
         function dateToISO(s) { var d = s.substr(0, 2), m = s.substr(3, 2), y = s.substr(6, 4); return y + '-' + m + '-' + d; }
 
-        var ids = ['menor_nome', 'menor_nasc', 'menor_doc', 'viagem_tipo', 'destino', 'data_ida', 'data_volta', 'acomp_nome', 'acomp_doc', 'acomp_parentesco', 'resp1_nome', 'resp1_cpf', 'resp2_nome', 'resp2_cpf', 'cidade', 'email', 'telefone', 'observacoes'];
-        var SAVE_KEY = 'viagem_form_v1';
+        var ids = ['menor_nome', 'menor_nascimento', 'menor_doc', 'viagem_tipo', 'destino', 'data_ida', 'data_volta', 'acompanhado_por', 'acomp_nome', 'acomp_doc', 'acomp_parentesco', 'resp1_nome', 'resp1_cpf', 'resp1_doc', 'resp1_parentesco', 'dois_resps', 'resp2_nome', 'resp2_cpf', 'resp2_doc', 'resp2_parentesco', 'cidade_uf_emissao', 'email', 'telefone', 'observacoes'];
+        var SAVE_KEY = 'viagem_form_v2';
 
-        function saveForm() { var o = {}; for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (el) { o[ids[i]] = el.value; } } localStorage.setItem(SAVE_KEY, JSON.stringify(o)); }
-        function loadForm() { try { var o = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); for (var k in o) { if (document.getElementById(k)) document.getElementById(k).value = o[k]; } } catch (e) { } }
+        function saveForm() { var o = {}; for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (!el) continue; if (el.type === 'checkbox') o[ids[i]] = el.checked; else o[ids[i]] = el.value; } localStorage.setItem(SAVE_KEY, JSON.stringify(o)); }
+        function loadForm() { try { var o = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); for (var k in o) { var el = document.getElementById(k); if (!el) continue; if (el.type === 'checkbox') { el.checked = !!o[k]; el.dispatchEvent(new Event('change')); } else { el.value = o[k]; } } } catch (e) { } }
+        function attachAutosave() { for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (!el) continue; el.addEventListener('input', saveForm); el.addEventListener('change', saveForm); } }
 
-        function attachAutosave() { for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (el) { el.addEventListener('input', saveForm); el.addEventListener('change', saveForm); } } }
+        var resp1_cpf = document.getElementById('resp1_cpf');
+        var resp2_cpf = document.getElementById('resp2_cpf');
+        if (resp1_cpf) { resp1_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
+        if (resp2_cpf) { resp2_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
 
-        function applyMasks() {
-            var fn = ['menor_nasc', 'data_ida', 'data_volta'];
-            for (var i = 0; i < fn.length; i++) { var el = document.getElementById(fn[i]); if (el) { el.addEventListener('input', function (e) { e.target.value = maskDate(e.target.value); }); } }
-            var c1 = document.getElementById('resp1_cpf'), c2 = document.getElementById('resp2_cpf');
-            if (c1) { c1.addEventListener('input', function () { c1.value = maskCPF(c1.value); }); }
-            if (c2) { c2.addEventListener('input', function () { c2.value = maskCPF(c2.value); }); }
-        }
+        var dIds = ['menor_nascimento', 'data_ida', 'data_volta'];
+        for (var i = 0; i < dIds.length; i++) { var e = document.getElementById(dIds[i]); if (e) { e.addEventListener('input', function (ev) { ev.target.value = maskDate(ev.target.value); }); } }
+
+        var acompSel = document.getElementById('acompanhado_por');
+        var terceiroBox = document.getElementById('terceiroBox');
+        acompSel.addEventListener('change', function () { terceiroBox.style.display = (this.value === 'terceiro') ? 'block' : 'none'; });
+
+        var dois = document.getElementById('dois_resps');
+        var resp2Box = document.getElementById('resp2Box');
+        dois.addEventListener('change', function () { resp2Box.style.display = this.checked ? 'block' : 'none'; });
 
         function getPayload() {
-            var c1 = document.getElementById('resp1_cpf'); var c2 = document.getElementById('resp2_cpf');
-            if (c1) c1.value = maskCPF(c1.value);
-            if (c2) c2.value = maskCPF(c2.value);
+            if (resp1_cpf) resp1_cpf.value = maskCPF(resp1_cpf.value);
+            if (resp2_cpf) resp2_cpf.value = maskCPF(resp2_cpf.value);
             return {
                 slug: 'autorizacao-viagem-menor',
                 tipo: 'autorizacao_viagem',
                 entidade: 'Viagem',
                 menor_nome: document.getElementById('menor_nome').value.trim(),
-                menor_nasc: document.getElementById('menor_nasc').value.trim(),
+                menor_nascimento: document.getElementById('menor_nascimento').value.trim(),
                 menor_doc: document.getElementById('menor_doc').value.trim(),
                 viagem_tipo: document.getElementById('viagem_tipo').value,
                 destino: document.getElementById('destino').value.trim(),
                 data_ida: document.getElementById('data_ida').value.trim(),
                 data_volta: document.getElementById('data_volta').value.trim(),
+                acompanhado_por: document.getElementById('acompanhado_por').value,
                 acomp_nome: document.getElementById('acomp_nome').value.trim(),
                 acomp_doc: document.getElementById('acomp_doc').value.trim(),
                 acomp_parentesco: document.getElementById('acomp_parentesco').value.trim(),
                 resp1_nome: document.getElementById('resp1_nome').value.trim(),
                 resp1_cpf: document.getElementById('resp1_cpf').value.trim(),
+                resp1_doc: document.getElementById('resp1_doc').value.trim(),
+                resp1_parentesco: document.getElementById('resp1_parentesco').value,
+                dois_resps: document.getElementById('dois_resps').checked,
                 resp2_nome: document.getElementById('resp2_nome').value.trim(),
                 resp2_cpf: document.getElementById('resp2_cpf').value.trim(),
-                cidade_uf: document.getElementById('cidade').value.trim(),
+                resp2_doc: document.getElementById('resp2_doc').value.trim(),
+                resp2_parentesco: document.getElementById('resp2_parentesco').value,
+                cidade_uf_emissao: document.getElementById('cidade_uf_emissao').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 telefone: document.getElementById('telefone').value.trim(),
                 observacoes: document.getElementById('observacoes').value.trim()
@@ -177,15 +224,15 @@
         function validateAll(p) {
             var ok = true;
             function show(id, show) { var el = document.getElementById(id); if (el) el.style.display = show ? 'block' : 'none'; }
-            if (!isValidDateBR(p.menor_nasc)) { show('err_menor_nasc', true); ok = false; } else show('err_menor_nasc', false);
+            if (!/^\d{2}\/\d{2}\/\d{4}$/.test(p.menor_nascimento) || !isValidDateBR(p.menor_nascimento)) { show('err_menor_nascimento', true); ok = false; } else show('err_menor_nascimento', false);
             if (!isValidDateBR(p.data_ida)) { show('err_data_ida', true); ok = false; } else show('err_data_ida', false);
             if (!isValidDateBR(p.data_volta)) { show('err_data_volta', true); ok = false; } else {
                 var di = new Date(dateToISO(p.data_ida)); var dv = new Date(dateToISO(p.data_volta));
                 if (isNaN(di.getTime()) || isNaN(dv.getTime()) || dv.getTime() < di.getTime()) { show('err_data_volta', true); ok = false; } else show('err_data_volta', false);
             }
             if (!isValidCPF(p.resp1_cpf)) { show('err_resp1_cpf', true); ok = false; } else show('err_resp1_cpf', false);
-            if (p.resp2_cpf && !isValidCPF(p.resp2_cpf)) { show('err_resp2_cpf', true); ok = false; } else show('err_resp2_cpf', false);
-            if (!p.menor_nome || !p.resp1_nome || !p.destino || !p.cidade_uf) ok = false;
+            if (p.dois_resps && p.resp2_cpf && !isValidCPF(p.resp2_cpf)) { show('err_resp2_cpf', true); ok = false; } else show('err_resp2_cpf', false);
+            if (!p.menor_nome || !p.resp1_nome || !p.destino || !p.cidade_uf_emissao) ok = false;
             return ok;
         }
 
@@ -196,15 +243,15 @@
 
         loadForm();
         attachAutosave();
-        applyMasks();
 
         (function () {
             var p = new URL(location.href).searchParams.get('pref');
             if (!p) return;
             var tipo = document.getElementById('viagem_tipo');
-            if (!tipo) return;
             if (p === 'nat1' || p === 'nat2' || p === 'terc_nac') tipo.value = 'nacional';
             if (p === 'int1' || p === 'int2' || p === 'terc_int') tipo.value = 'internacional';
+            if (p === 'int2' || p === 'nat2') { var chk = document.getElementById('dois_resps'); chk.checked = true; chk.dispatchEvent(new Event('change')); }
+            if (p === 'terc_nac' || p === 'terc_int') { document.getElementById('acompanhado_por').value = 'terceiro'; terceiroBox.style.display = 'block'; }
         })();
 
         btnPreview.addEventListener('click', function () {
@@ -213,6 +260,7 @@
                 try {
                     var payload = getPayload();
                     if (!validateAll(payload)) { alert('Verifique os campos destacados.'); btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; return; }
+                    saveForm();
 
                     var r = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -227,21 +275,16 @@
                     var parcialText = pars.slice(0, keep).join('\n\n') + '\n\n[...]';
                     var saud = out.saudacao || '';
                     var checklist = out.check_list_anexos || [];
-                    var chkShow = checklist.slice(0, 2);
-                    if (checklist.length > 2) chkShow.push('...');
+                    var chkShow = checklist.slice(0, 2); if (checklist.length > 2) chkShow.push('...');
 
                     var finalPreview = (saud ? saud + '\n\n' : '') + parcialText + '\n\nChecklist de anexos (parcial): ' + chkShow.join('; ');
                     previewBox.textContent = finalPreview;
                     previewWrap.style.display = 'block';
 
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
-                    saveForm();
                     btnPagar.disabled = false;
-                } catch (e) {
-                    alert('Erro ao gerar prévia.');
-                } finally {
-                    btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
-                }
+                } catch (e) { alert('Erro ao gerar prévia.'); }
+                finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
             })();
         });
 
@@ -250,8 +293,8 @@
                 try {
                     var payload = getPayload();
                     if (!validateAll(payload)) { alert('Verifique os campos obrigatórios.'); return; }
-                    localStorage.setItem('pendingPayload', JSON.stringify(payload));
                     saveForm();
+                    localStorage.setItem('pendingPayload', JSON.stringify(payload));
                     btnPagar.disabled = true; btnPagar.textContent = 'Redirecionando...';
 
                     var r = await fetch('/.netlify/functions/mp-checkout', {
