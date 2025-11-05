@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Carta – Bagagem Extraviada/Danificada</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'AW-1021062139');
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="/" class="small" style="text-decoration:none;color:#93c5fd">← Voltar</a>
+      <span class="badge">Bagagem</span>
+    </div>
+
+    <div class="card">
+      <h1>Carta – Bagagem Extraviada/Danificada</h1>
+      <p class="small">Preencha os dados do voo e do ocorrido. Gere a carta em .DOC com checklist para envio à companhia
+        aérea.</p>
+
+      <div id="formArea">
+        <h2>Passageiro</h2>
+        <label class="label">Nome completo</label>
+        <input class="input" id="nome" placeholder="Ex.: Diego Rosa" />
+        <label class="label">CPF</label>
+        <input class="input" id="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
+        <label class="label">E-mail</label>
+        <input class="input" id="email" placeholder="seu@email.com" />
+        <label class="label">Telefone</label>
+        <input class="input" id="telefone" placeholder="(00) 00000-0000" />
+
+        <h2>Voo</h2>
+        <label class="label">Companhia aérea</label>
+        <input class="input" id="cia" placeholder="Ex.: LATAM, GOL, Azul" />
+        <label class="label">Nº do voo</label>
+        <input class="input" id="voo" placeholder="Ex.: LA1234" />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label class="label">Data do voo</label>
+            <input class="input" id="data_voo" placeholder="Ex.: 04/11/2025" />
+          </div>
+          <div>
+            <label class="label">Protocolo/PIR</label>
+            <input class="input" id="pir" placeholder="Ex.: PIR-ABC123" />
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label class="label">Origem</label>
+            <input class="input" id="origem" placeholder="Ex.: GRU" />
+          </div>
+          <div>
+            <label class="label">Destino</label>
+            <input class="input" id="destino" placeholder="Ex.: REC" />
+          </div>
+        </div>
+
+        <h2>Ocorrência</h2>
+        <label class="label">Tipo</label>
+        <select class="input" id="status">
+          <option value="extraviada">Extraviada</option>
+          <option value="danificada">Danificada</option>
+        </select>
+        <label class="label">Descrição dos itens/avarias</label>
+        <textarea class="input" id="descricao" rows="3"
+          placeholder="Ex.: Mala preta 23kg; roupas e itens pessoais; alça quebrada..."></textarea>
+        <label class="label">Despesas emergenciais (se houver)</label>
+        <textarea class="input" id="despesas" rows="3"
+          placeholder="Ex.: R$ 180,00 em itens de higiene e roupas. Notas anexas."></textarea>
+
+        <h2>Local</h2>
+        <label class="label">Cidade/UF</label>
+        <input class="input" id="cidade_uf" placeholder="Ex.: Blumenau/SC" />
+
+        <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" id="btnPreview">Gerar prévia</button>
+          <button class="btn btn-outline" id="btnPagar" disabled>Gerar documento completo (R$ 6,90)</button>
+        </div>
+      </div>
+
+      <div id="previewWrap" style="display:none; margin-top:16px">
+        <h2>Prévia do documento</h2>
+        <div class="preview" id="previewBox"></div>
+        <p class="small" style="margin-top:8px">As últimas linhas foram ocultadas. Na versão completa você poderá
+          copiar, baixar .DOC e enviar no WhatsApp.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; }
+    function isValidCPF(cpf) { var s = (cpf || '').replace(/\D/g, ''); if (s.length !== 11) return false; if (/^(\d)\1{10}$/.test(s)) return false; var i, sum = 0, rest; for (i = 1; i <= 9; i++) sum += parseInt(s.substring(i - 1, i)) * (11 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(9, 10))) return false; sum = 0; for (i = 1; i <= 10; i++) sum += parseInt(s.substring(i - 1, i)) * (12 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(10, 11))) return false; return true; }
+
+    var cpfEl = document.getElementById('cpf');
+    cpfEl.addEventListener('input', function () { cpfEl.value = maskCPF(cpfEl.value); });
+
+    function getPayload() {
+      cpfEl.value = maskCPF(cpfEl.value);
+      return {
+        tipo: 'bagagem',
+        slug: 'carta-bagagem',
+        nome: document.getElementById('nome').value.trim(),
+        cpf: document.getElementById('cpf').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        telefone: document.getElementById('telefone').value.trim(),
+        cia: document.getElementById('cia').value.trim(),
+        voo: document.getElementById('voo').value.trim(),
+        data_voo: document.getElementById('data_voo').value.trim(),
+        pir: document.getElementById('pir').value.trim(),
+        origem: document.getElementById('origem').value.trim(),
+        destino: document.getElementById('destino').value.trim(),
+        status: document.getElementById('status').value,
+        descricao: document.getElementById('descricao').value.trim(),
+        despesas: document.getElementById('despesas').value.trim(),
+        cidade_uf: document.getElementById('cidade_uf').value.trim()
+      };
+    }
+
+    var btnPreview = document.getElementById('btnPreview');
+    var btnPagar = document.getElementById('btnPagar');
+    var previewWrap = document.getElementById('previewWrap');
+    var previewBox = document.getElementById('previewBox');
+
+    btnPreview.addEventListener('click', async function () {
+      btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+      try {
+        var p = getPayload();
+        if (!p.nome || !p.cpf || !isValidCPF(p.cpf) || !p.cia || !p.voo || !p.data_voo || !p.origem || !p.destino || !p.status || !p.cidade_uf) {
+          alert('Preencha: nome, CPF válido, companhia, nº do voo, data, origem, destino, tipo e cidade/UF.'); btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; return;
+        }
+        var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: p, preview: true }) });
+        if (!r.ok) throw new Error();
+        var d = await r.json(); var out = d.output || d;
+        var pr = out.corpo_paragrafos || []; var keep = Math.max(1, Math.ceil(pr.length * 0.6));
+        var parcial = pr.slice(0, keep).join('\n\n') + '\n\n[...]';
+        var saud = out.saudacao || ''; var fech = out.fechamento || '';
+        previewBox.textContent = (saud ? saud + '\n\n' : '') + parcial + (fech ? '\n\n' + fech : '') + '\n\nChecklist de anexos: ' + (out.check_list_anexos || []).join('; ');
+        previewWrap.style.display = 'block';
+        localStorage.setItem('pendingPayload', JSON.stringify(p));
+        btnPagar.disabled = false;
+      } catch (e) { alert('Erro ao gerar prévia.'); }
+      finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
+    });
+
+    btnPagar.addEventListener('click', async function () {
+      try {
+        var p = getPayload();
+        if (!p.nome || !p.cpf || !isValidCPF(p.cpf) || !p.cia || !p.voo || !p.data_voo || !p.origem || !p.destino || !p.status || !p.cidade_uf) { alert('Preencha os campos obrigatórios.'); return; }
+        localStorage.setItem('pendingPayload', JSON.stringify(p));
+        btnPagar.disabled = true; btnPagar.textContent = 'Redirecionando...';
+        var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: 'carta-bagagem', price: 6.9 }) });
+        var data = await r.json(); if (!r.ok || !data.init_point) throw new Error();
+        location.href = data.init_point;
+      } catch (e) { alert('Não foi possível abrir o pagamento.'); btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)'; }
+    });
+
+    (function () {
+      var p = new URL(location.href).searchParams.get('pref');
+      if (p === 'extraviada') document.getElementById('status').value = 'extraviada';
+      if (p === 'danificada') document.getElementById('status').value = 'danificada';
+    })();
+  </script>
+</body>
+
+</html>
