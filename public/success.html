@@ -7,34 +7,31 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="/style.css" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
-    <script src="/gtag.js"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'AW-1021062139');
+    </script>
 </head>
 
 <body>
     <div class="container">
         <div class="card">
             <h1>Seu documento</h1>
-
             <p id="info" class="small"></p>
 
             <div id="retry" style="display:none; margin:10px 0; gap:8px; flex-wrap:wrap">
-                <button class="btn" id="btnBack">Voltar ao documento</button>
+                <button class="btn" id="btnBack">Voltar ao formulário</button>
                 <button class="btn btn-outline" id="btnPay">Pagar agora</button>
-            </div>
-
-            <div id="options" style="display:none; gap:12px; margin:10px 0; align-items:center">
-                <label class="small"><input type="checkbox" id="includeChecklist" checked> Incluir checklist no
-                    documento</label>
-                <label class="small"><input type="checkbox" id="includeSignature" checked> Incluir local, data e
-                    assinatura</label>
             </div>
 
             <div id="doc" class="preview" style="display:none"></div>
 
             <div id="actions" style="display:none; display:flex; gap:8px; margin-top:12px; flex-wrap:wrap">
-                <button class="btn" id="btnCopiar">Copiar (respeita as opções)</button>
+                <button class="btn" id="btnCopiar">Copiar</button>
                 <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
-                <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp (sem checklist)</button>
+                <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
             </div>
 
             <p class="small" style="margin-top:8px">Dica: envie por e-mail para a empresa e leve impresso se necessário.
@@ -44,177 +41,99 @@
 
     <script>
         function qs(name) { var u = new URL(location.href); return u.searchParams.get(name); }
-
         var orderId = qs('o');
         var slug = qs('slug');
         var s = qs('s');
-        var paymentId = qs('payment_id');
-        var collectionStatus = qs('collection_status');
-
         var info = document.getElementById('info');
         var retry = document.getElementById('retry');
         var btnBack = document.getElementById('btnBack');
         var btnPay = document.getElementById('btnPay');
-
-        var options = document.getElementById('options');
-        var includeChecklistEl = document.getElementById('includeChecklist');
-        var includeSignatureEl = document.getElementById('includeSignature');
-
         var docBox = document.getElementById('doc');
         var actions = document.getElementById('actions');
         var btnCopiar = document.getElementById('btnCopiar');
         var btnDoc = document.getElementById('btnDoc');
         var btnZap = document.getElementById('btnZap');
 
-        var OUT = null;
-        var PAYLOAD = null;
-
-        var CONVERSION_SEND_TO = 'AW-1021062139/eWBbCPil_7kbEPvX8OYD';
-        var CONVERSION_VALUE = 6.9;
-
-        function fireConversionOnce() {
-            if (!orderId) return;
-            var key = 'conv_' + orderId;
-            if (localStorage.getItem(key)) return;
-            gtag('event', 'conversion', {
-                send_to: CONVERSION_SEND_TO,
-                value: CONVERSION_VALUE,
-                currency: 'BRL',
-                transaction_id: orderId
-            });
-            localStorage.setItem(key, '1');
-        }
-
-        function hideRetry() {
-            retry.style.display = 'none';
-            btnPay.disabled = true;
-            btnPay.style.display = 'none';
-        }
-
-        function buildText(opts) {
-            if (!OUT || !PAYLOAD) return '';
-            var partes = [];
-            if (OUT.saudacao) partes.push(OUT.saudacao);
-            var body = OUT.corpo_paragrafos || [];
-            for (var i = 0; i < body.length; i++) partes.push(body[i]);
-            if (OUT.fechamento) partes.push(OUT.fechamento);
-            if (opts && opts.signature) {
-                var hoje = new Date().toLocaleDateString('pt-BR');
-                var linhaLocal = (PAYLOAD.cidade_uf || '') + ', ' + hoje;
-                if (linhaLocal.trim().length) partes.push(linhaLocal);
-                if (PAYLOAD.nome) partes.push(PAYLOAD.nome);
-            }
-            if (opts && opts.checklist) {
-                var ck = (OUT.check_list_anexos || []).join('; ');
-                if (ck) partes.push('Checklist de anexos: ' + ck);
-            }
-            return partes.join('\n\n');
-        }
-
-        async function gerarFinal() {
-            var payloadStr = localStorage.getItem('pendingPayload');
-            if (!payloadStr) {
-                info.textContent = 'Não encontramos seus dados. Clique em Voltar ao documento e gere novamente.';
-                retry.style.display = 'flex';
-                return;
-            }
-            PAYLOAD = JSON.parse(payloadStr);
-            var r = await fetch('/.netlify/functions/generate-doc', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ payload: PAYLOAD, preview: false })
-            });
-            var data = await r.json();
-            OUT = data.output || data;
-
-            hideRetry();
-
-            options.style.display = 'flex';
-            docBox.style.display = 'block';
-            actions.style.display = 'flex';
-
-            function renderDoc() {
-                docBox.textContent = buildText({ checklist: includeChecklistEl.checked, signature: includeSignatureEl.checked });
-            }
-            includeChecklistEl.onchange = renderDoc;
-            includeSignatureEl.onchange = renderDoc;
-            renderDoc();
-
-            btnCopiar.onclick = async function () {
-                var txt = buildText({ checklist: includeChecklistEl.checked, signature: includeSignatureEl.checked });
-                try { await navigator.clipboard.writeText(txt); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar (respeita as opções)'; }, 1200); } catch (e) { }
-            };
-            btnDoc.onclick = function () {
-                var partes = buildText({ checklist: includeChecklistEl.checked, signature: includeSignatureEl.checked }).split('\n\n');
-                var html = '<html><head><meta charset="utf-8"></head><body>' + partes.map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join('') + '</body></html>';
-                var blob = new Blob([html], { type: 'application/msword' });
-                var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click(); URL.revokeObjectURL(a.href);
-            };
-            btnZap.onclick = function () {
-                var txt = buildText({ checklist: false, signature: false });
-                var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(txt);
-                window.open(url, '_blank');
-            };
-        }
-
-        async function getOrderStatus() {
-            if (!orderId) return null;
-            var r = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
-            if (!r.ok) return null;
-            return r.json();
-        }
+        function getOrderStatus() { return fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)).then(r => r.ok ? r.json() : null); }
 
         btnBack.onclick = function () {
-            if (slug) window.location.href = '/doc.html?slug=' + encodeURIComponent(slug);
-            else window.location.href = '/';
+            if (slug && slug.indexOf('autorizacao-viagem') > -1) location.href = '/viagem.html';
+            else if (slug && slug.indexOf('carta-bagagem') > -1) location.href = '/bagagem.html';
+            else location.href = '/';
         };
         btnPay.onclick = async function () {
             var payloadStr = localStorage.getItem('pendingPayload');
-            if (!payloadStr) {
-                if (slug) window.location.href = '/doc.html?slug=' + encodeURIComponent(slug);
-                else window.location.href = '/';
-                return;
-            }
+            if (!payloadStr) { btnBack.onclick(); return; }
             try {
                 var p = JSON.parse(payloadStr);
                 var r = await fetch('/.netlify/functions/mp-checkout', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ slug: p.slug || slug, price: 6.9 })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug: p.slug || slug || 'documento', price: 6.9 })
                 });
-                var data = await r.json();
-                if (r.ok && data.init_point) window.location.href = data.init_point;
+                var data = await r.json(); if (r.ok && data.init_point) location.href = data.init_point;
             } catch (e) { }
         };
 
-        async function flow() {
-            if (s === 'failure' || (paymentId === 'null' && collectionStatus === 'null')) {
-                info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.';
-                retry.style.display = 'flex';
-                return;
-            }
-            info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
-            if (!orderId) {
-                info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar ao documento.';
-                retry.style.display = 'flex';
-                return;
-            }
-            var start = Date.now();
-            while (Date.now() - start < 60000) {
-                var st = await getOrderStatus().catch(function () { return null; });
-                if (st && st.status === 'paid') {
-                    info.textContent = 'Pagamento confirmado. Gerando seu documento...';
-                    await gerarFinal();
-                    fireConversionOnce();
-                    info.textContent = '';
-                    return;
-                }
-                await new Promise(function (r) { setTimeout(r, 2000); });
-            }
-            info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; se preferir, tente pagar novamente.';
-            retry.style.display = 'flex';
+        function renderDocText(out, payload) {
+            var partes = [];
+            if (out.saudacao) partes.push(out.saudacao);
+            var body = out.corpo_paragrafos || [];
+            for (var i = 0; i < body.length; i++) partes.push(body[i]);
+            if (out.fechamento) partes.push(out.fechamento);
+            return partes.join('\n\n');
         }
 
+        function attachActions(fullText) {
+            btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(() => btnCopiar.textContent = 'Copiar', 1200); } catch (e) { } };
+            btnDoc.onclick = function () {
+                var html = '<html><head><meta charset="utf-8"></head><body>' + fullText.split('\n\n').map(p => '<p>' + p.replace(/\n/g, '<br/>') + '</p>').join('') + '</body></html>';
+                var blob = new Blob([html], { type: 'application/msword' });
+                var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click(); URL.revokeObjectURL(a.href);
+            };
+            btnZap.onclick = function () { var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText); window.open(url, '_blank'); };
+        }
+
+        async function gerarFinalIdempotente() {
+            var payloadStr = localStorage.getItem('pendingPayload');
+            if (!payloadStr) { info.textContent = 'Não encontramos seus dados. Volte e gere novamente.'; retry.style.display = 'flex'; return; }
+            var payload = JSON.parse(payloadStr);
+
+            // inclui order_id no payload para a função retornar cache se houver
+            payload.order_id = orderId || null;
+
+            var r = await fetch('/.netlify/functions/generate-doc', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ payload: payload, preview: false })
+            });
+            var data = await r.json();
+            var out = data.output || data;
+
+            var fullText = renderDocText(out, payload);
+            docBox.textContent = fullText;
+            docBox.style.display = 'block';
+            actions.style.display = 'flex';
+            info.textContent = '';
+            attachActions(fullText);
+        }
+
+        async function flow() {
+            if (s === 'failure') { info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.'; retry.style.display = 'flex'; return; }
+            info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
+            if (!orderId) { info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.'; retry.style.display = 'flex'; return; }
+
+            var start = Date.now();
+            while (Date.now() - start < 60000) {
+                var st = await getOrderStatus().catch(() => null);
+                if (st && st.status === 'paid') {
+                    info.textContent = 'Pagamento confirmado. Gerando seu documento...';
+                    await gerarFinalIdempotente();
+                    return;
+                }
+                await new Promise(r => setTimeout(r, 2000));
+            }
+            info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.';
+            retry.style.display = 'flex';
+        }
         flow();
     </script>
 </body>
