@@ -6,6 +6,29 @@
     <title>Documento pronto</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="/style.css" />
+    <style>
+        html[data-theme="light"] body {
+            background: #ffffff;
+            color: #0f172a
+        }
+
+        html[data-theme="light"] .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb
+        }
+
+        html[data-theme="light"] .preview {
+            background: #ffffff;
+            color: #0f172a
+        }
+
+        html[data-theme="light"] .input,
+        html[data-theme="light"] textarea {
+            background: #ffffff;
+            color: #0f172a;
+            border: 1px solid #e5e7eb
+        }
+    </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -80,27 +103,30 @@
             if (out.fechamento) partes.push(out.fechamento);
             return partes.join('\n\n');
         }
-        function htmlFromText(fullText) {
+        function htmlBodyFromText(fullText) {
             return fullText.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>' }).join('');
         }
         function attachActions(fullText, payload) {
-            var html = htmlFromText(fullText);
-            btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(() => btnCopiar.textContent = 'Copiar', 1200); } catch (e) { } };
+            var bodyHtml = htmlBodyFromText(fullText);
+            btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar'; }, 1200); } catch (e) { } };
             btnDoc.onclick = function () {
-                var blob = new Blob(['\ufeff', '<html><head><meta charset="utf-8"></head><body>', html, '</body></html>'], { type: 'application/msword' });
+                var full = '<html><head><meta charset="utf-8"><style>body{background:#fff;color:#000;font:12pt Times,Georgia,serif;line-height:1.6;margin:24px}p{margin:0 0 12pt 0}</style></head><body>' + bodyHtml + '</body></html>';
+                var blob = new Blob(['\ufeff', full], { type: 'application/msword' });
                 var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click(); URL.revokeObjectURL(a.href);
             };
             btnPdf.onclick = function () {
                 var container = document.createElement('div');
                 container.style.width = '794px';
-                container.innerHTML = html;
+                container.style.background = '#fff';
+                container.style.color = '#000';
+                container.innerHTML = '<div class="pdf-paper" style="background:#fff;color:#000;font:12pt Times,Georgia,serif;line-height:1.6">' + bodyHtml + '</div><style>.pdf-paper *{color:#000 !important;background:transparent !important}p{margin:0 0 12pt 0}</style>';
                 document.body.appendChild(container);
-                var opt = { margin: [10, 12, 10, 12], filename: 'documento.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+                var opt = { margin: [10, 12, 10, 12], filename: 'documento.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
                 html2pdf().from(container).set(opt).save().then(function () { container.remove(); });
             };
             btnZap.onclick = function () { var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText); window.open(url, '_blank'); };
             btnSuporte.href = 'https://wa.me/5547991323024?text=' + encodeURIComponent('Oi! Preciso de ajuda. Pedido: ' + (orderId || '') + ' | Tipo: ' + (payload && payload.tipo || slug || ''));
-            LMRecovery.saveGeneratedDoc({ html: html, payload: payload || null, meta: { type: (payload && payload.tipo) || slug || '', orderId: orderId || '', filename: 'documento' } });
+            LMRecovery.saveGeneratedDoc({ html: bodyHtml, payload: payload || null, meta: { type: (payload && payload.tipo) || slug || '', orderId: orderId || '', filename: 'documento' } });
         }
         async function gerarFinalIdempotente() {
             var payloadStr = localStorage.getItem('pendingPayload');
@@ -126,17 +152,20 @@
             if (!orderId) { info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.'; retry.style.display = 'flex'; return; }
             var start = Date.now();
             while (Date.now() - start < 60000) {
-                var st = await getOrderStatus().catch(() => null);
+                var st = await getOrderStatus().catch(function () { return null; });
                 if (st && st.status === 'paid') {
                     info.textContent = 'Pagamento confirmado. Gerando seu documento...';
                     await gerarFinalIdempotente();
                     return;
                 }
-                await new Promise(r => setTimeout(r, 2000));
+                await new Promise(function (r) { setTimeout(r, 2000); });
             }
             info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.';
             retry.style.display = 'flex';
         }
+        (function () {
+            var el = document.documentElement; var key = 'theme'; function apply(t) { el.setAttribute('data-theme', t); localStorage.setItem(key, t); } var saved = localStorage.getItem(key); apply(saved || 'light');
+        })();
         flow();
     </script>
 </body>

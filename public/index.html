@@ -6,6 +6,34 @@
     <title>Gerador de Cartas</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="/style.css" />
+    <style>
+        html[data-theme="light"] body {
+            background: #ffffff;
+            color: #0f172a
+        }
+
+        html[data-theme="light"] .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb
+        }
+
+        html[data-theme="light"] .preview {
+            background: #ffffff;
+            color: #0f172a
+        }
+
+        html[data-theme="light"] .input,
+        html[data-theme="light"] textarea {
+            background: #ffffff;
+            color: #0f172a;
+            border: 1px solid #e5e7eb
+        }
+
+        html[data-theme="light"] .badge {
+            background: #e2e8f0;
+            color: #334155
+        }
+    </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
     <script src="/gtag.js"></script>
     <meta name="google-site-verification" content="7lHnDvnY-qPZ14zg79sQnZ9Z9EzG0HiPMlaK6mDMy9o" />
@@ -13,9 +41,11 @@
 
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Gerador de Cartas</h1>
-            <span class="badge">MVP</span>
+        <div class="header" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <div>
+                <h1 style="margin:0">Gerador de Cartas</h1><span class="badge" style="margin-left:8px">MVP</span>
+            </div>
+            <button id="themeToggle" class="btn btn-outline">Modo escuro</button>
         </div>
         <div class="card" style="margin-bottom:16px">
             <p>Gere cartas formais (cancelamento, reclamação) e autorizações em minutos. Prévia grátis — compra liberada
@@ -111,6 +141,11 @@
     <script src="/recovery.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () { LMRecovery.offerRecover(); });
+        (function () {
+            var el = document.documentElement; var key = 'theme'; function apply(t) { el.setAttribute('data-theme', t); localStorage.setItem(key, t); var b = document.getElementById('themeToggle'); if (b) b.textContent = t === 'light' ? 'Modo escuro' : 'Modo claro'; }
+            var saved = localStorage.getItem(key); apply(saved || 'light');
+            var btn = document.getElementById('themeToggle'); if (btn) btn.onclick = function () { apply(el.getAttribute('data-theme') === 'light' ? 'dark' : 'light'); };
+        })();
     </script>
 </body>
 
