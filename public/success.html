@@ -13,6 +13,7 @@
         gtag('js', new Date());
         gtag('config', 'AW-1021062139');
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 </head>
 
 <body>
@@ -20,25 +21,23 @@
         <div class="card">
             <h1>Seu documento</h1>
             <p id="info" class="small"></p>
-
             <div id="retry" style="display:none; margin:10px 0; gap:8px; flex-wrap:wrap">
                 <button class="btn" id="btnBack">Voltar ao formulário</button>
                 <button class="btn btn-outline" id="btnPay">Pagar agora</button>
             </div>
-
             <div id="doc" class="preview" style="display:none"></div>
-
             <div id="actions" style="display:none; display:flex; gap:8px; margin-top:12px; flex-wrap:wrap">
                 <button class="btn" id="btnCopiar">Copiar</button>
                 <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
+                <button class="btn btn-outline" id="btnPdf">Baixar .PDF</button>
                 <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
+                <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener">Falar no WhatsApp</a>
             </div>
-
             <p class="small" style="margin-top:8px">Dica: envie por e-mail para a empresa e leve impresso se necessário.
             </p>
         </div>
     </div>
-
+    <script src="/recovery.js"></script>
     <script>
         function qs(name) { var u = new URL(location.href); return u.searchParams.get(name); }
         var orderId = qs('o');
@@ -52,10 +51,10 @@
         var actions = document.getElementById('actions');
         var btnCopiar = document.getElementById('btnCopiar');
         var btnDoc = document.getElementById('btnDoc');
+        var btnPdf = document.getElementById('btnPdf');
         var btnZap = document.getElementById('btnZap');
-
+        var btnSuporte = document.getElementById('btnSuporte');
         function getOrderStatus() { return fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)).then(r => r.ok ? r.json() : null); }
-
         btnBack.onclick = function () {
             if (slug && slug.indexOf('autorizacao-viagem') > -1) location.href = '/viagem.html';
             else if (slug && slug.indexOf('carta-bagagem') > -1) location.href = '/bagagem.html';
@@ -73,7 +72,6 @@
                 var data = await r.json(); if (r.ok && data.init_point) location.href = data.init_point;
             } catch (e) { }
         };
-
         function renderDocText(out, payload) {
             var partes = [];
             if (out.saudacao) partes.push(out.saudacao);
@@ -82,45 +80,50 @@
             if (out.fechamento) partes.push(out.fechamento);
             return partes.join('\n\n');
         }
-
-        function attachActions(fullText) {
+        function htmlFromText(fullText) {
+            return fullText.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>' }).join('');
+        }
+        function attachActions(fullText, payload) {
+            var html = htmlFromText(fullText);
             btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(() => btnCopiar.textContent = 'Copiar', 1200); } catch (e) { } };
             btnDoc.onclick = function () {
-                var html = '<html><head><meta charset="utf-8"></head><body>' + fullText.split('\n\n').map(p => '<p>' + p.replace(/\n/g, '<br/>') + '</p>').join('') + '</body></html>';
-                var blob = new Blob([html], { type: 'application/msword' });
+                var blob = new Blob(['\ufeff', '<html><head><meta charset="utf-8"></head><body>', html, '</body></html>'], { type: 'application/msword' });
                 var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click(); URL.revokeObjectURL(a.href);
             };
+            btnPdf.onclick = function () {
+                var container = document.createElement('div');
+                container.style.width = '794px';
+                container.innerHTML = html;
+                document.body.appendChild(container);
+                var opt = { margin: [10, 12, 10, 12], filename: 'documento.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+                html2pdf().from(container).set(opt).save().then(function () { container.remove(); });
+            };
             btnZap.onclick = function () { var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText); window.open(url, '_blank'); };
+            btnSuporte.href = 'https://wa.me/5547991323024?text=' + encodeURIComponent('Oi! Preciso de ajuda. Pedido: ' + (orderId || '') + ' | Tipo: ' + (payload && payload.tipo || slug || ''));
+            LMRecovery.saveGeneratedDoc({ html: html, payload: payload || null, meta: { type: (payload && payload.tipo) || slug || '', orderId: orderId || '', filename: 'documento' } });
         }
-
         async function gerarFinalIdempotente() {
             var payloadStr = localStorage.getItem('pendingPayload');
             if (!payloadStr) { info.textContent = 'Não encontramos seus dados. Volte e gere novamente.'; retry.style.display = 'flex'; return; }
             var payload = JSON.parse(payloadStr);
-
-            // inclui order_id no payload para a função retornar cache se houver
             payload.order_id = orderId || null;
-
             var r = await fetch('/.netlify/functions/generate-doc', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ payload: payload, preview: false })
             });
             var data = await r.json();
             var out = data.output || data;
-
             var fullText = renderDocText(out, payload);
             docBox.textContent = fullText;
             docBox.style.display = 'block';
             actions.style.display = 'flex';
             info.textContent = '';
-            attachActions(fullText);
+            attachActions(fullText, payload);
         }
-
         async function flow() {
             if (s === 'failure') { info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.'; retry.style.display = 'flex'; return; }
             info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
             if (!orderId) { info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.'; retry.style.display = 'flex'; return; }
-
             var start = Date.now();
             while (Date.now() - start < 60000) {
                 var st = await getOrderStatus().catch(() => null);

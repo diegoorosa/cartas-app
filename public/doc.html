@@ -17,36 +17,31 @@
             <a href="/" class="small" style="text-decoration:none;color:#93c5fd">← Voltar</a>
             <span class="badge">Prévia grátis</span>
         </div>
-
         <div class="card" id="card">
             <h1 id="docTitle">Gerar Carta</h1>
             <p class="small">Preencha os campos e gere a prévia. Não é aconselhamento jurídico.</p>
-
+            <div style="margin-top:8px"><a class="btn btn-outline"
+                    href="https://wa.me/5547991323024?text=Oi!%20Tenho%20uma%20d%C3%BAvida%20sobre%20meu%20documento"
+                    target="_blank" rel="noopener">Falar no WhatsApp</a></div>
             <div id="formArea">
                 <label class="label">Nome completo</label>
                 <input class="input" id="nome" placeholder="Ex.: João da Silva" />
-
                 <label class="label">CPF</label>
                 <input class="input" id="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
                 <div id="cpfError" class="small" style="display:none; color:#fca5a5">CPF inválido. Verifique os dígitos.
                 </div>
-
                 <label class="label">Cidade/UF</label>
                 <input class="input" id="cidade" placeholder="Ex.: São Paulo/SP" />
-
                 <label class="label">Unidade/Contrato (opcional)</label>
                 <input class="input" id="contrato" placeholder="Ex.: Unidade Vila Mariana, Contrato 12345" />
-
                 <label class="label">Motivo ou resumo do caso (opcional)</label>
                 <textarea class="input" id="motivo" rows="3"
                     placeholder="Ex.: cobrança de mensalidade após solicitação de cancelamento em 10/05"></textarea>
-
                 <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
                     <button class="btn" id="btnPreview">Gerar prévia</button>
                     <button class="btn btn-outline" id="btnPagar" disabled>Gerar documento completo (R$ 6,90)</button>
                 </div>
             </div>
-
             <div id="previewWrap" style="display:none; margin-top:16px">
                 <h2>Prévia do documento</h2>
                 <div class="preview" id="previewBox"></div>
@@ -55,8 +50,8 @@
             </div>
         </div>
     </div>
-
     <script src="/slugs.js"></script>
+    <script src="/recovery.js"></script>
     <script>
         function getSlug() {
             var u = new URL(location.href);
@@ -67,7 +62,7 @@
             return '';
         }
         function getParam(name) { var u = new URL(location.href); return u.searchParams.get(name); }
-
+        LMRecovery.offerRecover();
         var slug = getSlug();
         var titleParam = getParam('t');
         var cfg = null;
@@ -76,10 +71,8 @@
                 if (window.SLUGS[i].slug === slug) { cfg = window.SLUGS[i]; break; }
             }
         }
-
         var docTitle = document.getElementById('docTitle');
         var formArea = document.getElementById('formArea');
-
         if (titleParam) {
             document.title = titleParam + ' | Gerador de Cartas';
             docTitle.textContent = titleParam;
@@ -94,19 +87,16 @@
             docTitle.textContent = 'Modelo não encontrado';
             formArea.style.display = 'none';
         }
-
         var btnPreview = document.getElementById('btnPreview');
         var btnPagar = document.getElementById('btnPagar');
         var previewWrap = document.getElementById('previewWrap');
         var previewBox = document.getElementById('previewBox');
-
         var nomeInput = document.getElementById('nome');
         var cpfInput = document.getElementById('cpf');
         var cpfError = document.getElementById('cpfError');
         var cidadeInput = document.getElementById('cidade');
         var contratoInput = document.getElementById('contrato');
         var motivoInput = document.getElementById('motivo');
-
         function maskCPF(v) {
             v = (v || '').replace(/\D/g, '').slice(0, 11);
             v = v.replace(/(\d{3})(\d)/, '$1.$2');
@@ -140,7 +130,6 @@
             cpfInput.setSelectionRange(cpfInput.value.length, cpfInput.value.length);
         });
         cpfInput.addEventListener('blur', assertCPF);
-
         function getPayload() {
             cpfInput.value = maskCPF(cpfInput.value);
             return {
@@ -154,7 +143,6 @@
                 motivo: motivoInput.value.trim()
             };
         }
-
         btnPreview.addEventListener('click', function () {
             btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
             (async function () {
@@ -189,7 +177,6 @@
                 }
             })();
         });
-
         btnPagar.addEventListener('click', function () {
             (async function () {
                 try {
