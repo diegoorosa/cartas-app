@@ -4,9 +4,30 @@
     --card-hover: #15223a;
     --text: #e6eefb;
     --muted: #9fb0c7;
+    --heading: #e9f1ff;
     --accent: #22c55e;
     --border: #203049;
     --ring: #60a5fa33;
+    --field: #0e1628;
+    --badge-bg: #16a34a20;
+    --badge-text: #86efac;
+    --badge-border: #15803d40
+}
+
+html[data-theme="light"] {
+    --bg: #ffffff;
+    --card: #ffffff;
+    --card-hover: #f8fafc;
+    --text: #0f172a;
+    --muted: #475569;
+    --heading: #0f172a;
+    --accent: #22c55e;
+    --border: #e5e7eb;
+    --ring: #60a5fa55;
+    --field: #ffffff;
+    --badge-bg: #e2e8f0;
+    --badge-text: #334155;
+    --badge-border: #cbd5e1
 }
 
 * {
@@ -24,7 +45,7 @@ body {
     background: var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    -moz-osx-font-smoothing: grayscale
 }
 
 a {
@@ -47,13 +68,14 @@ a {
 
 h1 {
     margin: 8px 0 6px;
-    font-size: 32px
+    font-size: 32px;
+    color: var(--heading)
 }
 
 h2 {
     margin: 12px 0 10px;
     font-size: 20px;
-    color: #cbd5e1
+    color: var(--heading)
 }
 
 .card {
@@ -62,13 +84,13 @@ h2 {
     border-radius: 14px;
     border: 1px solid var(--border);
     box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
-    transition: .18s ease;
+    transition: .18s ease
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 18px;
+    gap: 18px
 }
 
 .card-link {
@@ -84,7 +106,7 @@ h2 {
 .card-title {
     margin: 0 0 8px;
     font-size: 18px;
-    color: #e9f1ff
+    color: var(--heading)
 }
 
 .small {
@@ -96,9 +118,9 @@ h2 {
     display: inline-block;
     padding: 4px 10px;
     border-radius: 999px;
-    background: #16a34a20;
-    color: #86efac;
-    border: 1px solid #15803d40;
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    border: 1px solid var(--badge-border);
     font-weight: 700
 }
 
@@ -125,7 +147,7 @@ h2 {
 .btn-outline {
     background: transparent;
     color: var(--text);
-    border: 1px solid #334155
+    border: 1px solid var(--border)
 }
 
 .btn-sm {
@@ -137,8 +159,8 @@ h2 {
 textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #2a3a56;
-    background: #0e1628;
+    border: 1px solid var(--border);
+    background: var(--field);
     color: var(--text);
     border-radius: 10px
 }
@@ -160,8 +182,9 @@ textarea:focus {
 
 .preview {
     padding: 12px;
-    border: 1px dashed #334155;
-    background: #0e1628;
+    border: 1px dashed var(--border);
+    background: var(--field);
+    color: var(--text);
     border-radius: 10px;
     white-space: pre-wrap
 }
@@ -177,9 +200,9 @@ textarea:focus {
     font-size: 11px;
     padding: 4px 8px;
     border-radius: 999px;
-    border: 1px solid #334155;
-    color: #cbd5e1;
-    background: #0e1628
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: var(--field)
 }
 
 .tag--type {
@@ -192,6 +215,18 @@ textarea:focus {
     border-color: #22c55e50;
     color: #bbf7d0;
     background: #0b422280
+}
+
+html[data-theme="light"] .tag--type {
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+    background: #eff6ff
+}
+
+html[data-theme="light"] .tag--brand {
+    border-color: #bbf7d0;
+    color: #166534;
+    background: #ecfdf5
 }
 
 .searchbar {
