@@ -6,6 +6,7 @@
     <title>Gerador de Cartas</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script src="/theme.js"></script>
+    <script src="/utm.js"></script>
     <link rel="stylesheet" href="/style.css" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
     <script src="/gtag.js"></script>
@@ -25,33 +26,40 @@
             <div>
                 <h1 style="margin:0">Gerador de Cartas</h1><span class="badge" style="margin-left:8px">MVP</span>
             </div>
-            <button id="themeToggle" class="btn btn-outline">Modo escuro</button>
+            <button class="btn btn-outline" data-theme-toggle>Modo escuro</button>
         </div>
-        <div class="card" style="margin-bottom:16px">
-            <p>Gere cartas formais (cancelamento, reclamação) e autorizações em minutos. Prévia grátis — compra liberada
-                após o pagamento.</p>
+
+        <div class="card" style="margin-bottom:16px" data-clarity-mask="true">
+            <p>Gere cartas formais e autorizações em minutos. Prévia grátis — compra liberada após o pagamento.</p>
             <p class="small">Atenção: este serviço não é aconselhamento jurídico.</p>
-            <div class="searchbar">
-                <input class="input" id="q"
-                    placeholder="Buscar por termo (ex.: smart fit, vivo, bagagem, viagem, cancelamento)" />
-            </div>
+            <div class="searchbar"><input class="input" id="q"
+                    placeholder="Buscar por termo (ex.: smart fit, vivo, bagagem, viagem, cancelamento)" /></div>
             <div style="margin-top:12px"><a class="btn btn-outline"
-                    href="https://wa.me/5547991323024?text=Oi!%20Tenho%20uma%20d%C3%BAvida%20sobre%20meu%20documento"
+                    href="https://wa.me/5547991323024?text=Oi!%20Tenho%20d%C3%BAvida%20sobre%20meu%20documento"
                     target="_blank" rel="noopener">Falar no WhatsApp</a></div>
         </div>
+
+        <div class="card" style="margin-bottom:16px">
+            <h2 style="margin-top:0">Como funciona</h2>
+            <ol class="small" style="margin:0;padding-left:18px;line-height:1.8">
+                <li>Preencha seus dados e gere a prévia.</li>
+                <li>Finalize o pagamento via Mercado Pago (Pix/Cartão).</li>
+                <li>Receba o documento completo e baixe em DOC ou PDF.</li>
+            </ol>
+        </div>
+
         <div id="section-viagem-card" class="grid" style="margin-bottom:16px">
             <a href="/viagem.html" class="card-link">
                 <div class="card">
                     <h3 class="card-title">Autorização de Viagem para Menor</h3>
-                    <div class="tags">
-                        <span class="tag tag--type">viagem</span>
-                        <span class="tag tag--brand">nacional/internacional</span>
-                    </div>
+                    <div class="tags"><span class="tag tag--type">viagem</span><span
+                            class="tag tag--brand">nacional/internacional</span></div>
                     <div class="small">Documento pronto para imprimir e assinar</div>
                     <div style="margin-top:12px"><button class="btn btn-sm">Gerar agora</button></div>
                 </div>
             </a>
         </div>
+
         <h2 id="h2-guias-viagem">Guias de viagem</h2>
         <div id="section-guias-viagem" class="grid" style="margin-bottom:16px">
             <a href="/menor-nacional-um-responsavel.html" class="card-link">
@@ -90,6 +98,7 @@
                 </div>
             </a>
         </div>
+
         <h2 id="h2-bagagem">Problemas com bagagem</h2>
         <div id="section-bagagem" class="grid" style="margin-bottom:16px">
             <a href="/bagagem-extraviada.html" class="card-link">
@@ -107,26 +116,24 @@
                 </div>
             </a>
         </div>
+
         <h2 id="h2-populares">Modelos populares</h2>
         <div class="grid" id="grid"></div>
         <div id="searchResults" style="display:none; margin-top:16px">
             <h2>Resultados</h2>
             <div class="grid" id="searchGrid"></div>
-            <p id="noResults" class="small" style="display:none">Nenhum resultado encontrado. Tente outro termo (ex.:
-                “cancelamento vivo”, “bagagem”, “autorização viagem”).</p>
+            <p id="noResults" class="small" style="display:none">Nenhum resultado encontrado.</p>
+        </div>
+
+        <div class="small" style="margin-top:24px;opacity:.9">
+            Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
+                style="text-decoration:underline">Termos de Uso</a>.
         </div>
     </div>
     <script src="/slugs.js"></script>
     <script src="/home.js"></script>
     <script src="/recovery.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () { LMRecovery.offerRecover(); });
-        (function () {
-            var el = document.documentElement; var key = 'theme'; function apply(t) { el.setAttribute('data-theme', t); localStorage.setItem(key, t); var b = document.getElementById('themeToggle'); if (b) b.textContent = t === 'light' ? 'Modo escuro' : 'Modo claro'; }
-            var saved = localStorage.getItem(key); apply(saved || 'light');
-            var btn = document.getElementById('themeToggle'); if (btn) btn.onclick = function () { apply(el.getAttribute('data-theme') === 'light' ? 'dark' : 'light'); };
-        })();
-    </script>
+    <script>document.addEventListener('DOMContentLoaded', function () { LMRecovery.offerRecover(); });</script>
 </body>
 
 </html>
