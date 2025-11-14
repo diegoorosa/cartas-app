@@ -497,3 +497,251 @@ button:focus-visible {
         white-space: normal
     }
 }
+
+.nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border)
+}
+
+.nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px
+}
+
+.nav-brand {
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--heading)
+}
+
+.nav-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 10px
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex: 1
+}
+
+.nav-links {
+    display: flex;
+    gap: 16px;
+    align-items: center
+}
+
+.nav-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 10px;
+    cursor: pointer
+}
+
+.nav-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center
+}
+
+.nav .searchbar {
+    min-width: 260px
+}
+
+.dropdown {
+    position: relative
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    min-width: 240px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    display: none
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--text)
+}
+
+.dropdown-menu a:hover {
+    background: var(--card-hover)
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block
+}
+
+.dropdown.open .dropdown-menu {
+    display: block
+}
+
+@media(max-width:860px) {
+    .nav-toggle {
+        display: block
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px
+    }
+
+    .nav-menu.open {
+        display: flex
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: stretch
+    }
+
+    .dropdown-menu {
+        position: relative;
+        top: auto;
+        left: auto;
+        box-shadow: none;
+        border-radius: 10px
+    }
+
+    .nav-actions {
+        flex-direction: column;
+        align-items: stretch
+    }
+
+    .nav .searchbar {
+        min-width: 0;
+        width: 100%
+    }
+}
+
+/* Hero mais profissional */
+.hero {
+    padding: 24px 0
+}
+
+.hero-pro {
+    position: relative;
+    overflow: hidden
+}
+
+.hero-pro::before {
+    content: "";
+    position: absolute;
+    inset: -30% -10% auto -10%;
+    height: 320px;
+    background:
+        radial-gradient(600px 240px at 10% 20%, rgba(96, 165, 250, .18), transparent 60%),
+        radial-gradient(500px 220px at 90% 10%, rgba(34, 197, 94, .12), transparent 60%);
+    pointer-events: none
+}
+
+.hero-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 18px
+}
+
+.hero-title {
+    margin: 8px 0 6px;
+    font-size: 32px;
+    color: var(--heading)
+}
+
+.hero-sub {
+    margin: 4px 0 10px;
+    color: var(--muted)
+}
+
+.hero-col .card {
+    height: 100%
+}
+
+/* Cards com “spotlight” e hover */
+.card-spotlight {
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .15), inset 0 1px 0 rgba(255, 255, 255, .03)
+}
+
+.card-hover {
+    transition: transform .16s ease, box-shadow .16s ease
+}
+
+.card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, .25)
+}
+
+/* Badges de confiança */
+.trust {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px
+}
+
+.trust-badge {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card-hover);
+    color: var(--text)
+}
+
+/* Botões mais “produto” /
+.btn{transition:transform .08s ease, filter .15s ease, box-shadow .15s ease}
+.btn:active{transform:scale(.98)}
+.btn-raise{box-shadow:0 6px 16px rgba(34,197,94,.25)}
+.btn-raise:hover{box-shadow:0 10px 22px rgba(34,197,94,.3)}
+/ Empilhamento mobile */
+.cta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px
+}
+
+.cta-row .btn {
+    white-space: nowrap
+}
+
+@media(max-width:860px) {
+    .hero-grid {
+        grid-template-columns: 1fr
+    }
+
+    .cta-row {
+        flex-direction: column
+    }
+
+    .cta-row .btn {
+        width: 100%;
+        white-space: normal
+    }
+}
