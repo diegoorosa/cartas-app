@@ -16,127 +16,278 @@
 </head>
 
 <body>
-    <header class="nav">
-        <div class="container nav-inner"> <a href="/" class="nav-brand">CartasApp</a> <button class="nav-toggle"
-                id="navToggle" aria-label="Menu">☰</button>
-            <nav class="nav-menu" id="navMenu">
-                <div class="nav-links">
-                    <div class="dropdown"> <button class="nav-link" data-dd>Viagem</button>
-                        <div class="dropdown-menu"> <a href="/viagem.html">Gerar autorização</a> <a
-                                href="/menor-nacional-um-responsavel.html">Nacional (1 responsável)</a> <a
-                                href="/menor-nacional-dois-responsaveis.html">Nacional (2 responsáveis)</a> <a
-                                href="/menor-internacional-um-responsavel.html">Internacional (1 responsável)</a> <a
-                                href="/menor-internacional-dois-responsaveis.html">Internacional (2 responsáveis)</a> <a
-                                href="/menor-acompanhado-por-terceiro.html">Acompanhado por terceiro</a> </div>
-                    </div>
-                    <div class="dropdown"> <button class="nav-link" data-dd>Bagagem</button>
-                        <div class="dropdown-menu"> <a href="/bagagem-extraviada.html">Extraviada</a> <a
-                                href="/bagagem-danificada.html">Danificada</a> </div>
-                    </div>
-                    <div class="dropdown"> <button class="nav-link" data-dd>Consumo</button>
-                        <div class="dropdown-menu"> <a href="/#consumo">E-commerce</a> <a
-                                href="/#telefonia">Telefonia/TV</a> <a href="/#bancos">Bancos</a> <a
-                                href="/#servicos">Energia/Água</a> </div>
-                    </div>
-                </div>
-                <div class="nav-actions">
-                    <div class="searchbar" style="margin:0"> <input class="input" id="q"
-                            placeholder="Buscar (ex.: viagem, bagagem, vivo, smart fit)" /> </div> <button
-                        class="btn btn-outline" data-theme-toggle>Modo escuro</button> <a class="btn btn-outline"
-                        href="https://wa.me/5547991323024?text=Oi!%20Tenho%20d%C3%BAvida%20sobre%20um%20documento"
-                        target="_blank" rel="noopener">WhatsApp</a>
-                </div>
-            </nav>
-        </div>
-    </header>
-    <section class="hero hero-pro">
-        <div class="container hero-grid">
-            <div class="hero-col">
-                <h1 class="hero-title">Gere documentos prontos em minutos</h1>
-                <p class="hero-sub">Autorização de viagem para menor, cartas de bagagem e consumo. Prévia grátis. Baixe
-                    em DOC ou PDF.</p>
-                <div class="cta-row"> <a class="btn btn-grad btn-raise" href="/viagem.html">Gerar autorização de
-                        viagem</a> <a class="btn btn-ghost" href="/bagagem-extraviada.html">Carta de bagagem</a> </div>
-                <div class="trust"> <span class="trust-badge">Pagamento Mercado Pago</span> <span
-                        class="trust-badge">Suporte por WhatsApp</span> <span class="trust-badge">Sem aconselhamento
-                        jurídico</span> </div>
-            </div>
-            <div class="hero-col">
-                <div class="card card-spotlight card-illustrated">
-                    <h3 class="card-title">Destaque: Autorização de Viagem para Menor</h3>
-                    <div class="tags"> <span class="tag tag--type">viagem</span> <span
-                            class="tag tag--brand">nacional/internacional</span> </div>
-                    <div class="small">Documento pronto para imprimir e assinar</div>
-                    <div class="cta-row"> <a class="btn btn-grad btn-raise" href="/viagem.html">Gerar agora</a> <a
-                            class="btn btn-outline" href="/menor-nacional-um-responsavel.html">Ver guia</a> </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <main class="container" id="defaultContent">
-        <h2 id="h2-guias-viagem">Guias de viagem</h2>
-        <div id="section-guias-viagem" class="grid" style="margin-bottom:16px"> <a
-                href="/menor-nacional-um-responsavel.html" class="card-link">
-                <div class="card card-hover">
-                    <h3 class="card-title">Menor – Nacional (1 responsável)</h3>
-                    <div class="small">Passo a passo + checklist</div>
-                    <div class="cta-row"><button class="btn btn-sm">Ver guia</button></div>
-                </div>
-            </a> <a href="/menor-nacional-dois-responsaveis.html" class="card-link">
-                <div class="card card-hover">
-                    <h3 class="card-title">Menor – Nacional (2 responsáveis)</h3>
-                    <div class="small">Passo a passo + checklist</div>
-                    <div class="cta-row"><button class="btn btn-sm">Ver guia</button></div>
-                </div>
-            </a> <a href="/menor-internacional-um-responsavel.html" class="card-link">
-                <div class="card card-hover">
-                    <h3 class="card-title">Menor – Internacional (1 resp.)</h3>
-                    <div class="small">Requisitos comuns + checklist</div>
-                    <div class="cta-row"><button class="btn btn-sm">Ver guia</button></div>
-                </div>
-            </a> <a href="/menor-internacional-dois-responsaveis.html" class="card-link">
-                <div class="card card-hover">
-                    <h3 class="card-title">Menor – Internacional (2 resp.)</h3>
-                    <div class="small">Requisitos comuns + checklist</div>
-                    <div class="cta-row"><button class="btn btn-sm">Ver guia</button></div>
-                </div>
-            </a> <a href="/menor-acompanhado-por-terceiro.html" class="card-link">
-                <div class="card card-hover">
-                    <h3 class="card-title">Menor – Acompanhado por terceiro</h3>
-                    <div class="small">Passo a passo + checklist</div>
-                    <div class="cta-row"><button class="btn btn-sm">Ver guia</button></div>
-                </div>
-            </a> </div>
-        <h2 id="h2-bagagem">Problemas com bagagem</h2>
-        <div id="section-bagagem" class="grid" style="margin-bottom:16px">
-            <a href="/bagagem-extraviada.html" class="card-link">
-                <div class="card card-hover">
-                    <h3 class="card-title">Bagagem extraviada</h3>
-                    <div class="small">Carta + checklist</div>
-                    <div class="cta-row"><button class="btn btn-sm">Ver guia</button></div>
-                </div>
-            </a>
-            <a href="/bagagem-danificada.html" class="card-link">
-                <div class="card card-hover">
-                    <h3 class="card-title">Bagagem danificada</h3>
-                    <div class="small">Carta + checklist</div>
-                    <div class="cta-row"><button class="btn btn-sm">Ver guia</button></div>
-                </div>
-            </a>
-        </div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
 
-        <h2 id="h2-populares">Modelos populares</h2>
-        <div class="grid" id="grid"></div>
-    </main>
-    <section id="searchResults" class="container" style="display:none; margin-top:16px">
-        <h2>Resultados</h2>
-        <div class="grid" id="searchGrid"></div>
-        <p id="noResults" class="small" style="display:none">Nenhum resultado encontrado.</p>
+                <div class="nav-links">
+                    <a href="#viagem" class="nav-link">Viagem</a>
+                    <a href="#bagagem" class="nav-link">Bagagem</a>
+                    <a href="#consumo" class="nav-link">Consumo</a>
+                </div>
+
+                <div class="nav-actions">
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">
+                        🌙
+                    </button>
+                    <a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">
+                        WhatsApp
+                    </a>
+                    <button class="mobile-menu-btn">☰</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    ⚡ Documentos prontos em minutos
+                </div>
+
+                <h1>Gere documentos profissionais automaticamente</h1>
+
+                <p class="hero-subtitle">
+                    Autorizações de viagem, cartas de bagagem e cancelamento de serviços.
+                    Prévia gratuita, download em DOC ou PDF.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="/viagem.html" class="btn btn-primary">
+                        Gerar Autorização de Viagem
+                    </a>
+                    <a href="#documentos" class="btn btn-secondary">
+                        Ver Todos os Documentos
+                    </a>
+                </div>
+
+                <div class="trust-badges">
+                    <div class="trust-badge">Pagamento seguro via Mercado Pago</div>
+                    <div class="trust-badge">Suporte por WhatsApp</div>
+                    <div class="trust-badge">Documentos profissionais</div>
+                </div>
+            </div>
+        </div>
     </section>
-    <div class="container">
-        <div class="small" style="margin-top:24px;opacity:.9"> Este site não presta aconselhamento jurídico. Leia os <a
-                href="/termos.html" style="text-decoration:underline">Termos de Uso</a>. </div>
-    </div>
+
+    <!-- Search -->
+    <section class="container">
+        <div class="search-container">
+            <input type="text" class="search-input"
+                placeholder="Buscar documentos (ex: viagem, bagagem, cancelamento)..." id="searchInput">
+        </div>
+    </section>
+
+    <!-- Viagem Section -->
+    <section class="section" id="viagem">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Autorizações de Viagem</h2>
+                <p class="section-subtitle">Documentos para viagens nacionais e internacionais com menores</p>
+            </div>
+
+            <div class="grid">
+                <div class="card featured-card">
+                    <div class="card-icon">✈️</div>
+                    <h3 class="card-title">Autorização de Viagem Completa</h3>
+                    <p class="card-description">
+                        Gere automaticamente a autorização de viagem para menor. Válido para viagens nacionais e
+                        internacionais.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Popular</span>
+                        <span class="tag tag-success">Pronto em 5 min</span>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/viagem.html" class="btn btn-primary btn-sm">Gerar Agora</a>
+                        <a href="/menor-nacional-um-responsavel.html" class="btn btn-secondary btn-sm">Ver Guia</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🇧🇷</div>
+                    <h3 class="card-title">Nacional - 1 Responsável</h3>
+                    <p class="card-description">Autorização para viagem nacional com um responsável</p>
+                    <div class="card-footer">
+                        <a href="/menor-nacional-um-responsavel.html" class="btn btn-secondary btn-sm">Ver Guia</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🇧🇷</div>
+                    <h3 class="card-title">Nacional - 2 Responsáveis</h3>
+                    <p class="card-description">Autorização para viagem nacional com dois responsáveis</p>
+                    <div class="card-footer">
+                        <a href="/menor-nacional-dois-responsaveis.html" class="btn btn-secondary btn-sm">Ver Guia</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🌎</div>
+                    <h3 class="card-title">Internacional - 1 Responsável</h3>
+                    <p class="card-description">Autorização para viagem internacional com um responsável</p>
+                    <div class="card-footer">
+                        <a href="/menor-internacional-um-responsavel.html" class="btn btn-secondary btn-sm">Ver Guia</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🌎</div>
+                    <h3 class="card-title">Internacional - 2 Responsáveis</h3>
+                    <p class="card-description">Autorização para viagem internacional com dois responsáveis</p>
+                    <div class="card-footer">
+                        <a href="/menor-internacional-dois-responsaveis.html" class="btn btn-secondary btn-sm">Ver
+                            Guia</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">👨‍👩‍👧</div>
+                    <h3 class="card-title">Acompanhado por Terceiro</h3>
+                    <p class="card-description">Autorização para menor acompanhado por terceiro</p>
+                    <div class="card-footer">
+                        <a href="/menor-acompanhado-por-terceiro.html" class="btn btn-secondary btn-sm">Ver Guia</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bagagem Section -->
+    <section class="section" id="bagagem" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Problemas com Bagagem</h2>
+                <p class="section-subtitle">Cartas prontas para resolver problemas com sua bagagem</p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">🧳</div>
+                    <h3 class="card-title">Bagagem Extraviada</h3>
+                    <p class="card-description">
+                        Carta formal para reclamação de bagagem extraviada, com todos os dados necessários
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Carta + Checklist</span>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/bagagem-extraviada.html" class="btn btn-primary btn-sm">Gerar Carta</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">💼</div>
+                    <h3 class="card-title">Bagagem Danificada</h3>
+                    <p class="card-description">
+                        Carta para reclamação de bagagem danificada durante o transporte
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Carta + Checklist</span>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/bagagem-danificada.html" class="btn btn-primary btn-sm">Gerar Carta</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Consumo Section -->
+    <section class="section" id="consumo">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Cartas de Consumo</h2>
+                <p class="section-subtitle">Cancelamentos e reclamações de serviços</p>
+            </div>
+
+            <div class="grid" id="gridConsumo">
+                <div class="card">
+                    <div class="card-icon">📱</div>
+                    <h3 class="card-title">Telefonia e TV</h3>
+                    <p class="card-description">Cartas para operadoras de telefonia e TV por assinatura</p>
+                    <div class="card-footer">
+                        <a href="/#telefonia" class="btn btn-secondary btn-sm">Ver Modelos</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🏦</div>
+                    <h3 class="card-title">Bancos e Financeiras</h3>
+                    <p class="card-description">Cartas para bancos e instituições financeiras</p>
+                    <div class="card-footer">
+                        <a href="/#bancos" class="btn btn-secondary btn-sm">Ver Modelos</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🛒</div>
+                    <h3 class="card-title">E-commerce</h3>
+                    <p class="card-description">Reclamações e cancelamentos em lojas online</p>
+                    <div class="card-footer">
+                        <a href="/#consumo" class="btn btn-secondary btn-sm">Ver Modelos</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3 class="card-title">Energia e Água</h3>
+                    <p class="card-description">Cartas para concessionárias de serviços públicos</p>
+                    <div class="card-footer">
+                        <a href="/#servicos" class="btn btn-secondary btn-sm">Ver Modelos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
+                        class="footer-link">Termos de Uso</a>.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            // Implement search logic here
+            console.log('Searching for:', query);
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
     <script src="/slugs.js"></script>
     <script src="/home.js"></script>
     <script src="/recovery.js"></script>
