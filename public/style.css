@@ -246,3 +246,38 @@ button:focus-visible {
     box-shadow: 0 0 0 4px var(--ring);
     border-radius: 10px
 }
+
+/* CTAs lado a lado com quebra segura no mobile */
+.cta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px
+}
+
+.cta-row .btn {
+    white-space: nowrap
+}
+
+@media (max-width:480px) {
+    .cta-row {
+        flex-direction: column
+    }
+
+    .cta-row .btn {
+        width: 100%;
+        white-space: normal
+    }
+}
+
+/* Fallback: se houver dois botões soltos (sem .cta-row), empilha no mobile */
+@media (max-width:480px) {
+    .card .btn+.btn {
+        margin-left: 0
+    }
+
+    .card .btn+.btn {
+        display: block;
+        margin-top: 8px
+    }
+}
