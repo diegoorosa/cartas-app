@@ -83,7 +83,7 @@
     </section>
 
     <!-- Viagem Section -->
-    <section class="section" id="viagem">
+    <section class="section category-section" id="viagem">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Autorizações de Viagem</h2>
@@ -91,7 +91,8 @@
             </div>
 
             <div class="grid">
-                <div class="card featured-card">
+                <div class="card featured-card"
+                    data-search="autorização viagem menor completa nacional internacional popular">
                     <div class="card-icon">✈️</div>
                     <h3 class="card-title">Autorização de Viagem Completa</h3>
                     <p class="card-description">
@@ -108,7 +109,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" data-search="autorização viagem menor nacional brasil um responsável">
                     <div class="card-icon">🇧🇷</div>
                     <h3 class="card-title">Nacional - 1 Responsável</h3>
                     <p class="card-description">Autorização para viagem nacional com um responsável</p>
@@ -117,7 +118,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" data-search="autorização viagem menor nacional brasil dois responsáveis pais">
                     <div class="card-icon">🇧🇷</div>
                     <h3 class="card-title">Nacional - 2 Responsáveis</h3>
                     <p class="card-description">Autorização para viagem nacional com dois responsáveis</p>
@@ -126,7 +127,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" data-search="autorização viagem menor internacional exterior um responsável">
                     <div class="card-icon">🌎</div>
                     <h3 class="card-title">Internacional - 1 Responsável</h3>
                     <p class="card-description">Autorização para viagem internacional com um responsável</p>
@@ -135,7 +136,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" data-search="autorização viagem menor internacional exterior dois responsáveis pais">
                     <div class="card-icon">🌎</div>
                     <h3 class="card-title">Internacional - 2 Responsáveis</h3>
                     <p class="card-description">Autorização para viagem internacional com dois responsáveis</p>
@@ -145,7 +146,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" data-search="autorização viagem menor acompanhado terceiro avó tia parente">
                     <div class="card-icon">👨‍👩‍👧</div>
                     <h3 class="card-title">Acompanhado por Terceiro</h3>
                     <p class="card-description">Autorização para menor acompanhado por terceiro</p>
@@ -158,7 +159,7 @@
     </section>
 
     <!-- Bagagem Section -->
-    <section class="section" id="bagagem" style="background: var(--bg-secondary);">
+    <section class="section category-section" id="bagagem" style="background: var(--bg-secondary);">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Problemas com Bagagem</h2>
@@ -166,7 +167,7 @@
             </div>
 
             <div class="grid">
-                <div class="card">
+                <div class="card" data-search="bagagem extraviada perdida mala voo avião gol latam azul">
                     <div class="card-icon">🧳</div>
                     <h3 class="card-title">Bagagem Extraviada</h3>
                     <p class="card-description">
@@ -180,7 +181,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" data-search="bagagem danificada quebrada estragada mala voo avião">
                     <div class="card-icon">💼</div>
                     <h3 class="card-title">Bagagem Danificada</h3>
                     <p class="card-description">
@@ -198,7 +199,7 @@
     </section>
 
     <!-- Consumo Section -->
-    <section class="section" id="consumo">
+    <section class="section category-section" id="consumo">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Cartas de Consumo</h2>
@@ -1363,11 +1364,11 @@
     </footer>
 
     <script>
-        // JavaScript para Busca
+        // Search functionality - Busca em TODAS as seções
         document.addEventListener('DOMContentLoaded', function () {
             var searchInput = document.getElementById('searchInput');
             var allCards = document.querySelectorAll('.card[data-search]');
-            var categorySections = document.querySelectorAll('.category-section');
+            var allSections = document.querySelectorAll('.category-section');
 
             if (!searchInput) return;
 
@@ -1375,37 +1376,38 @@
                 var searchTerm = this.value.toLowerCase().trim();
 
                 if (searchTerm === '') {
-                    // Mostra tudo
+                    // Mostra tudo quando limpar a busca
                     allCards.forEach(function (card) {
                         card.style.display = 'block';
                     });
-                    if (categorySections.length > 0) {
-                        categorySections.forEach(function (section) {
-                            section.style.display = 'block';
-                        });
-                    }
+                    allSections.forEach(function (section) {
+                        section.style.display = 'block';
+                    });
                     return;
                 }
 
-                // Esconde categorias primeiro
-                if (categorySections.length > 0) {
-                    categorySections.forEach(function (section) {
-                        section.style.display = 'none';
-                    });
-                }
+                // Primeiro esconde todas as seções
+                allSections.forEach(function (section) {
+                    section.style.display = 'none';
+                });
 
-                // Filtra cards
+                var hasResults = false;
+
+                // Filtra cada card
                 allCards.forEach(function (card) {
-                    var searchData = card.getAttribute('data-search') || '';
-                    var cardTitle = card.querySelector('.card-title') ? card.querySelector('.card-title').textContent : '';
-                    var cardDesc = card.querySelector('.card-description') ? card.querySelector('.card-description').textContent : '';
+                    var searchData = (card.getAttribute('data-search') || '').toLowerCase();
+                    var cardTitle = card.querySelector('.card-title') ? card.querySelector('.card-title').textContent.toLowerCase() : '';
+                    var cardDesc = card.querySelector('.card-description') ? card.querySelector('.card-description').textContent.toLowerCase() : '';
 
-                    var matches = searchData.toLowerCase().includes(searchTerm) ||
-                        cardTitle.toLowerCase().includes(searchTerm) ||
-                        cardDesc.toLowerCase().includes(searchTerm);
+                    var matches = searchData.includes(searchTerm) ||
+                        cardTitle.includes(searchTerm) ||
+                        cardDesc.includes(searchTerm);
 
                     if (matches) {
                         card.style.display = 'block';
+                        hasResults = true;
+
+                        // Mostra a seção pai desse card
                         var parentSection = card.closest('.category-section');
                         if (parentSection) {
                             parentSection.style.display = 'block';
@@ -1414,6 +1416,11 @@
                         card.style.display = 'none';
                     }
                 });
+
+                // Log no console se não houver resultados (opcional)
+                if (!hasResults) {
+                    console.log('Nenhum resultado para: ' + searchTerm);
+                }
             });
         });
 
