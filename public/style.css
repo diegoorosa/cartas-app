@@ -6,30 +6,41 @@
     --muted: #9fb0c7;
     --heading: #e9f1ff;
     --accent: #22c55e;
+    --accent-start: #16a34a;
+    --accent-end: #22c55e;
     --border: #203049;
     --ring: #60a5fa33;
     --field: #0e1628;
     --badge-bg: #16a34a20;
     --badge-text: #86efac;
-    --badge-border: #15803d40
+    --badge-border: #15803d40;
+    --shadow-s: 0 6px 18px rgba(0, 0, 0, .25);
+    --shadow-m: 0 10px 30px rgba(0, 0, 0, .25);
+    --shadow-l: 0 16px 40px rgba(0, 0, 0, .30)
 }
 
 html[data-theme="light"] {
-    --bg: #ffffff;
+    --bg: #f8fafc;
     --card: #ffffff;
     --card-hover: #f8fafc;
     --text: #0f172a;
     --muted: #475569;
-    --heading: #0f172a;
+    --heading: #0b1324;
     --accent: #22c55e;
+    --accent-start: #16a34a;
+    --accent-end: #22c55e;
     --border: #e5e7eb;
     --ring: #60a5fa55;
     --field: #ffffff;
-    --badge-bg: #e2e8f0;
+    --badge-bg: #eef2ff;
     --badge-text: #334155;
-    --badge-border: #cbd5e1
+    --badge-border: #cbd5e1;
+    --shadow-s: 0 6px 16px rgba(15, 23, 42, .08);
+    --shadow-m: 0 12px 28px rgba(15, 23, 42, .10);
+    --shadow-l: 0 18px 44px rgba(15, 23, 42, .12)
 }
 
+/* ==================== BASE ==================== */
 * {
     box-sizing: border-box
 }
@@ -42,8 +53,11 @@ body {
 body {
     margin: 0;
     font-family: Inter, system-ui, Arial, Helvetica, sans-serif;
-    background: var(--bg);
     color: var(--text);
+    background:
+        radial-gradient(1200px 600px at -10% -20%, rgba(96, 165, 250, .16), transparent 60%),
+        radial-gradient(1100px 560px at 120% 10%, rgba(34, 197, 94, .12), transparent 60%),
+        var(--bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale
 }
@@ -68,14 +82,16 @@ a {
 
 h1 {
     margin: 8px 0 6px;
-    font-size: 32px;
-    color: var(--heading)
+    font-size: 34px;
+    color: var(--heading);
+    letter-spacing: -.02em
 }
 
 h2 {
     margin: 12px 0 10px;
-    font-size: 20px;
-    color: var(--heading)
+    font-size: 22px;
+    color: var(--heading);
+    letter-spacing: -.015em
 }
 
 .small {
@@ -83,19 +99,36 @@ h2 {
     color: var(--muted)
 }
 
+/* ==================== CARDS ==================== */
 .card {
     background: var(--card);
     padding: 20px;
-    border-radius: 14px;
+    border-radius: 16px;
     border: 1px solid var(--border);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
-    transition: .18s ease
+    box-shadow: var(--shadow-s);
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease
 }
 
-.card:hover {
-    transform: translateY(-2px);
-    border-color: #2b3f66;
-    background: var(--card-hover)
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-m)
+}
+
+.card-spotlight {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-m)
+}
+
+.card-spotlight::after {
+    content: "";
+    position: absolute;
+    inset: -30% -20%;
+    height: 90%;
+    background: radial-gradient(400px 200px at 10% 0%, rgba(96, 165, 250, .12), transparent 60%),
+        radial-gradient(380px 180px at 90% 20%, rgba(34, 197, 94, .10), transparent 60%);
+    pointer-events: none
 }
 
 .card-title {
@@ -114,6 +147,7 @@ h2 {
     gap: 18px
 }
 
+/* ==================== BADGES / TAGS ==================== */
 .badge {
     display: inline-block;
     padding: 4px 10px;
@@ -122,94 +156,6 @@ h2 {
     color: var(--badge-text);
     border: 1px solid var(--badge-border);
     font-weight: 700
-}
-
-.btn {
-    background: var(--accent);
-    color: #052e16;
-    border: none;
-    padding: 10px 14px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: transform .08s ease, filter .15s ease, box-shadow .15s ease
-}
-
-.btn:hover {
-    filter: brightness(1.05)
-}
-
-.btn:active {
-    transform: scale(.98)
-}
-
-.btn:disabled {
-    opacity: .6;
-    cursor: not-allowed
-}
-
-.btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border)
-}
-
-.btn-sm {
-    padding: 8px 12px;
-    font-size: 14px
-}
-
-.btn-grad {
-    background: linear-gradient(135deg, #16a34a, #22c55e) !important;
-    color: #052e16 !important
-}
-
-.btn-raise {
-    box-shadow: 0 6px 16px rgba(34, 197, 94, .25)
-}
-
-.btn-raise:hover {
-    box-shadow: 0 10px 22px rgba(34, 197, 94, .30)
-}
-
-.btn-ghost {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text)
-}
-
-.input,
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border);
-    background: var(--field);
-    color: var(--text);
-    border-radius: 10px
-}
-
-.input:focus,
-textarea:focus {
-    outline: none;
-    box-shadow: 0 0 0 4px var(--ring);
-    border-color: #2f63c9
-}
-
-.label {
-    font-size: 14px;
-    color: var(--muted);
-    margin-top: 8px;
-    margin-bottom: 6px;
-    display: block
-}
-
-.preview {
-    padding: 12px;
-    border: 1px dashed var(--border);
-    background: var(--field);
-    color: var(--text);
-    border-radius: 10px;
-    white-space: pre-wrap
 }
 
 .tags {
@@ -252,18 +198,97 @@ html[data-theme="light"] .tag--brand {
     background: #ecfdf5
 }
 
-.searchbar {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin: 12px 0 18px
+/* ==================== FORM / PREVIEW ==================== */
+.input,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+    background: var(--field);
+    color: var(--text);
+    border-radius: 10px;
+    transition: border-color .15s ease, box-shadow .15s ease
 }
 
-.searchbar .input {
-    max-width: 420px
+.input:focus,
+textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--ring);
+    border-color: #2f63c9
 }
 
-/* CTAs */
+.label {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 8px;
+    margin-bottom: 6px;
+    display: block
+}
+
+.preview {
+    padding: 12px;
+    border: 1px dashed var(--border);
+    background: var(--field);
+    color: var(--text);
+    border-radius: 10px;
+    white-space: pre-wrap
+}
+
+/* ==================== BUTTONS (premium) ==================== */
+.btn {
+    background: var(--accent);
+    color: #052e16;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .08s ease, filter .15s ease, box-shadow .15s ease
+}
+
+.btn:hover {
+    filter: brightness(1.03)
+}
+
+.btn:active {
+    transform: scale(.98)
+}
+
+.btn:disabled {
+    opacity: .6;
+    cursor: not-allowed
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border)
+}
+
+.btn-sm {
+    padding: 8px 12px;
+    font-size: 14px
+}
+
+.btn-grad {
+    background: linear-gradient(135deg, var(--accent-start), var(--accent-end)) !important;
+    color: #052e16 !important
+}
+
+.btn-raise {
+    box-shadow: 0 6px 16px rgba(34, 197, 94, .25)
+}
+
+.btn-raise:hover {
+    box-shadow: 0 10px 22px rgba(34, 197, 94, .30)
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text)
+}
+
 .cta-row {
     display: flex;
     gap: 10px;
@@ -286,21 +311,14 @@ html[data-theme="light"] .tag--brand {
     }
 }
 
-/* Acessibilidade */
-a:focus-visible,
-button:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px var(--ring);
-    border-radius: 10px
-}
-
-/* NAV */
+/* ==================== NAV ==================== */
 .nav {
     position: sticky;
     top: 0;
     z-index: 50;
     background: var(--bg);
-    border-bottom: 1px solid var(--border)
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: saturate(130%) blur(6px)
 }
 
 .nav-inner {
@@ -315,7 +333,8 @@ button:focus-visible {
 .nav-brand {
     font-weight: 800;
     font-size: 20px;
-    color: var(--heading)
+    color: var(--heading);
+    letter-spacing: -.02em
 }
 
 .nav-toggle {
@@ -360,12 +379,6 @@ button:focus-visible {
     min-width: 260px
 }
 
-.nav-search {
-    min-width: 260px
-}
-
-/* suporte a versões antigas */
-
 .dropdown {
     position: relative
 }
@@ -379,7 +392,7 @@ button:focus-visible {
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    box-shadow: var(--shadow-m);
     display: none
 }
 
@@ -442,7 +455,7 @@ button:focus-visible {
     }
 }
 
-/* HERO */
+/* ==================== HERO (forte) ==================== */
 .hero {
     padding: 24px 0
 }
@@ -456,29 +469,31 @@ button:focus-visible {
     content: "";
     position: absolute;
     inset: -30% -10% auto -10%;
-    height: 320px;
+    height: 380px;
     background:
-        radial-gradient(600px 240px at 10% 20%, rgba(96, 165, 250, .18), transparent 60%),
-        radial-gradient(500px 220px at 90% 10%, rgba(34, 197, 94, .12), transparent 60%);
+        radial-gradient(700px 300px at 10% 20%, rgba(96, 165, 250, .20), transparent 60%),
+        radial-gradient(600px 260px at 90% 10%, rgba(34, 197, 94, .16), transparent 60%);
     pointer-events: none
 }
 
 .hero-grid {
     position: relative;
     display: grid;
-    grid-template-columns: 1.1fr .9fr;
-    gap: 18px
+    grid-template-columns: 1.15fr .85fr;
+    gap: 20px
 }
 
 .hero-title {
     margin: 8px 0 6px;
-    font-size: 32px;
-    color: var(--heading)
+    font-size: 36px;
+    color: var(--heading);
+    letter-spacing: -.03em
 }
 
 .hero-sub {
-    margin: 4px 0 10px;
-    color: var(--muted)
+    margin: 4px 0 12px;
+    color: var(--muted);
+    font-size: 16px
 }
 
 .hero-col .card {
@@ -491,40 +506,10 @@ button:focus-visible {
     }
 }
 
-/* CARDS ESPECIAIS + HOVER */
-.card-spotlight {
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, .15), inset 0 1px 0 rgba(255, 255, 255, .03)
-}
-
-.card-illustrated {
-    background:
-        linear-gradient(180deg, rgba(255, 255, 255, .02), transparent 50%),
-        var(--card)
-}
-
-.card-hover {
-    transition: transform .16s ease, box-shadow .16s ease
-}
-
-.card-hover:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 28px rgba(0, 0, 0, .25)
-}
-
-/* TRUST BADGES */
-.trust {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 10px
-}
-
-.trust-badge {
-    font-size: 12px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--card-hover);
-    color: var(--text)
+/* ==================== ACCESSIBILITY ==================== */
+a:focus-visible,
+button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--ring);
+    border-radius: 10px
 }
