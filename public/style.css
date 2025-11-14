@@ -657,3 +657,137 @@ input[type="checkbox"] {
         padding: 0 16px;
     }
 }
+
+/* ========================================
+   CARDS MAIS COMPACTOS
+======================================== */
+.card {
+    padding: 20px;
+    /* Era 28px */
+}
+
+.card-icon {
+    width: 40px;
+    /* Era 48px */
+    height: 40px;
+    font-size: 20px;
+    /* Era 24px */
+    margin-bottom: 14px;
+    /* Era 20px */
+}
+
+.card-title {
+    font-size: 17px;
+    /* Era 20px */
+    margin-bottom: 8px;
+    /* Era 12px */
+}
+
+.card-description {
+    font-size: 14px;
+    /* Era 15px */
+    margin-bottom: 14px;
+    /* Era 20px */
+}
+
+.card-tags {
+    margin-bottom: 14px;
+    /* Era 20px */
+}
+
+.tag {
+    padding: 3px 10px;
+    /* Era 4px 12px */
+    font-size: 11px;
+    /* Era 12px */
+}
+
+.card-footer {
+    gap: 8px;
+    /* Era 12px */
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    /* Era 10px 20px */
+    font-size: 13px;
+    /* Era 14px */
+}
+
+/* Grid mais apertado */
+.grid {
+    gap: 16px;
+    /* Era 24px */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    /* Era 340px */
+}
+
+/* Seção header menor */
+.section-header {
+    margin-bottom: 40px;
+    /* Era 56px */
+}
+
+.section-title {
+    font-size: 36px;
+    /* Era 42px */
+    margin-bottom: 12px;
+    /* Era 16px */
+}
+
+.section-subtitle {
+    font-size: 16px;
+    /* Era 18px */
+}
+
+/* Espaçamento entre categorias */
+.category-section {
+    margin-top: 60px !important;
+    /* Era 80px */
+}
+
+.category-section:first-child {
+    margin-top: 0 !important;
+}
+
+.category-title {
+    font-size: 24px !important;
+    /* Era 28px */
+    margin-bottom: 20px !important;
+    /* Era 24px */
+}
+
+/* Featured card não precisa ser tão maior */
+.featured-card {
+    padding: 22px;
+    /* Só um pouco maior que os normais */
+}
+
+/* Mobile - ainda mais compacto */
+@media (max-width: 768px) {
+    .card {
+        padding: 16px;
+    }
+
+    .card-title {
+        font-size: 16px;
+    }
+
+    .card-description {
+        font-size: 13px;
+    }
+
+    .grid {
+        gap: 12px;
+        grid-template-columns: 1fr;
+        /* 1 coluna só no mobile */
+    }
+
+    .section-title {
+        font-size: 28px;
+    }
+
+    .category-title {
+        font-size: 22px !important;
+    }
+}
