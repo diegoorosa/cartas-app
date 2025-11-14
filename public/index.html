@@ -1364,11 +1364,12 @@
     </footer>
 
     <script>
-        // Search functionality - Busca em TODAS as seções
+        // Search functionality - Busca em TODAS as seções (com hierarquia corrigida)
         document.addEventListener('DOMContentLoaded', function () {
             var searchInput = document.getElementById('searchInput');
             var allCards = document.querySelectorAll('.card[data-search]');
-            var allSections = document.querySelectorAll('.category-section');
+            var mainSections = document.querySelectorAll('section.category-section'); // Seções principais
+            var subSections = document.querySelectorAll('div.category-section'); // Sub-seções
 
             if (!searchInput) return;
 
@@ -1380,14 +1381,20 @@
                     allCards.forEach(function (card) {
                         card.style.display = 'block';
                     });
-                    allSections.forEach(function (section) {
+                    mainSections.forEach(function (section) {
+                        section.style.display = 'block';
+                    });
+                    subSections.forEach(function (section) {
                         section.style.display = 'block';
                     });
                     return;
                 }
 
-                // Primeiro esconde todas as seções
-                allSections.forEach(function (section) {
+                // Primeiro esconde tudo
+                mainSections.forEach(function (section) {
+                    section.style.display = 'none';
+                });
+                subSections.forEach(function (section) {
                     section.style.display = 'none';
                 });
 
@@ -1407,17 +1414,19 @@
                         card.style.display = 'block';
                         hasResults = true;
 
-                        // Mostra a seção pai desse card
-                        var parentSection = card.closest('.category-section');
-                        if (parentSection) {
-                            parentSection.style.display = 'block';
+                        // Mostra TODAS as sections/divs pais desse card
+                        var parent = card.parentElement;
+                        while (parent) {
+                            if (parent.classList && parent.classList.contains('category-section')) {
+                                parent.style.display = 'block';
+                            }
+                            parent = parent.parentElement;
                         }
                     } else {
                         card.style.display = 'none';
                     }
                 });
 
-                // Log no console se não houver resultados (opcional)
                 if (!hasResults) {
                     console.log('Nenhum resultado para: ' + searchTerm);
                 }
