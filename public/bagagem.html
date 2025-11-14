@@ -19,88 +19,160 @@
 </head>
 
 <body>
-  <div class="container">
-    <div class="header">
-      <a href="/" class="small" style="text-decoration:none;color:#93c5fd">← Voltar</a>
-      <span class="badge">Bagagem</span>
-    </div>
-
-    <div class="card">
-      <h1>Carta – Bagagem Extraviada/Danificada</h1>
-      <p class="small">Preencha os dados do voo e do ocorrido. Gere a carta em .DOC com checklist para envio à companhia
-        aérea.</p>
-
-      <div id="formArea" data-clarity-mask="true">
-        <h2>Passageiro</h2>
-        <label class="label">Nome completo</label>
-        <input class="input" id="nome" placeholder="Ex.: João Silva" />
-        <label class="label">CPF</label>
-        <input class="input" id="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
-        <label class="label">E-mail</label>
-        <input class="input" id="email" placeholder="seu@email.com" />
-        <label class="label">Telefone</label>
-        <input class="input" id="telefone" placeholder="(00) 00000-0000" />
-
-        <h2>Voo</h2>
-        <label class="label">Companhia aérea</label>
-        <input class="input" id="cia" placeholder="Ex.: LATAM, GOL, Azul" />
-        <label class="label">Nº do voo</label>
-        <input class="input" id="voo" placeholder="Ex.: LA1234" />
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div>
-            <label class="label">Data do voo</label>
-            <input class="input" id="data_voo" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" />
-            <div id="err_data_voo" class="small" style="display:none;color:#fca5a5">Data do voo inválida.</div>
-          </div>
-          <div>
-            <label class="label">Protocolo/PIR</label>
-            <input class="input" id="pir" placeholder="Ex.: PIR-ABC123" />
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div>
-            <label class="label">Origem</label>
-            <input class="input" id="origem" placeholder="Ex.: GRU" />
-          </div>
-          <div>
-            <label class="label">Destino</label>
-            <input class="input" id="destino" placeholder="Ex.: REC" />
-          </div>
-        </div>
-
-        <h2>Ocorrência</h2>
-        <label class="label">Tipo</label>
-        <select class="input" id="status">
-          <option value="extraviada">Extraviada</option>
-          <option value="danificada">Danificada</option>
-        </select>
-        <label class="label">Descrição dos itens/avarias</label>
-        <textarea class="input" id="descricao" rows="3"
-          placeholder="Ex.: Mala preta 23kg; roupas e itens pessoais; alça quebrada..."></textarea>
-        <label class="label">Despesas emergenciais (se houver)</label>
-        <textarea class="input" id="despesas" rows="3"
-          placeholder="Ex.: R$ 180,00 em itens de higiene e roupas. Notas anexas."></textarea>
-
-        <h2>Local</h2>
-        <label class="label">Cidade/UF</label>
-        <input class="input" id="cidade_uf" placeholder="Ex.: Blumenau/SC" />
-
-        <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
-          <button class="btn" id="btnPreview">Gerar prévia</button>
-          <button class="btn btn-outline" id="btnPagar" disabled>Gerar documento completo (R$ 6,90)</button>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-content">
+        <a href="/" class="logo">CartasApp</a>
+        <div class="nav-actions">
+          <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">
+            🌙
+          </button>
+          <a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">
+            WhatsApp
+          </a>
         </div>
       </div>
+    </div>
+  </nav>
 
-      <div id="previewWrap" style="display:none; margin-top:16px">
-        <h2>Prévia do documento</h2>
-        <div class="preview" id="previewBox"></div>
-        <p class="small" style="margin-top:8px">As últimas linhas foram ocultadas. Na versão completa você poderá
-          copiar, baixar .DOC e enviar no WhatsApp.</p>
+  <!-- Hero Section -->
+  <section class="hero" style="padding: 60px 0 40px;">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          🧳 Bagagem
+        </div>
+        <h1 style="font-size: 48px;">Carta — Bagagem Extraviada/Danificada</h1>
+        <p class="hero-subtitle">
+          Preencha os dados do voo e do ocorrido. Gere a carta em .DOC com checklist para envio à companhia aérea.
+        </p>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- Form Section -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <div class="card">
+          <div id="formArea" data-clarity-mask="true">
+            <h2 class="section-title" style="font-size: 24px; margin-bottom: 24px;">Passageiro</h2>
+
+            <label class="label">Nome completo</label>
+            <input class="input" id="nome" placeholder="Ex.: João Silva" />
+
+            <label class="label">CPF</label>
+            <input class="input" id="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
+
+            <label class="label">E-mail</label>
+            <input class="input" id="email" placeholder="seu@email.com" />
+
+            <label class="label">Telefone</label>
+            <input class="input" id="telefone" placeholder="(00) 00000-0000" />
+
+            <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Voo</h2>
+
+            <label class="label">Companhia aérea</label>
+            <input class="input" id="cia" placeholder="Ex.: LATAM, GOL, Azul" />
+
+            <label class="label">Nº do voo</label>
+            <input class="input" id="voo" placeholder="Ex.: LA1234" />
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+              <div>
+                <label class="label">Data do voo</label>
+                <input class="input" id="data_voo" placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" />
+                <div id="err_data_voo" class="small" style="display:none;color:#fca5a5;margin-top:4px;">Data do voo
+                  inválida.</div>
+              </div>
+              <div>
+                <label class="label">Protocolo/PIR</label>
+                <input class="input" id="pir" placeholder="Ex.: PIR-ABC123" />
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+              <div>
+                <label class="label">Origem</label>
+                <input class="input" id="origem" placeholder="Ex.: GRU" />
+              </div>
+              <div>
+                <label class="label">Destino</label>
+                <input class="input" id="destino" placeholder="Ex.: REC" />
+              </div>
+            </div>
+
+            <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Ocorrência</h2>
+
+            <label class="label">Tipo</label>
+            <select class="input" id="status">
+              <option value="extraviada">Extraviada</option>
+              <option value="danificada">Danificada</option>
+            </select>
+
+            <label class="label">Descrição dos itens/avarias</label>
+            <textarea class="input" id="descricao" rows="3"
+              placeholder="Ex.: Mala preta 23kg; roupas e itens pessoais; alça quebrada..."></textarea>
+
+            <label class="label">Despesas emergenciais (se houver)</label>
+            <textarea class="input" id="despesas" rows="3"
+              placeholder="Ex.: R$ 180,00 em itens de higiene e roupas. Notas anexas."></textarea>
+
+            <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Local</h2>
+
+            <label class="label">Cidade/UF</label>
+            <input class="input" id="cidade_uf" placeholder="Ex.: Blumenau/SC" />
+
+            <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
+              <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
+              <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$ 6,90)</button>
+            </div>
+          </div>
+
+          <div id="previewWrap"
+            style="display:none; margin-top:32px; padding-top:32px; border-top:1px solid var(--border);">
+            <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">Prévia do documento</h2>
+            <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;">
+              <div id="previewBox"
+                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
+              </div>
+            </div>
+            <p class="small" style="margin-top:12px;color:var(--text-muted);">
+              As últimas linhas foram ocultadas. Na versão completa você poderá copiar, baixar .DOC e enviar no
+              WhatsApp.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html" class="footer-link">Termos de
+            Uso</a>.</p>
+      </div>
+    </div>
+  </footer>
 
   <script>
+    // Theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+
     function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; }
     function isValidCPF(cpf) { var s = (cpf || '').replace(/\D/g, ''); if (s.length !== 11) return false; if (/^(\d)\1{10}$/.test(s)) return false; var i, sum = 0, rest; for (i = 1; i <= 9; i++) sum += parseInt(s.substring(i - 1, i)) * (11 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(9, 10))) return false; sum = 0; for (i = 1; i <= 10; i++) sum += parseInt(s.substring(i - 1, i)) * (12 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(10, 11))) return false; return true; }
     function maskDate(v) { v = (v || '').replace(/\D/g, '').slice(0, 8); if (v.length >= 5) v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3'); else if (v.length >= 3) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2'); return v; }

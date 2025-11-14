@@ -21,55 +21,127 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="header" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-            <div><a href="/" class="small" style="text-decoration:none;color:#93c5fd">← Voltar</a><span class="badge"
-                    style="margin-left:8px">Prévia grátis</span></div>
-            <button class="btn btn-outline" data-theme-toggle>Modo escuro</button>
-        </div>
-
-        <div class="card" id="card" data-clarity-mask="true">
-            <h1 id="docTitle">Gerar Carta</h1>
-            <p class="small">Preencha os campos e gere a prévia. Não é aconselhamento jurídico.</p>
-            <div style="margin-top:8px"><a class="btn btn-outline"
-                    href="https://wa.me/5547991323024?text=Oi!%20Tenho%20d%C3%BAvida%20sobre%20meu%20documento"
-                    target="_blank" rel="noopener">Falar no WhatsApp</a></div>
-
-            <div id="formArea">
-                <label class="label">Nome completo</label><input class="input" id="nome"
-                    placeholder="Ex.: João da Silva" />
-                <label class="label">CPF</label><input class="input" id="cpf" placeholder="000.000.000-00"
-                    inputmode="numeric" maxlength="14" />
-                <div id="cpfError" class="small" style="display:none; color:#fca5a5">CPF inválido. Verifique os dígitos.
-                </div>
-                <label class="label">Cidade/UF</label><input class="input" id="cidade"
-                    placeholder="Ex.: São Paulo/SP" />
-                <label class="label">Unidade/Contrato (opcional)</label><input class="input" id="contrato"
-                    placeholder="Ex.: Unidade Vila Mariana, Contrato 12345" />
-                <label class="label">Motivo ou resumo do caso (opcional)</label><textarea class="input" id="motivo"
-                    rows="3"
-                    placeholder="Ex.: cobrança de mensalidade após solicitação de cancelamento em 10/05"></textarea>
-                <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
-                    <button class="btn" id="btnPreview">Gerar prévia</button>
-                    <button class="btn btn-outline" id="btnPagar" disabled>Gerar documento completo (R$ 6,90)</button>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
+                <div class="nav-actions">
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">
+                        🌙
+                    </button>
+                    <a href="https://wa.me/5547991323024?text=Oi!%20Tenho%20d%C3%BAvida%20sobre%20meu%20documento"
+                        class="btn btn-secondary btn-sm" target="_blank" rel="noopener">
+                        WhatsApp
+                    </a>
                 </div>
             </div>
+        </div>
+    </nav>
 
-            <div id="previewWrap" style="display:none; margin-top:16px" data-clarity-mask="true">
-                <h2>Prévia do documento</h2>
-                <div class="preview" id="previewBox"></div>
-                <p class="small" style="margin-top:8px">As últimas linhas foram ocultadas. Na versão completa você
-                    poderá copiar, baixar .doc e enviar no WhatsApp.</p>
+    <!-- Hero Section -->
+    <section class="hero" style="padding: 60px 0 40px;">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    📄 Prévia grátis
+                </div>
+                <h1 id="docTitle" style="font-size: 48px;">Gerar Carta</h1>
+                <p class="hero-subtitle">
+                    Preencha os campos e gere a prévia. Não é aconselhamento jurídico.
+                </p>
             </div>
         </div>
+    </section>
 
-        <div class="small" style="margin-top:24px;opacity:.9">Este site não presta aconselhamento jurídico. Leia os <a
-                href="/termos.html" style="text-decoration:underline">Termos de Uso</a>.</div>
-    </div>
+    <!-- Form Section -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="card" id="card" data-clarity-mask="true">
+                    <div id="formArea">
+                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 24px;">Seus dados</h2>
+
+                        <label class="label">Nome completo</label>
+                        <input class="input" id="nome" placeholder="Ex.: João da Silva" />
+
+                        <label class="label">CPF</label>
+                        <input class="input" id="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
+                        <div id="cpfError" class="small" style="display:none; color:#fca5a5; margin-top:4px;">
+                            CPF inválido. Verifique os dígitos.
+                        </div>
+
+                        <label class="label">Cidade/UF</label>
+                        <input class="input" id="cidade" placeholder="Ex.: São Paulo/SP" />
+
+                        <label class="label">Unidade/Contrato (opcional)</label>
+                        <input class="input" id="contrato" placeholder="Ex.: Unidade Vila Mariana, Contrato 12345" />
+
+                        <label class="label">Motivo ou resumo do caso (opcional)</label>
+                        <textarea class="input" id="motivo" rows="3"
+                            placeholder="Ex.: cobrança de mensalidade após solicitação de cancelamento em 10/05"></textarea>
+
+                        <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
+                            <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
+                            <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$
+                                6,90)</button>
+                        </div>
+                    </div>
+
+                    <div id="previewWrap"
+                        style="display:none; margin-top:32px; padding-top:32px; border-top:1px solid var(--border);"
+                        data-clarity-mask="true">
+                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">Prévia do documento</h2>
+                        <div
+                            style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;">
+                            <div id="previewBox"
+                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
+                            </div>
+                        </div>
+                        <p class="small" style="margin-top:12px;color:var(--text-muted);">
+                            As últimas linhas foram ocultadas. Na versão completa você poderá copiar, baixar .doc e
+                            enviar no WhatsApp.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top:24px;text-align:center;">
+                    <p class="small" style="opacity:.9">
+                        Este site não presta aconselhamento jurídico. Leia os
+                        <a href="/termos.html" style="text-decoration:underline;color:var(--accent-primary)">Termos de
+                            Uso</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
+                        class="footer-link">Termos de Uso</a>.</p>
+            </div>
+        </div>
+    </footer>
 
     <script src="/slugs.js"></script>
     <script src="/recovery.js"></script>
     <script>
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
         function getSlug() { var u = new URL(location.href); var qs = u.searchParams.get('slug'); if (qs) return qs; var seg = location.pathname.replace(/\/+$/, '').split('/'); if (seg[1] === 'doc') return decodeURIComponent(seg.slice(2).join('/')); return ''; }
         function getParam(name) { var u = new URL(location.href); return u.searchParams.get(name); }
         LMRecovery.offerRecover();

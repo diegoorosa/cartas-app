@@ -12,148 +12,242 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <a href="/" class="small" style="text-decoration:none;color:#93c5fd">← Voltar</a>
-            <span class="badge">Autorização</span>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
+                <div class="nav-actions">
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">
+                        🌙
+                    </button>
+                    <a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">
+                        WhatsApp
+                    </a>
+                </div>
+            </div>
         </div>
+    </nav>
 
-        <div class="card">
-            <h1>Autorização de Viagem para Menor</h1>
-            <p class="small">Preencha os dados e gere a autorização em minutos. Documento em .DOC pronto para imprimir e
-                assinar.</p>
-            <p class="small" style="margin-top:6px;color:#9fb0c7">
-                Nacional: certidão de nascimento (original/cópia) ou RG do menor. Internacional: passaporte do menor (RG
-                pode ser aceito no Mercosul, mas recomenda‑se passaporte). CPF não substitui documento de identidade.
-            </p>
+    <!-- Hero Section -->
+    <section class="hero" style="padding: 60px 0 40px;">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    ✈️ Autorização de Viagem
+                </div>
+                <h1 style="font-size: 48px;">Autorização de Viagem para Menor</h1>
+                <p class="hero-subtitle">
+                    Preencha os dados e gere a autorização em minutos. Documento em .DOC pronto para imprimir e assinar.
+                </p>
+            </div>
+        </div>
+    </section>
 
-            <div id="formArea">
-                <h2>Dados do menor</h2>
-                <label class="label">Nome completo do menor</label>
-                <input class="input" id="menor_nome" placeholder="Ex.: Ana Souza" />
-                <label class="label">Data de nascimento</label>
-                <input class="input" id="menor_nascimento" placeholder="DD/MM/AAAA" inputmode="numeric"
-                    maxlength="10" />
-                <div id="err_menor_nascimento" class="small" style="display:none;color:#fca5a5">Data de nascimento
-                    inválida.</div>
-                <label class="label">Documento do menor (certidão/RG/passaporte)</label>
-                <input class="input" id="menor_doc" placeholder="Ex.: Certidão – Livro X, Folha Y" />
+    <!-- Form Section -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="card">
+                    <div
+                        style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 32px;">
+                        <p class="small" style="margin: 0; color: var(--text-secondary);">
+                            <strong>Documentos necessários:</strong> Nacional: certidão de nascimento (original/cópia)
+                            ou RG do menor. Internacional: passaporte do menor (RG pode ser aceito no Mercosul, mas
+                            recomenda-se passaporte). CPF não substitui documento de identidade.
+                        </p>
+                    </div>
 
-                <h2>Viagem</h2>
-                <label class="label">Tipo</label>
-                <select class="input" id="viagem_tipo">
-                    <option value="nacional">Nacional</option>
-                    <option value="internacional">Internacional</option>
-                </select>
-                <label class="label">Destino</label>
-                <input class="input" id="destino" placeholder="Ex.: Curitiba/PR ou Lisboa/Portugal" />
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                    <div>
-                        <label class="label">Data de ida</label>
-                        <input class="input" id="data_ida" placeholder="DD/MM/AAAA" inputmode="numeric"
+                    <div id="formArea">
+                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 24px;">Dados do menor</h2>
+
+                        <label class="label">Nome completo do menor</label>
+                        <input class="input" id="menor_nome" placeholder="Ex.: Ana Souza" />
+
+                        <label class="label">Data de nascimento</label>
+                        <input class="input" id="menor_nascimento" placeholder="DD/MM/AAAA" inputmode="numeric"
                             maxlength="10" />
-                        <div id="err_data_ida" class="small" style="display:none;color:#fca5a5">Data de ida inválida.
+                        <div id="err_menor_nascimento" class="small" style="display:none;color:#fca5a5;margin-top:4px;">
+                            Data de nascimento inválida.</div>
+
+                        <label class="label">Documento do menor (certidão/RG/passaporte)</label>
+                        <input class="input" id="menor_doc" placeholder="Ex.: Certidão — Livro X, Folha Y" />
+
+                        <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Viagem</h2>
+
+                        <label class="label">Tipo</label>
+                        <select class="input" id="viagem_tipo">
+                            <option value="nacional">Nacional</option>
+                            <option value="internacional">Internacional</option>
+                        </select>
+
+                        <label class="label">Destino</label>
+                        <input class="input" id="destino" placeholder="Ex.: Curitiba/PR ou Lisboa/Portugal" />
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+                            <div>
+                                <label class="label">Data de ida</label>
+                                <input class="input" id="data_ida" placeholder="DD/MM/AAAA" inputmode="numeric"
+                                    maxlength="10" />
+                                <div id="err_data_ida" class="small" style="display:none;color:#fca5a5;margin-top:4px;">
+                                    Data de ida inválida.</div>
+                            </div>
+                            <div>
+                                <label class="label">Data de volta</label>
+                                <input class="input" id="data_volta" placeholder="DD/MM/AAAA" inputmode="numeric"
+                                    maxlength="10" />
+                                <div id="err_data_volta" class="small"
+                                    style="display:none;color:#fca5a5;margin-top:4px;">Data de volta inválida ou
+                                    anterior à ida.</div>
+                            </div>
+                        </div>
+
+                        <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Acompanhante</h2>
+
+                        <label class="label">Acompanhado por</label>
+                        <select class="input" id="acompanhado_por">
+                            <option value="nenhum">Sem acompanhante</option>
+                            <option value="resp1">Responsável 1</option>
+                            <option value="resp2">Responsável 2</option>
+                            <option value="terceiro">Parente/Terceiro</option>
+                        </select>
+
+                        <div id="terceiroBox" style="display:none;margin-top:20px;">
+                            <label class="label">Nome do acompanhante</label>
+                            <input class="input" id="acomp_nome" placeholder="Ex.: Tia Carla" />
+
+                            <label class="label">Documento do acompanhante</label>
+                            <input class="input" id="acomp_doc" placeholder="Ex.: RG 99.888.777-6" />
+
+                            <label class="label">Parentesco</label>
+                            <input class="input" id="acomp_parentesco" placeholder="Ex.: Tia / Avó / Madrinha" />
+                        </div>
+
+                        <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Responsável(veis) que
+                            autorizam</h2>
+
+                        <label class="label">Responsável 1 — Nome completo</label>
+                        <input class="input" id="resp1_nome" placeholder="Ex.: Maria Souza" />
+
+                        <label class="label">Responsável 1 — CPF</label>
+                        <input class="input" id="resp1_cpf" placeholder="000.000.000-00" inputmode="numeric"
+                            maxlength="14" />
+                        <div id="err_resp1_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF do
+                            Responsável 1 inválido.</div>
+
+                        <label class="label">Responsável 1 — Documento (RG/Passaporte) [opcional]</label>
+                        <input class="input" id="resp1_doc" placeholder="Ex.: RG 11.222.333-4" />
+
+                        <label class="label">Parentesco</label>
+                        <select class="input" id="resp1_parentesco">
+                            <option>Mãe</option>
+                            <option>Pai</option>
+                            <option>Responsável legal</option>
+                            <option>Tutor(a)</option>
+                        </select>
+
+                        <div style="margin-top:20px;padding:16px;background:var(--card-hover);border-radius:12px;">
+                            <label class="small" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="checkbox" id="dois_resps" style="width:18px;height:18px;cursor:pointer;" />
+                                <span>Dois responsáveis assinam</span>
+                            </label>
+                        </div>
+
+                        <div id="resp2Box" style="display:none;margin-top:24px;">
+                            <h3 style="font-size: 20px; margin-bottom: 20px; color: var(--text-primary);">Responsável 2
+                            </h3>
+
+                            <label class="label">Nome completo</label>
+                            <input class="input" id="resp2_nome" placeholder="Ex.: João Souza" />
+
+                            <label class="label">CPF</label>
+                            <input class="input" id="resp2_cpf" placeholder="000.000.000-00" inputmode="numeric"
+                                maxlength="14" />
+                            <div id="err_resp2_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF
+                                do Responsável 2 inválido.</div>
+
+                            <label class="label">Documento (RG/Passaporte) [opcional]</label>
+                            <input class="input" id="resp2_doc" placeholder="Ex.: RG 55.666.777-8" />
+
+                            <label class="label">Parentesco</label>
+                            <select class="input" id="resp2_parentesco">
+                                <option>Pai</option>
+                                <option>Mãe</option>
+                                <option>Responsável legal</option>
+                                <option>Tutor(a)</option>
+                            </select>
+                        </div>
+
+                        <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Local e contatos</h2>
+
+                        <label class="label">Cidade/UF de emissão</label>
+                        <input class="input" id="cidade_uf_emissao" placeholder="Ex.: Blumenau/SC" />
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+                            <div>
+                                <label class="label">E-mail (opcional)</label>
+                                <input class="input" id="email" placeholder="Ex.: seu@email.com" />
+                            </div>
+                            <div>
+                                <label class="label">Telefone (opcional)</label>
+                                <input class="input" id="telefone" placeholder="Ex.: (47) 99999-9999" />
+                            </div>
+                        </div>
+
+                        <label class="label">Observações (opcional)</label>
+                        <textarea class="input" id="observacoes" rows="3"
+                            placeholder="Ex.: Autorização válida apenas para o período informado."></textarea>
+
+                        <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
+                            <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
+                            <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$
+                                6,90)</button>
                         </div>
                     </div>
-                    <div>
-                        <label class="label">Data de volta</label>
-                        <input class="input" id="data_volta" placeholder="DD/MM/AAAA" inputmode="numeric"
-                            maxlength="10" />
-                        <div id="err_data_volta" class="small" style="display:none;color:#fca5a5">Data de volta inválida
-                            ou anterior à ida.</div>
+
+                    <div id="previewWrap"
+                        style="display:none; margin-top:32px; padding-top:32px; border-top:1px solid var(--border);">
+                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">Prévia do documento</h2>
+                        <div
+                            style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;">
+                            <div id="previewBox"
+                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
+                            </div>
+                        </div>
+                        <p class="small" style="margin-top:12px;color:var(--text-muted);">
+                            Prévia parcial. Na versão completa você poderá copiar, baixar .DOC e enviar no WhatsApp.
+                        </p>
                     </div>
                 </div>
-
-                <h2>Acompanhante</h2>
-                <label class="label">Acompanhado por</label>
-                <select class="input" id="acompanhado_por">
-                    <option value="nenhum">Sem acompanhante</option>
-                    <option value="resp1">Responsável 1</option>
-                    <option value="resp2">Responsável 2</option>
-                    <option value="terceiro">Parente/Terceiro</option>
-                </select>
-
-                <div id="terceiroBox" style="display:none">
-                    <label class="label">Nome do acompanhante</label>
-                    <input class="input" id="acomp_nome" placeholder="Ex.: Tia Carla" />
-                    <label class="label">Documento do acompanhante</label>
-                    <input class="input" id="acomp_doc" placeholder="Ex.: RG 99.888.777-6" />
-                    <label class="label">Parentesco</label>
-                    <input class="input" id="acomp_parentesco" placeholder="Ex.: Tia / Avó / Madrinha" />
-                </div>
-
-                <h2>Responsável(veis) que autorizam</h2>
-                <label class="label">Responsável 1 — Nome completo</label>
-                <input class="input" id="resp1_nome" placeholder="Ex.: Maria Souza" />
-                <label class="label">Responsável 1 — CPF</label>
-                <input class="input" id="resp1_cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" />
-                <div id="err_resp1_cpf" class="small" style="display:none;color:#fca5a5">CPF do Responsável 1 inválido.
-                </div>
-                <label class="label">Responsável 1 — Documento (RG/Passaporte) [opcional]</label>
-                <input class="input" id="resp1_doc" placeholder="Ex.: RG 11.222.333-4" />
-                <label class="label">Parentesco</label>
-                <select class="input" id="resp1_parentesco">
-                    <option>Mãe</option>
-                    <option>Pai</option>
-                    <option>Responsável legal</option>
-                    <option>Tutor(a)</option>
-                </select>
-
-                <div style="margin-top:12px"><label class="small"><input type="checkbox" id="dois_resps" /> Dois
-                        responsáveis assinam</label></div>
-                <div id="resp2Box" style="display:none">
-                    <h3>Responsável 2</h3>
-                    <label class="label">Nome completo</label>
-                    <input class="input" id="resp2_nome" placeholder="Ex.: João Souza" />
-                    <label class="label">CPF</label>
-                    <input class="input" id="resp2_cpf" placeholder="000.000.000-00" inputmode="numeric"
-                        maxlength="14" />
-                    <div id="err_resp2_cpf" class="small" style="display:none;color:#fca5a5">CPF do Responsável 2
-                        inválido.</div>
-                    <label class="label">Documento (RG/Passaporte) [opcional]</label>
-                    <input class="input" id="resp2_doc" placeholder="Ex.: RG 55.666.777-8" />
-                    <label class="label">Parentesco</label>
-                    <select class="input" id="resp2_parentesco">
-                        <option>Pai</option>
-                        <option>Mãe</option>
-                        <option>Responsável legal</option>
-                        <option>Tutor(a)</option>
-                    </select>
-                </div>
-
-                <h2>Local e contatos</h2>
-                <label class="label">Cidade/UF de emissão</label>
-                <input class="input" id="cidade_uf_emissao" placeholder="Ex.: Blumenau/SC" />
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                    <div>
-                        <label class="label">E-mail (opcional)</label>
-                        <input class="input" id="email" placeholder="Ex.: seu@email.com" />
-                    </div>
-                    <div>
-                        <label class="label">Telefone (opcional)</label>
-                        <input class="input" id="telefone" placeholder="Ex.: (47) 99999-9999" />
-                    </div>
-                </div>
-                <label class="label">Observações (opcional)</label>
-                <textarea class="input" id="observacoes" rows="3"
-                    placeholder="Ex.: Autorização válida apenas para o período informado."></textarea>
-
-                <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap">
-                    <button class="btn" id="btnPreview">Gerar prévia</button>
-                    <button class="btn btn-outline" id="btnPagar" disabled>Gerar documento completo (R$ 6,90)</button>
-                </div>
-            </div>
-
-            <div id="previewWrap" style="display:none; margin-top:16px">
-                <h2>Prévia do documento</h2>
-                <div class="preview" id="previewBox"></div>
-                <p class="small" style="margin-top:8px">Prévia parcial. Na versão completa você poderá copiar, baixar
-                    .DOC e enviar no WhatsApp.</p>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
+                        class="footer-link">Termos de Uso</a>.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+
         function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; }
         function isValidCPF(cpf) { var s = (cpf || '').replace(/\D/g, ''); if (s.length !== 11) return false; if (/^(\d)\1{10}$/.test(s)) return false; var i, sum = 0, rest; for (i = 1; i <= 9; i++) sum += parseInt(s.substring(i - 1, i)) * (11 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(9, 10))) return false; sum = 0; for (i = 1; i <= 10; i++) sum += parseInt(s.substring(i - 1, i)) * (12 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(10, 11))) return false; return true; }
         function maskDate(v) { v = (v || '').replace(/\D/g, '').slice(0, 8); if (v.length >= 5) v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3'); else if (v.length >= 3) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2'); return v; }
