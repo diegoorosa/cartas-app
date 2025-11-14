@@ -791,3 +791,123 @@ input[type="checkbox"] {
         font-size: 22px !important;
     }
 }
+
+/* ========================================
+   HERO MAIS COMPACTO
+======================================== */
+.hero {
+    padding: 50px 0 60px;
+    /* Era 80px 0 120px */
+}
+
+.hero h1 {
+    font-size: 48px;
+    /* Era 64px */
+    margin-bottom: 16px;
+    /* Era 24px */
+}
+
+.hero-subtitle {
+    font-size: 17px;
+    /* Era 20px */
+    margin-bottom: 28px;
+    /* Era 40px */
+}
+
+.hero-badge {
+    padding: 6px 14px;
+    /* Era 8px 16px */
+    font-size: 13px;
+    /* Era 14px */
+    margin-bottom: 18px;
+    /* Era 24px */
+}
+
+.hero-actions {
+    gap: 12px;
+    /* Era 16px */
+    margin-bottom: 32px;
+    /* Novo - reduz espaço antes dos badges */
+}
+
+.btn {
+    padding: 12px 24px;
+    /* Era 14px 28px */
+    font-size: 15px;
+    /* Era 16px */
+}
+
+.trust-badges {
+    margin-top: 32px;
+    /* Era 48px */
+    gap: 16px;
+    /* Era 24px */
+}
+
+.trust-badge {
+    font-size: 13px;
+    /* Era 14px */
+}
+
+/* Navbar menor */
+.navbar-content {
+    height: 64px;
+    /* Era 72px */
+}
+
+/* Section de busca mais compacta */
+.search-container {
+    margin: 0 auto 50px;
+    /* Era 0 auto 80px */
+}
+
+.search-input {
+    padding: 14px 18px;
+    /* Era 16px 20px */
+    font-size: 15px;
+    /* Era 16px */
+}
+
+/* Sections com menos padding */
+.section {
+    padding: 60px 0;
+    /* Era 80px */
+}
+
+/* Mobile - ainda mais compacto */
+@media (max-width: 768px) {
+    .hero {
+        padding: 35px 0 45px;
+        /* Era 48px 0 80px */
+    }
+
+    .hero h1 {
+        font-size: 32px;
+        /* Era 40px */
+        margin-bottom: 12px;
+    }
+
+    .hero-subtitle {
+        font-size: 15px;
+        /* Era 18px */
+        margin-bottom: 20px;
+    }
+
+    .hero-actions {
+        margin-bottom: 24px;
+    }
+
+    .trust-badges {
+        margin-top: 24px;
+        gap: 12px;
+    }
+
+    .section {
+        padding: 40px 0;
+        /* Era 48px 0 */
+    }
+
+    .search-container {
+        margin-bottom: 35px;
+    }
+}
