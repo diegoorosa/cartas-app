@@ -8,9 +8,9 @@
     <script src="/utm.js"></script>
     <link rel="stylesheet" href="/style.css" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
-    <script> window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments) } gtag('js', new Date()); gtag('config', 'AW-1021062139') </script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments) }; gtag('js', new Date()); gtag('config', 'AW-1021062139');</script>
     <script
-        type="text/javascript"> (function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk"); clarity("set", "maskText", true); </script>
+        type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk"); clarity("set", "maskText", true);</script>
     <meta name="google-site-verification" content="7lHnDvnY-qPZ14zg79sQnZ9Z9EzG0HiPMlaK6mDMy9o" />
     <title>Gerador de Cartas</title>
 </head>
@@ -55,25 +55,25 @@
                 <h1 class="hero-title">Gere documentos prontos em minutos</h1>
                 <p class="hero-sub">Autorização de viagem para menor, cartas de bagagem e consumo. Prévia grátis. Baixe
                     em DOC ou PDF.</p>
-                <div class="cta-row"> <a class="btn btn-raise" href="/viagem.html">Gerar autorização de viagem</a> <a
-                        class="btn btn-outline" href="/bagagem-extraviada.html">Carta de bagagem</a> </div>
+                <div class="cta-row"> <a class="btn btn-grad btn-raise" href="/viagem.html">Gerar autorização de
+                        viagem</a> <a class="btn btn-ghost" href="/bagagem-extraviada.html">Carta de bagagem</a> </div>
                 <div class="trust"> <span class="trust-badge">Pagamento Mercado Pago</span> <span
                         class="trust-badge">Suporte por WhatsApp</span> <span class="trust-badge">Sem aconselhamento
                         jurídico</span> </div>
             </div>
             <div class="hero-col">
-                <div class="card card-spotlight">
+                <div class="card card-spotlight card-illustrated">
                     <h3 class="card-title">Destaque: Autorização de Viagem para Menor</h3>
                     <div class="tags"> <span class="tag tag--type">viagem</span> <span
                             class="tag tag--brand">nacional/internacional</span> </div>
                     <div class="small">Documento pronto para imprimir e assinar</div>
-                    <div class="cta-row"> <a class="btn btn-raise" href="/viagem.html">Gerar agora</a> <a
+                    <div class="cta-row"> <a class="btn btn-grad btn-raise" href="/viagem.html">Gerar agora</a> <a
                             class="btn btn-outline" href="/menor-nacional-um-responsavel.html">Ver guia</a> </div>
                 </div>
             </div>
         </div>
     </section>
-    <main class="container">
+    <main class="container" id="defaultContent">
         <h2 id="h2-guias-viagem">Guias de viagem</h2>
         <div id="section-guias-viagem" class="grid" style="margin-bottom:16px"> <a
                 href="/menor-nacional-um-responsavel.html" class="card-link">
@@ -127,22 +127,20 @@
 
         <h2 id="h2-populares">Modelos populares</h2>
         <div class="grid" id="grid"></div>
-
-        <div id="searchResults" style="display:none; margin-top:16px">
-            <h2>Resultados</h2>
-            <div class="grid" id="searchGrid"></div>
-            <p id="noResults" class="small" style="display:none">Nenhum resultado encontrado.</p>
-        </div>
-
-        <div class="small" style="margin-top:24px;opacity:.9">
-            Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
-                style="text-decoration:underline">Termos de Uso</a>.
-        </div>
     </main>
+    <section id="searchResults" class="container" style="display:none; margin-top:16px">
+        <h2>Resultados</h2>
+        <div class="grid" id="searchGrid"></div>
+        <p id="noResults" class="small" style="display:none">Nenhum resultado encontrado.</p>
+    </section>
+    <div class="container">
+        <div class="small" style="margin-top:24px;opacity:.9"> Este site não presta aconselhamento jurídico. Leia os <a
+                href="/termos.html" style="text-decoration:underline">Termos de Uso</a>. </div>
+    </div>
     <script src="/slugs.js"></script>
     <script src="/home.js"></script>
     <script src="/recovery.js"></script>
-    <script> document.addEventListener('DOMContentLoaded', function () { if (window.LMRecovery && LMRecovery.offerRecover) { LMRecovery.offerRecover(); } var t = document.getElementById('navToggle'); var m = document.getElementById('navMenu'); if (t && m) { t.addEventListener('click', function () { m.classList.toggle('open'); }); } var dds = document.querySelectorAll('[data-dd]'); for (var i = 0; i < dds.length; i++) { dds[i].addEventListener('click', function (e) { if (window.matchMedia('(max-width: 860px)').matches) { e.preventDefault(); var p = this.parentElement; p.classList.toggle('open'); } }); } }); </script>
+    <script> document.addEventListener('DOMContentLoaded', function () { if (window.LMRecovery && LMRecovery.offerRecover) { LMRecovery.offerRecover(); } var t = document.getElementById('navToggle'); var m = document.getElementById('navMenu'); if (t && m) { t.addEventListener('click', function () { m.classList.toggle('open') }) } var dds = document.querySelectorAll('[data-dd]'); for (var i = 0; i < dds.length; i++) { dds[i].addEventListener('click', function (e) { if (window.matchMedia('(max-width: 860px)').matches) { e.preventDefault(); this.parentElement.classList.toggle('open') } }) } function norm(s) { return (s || '').toString().toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '') } function linkFor(item) { var s = item.slug || ''; var t = (item.tipo || '').toLowerCase(); if (t.indexOf('autorizacao') > -1 || s.indexOf('autorizacao') > -1) return '/viagem.html'; return '/doc/' + encodeURIComponent(s); } var q = document.getElementById('q'); var sr = document.getElementById('searchResults'); var sg = document.getElementById('searchGrid'); var noR = document.getElementById('noResults'); var def = document.getElementById('defaultContent'); function render(list) { sg.innerHTML = ''; for (var i = 0; i < list.length; i++) { var it = list[i]; var a = document.createElement('a'); a.className = 'card-link'; a.href = linkFor(it); a.innerHTML = '<div class="card card-hover"><h3 class="card-title">' + (it.title || it.slug || 'Documento') + '</h3><div class="small">' + (it.brand ? it.brand + ' • ' : '') + (it.tipo || '') + '</div><div class="cta-row"><button class="btn btn-sm">Abrir</button></div></div>'; sg.appendChild(a); } } function doSearch(v) { var s = norm(v); if (s.length < 2) { sr.style.display = 'none'; def.style.display = 'block'; return; } var list = (window.SLUGS || []).filter(function (it) { var hay = norm((it.title || '') + ' ' + (it.slug || '') + ' ' + (it.brand || '') + ' ' + (it.tipo || '')); return hay.indexOf(s) > -1; }); def.style.display = 'none'; sr.style.display = 'block'; noR.style.display = list.length ? 'none' : 'block'; render(list.slice(0, 30)); } var timer = null; function debounced() { clearTimeout(timer); timer = setTimeout(function () { doSearch(q.value) }, 200) } if (q) { q.addEventListener('input', debounced); q.addEventListener('keydown', function (e) { if (e.key === 'Enter') { doSearch(q.value) } }) } }); </script>
 </body>
 
 </html>
