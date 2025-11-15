@@ -57,23 +57,31 @@
                 // 1) Server-first: tenta pegar pelo order_id (até 5 tentativas) – funciona quando o webhook já gerou
                 if (orderId) {
                     for (var i = 0; i < 5; i++) {
+                        // ... (dentro de gerarFinalIdempotente, dentro do for loop)
                         try {
                             var rs = await fetch('/.netlify/functions/generate-doc', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
                             });
-                            var js = await rs.json();
-                            if (rs.ok && js && js.output) {
-                                var fullTextS = renderDocText(js.output, null);
-                                docBox.textContent = fullTextS;
-                                docBox.style.display = 'block';
-                                actions.style.display = 'flex';
-                                if (info) info.textContent = '';
-                                attachActions(fullTextS, null);
-                                return;
+
+                            // Só tenta ler o JSON se a resposta for 200 OK
+                            if (rs.ok) {
+                                var js = await rs.json();
+                                if (js && js.output) {
+                                    var fullTextS = renderDocText(js.output, null);
+                                    docBox.textContent = fullTextS;
+                                    docBox.style.display = 'block';
+                                    actions.style.display = 'flex';
+                                    if (info) info.textContent = '';
+                                    attachActions(fullTextS, null);
+                                    return; // Achou!
+                                }
                             }
-                        } catch (e) { /* tenta de novo */ }
+                            // Se não for 'rs.ok' (ex: 404), ele simplesmente ignora
+                            // e vai para o 'await' de 1.5s para tentar de novo.
+
+                        } catch (e) { /* falha de rede, tenta de novo */ }
                         await new Promise(function (r) { setTimeout(r, 1500); });
                     }
                 }
