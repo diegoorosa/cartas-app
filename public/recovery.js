@@ -15,7 +15,7 @@
             host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px';
 
             var pageStyle = isIOS
-                ? 'width:794px;min-height:1123px;padding:36px;'
+                ? 'width:720px;max-width:720px;padding:40px 50px;'
                 : 'width:210mm;min-height:297mm;padding:18mm;';
 
             host.innerHTML = '<div id="p" style="' + pageStyle + 'box-sizing:border-box;background:#fff;color:#000;font:12pt Times,serif;line-height:1.6;word-break:break-word;overflow-wrap:anywhere">' + html + '</div>';
@@ -23,10 +23,16 @@
             var node = host.querySelector('#p');
 
             var opt = {
-                margin: 0,
+                margin: isIOS ? [10, 0, 10, 0] : 0,
                 filename: (filename || 'documento') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: -window.scrollY },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    scrollY: -window.scrollY,
+                    windowHeight: isIOS ? node.scrollHeight : document.documentElement.scrollHeight
+                },
                 jsPDF: { unit: isIOS ? 'pt' : 'mm', format: 'a4', orientation: 'portrait' }
             };
 
