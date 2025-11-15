@@ -381,18 +381,33 @@
         btnPagar.addEventListener('click', async function () {
             try {
                 var payload = getPayload();
-                var nomeOk = !!(payload && payload.nome && payload.nome.trim());
-                var cidadeOk = !!(payload && payload.cidade_uf && payload.cidade_uf.trim());
-                var cpfOk = ((payload && payload.cpf) ? payload.cpf.replace(/\D/g, '').length : 0) >= 11;
-                if (!nomeOk || !cidadeOk || !cpfOk) { alert('Preencha Nome, Cidade/UF e informe um CPF válido.'); return; }
+                var ok = true;
+                if (typeof validateAll === 'function') {
+                    ok = validateAll(payload);
+                } else {
+                    ok =
+                        payload &&
+                        payload.menor_nome &&
+                        payload.menor_nascimento &&
+                        payload.resp1_nome &&
+                        payload.resp1_cpf &&
+                        payload.destino &&
+                        payload.data_ida &&
+                        payload.data_volta &&
+                        payload.cidade_uf_emissao;
+                }
+                if (!ok) { alert('Verifique os campos obrigatórios.'); return; }
+
+                if (typeof saveForm === 'function') { saveForm(); }
                 localStorage.setItem('pendingPayload', JSON.stringify(payload));
                 btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
 
+                var slugStr = (typeof slug !== 'undefined' && slug) ? slug : 'autorizacao-viagem-menor';
                 var r = await fetch('/.netlify/functions/mp-checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        slug: slug,
+                        slug: slugStr,
                         price: 6.9,
                         payload: payload,
                         utm: (window.LMUTM ? LMUTM.get() : {})
@@ -402,7 +417,8 @@
                 if (!r.ok || !data.init_point) throw 0;
 
                 localStorage.setItem('lastOrderId', data.order_id || '');
-                showPaymentModal(data.init_point, data.order_id, slug);
+                if (typeof gtag === 'function') { gtag('event', 'begin_checkout', { value: 6.9, currency: 'BRL', items: [{ item_id: slugStr }] }); }
+                showPaymentModal(data.init_point, data.order_id, slugStr);
             } catch (e) {
                 alert('Não foi possível abrir o pagamento.');
                 btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)';

@@ -164,13 +164,12 @@
             (async function () {
                 try {
                     var payload = getPayload();
-                    var nomeOk = !!(payload && payload.nome && payload.nome.trim());
-                    var cidadeOk = !!(payload && payload.cidade_uf && payload.cidade_uf.trim());
-                    var cpfOk = ((payload && payload.cpf) ? payload.cpf.replace(/\D/g, '').length : 0) >= 11;
-                    if (!nomeOk || !cidadeOk || !cpfOk) { alert('Preencha Nome, Cidade/UF e informe um CPF válido.'); return; }
+                    if (!payload.nome || !payload.cidade_uf || !assertCPF()) {
+                        alert('Preencha Nome, Cidade/UF e informe um CPF válido.');
+                        return;
+                    }
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
                     btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
-
                     var r = await fetch('/.netlify/functions/mp-checkout', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },

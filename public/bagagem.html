@@ -246,7 +246,6 @@
         if (!validateAll(p)) { alert('Preencha corretamente os campos obrigatórios.'); return; }
         localStorage.setItem('pendingPayload', JSON.stringify(p));
         btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
-
         var slugStr = 'carta-bagagem';
         var r = await fetch('/.netlify/functions/mp-checkout', {
           method: 'POST',
