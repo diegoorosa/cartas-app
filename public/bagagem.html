@@ -246,6 +246,7 @@
         if (!validateAll(p)) { alert('Preencha corretamente os campos obrigatórios.'); return; }
         localStorage.setItem('pendingPayload', JSON.stringify(p));
         btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
+
         var slugStr = 'carta-bagagem';
         var r = await fetch('/.netlify/functions/mp-checkout', {
           method: 'POST',
@@ -259,6 +260,7 @@
         });
         var data = await r.json();
         if (!r.ok || !data.init_point) throw 0;
+
         localStorage.setItem('lastOrderId', data.order_id || '');
         showPaymentModal(data.init_point, data.order_id, slugStr);
       } catch (e) {
