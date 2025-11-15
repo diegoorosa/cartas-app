@@ -378,32 +378,39 @@
             })();
         });
 
-        src = "/pay-modal.js"
+        btnPagar.addEventListener('click', function () {
+            (async function () {
+                try {
+                    var payload = getPayload();
+                    var cpfRaw = (payload.cpf || '').replace(/\D/g, '');
+                    var nomeOk = !!(payload.nome && payload.nome.trim());
+                    var cidadeOk = !!(payload.cidade_uf && payload.cidade_uf.trim());
+                    var cpfOk = cpfRaw.length === 11 && isValidCPF ? isValidCPF(payload.cpf) : (cpfRaw.length === 11);
+                    if (!nomeOk || !cidadeOk || !cpfOk) { alert('Preencha Nome, Cidade/UF e informe um CPF válido.'); return; }
+                    localStorage.setItem('pendingPayload', JSON.stringify(payload));
+                    btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
 
-        btnPagar.addEventListener('click', async function () {
-            try {
-                var payload = getPayload();
-                if (!payload.nome || !payload.cidade_uf || !assertCPF()) { alert('Preencha Nome, Cidade/UF e informe um CPF válido.'); return; }
-                localStorage.setItem('pendingPayload', JSON.stringify(payload));
-                btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
-                var r = await fetch('/.netlify/functions/mp-checkout', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        slug: slug,
-                        price: 6.9,
-                        payload: payload,
-                        utm: (window.LMUTM ? LMUTM.get() : {})
-                    })
-                });
-                var data = await r.json();
-                if (!r.ok || !data.init_point) throw 0;
-                localStorage.setItem('lastOrderId', data.order_id || '');
-                showPaymentModal(data.init_point, data.order_id, slug);
-            } catch (e) {
-                alert('Não foi possível abrir o pagamento.');
-                btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)';
-            }
+                    var r = await fetch('/.netlify/functions/mp-checkout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            slug: slug,
+                            price: 6.9,
+                            payload: payload,
+                            utm: (window.LMUTM ? LMUTM.get() : {})
+                        })
+                    });
+                    var data = await r.json();
+                    if (!r.ok || !data.init_point) throw new Error('Falha ao abrir pagamento');
+
+                    localStorage.setItem('lastOrderId', data.order_id || '');
+                    if (typeof gtag === 'function') { gtag('event', 'begin_checkout', { value: 6.9, currency: 'BRL', items: [{ item_id: slug || 'autorizacao' }] }); }
+                    showPaymentModal(data.init_point, data.order_id, slug);
+                } catch (e) {
+                    alert('Não foi possível abrir o pagamento.');
+                    btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)';
+                }
+            })();
         });
 
         function showPaymentModal(initPoint, orderId, slug) {

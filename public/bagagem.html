@@ -233,6 +233,13 @@
       finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
     });
 
+    (function () {
+      var u = new URL(location.href); var pref = u.searchParams.get('pref'); var cia = u.searchParams.get('cia');
+      if (pref === 'extraviada') document.getElementById('status').value = 'extraviada';
+      if (pref === 'danificada') document.getElementById('status').value = 'danificada';
+      if (cia) document.getElementById('cia').value = cia.toUpperCase();
+    })();
+
     btnPagar.addEventListener('click', async function () {
       try {
         var p = getPayload();
@@ -259,13 +266,6 @@
         btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)';
       }
     });
-
-    (function () {
-      var u = new URL(location.href); var pref = u.searchParams.get('pref'); var cia = u.searchParams.get('cia');
-      if (pref === 'extraviada') document.getElementById('status').value = 'extraviada';
-      if (pref === 'danificada') document.getElementById('status').value = 'danificada';
-      if (cia) document.getElementById('cia').value = cia.toUpperCase();
-    })();
 
     function showPaymentModal(initPoint, orderId, slug) {
       var overlay = document.createElement('div');
@@ -310,12 +310,6 @@
       };
     }
 
-    (function () {
-      var u = new URL(location.href); var pref = u.searchParams.get('pref'); var cia = u.searchParams.get('cia');
-      if (pref === 'extraviada') document.getElementById('status').value = 'extraviada';
-      if (pref === 'danificada') document.getElementById('status').value = 'danificada';
-      if (cia) document.getElementById('cia').value = cia.toUpperCase();
-    })();
   </script>
 </body>
 
