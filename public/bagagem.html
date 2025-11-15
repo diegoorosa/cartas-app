@@ -269,9 +269,13 @@
     });
 
     function showPaymentModal(initPoint, orderId, slug) {
+      var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
+      var cardBG = isLight ? '#ffffff' : '#111827';
+      var cardText = isLight ? '#0f172a' : '#e6eefb';
+
       var overlay = document.createElement('div');
-      overlay.style = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center';
-      overlay.innerHTML = '<div style="background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:12px;max-width:520px;width:92%;padding:18px">' +
+      overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.65);backdrop-filter:blur(6px) saturate(120%);-webkit-backdrop-filter:blur(6px) saturate(120%);z-index:9999;display:flex;align-items:center;justify-content:center';
+      overlay.innerHTML = '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:14px;max-width:560px;width:92%;padding:20px;box-shadow:0 18px 44px rgba(0,0,0,.28)">' +
         '<h3 style="margin:0 0 8px">Pagamento</h3>' +
         '<p style="margin:0 0 10px">Abriremos o Mercado Pago em uma nova aba. Após pagar, se não redirecionar, volte para esta aba. Assim que o pagamento for confirmado, vamos liberar seu documento automaticamente.</p>' +
         '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">' +
@@ -282,6 +286,7 @@
         '<p id="lm-statusPay" class="small" style="margin-top:10px"></p>' +
         '</div>';
       document.body.appendChild(overlay);
+
       document.getElementById('lm-close').onclick = function () { overlay.remove(); };
       document.getElementById('lm-copy').onclick = function () {
         var link = location.origin + '/recuperar.html?o=' + encodeURIComponent(orderId);
@@ -289,6 +294,7 @@
         this.textContent = 'Link copiado';
         setTimeout(() => this.textContent = 'Copiar link de recuperação', 1200);
       };
+
       async function docReady() {
         try {
           var r = await fetch('/.netlify/functions/generate-doc', {
@@ -300,20 +306,21 @@
           return !!(j && j.output);
         } catch (e) { return false; }
       }
+
       document.getElementById('lm-goPay').onclick = function () {
         var w = window.open(initPoint, '_blank', 'noopener');
         var st = document.getElementById('lm-statusPay');
         st.textContent = 'Aguardando confirmação do pagamento...';
-        var start = Date.now(), tries = 0;
+        var start = Date.now();
         var iv = setInterval(async function () {
           try {
-            // 1) Se documento já estiver pronto (webhook gerou), vai direto
+            // 1) Se o documento já existe (webhook gerou), redireciona
             if (await docReady()) {
               clearInterval(iv);
               location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
               return;
             }
-            // 2) Tenta via order-status também (se estiver funcionando, acelera)
+            // 2) Order status também (se disponível)
             var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
             var jj = rr.ok ? await rr.json() : null;
             if (jj && jj.status === 'paid') {
@@ -321,8 +328,7 @@
               location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
               return;
             }
-            // 3) Timeout de 10 min
-            tries++;
+            // 3) Timeout 10 min
             if (Date.now() - start > 600000) {
               clearInterval(iv);
               st.textContent = 'Ainda não confirmamos. Se você já pagou, use o link copiado para recuperar.';
