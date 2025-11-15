@@ -49,14 +49,14 @@ exports.handler = async (event) => {
 
         // 1) Idempotência: se já existe geração para este order_id, retorna imediatamente
         if (orderId) {
-            const { data: exist } = await supabase
+            const { data: rows } = await supabase
                 .from('generations')
-                .select('id, output_json')
+                .select('id, output_json, created_at')
                 .eq('order_id', orderId)
-                .limit(1)
-                .maybeSingle();
-            if (exist && exist.output_json) {
-                return { statusCode: 200, body: JSON.stringify({ output: exist.output_json, cached: true }) };
+                .order('created_at', { ascending: false })
+                .limit(1);
+            if (rows && rows.length) {
+                return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
             }
         }
 
@@ -123,19 +123,17 @@ exports.handler = async (event) => {
         // 5) Salva idempotente: só quando NÃO é preview e existe orderId
         //    Usa upsert por order_id para nunca duplicar; não grava order_id nulo
         if (!preview && orderId) {
-            try {
-                await supabase
-                    .from('generations')
-                    .upsert(
-                        {
-                            order_id: orderId,
-                            slug: payload.slug || '',
-                            input_json: payload,
-                            output_json: output
-                        },
-                        { onConflict: 'order_id' }
-                    );
-            } catch (e) { }
+            await supabase
+                .from('generations')
+                .upsert(
+                    {
+                        order_id: orderId,
+                        slug: payload.slug || '',
+                        input_json: payload,
+                        output_json: output
+                    },
+                    { onConflict: 'order_id' }
+                );
         }
 
         return { statusCode: 200, body: JSON.stringify({ output, cached: false }) };
