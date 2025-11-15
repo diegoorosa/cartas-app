@@ -214,22 +214,43 @@
                 this.textContent = 'Link copiado';
                 setTimeout(() => this.textContent = 'Copiar link de recuperação', 1200);
             };
+            async function docReady() {
+                try {
+                    var r = await fetch('/.netlify/functions/generate-doc', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
+                    });
+                    if (!r.ok) return false;
+                    var j = await r.json();
+                    return !!(j && j.output);
+                } catch (e) { return false; }
+            }
             document.getElementById('lm-goPay').onclick = function () {
                 var w = window.open(initPoint, '_blank', 'noopener');
                 var st = document.getElementById('lm-statusPay');
                 st.textContent = 'Aguardando confirmação do pagamento...';
-                var start = Date.now();
+                var start = Date.now(), tries = 0;
                 var iv = setInterval(async function () {
                     try {
+                        // 1) Se documento já estiver pronto (webhook gerou), vai direto
+                        if (await docReady()) {
+                            clearInterval(iv);
+                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
+                            return;
+                        }
+                        // 2) Tenta via order-status também (se estiver funcionando, acelera)
                         var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
                         var jj = rr.ok ? await rr.json() : null;
                         if (jj && jj.status === 'paid') {
                             clearInterval(iv);
                             location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
+                            return;
                         }
+                        // 3) Timeout de 10 min
+                        tries++;
                         if (Date.now() - start > 600000) {
                             clearInterval(iv);
-                            st.textContent = 'Ainda não confirmamos. Se você já pagou, use o link de recuperação.';
+                            st.textContent = 'Ainda não confirmamos. Se você já pagou, use o link copiado para recuperar.';
                         }
                     } catch (e) { }
                 }, 3000);
