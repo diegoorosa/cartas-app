@@ -1,3 +1,5 @@
+// ARQUIVO: generate-doc.js
+
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 
@@ -22,15 +24,13 @@ async function callWithRetry(modelName, prompt, tries) {
 function parseJson(text) { try { return JSON.parse(text); } catch (e) { const clean = String(text || '').replace(/```json|```/g, '').trim(); return JSON.parse(clean); } }
 function todayBR() { return new Date().toLocaleDateString('pt-BR'); }
 
+// ... (constantes SYSTEM_CARTA, SYSTEM_VIAGEM, etc. permanecem iguais) ...
 const SYSTEM_CARTA =
     'Você gera cartas formais no padrão brasileiro. Responda SOMENTE em JSON válido no formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e claro. Produza 3 a 4 parágrafos (60–90 palavras cada); 1) identificação e pedido, 2) cessação de cobranças, 3) confirmação por escrito, 4) estorno se houver cobrança posterior. Observacoes_legais: referência genérica ao CDC (Lei 8.078/90), sem aconselhamento jurídico.';
-
 const SYSTEM_VIAGEM =
     'Você gera AUTORIZAÇÃO DE VIAGEM PARA MENOR no padrão brasileiro. Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e claro, sem placeholders. Produza 3–5 parágrafos contendo: 1) menor (nome, data de nascimento, documento) e responsáveis (nomes e CPFs), 2) viagem (nacional/internacional), destino e período (datas), 3) acompanhante (nome/doc/relação) ou ausência, 4) autorização restrita ao período/destino, 5) linha de local e data já formatada, e linhas de assinatura. Instruções de formatação: inclua no fechamento uma linha "Local e data: {CIDADE/UF}, {DATA}" e em seguida linhas de assinatura com os nomes e CPFs dos responsáveis, por exemplo "______________________________\\n{NOME_RESP1}\\nCPF: {CPF_RESP1}" e, se houver, do responsável 2. Checklist: documentos do menor e responsáveis, comprovante de parentesco (se aplicável) e duas vias assinadas (reconhecimento de firma pode ser exigido). Observacoes_legais: menção genérica a ECA/autoridades/companhias.';
-
 const SYSTEM_BAGAGEM =
     'Você gera carta à companhia aérea por bagagem extraviada/danificada. Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e objetivo. 4–6 parágrafos: passageiro/voo (cia, nº, data, origem/destino, PIR), ocorrido, despesas emergenciais, pedido de providências e prazos, anexos.';
-
 const SYSTEM_CONSUMO =
     'Você gera carta de consumo para e-commerce (arrependimento, não entregue, atraso, defeito). Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal. 3–5 parágrafos: identificação + dados do pedido (loja, nº, data, itens/valor), descrição do problema, solicitação objetiva e prazo, anexos. Observacoes_legais: referência genérica ao CDC (ex.: art.49 quando aplicável), sem aconselhamento jurídico.';
 
@@ -47,7 +47,7 @@ exports.handler = async (event) => {
         const tipo = String(payload.tipo || '').toLowerCase();
         const orderId = payload.order_id || payload.orderId || null;
 
-        // 1) Idempotência: se já existe geração para este order_id, retorna imediatamente
+        // 1) Idempotência: Se temos um orderId, SEMPRE checa o cache primeiro.
         if (orderId) {
             const { data: rows } = await supabase
                 .from('generations')
@@ -56,11 +56,22 @@ exports.handler = async (event) => {
                 .order('created_at', { ascending: false })
                 .limit(1);
             if (rows && rows.length) {
+                // Encontrou no cache! Retorna imediatamente.
                 return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
             }
         }
 
-        // 2) Validações mínimas (mantidas)
+        // 2) *** NOVA VERIFICAÇÃO ***
+        // Se estamos aqui (não achou no cache), verificamos se é um payload COMPLETO.
+        // Um payload de GERAÇÃO precisa ter 'nome' (para cartas) ou 'menor_nome' (para viagem).
+        // Se não tiver, é um poll (só com order_id) que não achou nada, e NÃO DEVE gerar.
+        if (!payload.nome && !payload.menor_nome) {
+            // Este é um poll (só com order_id) que não encontrou nada no cache.
+            // Retornamos um erro que o cliente (success.html) vai entender como "tente de novo".
+            return { statusCode: 404, body: 'Documento não encontrado no cache. Aguardando geração.' };
+        }
+
+        // 3) Se estamos aqui, é um payload de GERAÇÃO. AGORA validamos.
         if (tipo === 'autorizacao_viagem') {
             if (!payload.menor_nome || !payload.menor_nascimento || !payload.resp1_nome || !payload.resp1_cpf || !payload.destino || !payload.data_ida || !payload.data_volta || !payload.cidade_uf_emissao)
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
@@ -71,11 +82,12 @@ exports.handler = async (event) => {
             if (!payload.nome || !payload.cpf || !payload.loja || !payload.pedido || !payload.data_compra || !payload.subtipo)
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         } else {
+            // Validação genérica (agora segura)
             if (!payload.nome || !payload.cidade_uf || !payload.cpf)
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         }
 
-        // 3) Monta prompt (igual ao seu)
+        // 4) Monta prompt (igual ao seu)
         let system = SYSTEM_CARTA, up = '';
         if (tipo === 'autorizacao_viagem') {
             const localData = (payload.cidade_uf_emissao || '') + ', ' + todayBR();
@@ -114,14 +126,13 @@ exports.handler = async (event) => {
                 'Motivo/Resumo: ' + (payload.motivo || 'não informado');
         }
 
-        // 4) Gera com retry nos modelos
+        // 5) Gera com retry nos modelos
         let text = null;
         for (const m of MODELS) { try { text = await callWithRetry(m, system + '\n\n' + up, 3); if (text) break; } catch (e) { } }
         if (!text) return { statusCode: 503, body: 'busy' };
         const output = parseJson(text);
 
-        // 5) Salva idempotente: só quando NÃO é preview e existe orderId
-        //    Usa upsert por order_id para nunca duplicar; não grava order_id nulo
+        // 6) Salva idempotente: só quando NÃO é preview e existe orderId
         if (!preview && orderId) {
             await supabase
                 .from('generations')
