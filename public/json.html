@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-br">
+<meta charset="utf-8">
+<title>Rebuild DOC/PDF</title>
+<style>
+    body {
+        font: 14px/1.4 system-ui, Arial;
+        padding: 16px
+    }
+
+    textarea {
+        width: 100%;
+        height: 240px
+    }
+
+    #out {
+        white-space: pre-wrap;
+        border: 1px solid #ddd;
+        padding: 12px;
+        margin-top: 12px
+    }
+</style>
+<div>
+    <h1>Recuperar documento a partir do JSON</h1>
+    <p>Cole aqui o output_json da tabela generations:</p> <textarea id="json"></textarea>
+    <div style="margin:8px 0"> <button id="render">Renderizar</button> <button id="doc" disabled>Baixar DOC</button>
+        <button id="pdf" disabled>Baixar PDF</button>
+    </div>
+    <div id="out"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+<script> let html = ''; function toFullText(j) { const p = []; if (j.saudacao) p.push(j.saudacao); (j.corpo_paragrafos || []).forEach(x => p.push(x)); if (j.fechamento) p.push(j.fechamento); return p.join('\n\n'); } function toHtml(text) { return text.split('\n\n').map(p => '<p>' + p.replace(/\n/g, '<br/>') + '</p>').join(''); } render.onclick = () => { try { const j = JSON.parse(json.value); const t = toFullText(j); out.textContent = t; html = toHtml(t); doc.disabled = false; pdf.disabled = false; } catch (e) { alert('JSON inválido'); } }; doc.onclick = () => { const full = '<html><head><meta charset="utf-8"><style>body{background:#fff;color:#000;font:12pt Times,serif;line-height:1.6;margin:0;padding:18mm;box-sizing:border-box}p{margin:0 0 12pt 0;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}</style></head><body>' + html + '</body></html>'; const blob = new Blob(['\ufeff', full], { type: 'application/msword' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click(); URL.revokeObjectURL(a.href); }; pdf.onclick = () => { const host = document.createElement('div'); host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px'; host.innerHTML = '<div id="p" style="width:210mm;min-height:297mm;padding:18mm;background:#fff;color:#000;font:12pt Times,serif;line-height:1.6">' + html + '</div>'; document.body.appendChild(host); html2pdf().set({ margin: 0, filename: 'documento.pdf', image: { type: 'jpeg', quality: .98 }, html2canvas: { scale: 2, backgroundColor: '#fff' }, jsPDF: { unit: 'mm', format: 'a4' } }).from(host.querySelector('#p')).save().then(() => host.remove()); }; </script>

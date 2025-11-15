@@ -238,12 +238,77 @@
         var p = getPayload();
         if (!validateAll(p)) { alert('Preencha corretamente os campos obrigatórios.'); return; }
         localStorage.setItem('pendingPayload', JSON.stringify(p));
-        btnPagar.disabled = true; btnPagar.textContent = 'Redirecionando...';
-        var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: 'carta-bagagem', price: 6.9 }) });
-        var data = await r.json(); if (!r.ok || !data.init_point) throw new Error();
-        location.href = data.init_point;
-      } catch (e) { alert('Não foi possível abrir o pagamento.'); btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)'; }
+        btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
+        var slugStr = 'carta-bagagem';
+        var r = await fetch('/.netlify/functions/mp-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            slug: slugStr,
+            price: 6.9,
+            payload: p,
+            utm: (window.LMUTM ? LMUTM.get() : {})
+          })
+        });
+        var data = await r.json();
+        if (!r.ok || !data.init_point) throw 0;
+        localStorage.setItem('lastOrderId', data.order_id || '');
+        showPaymentModal(data.init_point, data.order_id, slugStr);
+      } catch (e) {
+        alert('Não foi possível abrir o pagamento.');
+        btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)';
+      }
     });
+
+    (function () {
+      var u = new URL(location.href); var pref = u.searchParams.get('pref'); var cia = u.searchParams.get('cia');
+      if (pref === 'extraviada') document.getElementById('status').value = 'extraviada';
+      if (pref === 'danificada') document.getElementById('status').value = 'danificada';
+      if (cia) document.getElementById('cia').value = cia.toUpperCase();
+    })();
+
+    function showPaymentModal(initPoint, orderId, slug) {
+      var overlay = document.createElement('div');
+      overlay.style = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center';
+      overlay.innerHTML = '<div style="background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:12px;max-width:520px;width:92%;padding:18px">' +
+        '<h3 style="margin:0 0 8px">Pagamento</h3>' +
+        '<p style="margin:0 0 10px">Abriremos o Mercado Pago em uma nova aba. Após pagar, se não redirecionar, volte para esta aba. Assim que o pagamento for confirmado, vamos liberar seu documento automaticamente.</p>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">' +
+        '<button id="lm-goPay" class="btn">Ir para pagamento</button>' +
+        '<button id="lm-copy" class="btn btn-outline">Copiar link de recuperação</button>' +
+        '<button id="lm-close" class="btn btn-outline">Fechar</button>' +
+        '</div>' +
+        '<p id="lm-statusPay" class="small" style="margin-top:10px"></p>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      document.getElementById('lm-close').onclick = function () { overlay.remove(); };
+      document.getElementById('lm-copy').onclick = function () {
+        var link = location.origin + '/recuperar.html?o=' + encodeURIComponent(orderId);
+        navigator.clipboard.writeText(link);
+        this.textContent = 'Link copiado';
+        setTimeout(() => this.textContent = 'Copiar link de recuperação', 1200);
+      };
+      document.getElementById('lm-goPay').onclick = function () {
+        var w = window.open(initPoint, '_blank', 'noopener');
+        var st = document.getElementById('lm-statusPay');
+        st.textContent = 'Aguardando confirmação do pagamento...';
+        var start = Date.now();
+        var iv = setInterval(async function () {
+          try {
+            var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
+            var jj = rr.ok ? await rr.json() : null;
+            if (jj && jj.status === 'paid') {
+              clearInterval(iv);
+              location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
+            }
+            if (Date.now() - start > 600000) {
+              clearInterval(iv);
+              st.textContent = 'Ainda não confirmamos. Se você já pagou, use o link de recuperação.';
+            }
+          } catch (e) { }
+        }, 3000);
+      };
+    }
 
     (function () {
       var u = new URL(location.href); var pref = u.searchParams.get('pref'); var cia = u.searchParams.get('cia');

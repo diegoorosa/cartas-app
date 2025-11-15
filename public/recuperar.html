@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+  <title>Recuperar documento</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Recuperar documento</h1>
+      <p class="small">Se você já pagou, informe o código do pedido (order_id) para baixar.</p>
+      <input class="input" id="oid" placeholder="Cole aqui o código do pedido" />
+      <div class="cta-row"><button class="btn" id="btn">Buscar</button></div>
+      <div id="doc" class="preview" style="display:none"></div>
+      <div id="actions" style="display:none;gap:8px;margin-top:12px" class="cta-row">
+        <button class="btn" id="bdoc">Baixar .DOC</button>
+        <button class="btn btn-outline" id="bpdf">Baixar .PDF</button>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+  <script>
+    function qs(n) { var u = new URL(location.href); return u.searchParams.get(n); }
+    var oid = qs('o'); if (oid) { document.getElementById('oid').value = oid; }
+    function toHtml(t) { return t.split('\n\n').map(p => '<p>' + p.replace(/\n/g, '<br/>') + '</p>').join(''); }
+    function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); (out.corpo_paragrafos || []).forEach(x => partes.push(x)); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); }
+    var html = '';
+    document.getElementById('btn').onclick = async function () {
+      var o = document.getElementById('oid').value.trim(); if (!o) { alert('Informe o código do pedido.'); return; }
+      var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: { order_id: o }, preview: false }) });
+      var j = await r.json(); if (!j || !j.output) { alert('Não encontrado. Aguarde mais alguns instantes ou verifique o código.'); return; }
+      var t = renderDocText(j.output); document.getElementById('doc').textContent = t; document.getElementById('doc').style.display = 'block';
+      html = toHtml(t); document.getElementById('actions').style.display = 'flex';
+    };
+    document.getElementById('bdoc').onclick = function () {
+      var full = '<html><head><meta charset="utf-8"><style>body{background:#fff;color:#000;font:12pt Times,serif;line-height:1.6;margin:0;padding:18mm;box-sizing:border-box}p{margin:0 0 12pt 0;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}</style></head><body>' + html + '</body></html>';
+      var blob = new Blob(['\ufeff', full], { type: 'application/msword' }); var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click(); URL.revokeObjectURL(a.href);
+    };
+    document.getElementById('bpdf').onclick = function () {
+      var host = document.createElement('div'); host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px';
+      host.innerHTML = '<div id="p" style="width:210mm;min-height:297mm;padding:18mm;background:#fff;color:#000;font:12pt Times,serif;line-height:1.6">' + html + '</div>'; document.body.appendChild(host);
+      html2pdf().set({ margin: 0, filename: 'documento.pdf', image: { type: 'jpeg', quality: .98 }, html2canvas: { scale: 2, backgroundColor: '#fff' }, jsPDF: { unit: 'mm', format: 'a4' } }).from(host.querySelector('#p')).save().then(() => host.remove());
+    };
+  </script>
+</body>
+
+</html>
