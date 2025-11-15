@@ -14,26 +14,26 @@
             var host = document.createElement('div');
             host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px';
 
-            var pageStyle = isIOS
-                ? 'width:720px;max-width:720px;padding:40px 50px;'
-                : 'width:210mm;min-height:297mm;padding:18mm;';
+            // Usa mesmas dimensões para todos, mas com ajustes
+            var pageStyle = 'width:210mm;padding:20mm 18mm;box-sizing:border-box;background:#fff;color:#000;font:12pt Times,serif;line-height:1.6;word-break:break-word;overflow-wrap:anywhere';
 
-            host.innerHTML = '<div id="p" style="' + pageStyle + 'box-sizing:border-box;background:#fff;color:#000;font:12pt Times,serif;line-height:1.6;word-break:break-word;overflow-wrap:anywhere">' + html + '</div>';
+            host.innerHTML = '<div id="p" style="' + pageStyle + '">' + html + '</div>';
             document.body.appendChild(host);
             var node = host.querySelector('#p');
 
             var opt = {
-                margin: isIOS ? [10, 0, 10, 0] : 0,
+                margin: [5, 0, 5, 0],
                 filename: (filename || 'documento') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: {
                     scale: 2,
                     useCORS: true,
                     backgroundColor: '#ffffff',
-                    scrollY: -window.scrollY,
-                    windowHeight: isIOS ? node.scrollHeight : document.documentElement.scrollHeight
+                    scrollY: 0,
+                    windowHeight: node.scrollHeight + 100
                 },
-                jsPDF: { unit: isIOS ? 'pt' : 'mm', format: 'a4', orientation: 'portrait' }
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
             html2pdf().set(opt).from(node).toPdf().get('pdf').then(function (pdf) {
