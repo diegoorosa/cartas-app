@@ -34,27 +34,33 @@ const SYSTEM_BAGAGEM =
 const SYSTEM_CONSUMO =
     'Você gera carta de consumo para e-commerce (arrependimento, não entregue, atraso, defeito). Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal. 3–5 parágrafos: identificação + dados do pedido (loja, nº, data, itens/valor), descrição do problema, solicitação objetiva e prazo, anexos. Observacoes_legais: referência genérica ao CDC (ex.: art.49 quando aplicável), sem aconselhamento jurídico.';
 
+
 exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
-        const { payload } = JSON.parse(event.body || '{}');
+        const body = JSON.parse(event.body || '{}');
+        const payload = body.payload || null;
+        const preview = !!body.preview;
+
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
 
         const tipo = String(payload.tipo || '').toLowerCase();
+        const orderId = payload.order_id || payload.orderId || null;
 
-        // IDEMPOTENTE POR order_id: se já existir geração para esse pedido, retorna a mesma
-        if (payload.order_id) {
-            const { data: exist, error: errExist } = await supabase
+        // 1) Idempotência: se já existe geração para este order_id, retorna imediatamente
+        if (orderId) {
+            const { data: exist } = await supabase
                 .from('generations')
                 .select('id, output_json')
-                .eq('order_id', payload.order_id)
-                .single();
-            if (!errExist && exist) {
+                .eq('order_id', orderId)
+                .limit(1)
+                .maybeSingle();
+            if (exist && exist.output_json) {
                 return { statusCode: 200, body: JSON.stringify({ output: exist.output_json, cached: true }) };
             }
         }
 
-        // validações mínimas por tipo
+        // 2) Validações mínimas (mantidas)
         if (tipo === 'autorizacao_viagem') {
             if (!payload.menor_nome || !payload.menor_nascimento || !payload.resp1_nome || !payload.resp1_cpf || !payload.destino || !payload.data_ida || !payload.data_volta || !payload.cidade_uf_emissao)
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
@@ -69,7 +75,7 @@ exports.handler = async (event) => {
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         }
 
-        // prompts
+        // 3) Monta prompt (igual ao seu)
         let system = SYSTEM_CARTA, up = '';
         if (tipo === 'autorizacao_viagem') {
             const localData = (payload.cidade_uf_emissao || '') + ', ' + todayBR();
@@ -108,21 +114,29 @@ exports.handler = async (event) => {
                 'Motivo/Resumo: ' + (payload.motivo || 'não informado');
         }
 
+        // 4) Gera com retry nos modelos
         let text = null;
         for (const m of MODELS) { try { text = await callWithRetry(m, system + '\n\n' + up, 3); if (text) break; } catch (e) { } }
         if (!text) return { statusCode: 503, body: 'busy' };
-
         const output = parseJson(text);
 
-        // salva geração (com order_id se houver)
-        try {
-            await supabase.from('generations').insert({
-                order_id: payload.order_id || null,
-                slug: payload.slug || '',
-                input_json: payload,
-                output_json: output
-            });
-        } catch (e) { }
+        // 5) Salva idempotente: só quando NÃO é preview e existe orderId
+        //    Usa upsert por order_id para nunca duplicar; não grava order_id nulo
+        if (!preview && orderId) {
+            try {
+                await supabase
+                    .from('generations')
+                    .upsert(
+                        {
+                            order_id: orderId,
+                            slug: payload.slug || '',
+                            input_json: payload,
+                            output_json: output
+                        },
+                        { onConflict: 'order_id' }
+                    );
+            } catch (e) { }
+        }
 
         return { statusCode: 200, body: JSON.stringify({ output, cached: false }) };
     } catch (e) {
