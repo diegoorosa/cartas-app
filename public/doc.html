@@ -84,7 +84,7 @@
                         <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
                             <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
                             <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$
-                                6,90)</button>
+                                9,90)</button>
                         </div>
                     </div>
 
@@ -139,8 +139,21 @@
         }
 
         // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
+        (function () {
+            // 1. Tenta pegar o tema salvo pelo usuário (se ele já clicou no 🌙)
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                return;
+            }
+
+            // 2. Se não tem nada salvo, detecta o sistema
+            //    (Verifica se o sistema prefere o modo CLARO)
+            const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+
+            // 3. Aplica o tema: 'light' se o sistema preferir, senão 'dark'
+            document.documentElement.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
+        })();
 
         function getSlug() { var u = new URL(location.href); var qs = u.searchParams.get('slug'); if (qs) return qs; var seg = location.pathname.replace(/\/+$/, '').split('/'); if (seg[1] === 'doc') return decodeURIComponent(seg.slice(2).join('/')); return ''; }
         function getParam(name) { var u = new URL(location.href); return u.searchParams.get(name); }
@@ -175,7 +188,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             slug: slug,
-                            price: 6.9,
+                            price: 9.9,
                             payload: payload,
                             utm: (window.LMUTM ? LMUTM.get() : {})
                         })
@@ -184,11 +197,11 @@
                     if (!r.ok || !data.init_point) throw new Error('Falha ao abrir pagamento');
 
                     localStorage.setItem('lastOrderId', data.order_id || '');
-                    if (typeof gtag === 'function') { gtag('event', 'begin_checkout', { value: 6.9, currency: 'BRL', items: [{ item_id: slug || 'autorizacao' }] }); }
+                    if (typeof gtag === 'function') { gtag('event', 'begin_checkout', { value: 9.9, currency: 'BRL', items: [{ item_id: slug || 'autorizacao' }] }); }
                     showPaymentModal(data.init_point, data.order_id, slug);
                 } catch (e) {
                     alert('Não foi possível abrir o pagamento.');
-                    btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 6,90)';
+                    btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
                 }
             })();
         });
