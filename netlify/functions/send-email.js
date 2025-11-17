@@ -1,12 +1,11 @@
-// ARQUIVO: netlify/functions/send-email.js (VERSÃO FINAL COM PUPPETEER-CORE)
+// ARQUIVO: netlify/functions/send-email.js (VERSÃO FINAL COM @sparticuz/chromium)
 
 const { createClient } = require('@supabase/supabase-js');
 const nodemailer = require('nodemailer');
-const puppeteer = require('puppeteer-core'); // A nova "Fábrica de PDFs" (Motor)
-const chrome = require('chrome-aws-lambda'); // O novo "Navegador Light"
+const chromium = require('@sparticuz/chromium'); // A NOVA "Fábrica de PDFs"
+const puppeteer = require('puppeteer-core');     // O Motor
 
-// Helper que transforma o JSON em HTML (para o PDF)
-// (Exatamente igual ao de antes)
+// Helper HTML (Exatamente igual ao de antes)
 function renderDocHTML(out) {
     var partes = [];
     if (out.titulo) partes.push(`<h1>${out.titulo.toUpperCase()}</h1>`);
@@ -96,11 +95,13 @@ exports.handler = async (event) => {
         let pdfBuffer = null;
 
         try {
-            // Configura o navegador "light"
+            // Configura o navegador "light" MODERNO
             browser = await puppeteer.launch({
-                args: chrome.args,
-                executablePath: await chrome.executablePath,
-                headless: chrome.headless,
+                args: chromium.args,
+                defaultViewport: chromium.defaultViewport,
+                executablePath: await chromium.executablePath(), // MUDANÇA AQUI
+                headless: chromium.headless, // MUDANÇA AQUI (usa o 'headless' do chromium)
+                ignoreHTTPSErrors: true,
             });
             const page = await browser.newPage();
 
@@ -115,7 +116,6 @@ exports.handler = async (event) => {
             console.error('Erro ao gerar PDF:', pdfError);
             return { statusCode: 500, body: JSON.stringify({ error: 'Falha ao gerar o PDF no servidor' }) };
         } finally {
-            // Fecha o navegador
             if (browser) {
                 await browser.close();
             }
