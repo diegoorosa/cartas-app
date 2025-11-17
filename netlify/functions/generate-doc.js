@@ -1,4 +1,4 @@
-// ARQUIVO: generate-doc.js
+// ARQUIVO: generate-doc.js (ATUALIZADO)
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
@@ -24,11 +24,15 @@ async function callWithRetry(modelName, prompt, tries) {
 function parseJson(text) { try { return JSON.parse(text); } catch (e) { const clean = String(text || '').replace(/```json|```/g, '').trim(); return JSON.parse(clean); } }
 function todayBR() { return new Date().toLocaleDateString('pt-BR'); }
 
-// ... (constantes SYSTEM_CARTA, SYSTEM_VIAGEM, etc. permanecem iguais) ...
+// ======================================================
+// 1. PROMPT SYSTEM_VIAGEM ATUALIZADO
+// ======================================================
 const SYSTEM_CARTA =
     'Você gera cartas formais no padrão brasileiro. Responda SOMENTE em JSON válido no formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e claro. Produza 3 a 4 parágrafos (60–90 palavras cada); 1) identificação e pedido, 2) cessação de cobranças, 3) confirmação por escrito, 4) estorno se houver cobrança posterior. Observacoes_legais: referência genérica ao CDC (Lei 8.078/90), sem aconselhamento jurídico.';
+
 const SYSTEM_VIAGEM =
-    'Você gera AUTORIZAÇÃO DE VIAGEM PARA MENOR no padrão brasileiro. Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e claro, **sem placeholders (NENHUM texto entre colchetes como "[INSERIR...]").** Produza 3–5 parágrafos contendo: 1) menor (nome, data de nascimento, documento) e responsáveis (nomes e CPFs). **Importante: NÃO inclua o endereço do responsável, apenas nome e documentos (CPF/RG) fornecidos.**, 2) viagem (nacional/internacional), destino e período (datas), 3) acompanhante (nome/doc/relação) ou ausência, 4) autorização restrita ao período/destino, 5) linha de local e data já formatada, e linhas de assinatura. Instruções de formatação: inclua no fechamento uma linha "Local e data: {CIDADE/UF}, {DATA}" e, **após duas quebras de linha (\\n\\n)**, as linhas de assinatura com os nomes e CPFs dos responsáveis, por exemplo "**\\n\\n**______________________________\\n{NOME_RESP1}\\nCPF: {CPF_RESP1}" e, se houver, do responsável 2. Checklist: documentos do menor e responsáveis, comprovante de parentesco (se aplicável) e duas vias assinadas (reconhecimento de firma pode ser exigido). Observacoes_legais: menção genérica a ECA/autoridades/companhias.';
+    'Você gera AUTORIZAÇÃO DE VIAGEM PARA MENOR no padrão brasileiro. Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e claro, **sem placeholders (NENHUM texto como "[INSERIR...]")**. Produza 3–5 parágrafos contendo: 1) menor (nome, data de nascimento, documento) e responsáveis que autorizam (nomes e CPFs). **Importante: NÃO inclua o endereço do responsável, apenas nome e documentos.** 2) viagem (nacional/internacional), destino e período (datas). 3) **Informação do Acompanhante:** O *user prompt* informará o tipo de acompanhamento. Se for "desacompanhado", mencione isso claramente. Se for "outro_responsavel" ou "terceiro", inclua os dados completos: "O menor viajará acompanhado por {NOME_ACOMP}, portador(a) do CPF {CPF_ACOMP}, documento {DOC_ACOMP}, {PARENTESCO}." 4) autorização restrita ao período/destino. 5) linha de local e data formatada, e linhas de assinatura. Instruções de formatação: inclua no fechamento "Local e data: {CIDADE/UF}, {DATA}" e, **após duas quebras de linha (\\n\\n)**, as linhas de assinatura com os nomes e CPFs dos responsáveis que autorizam. Checklist: documentos do menor, dos responsáveis (que assinam) e do acompanhante (que viaja), e duas vias assinadas (reconhecimento de firma pode ser exigido). Observacoes_legais: menção genérica a ECA/autoridades/companhias.';
+
 const SYSTEM_BAGAGEM =
     'Você gera carta à companhia aérea por bagagem extraviada/danificada. Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e objetivo. 4–6 parágrafos: passageiro/voo (cia, nº, data, origem/destino, PIR), ocorrido, despesas emergenciais, pedido de providências e prazos, anexos.';
 const SYSTEM_CONSUMO =
@@ -47,7 +51,7 @@ exports.handler = async (event) => {
         const tipo = String(payload.tipo || '').toLowerCase();
         const orderId = payload.order_id || payload.orderId || null;
 
-        // 1) Idempotência: Se temos um orderId, SEMPRE checa o cache primeiro.
+        // 1) Idempotência (Sem mudança)
         if (orderId) {
             const { data: rows } = await supabase
                 .from('generations')
@@ -56,30 +60,33 @@ exports.handler = async (event) => {
                 .order('created_at', { ascending: false })
                 .limit(1);
             if (rows && rows.length) {
-                // Encontrou no cache! Retorna imediatamente.
                 return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
             }
         }
 
-        // 2) *** NOVA VERIFICAÇÃO ***
-        // Se estamos aqui (não achou no cache), verificamos se é um payload COMPLETO.
-        // Um payload de GERAÇÃO precisa ter 'nome' (para cartas) ou 'menor_nome' (para viagem).
-        // Se não tiver, é um poll (só com order_id) que não achou nada, e NÃO DEVE gerar.
+        // 2) Verificação de Poll (Sem mudança)
         if (!payload.nome && !payload.menor_nome) {
-            // Este é um poll (só com order_id) que não encontrou nada no cache.
-            // Retornamos um erro que o cliente (success.html) vai entender como "tente de novo".
             return { statusCode: 404, body: 'Documento não encontrado no cache. Aguardando geração.' };
         }
 
-        // 3) Se estamos aqui, é um payload de GERAÇÃO. AGORA validamos.
+        // ======================================================
+        // 3. VALIDAÇÃO ATUALIZADA
+        // ======================================================
         if (tipo === 'autorizacao_viagem') {
-            if (!payload.menor_nome || !payload.menor_nascimento || !payload.resp1_nome || !payload.resp1_cpf || !payload.destino || !payload.data_ida || !payload.data_volta || !payload.cidade_uf_emissao)
-                return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
+            // Valida campos principais
+            if (!payload.menor_nome || !payload.menor_nascimento || !payload.menor_doc || !payload.resp1_nome || !payload.resp1_cpf || !payload.destino || !payload.data_ida || !payload.data_volta || !payload.cidade_uf_emissao || !payload.acompanhante_tipo)
+                return { statusCode: 400, body: 'Campos obrigatórios (menor, resp1, viagem) ausentes' };
+
+            // Valida campos do acompanhante (se não for desacompanhado)
+            if (payload.acompanhante_tipo !== 'desacompanhado') {
+                if (!payload.acompanhante_nome || !payload.acompanhante_cpf || !payload.acompanhante_doc || !payload.acompanhante_parentesco)
+                    return { statusCode: 400, body: 'Campos do acompanhante são obrigatórios' };
+            }
         } else if (tipo === 'bagagem') {
             if (!payload.nome || !payload.cpf || !payload.cia || !payload.voo || !payload.data_voo || !payload.origem || !payload.destino || !payload.status || !payload.cidade_uf)
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         } else if (tipo === 'consumo') {
-            if (!payload.nome || !payload.cpf || !payload.loja || !payload.pedido || !payload.data_compra || !payload.subtipo)
+            if (!payload.nome || !payload.cpf || !payload.loja || !payload.pedido || !payload.data_compra || !payload.motivo) // 'motivo' é o subtipo
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         } else {
             // Validação genérica (agora segura)
@@ -87,16 +94,25 @@ exports.handler = async (event) => {
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         }
 
-        // 4) Monta prompt (igual ao seu)
+        // ======================================================
+        // 4. MONTAGEM DO PROMPT (UP) ATUALIZADA
+        // ======================================================
         let system = SYSTEM_CARTA, up = '';
         if (tipo === 'autorizacao_viagem') {
             const localData = (payload.cidade_uf_emissao || '') + ', ' + todayBR();
+
+            // Lógica para info do acompanhante
+            let acompInfo = 'desacompanhado';
+            if (payload.acompanhante_tipo !== 'desacompanhado') {
+                acompInfo = `Tipo: ${payload.acompanhante_tipo} | Nome: ${payload.acompanhante_nome || ''} (CPF ${payload.acompanhante_cpf || ''}, Doc ${payload.acompanhante_doc || ''}, Parentesco: ${payload.acompanhante_parentesco || ''})`;
+            }
+
             up =
                 'Menor: ' + (payload.menor_nome || '') + ', nasc. ' + (payload.menor_nascimento || '') + ', doc ' + (payload.menor_doc || '') + '\n' +
-                'Responsável 1: ' + (payload.resp1_nome || '') + ', CPF ' + (payload.resp1_cpf || '') + (payload.resp1_doc ? (', doc ' + payload.resp1_doc) : '') + ', parentesco ' + (payload.resp1_parentesco || '') + '\n' +
-                'Responsável 2: ' + (payload.resp2_nome ? (payload.resp2_nome + ', CPF ' + (payload.resp2_cpf || '')) : 'não') + '\n' +
+                'Responsável 1 (Autorizador): ' + (payload.resp1_nome || '') + ', CPF ' + (payload.resp1_cpf || '') + (payload.resp1_doc ? (', doc ' + payload.resp1_doc) : '') + ', parentesco ' + (payload.resp1_parentesco || '') + '\n' +
+                'Responsável 2 (Autorizador, se houver): ' + (payload.dois_resps && payload.resp2_nome ? (payload.resp2_nome + ', CPF ' + (payload.resp2_cpf || '')) : 'não') + '\n' +
                 'Viagem: ' + (payload.viagem_tipo || '') + ' para ' + (payload.destino || '') + ' de ' + (payload.data_ida || '') + ' a ' + (payload.data_volta || '') + '\n' +
-                'Acompanhado por: ' + (payload.acompanhado_por || '') + (payload.acompanhado_por === 'terceiro' ? ('; ' + (payload.acomp_nome || '') + ', doc ' + (payload.acomp_doc || '') + ', relação ' + (payload.acomp_parentesco || '')) : '') + '\n' +
+                'Acompanhamento: ' + acompInfo + '\n' +
                 'Local e data de emissão (já formatar no fechamento): ' + localData + '\n' +
                 'Contatos: ' + (payload.email || '') + ' ' + (payload.telefone || '');
             system = SYSTEM_VIAGEM;
@@ -113,8 +129,8 @@ exports.handler = async (event) => {
                 'Consumidor: ' + (payload.nome || '') + ' (CPF ' + (payload.cpf || '') + '), ' + (payload.email || '') + ' ' + (payload.telefone || '') + '\n' +
                 'Loja: ' + (payload.loja || '') + ' | Pedido: ' + (payload.pedido || '') + ' | Data: ' + (payload.data_compra || '') + '\n' +
                 'Itens/Valor: ' + (payload.itens || '') + ' | ' + (payload.valor || '') + '\n' +
-                'Subtipo: ' + (payload.subtipo || '') + ' | Prazo prometido: ' + (payload.prazo_prometido || '') + '\n' +
-                'Endereço/Entrega: ' + (payload.endereco || '') + ' | Cidade/UF: ' + (payload.cidade_uf || '') + '\n' +
+                'Subtipo: ' + (payload.motivo || '') + ' | Prazo prometido: ' + (payload.previsao_entrega || '') + '\n' +
+                'Cidade/UF: ' + (payload.cidade_uf || '') + '\n' +
                 'Notas: ' + (payload.observacoes || '');
             system = SYSTEM_CONSUMO;
         } else {
@@ -126,13 +142,13 @@ exports.handler = async (event) => {
                 'Motivo/Resumo: ' + (payload.motivo || 'não informado');
         }
 
-        // 5) Gera com retry nos modelos
+        // 5) Gera com retry (Sem mudança)
         let text = null;
         for (const m of MODELS) { try { text = await callWithRetry(m, system + '\n\n' + up, 3); if (text) break; } catch (e) { } }
         if (!text) return { statusCode: 503, body: 'busy' };
         const output = parseJson(text);
 
-        // 6) Salva idempotente: só quando NÃO é preview e existe orderId
+        // 6) Salva idempotente (Sem mudança)
         if (!preview && orderId) {
             await supabase
                 .from('generations')
@@ -140,7 +156,7 @@ exports.handler = async (event) => {
                     {
                         order_id: orderId,
                         slug: payload.slug || '',
-                        input_json: payload,
+                        input_json: payload, // Salva o payload completo, agora com os novos campos
                         output_json: output
                     },
                     { onConflict: 'order_id' }
