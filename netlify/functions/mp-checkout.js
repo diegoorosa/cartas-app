@@ -1,17 +1,28 @@
+// ARQUIVO: mp-checkout.js (COM TRAVA reCAPTCHA)
+
 const { createClient } = require('@supabase/supabase-js');
 
-// MAPA DE PREÇOS SEGURO (NO SERVIDOR)
-// Aqui definimos o preço de cada 'slug'
-// Eu adicionei todos os slugs do seu 'slugs.js', mas pode conferir.
+// --- NOVA FUNÇÃO HELPER (reCAPTCHA) ---
+async function verifyCaptcha(token) {
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
+    try {
+        const response = await fetch(url, { method: 'POST' });
+        const data = await response.json();
+        return data.success === true;
+    } catch (e) {
+        console.error('Erro ao verificar reCAPTCHA:', e);
+        return false;
+    }
+}
+// --- FIM DA NOVA FUNÇÃO ---
+
+// MAPA DE PREÇOS SEGURO (Copiado do seu arquivo)
 const PRICE_MAP = {
     'default': 9.90, // Preço padrão, caso um slug não seja encontrado
-
-    // Ferramentas principais
     'autorizacao-viagem-menor': 9.90,
     'carta-bagagem': 9.90,
     'carta-ecommerce': 9.90,
-
-    // Slugs do slugs.js
     "carta-cancelamento-smart-fit": 9.90,
     "carta-reclamacao-smart-fit-cobranca-indevida": 9.90,
     "carta-cancelamento-bluefit": 9.90,
@@ -106,21 +117,31 @@ exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
 
-        // 1. Removido 'price' de ser lido do cliente
-        const { slug, payload, utm } = JSON.parse(event.body || '{}');
+        // --- NOVO: Adicionado 'captchaToken' ---
+        const { slug, payload, utm, captchaToken } = JSON.parse(event.body || '{}');
 
-        // 2. Preço é buscado do nosso PRICE_MAP
+        // (Preço já era seguro, copiado do seu arquivo)
         const price = PRICE_MAP[slug] || PRICE_MAP['default'];
 
-        // 3. Validação atualizada
         if (!slug) return { statusCode: 400, body: 'Missing slug' };
+
+        // --- NOVO: VERIFICA O reCAPTCHA ---
+        if (!captchaToken) {
+            return { statusCode: 403, body: 'reCAPTCHA token ausente' };
+        }
+        const isHuman = await verifyCaptcha(captchaToken);
+        if (!isHuman) {
+            return { statusCode: 403, body: 'Falha na verificação do reCAPTCHA. Você é um robô?' };
+        }
+        // --- FIM DA VERIFICAÇÃO ---
 
         const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
         const MP_TOKEN = process.env.MP_ACCESS_TOKEN;
-        const BASE_URL = process.env.SITE_URL || 'https://cartasapp.netlify.app';
+        const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br'; // URL atualizada
 
         const orderId = crypto.randomUUID();
 
+        // (Resto do código copiado do seu arquivo, sem mudanças)
         try {
             await supabase.from('checkout_intents').insert({
                 order_id: orderId,
@@ -136,7 +157,6 @@ exports.handler = async (event) => {
                     title: `Documento: ${slug}`,
                     quantity: 1,
                     currency_id: 'BRL',
-                    // 4. Usamos a variável 'price' segura do servidor
                     unit_price: Number(price)
                 }
             ],

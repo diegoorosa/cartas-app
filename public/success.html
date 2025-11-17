@@ -42,6 +42,7 @@
                 </div>
                 <p class="small" id="email-status" style="margin-top:8px;"></p>
             </div>
+
             <div id="nav-extra"
                 style="display:none; gap:8px; margin-top:24px; padding-top:24px; border-top: 1px solid var(--border); flex-wrap:wrap">
                 <a class="btn btn-primary" id="btnNovoDoc">Gerar Novo Documento</a>
@@ -59,16 +60,16 @@
     <script> var SEND_TO_CONVERSAO = 'AW-1021062139/eWBbCPil_7kbEPvX8OYD'; function qs(n) { var u = new URL(location.href); return u.searchParams.get(n); } var orderId = qs('o'); var slug = qs('slug'); var s = qs('s'); var info = document.getElementById('info'); var retry = document.getElementById('retry'); var btnBack = document.getElementById('btnBack'); var btnPay = document.getElementById('btnPay'); var docBox = document.getElementById('doc'); var actions = document.getElementById('actions'); var btnCopiar = document.getElementById('btnCopiar'); var btnDoc = document.getElementById('btnDoc'); var btnPdf = document.getElementById('btnPdf'); var btnZap = document.getElementById('btnZap'); var btnSuporte = document.getElementById('btnSuporte');
         var navExtra = document.getElementById('nav-extra');
         var btnNovoDoc = document.getElementById('btnNovoDoc');
-
-        // --- NOVAS VARIÁVEIS DE E-MAIL ---
         var emailSection = document.getElementById('email-section');
         var emailInput = document.getElementById('email-input');
         var emailButton = document.getElementById('email-button');
         var emailStatus = document.getElementById('email-status');
 
-        function getOrderStatus() { return fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)).then(function (r) { return r.ok ? r.json() : null; }); } btnBack.onclick = function () { if (slug && slug.indexOf('autorizacao-viagem') > -1) location.href = '/viagem.html'; else if (slug && slug.indexOf('carta-bagagem') > -1) location.href = '/bagagem.html'; else location.href = '/'; }; btnPay.onclick = async function () { var payloadStr = localStorage.getItem('pendingPayload'); if (!payloadStr) { btnBack.onclick(); return; } try { var p = JSON.parse(payloadStr); var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: p.slug || slug || 'documento', utm: p.utm || {} }) }); var data = await r.json(); if (r.ok && data.init_point) location.href = data.init_point; } catch (e) { } }; function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); var body = out.corpo_paragrafos || []; for (var i = 0; i < body.length; i++)partes.push(body[i]); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); } function htmlBodyFromText(t) { return t.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join(''); } function onceConv(id) { try { var k = 'c:' + id; if (localStorage.getItem(k)) return false; localStorage.setItem(k, '1'); return true; } catch (e) { return true; } } function normalizeEmail(v) { if (!v) return ''; return String(v).trim().toLowerCase(); } function normalizePhone(v) { if (!v) return ''; var d = String(v).replace(/\D/g, ''); if (d.indexOf('55') !== 0) d = '55' + d; return d; } async function sha256Hex(s) { if (!s) return ''; var enc = new TextEncoder().encode(s); var buf = await crypto.subtle.digest('SHA-256', enc); var a = Array.from(new Uint8Array(buf)); return a.map(function (b) { return b.toString(16).padStart(2, '0'); }).join(''); } async function buildECData() { try { var p = JSON.parse(localStorage.getItem('pendingPayload') || '{}'); var em = normalizeEmail(p.email); var ph = normalizePhone(p.telefone); var ec = {}; if (em) ec.email = await sha256Hex(em); if (ph) ec.phone_number = await sha256Hex(ph); ec.address = { country: 'BR' }; return ec; } catch (e) { return { address: { country: 'BR' } }; } }
+        function getOrderStatus() { return fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)).then(function (r) { return r.ok ? r.json() : null; }); } btnBack.onclick = function () { if (slug && slug.indexOf('autoriza-viagem') > -1) location.href = '/viagem.html'; else if (slug && slug.indexOf('carta-bagagem') > -1) location.href = '/bagagem.html'; else location.href = '/'; }; btnPay.onclick = async function () { var payloadStr = localStorage.getItem('pendingPayload'); if (!payloadStr) { btnBack.onclick(); return; } try { var p = JSON.parse(payloadStr); var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: p.slug || slug || 'documento', utm: p.utm || {} }) }); var data = await r.json(); if (r.ok && data.init_point) location.href = data.init_point; } catch (e) { } }; function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); var body = out.corpo_paragrafos || []; for (var i = 0; i < body.length; i++)partes.push(body[i]); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); } function htmlBodyFromText(t) { return t.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join(''); } function onceConv(id) { try { var k = 'c:' + id; if (localStorage.getItem(k)) return false; localStorage.setItem(k, '1'); return true; } catch (e) { return true; } } function normalizeEmail(v) { if (!v) return ''; return String(v).trim().toLowerCase(); } function normalizePhone(v) { if (!v) return ''; var d = String(v).replace(/\D/g, ''); if (d.indexOf('55') !== 0) d = '55' + d; return d; } async function sha256Hex(s) { if (!s) return ''; var enc = new TextEncoder().encode(s); var buf = await crypto.subtle.digest('SHA-256', enc); var a = Array.from(new Uint8Array(buf)); return a.map(function (b) { return b.toString(16).padStart(2, '0'); }).join(''); } async function buildECData() { try { var p = JSON.parse(localStorage.getItem('pendingPayload') || '{}'); var em = normalizeEmail(p.email); var ph = normalizePhone(p.telefone); var ec = {}; if (em) ec.email = await sha256Hex(em); if (ph) ec.phone_number = await sha256Hex(ph); ec.address = { country: 'BR' }; return ec; } catch (e) { return { address: { country: 'BR' } }; } }
 
-        // --- FUNÇÃO attachActions ATUALIZADA ---
+        // ======================================================
+        // FUNÇÃO attachActions COM O NOVO 'emailButton.onclick'
+        // ======================================================
         function attachActions(fullText, payload) {
             var bodyHtml = htmlBodyFromText(fullText);
             btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar'; }, 1200); } catch (e) { } };
@@ -91,12 +92,8 @@
             }
             if (navExtra) navExtra.style.display = 'flex';
 
-            // =================================
-            // === NOVA LÓGICA DE E-MAIL AQUI ===
-            // =================================
+            // --- Lógica do E-mail ATUALIZADA com Cooldown ---
             if (emailSection) emailSection.style.display = 'block';
-
-            // Tenta pré-preencher o e-mail, se o payload estiver disponível
             if (payload && payload.email) {
                 emailInput.value = payload.email;
             }
@@ -109,6 +106,7 @@
                     return;
                 }
 
+                // 1. TRAVA O BOTÃO
                 emailButton.disabled = true;
                 emailButton.textContent = 'Enviando...';
                 emailStatus.textContent = 'Preparando o envio...';
@@ -119,32 +117,39 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            order_id: orderId, // orderId é a variável global da URL
+                            order_id: orderId,
                             email_to: email
                         })
                     });
-
-                    if (!rs.ok) {
-                        var errData = await rs.json();
-                        throw new Error(errData.error || 'Falha no servidor');
-                    }
+                    if (!rs.ok) { throw new Error('Falha no servidor'); }
 
                     emailStatus.textContent = 'E-mail enviado com sucesso para ' + email + '!';
                     emailStatus.style.color = 'var(--accent-success)';
-                    emailButton.textContent = 'Enviar';
-                    emailButton.disabled = false;
 
                 } catch (e) {
                     emailStatus.textContent = 'Houve um erro ao enviar. Tente novamente.';
                     emailStatus.style.color = 'var(--accent-error)';
-                    emailButton.disabled = false;
-                    emailButton.textContent = 'Enviar';
                 }
+
+                // 2. INICIA O COOLDOWN DE 60 SEGUNDOS (INDEPENDENTE DE SUCESSO OU FALHA)
+                let countdown = 60;
+                emailButton.textContent = `Aguarde ${countdown}s`;
+
+                var interval = setInterval(function () {
+                    countdown--;
+                    if (countdown > 0) {
+                        emailButton.textContent = `Aguarde ${countdown}s`;
+                    } else {
+                        clearInterval(interval);
+                        emailButton.textContent = 'Enviar';
+                        emailButton.disabled = false; // 3. REABILITA O BOTÃO
+                    }
+                }, 1000);
             };
-            // =================================
-            // === FIM DA LÓGICA DE E-MAIL ===
-            // =================================
         }
+
+        // --- Resto do código (gerarFinalIdempotente, flow, etc.) ---
+        // NENHUMA MUDANÇA DAQUI PARA BAIXO
 
         async function gerarFinalIdempotente() {
             try {
@@ -190,7 +195,7 @@
                             });
 
                             if (rs2.ok) {
-                                var js2 = await rs2.json();
+                                var js2 = await rs.json();
                                 if (js2 && js2.output) {
                                     var fullTextS2 = renderDocText(js2.output, null);
                                     docBox.textContent = fullTextS2;

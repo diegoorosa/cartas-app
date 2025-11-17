@@ -1,7 +1,22 @@
-// ARQUIVO: generate-doc.js (ATUALIZADO)
+// ARQUIVO: generate-doc.js (COM TRAVA reCAPTCHA)
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
+
+// --- NOVA FUNÇÃO HELPER (reCAPTCHA) ---
+async function verifyCaptcha(token) {
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
+    try {
+        const response = await fetch(url, { method: 'POST' });
+        const data = await response.json();
+        return data.success === true;
+    } catch (e) {
+        console.error('Erro ao verificar reCAPTCHA:', e);
+        return false;
+    }
+}
+// --- FIM DA NOVA FUNÇÃO ---
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
@@ -25,7 +40,7 @@ function parseJson(text) { try { return JSON.parse(text); } catch (e) { const cl
 function todayBR() { return new Date().toLocaleDateString('pt-BR'); }
 
 // ======================================================
-// 1. PROMPT SYSTEM_VIAGEM ATUALIZADO
+// 1. PROMPT SYSTEM_VIAGEM ATUALIZADO (Copiado do seu arquivo)
 // ======================================================
 const SYSTEM_CARTA =
     'Você gera cartas formais no padrão brasileiro. Responda SOMENTE em JSON válido no formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e claro. Produza 3 a 4 parágrafos (60–90 palavras cada); 1) identificação e pedido, 2) cessação de cobranças, 3) confirmação por escrito, 4) estorno se houver cobrança posterior. Observacoes_legais: referência genérica ao CDC (Lei 8.078/90), sem aconselhamento jurídico.';
@@ -45,8 +60,23 @@ exports.handler = async (event) => {
         const body = JSON.parse(event.body || '{}');
         const payload = body.payload || null;
         const preview = !!body.preview;
+        const captchaToken = body.captchaToken; // --- NOVO: Recebe o token
 
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
+
+        // --- NOVO: VERIFICA O reCAPTCHA ---
+        // (O polling do success.html/recuperar.html não envia token, então pulamos a verificação se for só um poll)
+        const isPoll = !payload.nome && !payload.menor_nome;
+        if (!isPoll) {
+            if (!captchaToken) {
+                return { statusCode: 403, body: 'reCAPTCHA token ausente' };
+            }
+            const isHuman = await verifyCaptcha(captchaToken);
+            if (!isHuman) {
+                return { statusCode: 403, body: 'Falha na verificação do reCAPTCHA. Você é um robô?' };
+            }
+        }
+        // --- FIM DA VERIFICAÇÃO ---
 
         const tipo = String(payload.tipo || '').toLowerCase();
         const orderId = payload.order_id || payload.orderId || null;
@@ -65,19 +95,17 @@ exports.handler = async (event) => {
         }
 
         // 2) Verificação de Poll (Sem mudança)
-        if (!payload.nome && !payload.menor_nome) {
+        if (isPoll) { // Usando a variável que já criamos
             return { statusCode: 404, body: 'Documento não encontrado no cache. Aguardando geração.' };
         }
 
         // ======================================================
-        // 3. VALIDAÇÃO ATUALIZADA
+        // 3. VALIDAÇÃO ATUALIZADA (Copiado do seu arquivo)
         // ======================================================
         if (tipo === 'autorizacao_viagem') {
-            // Valida campos principais
             if (!payload.menor_nome || !payload.menor_nascimento || !payload.menor_doc || !payload.resp1_nome || !payload.resp1_cpf || !payload.destino || !payload.data_ida || !payload.data_volta || !payload.cidade_uf_emissao || !payload.acompanhante_tipo)
                 return { statusCode: 400, body: 'Campos obrigatórios (menor, resp1, viagem) ausentes' };
 
-            // Valida campos do acompanhante (se não for desacompanhado)
             if (payload.acompanhante_tipo !== 'desacompanhado') {
                 if (!payload.acompanhante_nome || !payload.acompanhante_cpf || !payload.acompanhante_doc || !payload.acompanhante_parentesco)
                     return { statusCode: 400, body: 'Campos do acompanhante são obrigatórios' };
@@ -89,19 +117,17 @@ exports.handler = async (event) => {
             if (!payload.nome || !payload.cpf || !payload.loja || !payload.pedido || !payload.data_compra || !payload.motivo) // 'motivo' é o subtipo
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         } else {
-            // Validação genérica (agora segura)
             if (!payload.nome || !payload.cidade_uf || !payload.cpf)
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         }
 
         // ======================================================
-        // 4. MONTAGEM DO PROMPT (UP) ATUALIZADA
+        // 4. MONTAGEM DO PROMPT (UP) ATUALIZADA (Copiado do seu arquivo)
         // ======================================================
         let system = SYSTEM_CARTA, up = '';
         if (tipo === 'autorizacao_viagem') {
             const localData = (payload.cidade_uf_emissao || '') + ', ' + todayBR();
 
-            // Lógica para info do acompanhante
             let acompInfo = 'desacompanhado';
             if (payload.acompanhante_tipo !== 'desacompanhado') {
                 acompInfo = `Tipo: ${payload.acompanhante_tipo} | Nome: ${payload.acompanhante_nome || ''} (CPF ${payload.acompanhante_cpf || ''}, Doc ${payload.acompanhante_doc || ''}, Parentesco: ${payload.acompanhante_parentesco || ''})`;
@@ -156,7 +182,7 @@ exports.handler = async (event) => {
                     {
                         order_id: orderId,
                         slug: payload.slug || '',
-                        input_json: payload, // Salva o payload completo, agora com os novos campos
+                        input_json: payload,
                         output_json: output
                     },
                     { onConflict: 'order_id' }

@@ -16,10 +16,11 @@
       y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
     })(window, document, "clarity", "script", "u4x90t35gk");
   </script>
+
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="container">
       <div class="navbar-content">
@@ -36,7 +37,6 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
   <section class="hero" style="padding: 60px 0 40px;">
     <div class="container">
       <div class="hero-content">
@@ -51,7 +51,6 @@
     </div>
   </section>
 
-  <!-- Form Section -->
   <section class="section" style="padding-top: 0;">
     <div class="container">
       <div style="max-width: 800px; margin: 0 auto;">
@@ -124,7 +123,14 @@
             <label class="label">Cidade/UF</label>
             <input class="input" id="cidade_uf" placeholder="Ex.: Blumenau/SC" />
 
-            <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
+            <div style="margin-top: 32px; transform: scale(0.95); margin-left: -8px;">
+              <div class="g-recaptcha" data-sitekey="6Lf-1g8sAAAAAAo1eFRdKSnKIo33F1cBu_sUwNk2" id="recaptcha-widget">
+              </div>
+            </div>
+            <p id="recaptcha-error" class="small" style="display:none; color:var(--accent-error); margin-top:8px;">
+              Por favor, marque "Não sou um robô" para continuar.
+            </p>
+            <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap">
               <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
               <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$ 9,90)</button>
             </div>
@@ -148,7 +154,6 @@
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
@@ -158,6 +163,8 @@
     </div>
   </footer>
 
+  <script src="/utm.js"></script>
+
   <script>
     function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; }
     function isValidCPF(cpf) { var s = (cpf || '').replace(/\D/g, ''); if (s.length !== 11) return false; if (/^(\d)\1{10}$/.test(s)) return false; var i, sum = 0, rest; for (i = 1; i <= 9; i++) sum += parseInt(s.substring(i - 1, i)) * (11 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(9, 10))) return false; sum = 0; for (i = 1; i <= 10; i++) sum += parseInt(s.substring(i - 1, i)) * (12 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(10, 11))) return false; return true; }
@@ -166,6 +173,10 @@
 
     var cpfEl = document.getElementById('cpf');
     cpfEl.addEventListener('input', function () { cpfEl.value = maskCPF(cpfEl.value); });
+
+    // NOVO: Adicionado máscara para data_voo
+    var dataVooEl = document.getElementById('data_voo');
+    if (dataVooEl) { dataVooEl.addEventListener('input', function () { this.value = maskDate(this.value); }); }
 
     function getPayload() {
       cpfEl.value = maskCPF(cpfEl.value);
@@ -185,7 +196,8 @@
         status: document.getElementById('status').value,
         descricao: document.getElementById('descricao').value.trim(),
         despesas: document.getElementById('despesas').value.trim(),
-        cidade_uf: document.getElementById('cidade_uf').value.trim()
+        cidade_uf: document.getElementById('cidade_uf').value.trim(),
+        utm: (window.LMUTM ? LMUTM.get() : {}) // NOVO: Adicionado UTM
       };
     }
 
@@ -199,14 +211,43 @@
     var btnPagar = document.getElementById('btnPagar');
     var previewWrap = document.getElementById('previewWrap');
     var previewBox = document.getElementById('previewBox');
+    var recaptchaError = document.getElementById('recaptcha-error'); // NOVO
 
+    // --- LÓGICA DO BOTÃO DE PRÉVIA (btnPreview) ATUALIZADA ---
     btnPreview.addEventListener('click', async function () {
       btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+      recaptchaError.style.display = 'none'; // NOVO
       try {
+        // --- NOVO: Verificação do reCAPTCHA ---
+        var captchaToken = grecaptcha.getResponse();
+        if (!captchaToken) {
+          recaptchaError.style.display = 'block';
+          throw new Error('reCAPTCHA não marcado');
+        }
+        // --- FIM DA VERIFICAÇÃO ---
+
         var p = getPayload();
-        if (!validateAll(p)) { alert('Preencha corretamente os campos obrigatórios.'); btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; return; }
-        var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: p, preview: true }) });
-        if (!r.ok) throw new Error();
+        if (!validateAll(p)) {
+          alert('Preencha corretamente os campos obrigatórios.');
+          throw new Error('Campos inválidos');
+        }
+
+        var r = await fetch('/.netlify/functions/generate-doc', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            payload: p,
+            preview: true,
+            captchaToken: captchaToken // NOVO
+          })
+        });
+
+        if (!r.ok) {
+          var errText = 'Falha ao gerar';
+          try { var errData = await r.json(); if (errData.body) errText = errData.body; } catch (e) { }
+          if (r.status === 403) errText = 'Falha no reCAPTCHA. Tente novamente.';
+          throw new Error(errText);
+        }
+
         var d = await r.json(); var out = d.output || d;
         var pr = out.corpo_paragrafos || []; var keep = Math.max(1, Math.min(2, pr.length));
         var parcial = pr.slice(0, keep).join('\n\n') + '\n\n[...]';
@@ -215,8 +256,15 @@
         previewWrap.style.display = 'block';
         localStorage.setItem('pendingPayload', JSON.stringify(p));
         btnPagar.disabled = false;
-      } catch (e) { alert('Erro ao gerar prévia.'); }
-      finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
+      } catch (e) {
+        if (e.message !== 'Campos inválidos' && e.message !== 'reCAPTCHA não marcado') {
+          alert('Erro ao gerar prévia: ' + e.message);
+        }
+      }
+      finally {
+        btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
+        try { grecaptcha.reset(); } catch (e) { } // NOVO
+      }
     });
 
     (function () {
@@ -226,12 +274,26 @@
       if (cia) document.getElementById('cia').value = cia.toUpperCase();
     })();
 
+    // --- LÓGICA DO BOTÃO DE PAGAR (btnPagar) ATUALIZADA ---
     btnPagar.addEventListener('click', async function () {
+      btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
+      recaptchaError.style.display = 'none'; // NOVO
       try {
+        // --- NOVO: Verificação do reCAPTCHA ---
+        var captchaToken = grecaptcha.getResponse();
+        if (!captchaToken) {
+          recaptchaError.style.display = 'block';
+          throw new Error('reCAPTCHA não marcado');
+        }
+        // --- FIM DA VERIFICAÇÃO ---
+
         var p = getPayload();
-        if (!validateAll(p)) { alert('Preencha corretamente os campos obrigatórios.'); return; }
+        if (!validateAll(p)) {
+          alert('Preencha corretamente os campos obrigatórios.');
+          throw new Error('Campos inválidos');
+        }
         localStorage.setItem('pendingPayload', JSON.stringify(p));
-        btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
+
         var slugStr = 'carta-bagagem';
         var r = await fetch('/.netlify/functions/mp-checkout', {
           method: 'POST',
@@ -239,20 +301,32 @@
           body: JSON.stringify({
             slug: slugStr,
             payload: p,
-            utm: (window.LMUTM ? LMUTM.get() : {})
+            utm: (window.LMUTM ? LMUTM.get() : {}),
+            captchaToken: captchaToken // NOVO
           })
         });
+
         var data = await r.json();
-        if (!r.ok || !data.init_point) throw 0;
+        if (!r.ok) {
+          var errText = 'Falha ao criar pagamento';
+          try { if (data.body) errText = data.body; } catch (e) { }
+          if (r.status === 403) errText = 'Falha no reCAPTCHA. Tente novamente.';
+          throw new Error(errText);
+        }
 
         localStorage.setItem('lastOrderId', data.order_id || '');
+        if (typeof gtag === 'function') { gtag('event', 'begin_checkout', { value: 9.9, currency: 'BRL', items: [{ item_id: slugStr }] }); } // NOVO: gtag
         showPaymentModal(data.init_point, data.order_id, slugStr);
       } catch (e) {
-        alert('Não foi possível abrir o pagamento.');
+        if (e.message !== 'Campos inválidos' && e.message !== 'reCAPTCHA não marcado') {
+          alert('Não foi possível abrir o pagamento: ' + e.message);
+        }
         btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
+        try { grecaptcha.reset(); } catch (e) { } // NOVO
       }
     });
 
+    // --- LÓGICA DO MODAL DE PAGAMENTO (showPaymentModal) ATUALIZADA ---
     function showPaymentModal(initPoint, orderId, slug) {
       var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
       var cardBG = isLight ? '#ffffff' : '#111827';
@@ -272,7 +346,12 @@
         '</div>';
       document.body.appendChild(overlay);
 
-      document.getElementById('lm-close').onclick = function () { overlay.remove(); };
+      // NOVO: Reseta o reCAPTCHA quando o modal é fechado
+      document.getElementById('lm-close').onclick = function () {
+        overlay.remove();
+        try { grecaptcha.reset(); } catch (e) { }
+      };
+
       document.getElementById('lm-copy').onclick = function () {
         var link = location.origin + '/recuperar.html?o=' + encodeURIComponent(orderId);
         navigator.clipboard.writeText(link);
@@ -299,13 +378,11 @@
         var start = Date.now();
         var iv = setInterval(async function () {
           try {
-            // 1) Se o documento já existe (webhook gerou), redireciona
             if (await docReady()) {
               clearInterval(iv);
               location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
               return;
             }
-            // 2) Order status também (se disponível)
             var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
             var jj = rr.ok ? await rr.json() : null;
             if (jj && jj.status === 'paid') {
@@ -313,7 +390,6 @@
               location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
               return;
             }
-            // 3) Timeout 10 min
             if (Date.now() - start > 600000) {
               clearInterval(iv);
               st.textContent = 'Ainda não confirmamos. Se você já pagou, use o link copiado para recuperar.';

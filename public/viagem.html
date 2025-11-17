@@ -11,6 +11,8 @@
     <script src="/gtag.js"></script>
     <script
         type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk"); clarity("set", "maskText", true);</script>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
@@ -209,7 +211,15 @@
                         <textarea class="input" id="observacoes" rows="3"
                             placeholder="Ex.: Autorização válida apenas para o período informado."></textarea>
 
-                        <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
+                        <div style="margin-top: 32px; transform: scale(0.95); margin-left: -8px;">
+                            <div class="g-recaptcha" data-sitekey="6Lf-1g8sAAAAAAo1eFRdKSnKIo33F1cBu_sUwNk2"
+                                id="recaptcha-widget"></div>
+                        </div>
+                        <p id="recaptcha-error" class="small"
+                            style="display:none; color:var(--accent-error); margin-top:8px;">
+                            Por favor, marque "Não sou um robô" para continuar.
+                        </p>
+                        <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap">
                             <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
                             <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$
                                 9,90)</button>
@@ -247,23 +257,20 @@
     <script src="/recovery.js"></script>
 
     <script>
-        // Theme toggle (removido daqui, pois está no theme.js)
-
         function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; }
         function isValidCPF(cpf) { var s = (cpf || '').replace(/\D/g, ''); if (s.length !== 11) return false; if (/^(\d)\1{10}$/.test(s)) return false; var i, sum = 0, rest; for (i = 1; i <= 9; i++) sum += parseInt(s.substring(i - 1, i)) * (11 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(9, 10))) return false; sum = 0; for (i = 1; i <= 10; i++) sum += parseInt(s.substring(i - 1, i)) * (12 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(10, 11))) return false; return true; }
         function maskDate(v) { v = (v || '').replace(/\D/g, '').slice(0, 8); if (v.length >= 5) v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3'); else if (v.length >= 3) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2'); return v; }
         function isValidDateBR(s) { if (!/^\d{2}\/\d{2}\/\d{4}$/.test(s || '')) return false; var d = parseInt(s.substr(0, 2), 10), m = parseInt(s.substr(3, 2), 10), y = parseInt(s.substr(6, 4), 10); if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return false; var md = [31, (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0 ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; if (d > md[m - 1]) return false; return true; }
         function dateToISO(s) { var d = s.substr(0, 2), m = s.substr(3, 2), y = s.substr(6, 4); return y + '-' + m + '-' + d; }
 
-        // Array 'ids' ATUALIZADO com o novo campo 'acomp_cpf'
         var ids = ['menor_nome', 'menor_nascimento', 'menor_doc', 'viagem_tipo', 'destino', 'data_ida', 'data_volta', 'acompanhante_tipo', 'acomp_nome', 'acomp_cpf', 'acomp_doc', 'acomp_parentesco', 'resp1_nome', 'resp1_cpf', 'resp1_doc', 'resp1_parentesco', 'dois_resps', 'resp2_nome', 'resp2_cpf', 'resp2_doc', 'resp2_parentesco', 'cidade_uf_emissao', 'email', 'telefone', 'observacoes'];
-        var SAVE_KEY = 'viagem_form_v2'; // Mantemos a mesma chave para carregar dados antigos
+        var SAVE_KEY = 'viagem_form_v2';
 
         function saveForm() { var o = {}; for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (!el) continue; if (el.type === 'checkbox') o[ids[i]] = el.checked; else o[ids[i]] = el.value; } localStorage.setItem(SAVE_KEY, JSON.stringify(o)); }
         function loadForm() {
             try {
                 var o = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); for (var k in o) {
-                    var el = document.getElementById(k); if (!el) continue; if (k === 'acompanhado_por' && o[k]) { // Lógica de migração de dados antigos
+                    var el = document.getElementById(k); if (!el) continue; if (k === 'acompanhado_por' && o[k]) {
                         var map = { 'nenhum': 'desacompanhado', 'resp1': 'outro_responsavel', 'resp2': 'outro_responsavel', 'terceiro': 'terceiro' };
                         document.getElementById('acompanhante_tipo').value = map[o[k]] || 'outro_responsavel';
                     } else if (el.type === 'checkbox') { el.checked = !!o[k]; } else { el.value = o[k]; } el.dispatchEvent(new Event('change'));
@@ -272,31 +279,26 @@
         }
         function attachAutosave() { for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (!el) continue; el.addEventListener('input', saveForm); el.addEventListener('change', saveForm); } }
 
-        // Máscaras de CPF
         var resp1_cpf = document.getElementById('resp1_cpf');
         var resp2_cpf = document.getElementById('resp2_cpf');
-        var acomp_cpf = document.getElementById('acomp_cpf'); // NOVO
+        var acomp_cpf = document.getElementById('acomp_cpf');
         if (resp1_cpf) { resp1_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
         if (resp2_cpf) { resp2_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
-        if (acomp_cpf) { acomp_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); } // NOVO
+        if (acomp_cpf) { acomp_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
 
-        // Máscaras de Data
         var dIds = ['menor_nascimento', 'data_ida', 'data_volta'];
         for (var i = 0; i < dIds.length; i++) { var e = document.getElementById(dIds[i]); if (e) { e.addEventListener('input', function (ev) { ev.target.value = maskDate(ev.target.value); }); } }
 
-        // Lógica ATUALIZADA para mostrar/esconder o box do acompanhante
         var acompSel = document.getElementById('acompanhante_tipo');
         var acompanhanteBox = document.getElementById('acompanhanteBox');
         acompSel.addEventListener('change', function () {
             acompanhanteBox.style.display = (this.value === 'terceiro' || this.value === 'outro_responsavel') ? 'block' : 'none';
         });
 
-        // Lógica para mostrar/esconder o Responsável 2 (sem mudança)
         var dois = document.getElementById('dois_resps');
         var resp2Box = document.getElementById('resp2Box');
         dois.addEventListener('change', function () { resp2Box.style.display = this.checked ? 'block' : 'none'; });
 
-        // Função getPayload ATUALIZADA
         function getPayload() {
             if (resp1_cpf) resp1_cpf.value = maskCPF(resp1_cpf.value);
             if (resp2_cpf) resp2_cpf.value = maskCPF(resp2_cpf.value);
@@ -313,15 +315,11 @@
                 destino: document.getElementById('destino').value.trim(),
                 data_ida: document.getElementById('data_ida').value.trim(),
                 data_volta: document.getElementById('data_volta').value.trim(),
-
-                // Campos NOVOS/ATUALIZADOS
                 acompanhante_tipo: document.getElementById('acompanhante_tipo').value,
                 acompanhante_nome: document.getElementById('acomp_nome').value.trim(),
                 acompanhante_cpf: document.getElementById('acomp_cpf').value.trim(),
                 acompanhante_doc: document.getElementById('acomp_doc').value.trim(),
                 acompanhante_parentesco: document.getElementById('acomp_parentesco').value.trim(),
-
-                // Campos de Responsáveis (sem mudança)
                 resp1_nome: document.getElementById('resp1_nome').value.trim(),
                 resp1_cpf: document.getElementById('resp1_cpf').value.trim(),
                 resp1_doc: document.getElementById('resp1_doc').value.trim(),
@@ -331,45 +329,34 @@
                 resp2_cpf: document.getElementById('resp2_cpf').value.trim(),
                 resp2_doc: document.getElementById('resp2_doc').value.trim(),
                 resp2_parentesco: document.getElementById('resp2_parentesco').value,
-
                 cidade_uf_emissao: document.getElementById('cidade_uf_emissao').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 telefone: document.getElementById('telefone').value.trim(),
                 observacoes: document.getElementById('observacoes').value.trim(),
-                utm: (window.LMUTM ? LMUTM.get() : {}) // Adicionado UTM
+                utm: (window.LMUTM ? LMUTM.get() : {})
             };
         }
 
-        // Função validateAll ATUALIZADA
         function validateAll(p) {
             var ok = true;
             function show(id, show) { var el = document.getElementById(id); if (el) el.style.display = show ? 'block' : 'none'; }
-
-            // Validações de data (sem mudança)
             if (!/^\d{2}\/\d{2}\/\d{4}$/.test(p.menor_nascimento) || !isValidDateBR(p.menor_nascimento)) { show('err_menor_nascimento', true); ok = false; } else show('err_menor_nascimento', false);
             if (!isValidDateBR(p.data_ida)) { show('err_data_ida', true); ok = false; } else show('err_data_ida', false);
             if (!isValidDateBR(p.data_volta)) { show('err_data_volta', true); ok = false; } else {
                 var di = new Date(dateToISO(p.data_ida)); var dv = new Date(dateToISO(p.data_volta));
                 if (isNaN(di.getTime()) || isNaN(dv.getTime()) || dv.getTime() < di.getTime()) { show('err_data_volta', true); ok = false; } else show('err_data_volta', false);
             }
-
-            // Validações de CPF (Responsáveis)
             if (!isValidCPF(p.resp1_cpf)) { show('err_resp1_cpf', true); ok = false; } else show('err_resp1_cpf', false);
             if (p.dois_resps && !isValidCPF(p.resp2_cpf)) { show('err_resp2_cpf', true); ok = false; } else show('err_resp2_cpf', false);
-
-            // Validações NOVAS (Acompanhante)
             if (p.acompanhante_tipo !== 'desacompanhado') {
                 if (!p.acompanhante_nome || !p.acompanhante_doc || !p.acompanhante_parentesco) {
-                    ok = false; // Campos de texto básicos do acompanhante
+                    ok = false;
                 }
                 if (!isValidCPF(p.acompanhante_cpf)) { show('err_acomp_cpf', true); ok = false; } else show('err_acomp_cpf', false);
             } else {
-                show('err_acomp_cpf', false); // Esconde erro se for desacompanhado
+                show('err_acomp_cpf', false);
             }
-
-            // Validação de campos de texto principais
             if (!p.menor_nome || !p.menor_doc || !p.resp1_nome || !p.destino || !p.cidade_uf_emissao) ok = false;
-
             return ok;
         }
 
@@ -377,28 +364,48 @@
         var btnPagar = document.getElementById('btnPagar');
         var previewWrap = document.getElementById('previewWrap');
         var previewBox = document.getElementById('previewBox');
+        var recaptchaError = document.getElementById('recaptcha-error'); // NOVO
 
         loadForm();
         attachAutosave();
 
-        // Lógica de pré-seleção (removida, não é mais necessária)
-
+        // --- LÓGICA DO BOTÃO DE PRÉVIA (btnPreview) ATUALIZADA ---
         btnPreview.addEventListener('click', function () {
             (async function () {
                 btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+                recaptchaError.style.display = 'none'; // NOVO
                 try {
+                    // --- NOVO: Verificação do reCAPTCHA ---
+                    var captchaToken = grecaptcha.getResponse();
+                    if (!captchaToken) {
+                        recaptchaError.style.display = 'block';
+                        throw new Error('reCAPTCHA não marcado');
+                    }
+                    // --- FIM DA VERIFICAÇÃO ---
+
                     var payload = getPayload();
                     if (!validateAll(payload)) {
                         alert('Verifique os campos obrigatórios ou inválidos (destacados em vermelho).');
-                        btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; return;
+                        throw new Error('Campos inválidos');
                     }
                     saveForm();
 
                     var r = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payload: payload, preview: true })
+                        body: JSON.stringify({
+                            payload: payload,
+                            preview: true,
+                            captchaToken: captchaToken // NOVO: Enviando o token
+                        })
                     });
-                    if (!r.ok) throw new Error('Falha ao gerar');
+
+                    if (!r.ok) {
+                        var errText = 'Falha ao gerar';
+                        try { var errData = await r.json(); if (errData.body) errText = errData.body; } catch (e) { }
+                        if (r.status === 403) errText = 'Falha no reCAPTCHA. Tente novamente.';
+                        throw new Error(errText);
+                    }
+
                     var data = await r.json();
                     var out = data.output || data;
 
@@ -415,23 +422,39 @@
 
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
                     btnPagar.disabled = false;
-                } catch (e) { alert('Erro ao gerar prévia.'); }
-                finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
+                } catch (e) {
+                    if (e.message !== 'Campos inválidos' && e.message !== 'reCAPTCHA não marcado') {
+                        alert('Erro ao gerar prévia: ' + e.message);
+                    }
+                }
+                finally {
+                    btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
+                    try { grecaptcha.reset(); } catch (e) { } // NOVO: Reseta o captcha
+                }
             })();
         });
 
-        // btnPagar ATUALIZADO (removido 'price')
+        // --- LÓGICA DO BOTÃO DE PAGAR (btnPagar) ATUALIZADA ---
         btnPagar.addEventListener('click', async function () {
+            btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
+            recaptchaError.style.display = 'none'; // NOVO
             try {
+                // --- NOVO: Verificação do reCAPTCHA ---
+                var captchaToken = grecaptcha.getResponse();
+                if (!captchaToken) {
+                    recaptchaError.style.display = 'block';
+                    throw new Error('reCAPTCHA não marcado');
+                }
+                // --- FIM DA VERIFICAÇÃO ---
+
                 var payload = getPayload();
                 if (!validateAll(payload)) {
                     alert('Verifique os campos obrigatórios ou inválidos (destacados em vermelho).');
-                    return;
+                    throw new Error('Campos inválidos');
                 }
 
                 saveForm();
                 localStorage.setItem('pendingPayload', JSON.stringify(payload));
-                btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
 
                 var slugStr = 'autorizacao-viagem-menor';
                 var r = await fetch('/.netlify/functions/mp-checkout', {
@@ -439,24 +462,33 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         slug: slugStr,
-                        // price: 9.9, <-- REMOVIDO
                         payload: payload,
-                        utm: (window.LMUTM ? LMUTM.get() : {})
+                        utm: (window.LMUTM ? LMUTM.get() : {}),
+                        captchaToken: captchaToken // NOVO: Enviando o token
                     })
                 });
+
                 var data = await r.json();
-                if (!r.ok || !data.init_point) throw 0;
+                if (!r.ok) {
+                    var errText = 'Falha ao criar pagamento';
+                    try { if (data.body) errText = data.body; } catch (e) { }
+                    if (r.status === 403) errText = 'Falha no reCAPTCHA. Tente novamente.';
+                    throw new Error(errText);
+                }
 
                 localStorage.setItem('lastOrderId', data.order_id || '');
                 if (typeof gtag === 'function') { gtag('event', 'begin_checkout', { value: 9.9, currency: 'BRL', items: [{ item_id: slugStr }] }); }
                 showPaymentModal(data.init_point, data.order_id, slugStr);
             } catch (e) {
-                alert('Não foi possível abrir o pagamento.');
+                if (e.message !== 'Campos inválidos' && e.message !== 'reCAPTCHA não marcado') {
+                    alert('Não foi possível abrir o pagamento: ' + e.message);
+                }
                 btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
+                try { grecaptcha.reset(); } catch (e) { } // NOVO
             }
         });
 
-        // showPaymentModal (sem mudança)
+        // --- LÓGICA DO MODAL DE PAGAMENTO (showPaymentModal) ATUALIZADA ---
         function showPaymentModal(initPoint, orderId, slug) {
             var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
             var cardBG = isLight ? '#ffffff' : '#111827';
@@ -476,7 +508,12 @@
                 '</div>';
             document.body.appendChild(overlay);
 
-            document.getElementById('lm-close').onclick = function () { overlay.remove(); };
+            // NOVO: Reseta o reCAPTCHA quando o modal é fechado
+            document.getElementById('lm-close').onclick = function () {
+                overlay.remove();
+                try { grecaptcha.reset(); } catch (e) { }
+            };
+
             document.getElementById('lm-copy').onclick = function () {
                 var link = location.origin + '/recuperar.html?o=' + encodeURIComponent(orderId);
                 navigator.clipboard.writeText(link);
@@ -503,13 +540,11 @@
                 var start = Date.now();
                 var iv = setInterval(async function () {
                     try {
-                        // 1) Se o documento já existe (webhook gerou), redireciona
                         if (await docReady()) {
                             clearInterval(iv);
                             location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
                             return;
                         }
-                        // 2) Order status também (se disponível)
                         var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
                         var jj = rr.ok ? await rr.json() : null;
                         if (jj && jj.status === 'paid') {
@@ -517,7 +552,6 @@
                             location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
                             return;
                         }
-                        // 3) Timeout 10 min
                         if (Date.now() - start > 600000) {
                             clearInterval(iv);
                             st.textContent = 'Ainda não confirmamos. Se você já pagou, use o link copiado para recuperar.';
@@ -526,7 +560,6 @@
                 }, 3000);
             };
         }
-
     </script>
 </body>
 
