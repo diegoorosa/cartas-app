@@ -4,47 +4,120 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="/theme.js"></script>
+  <script src="/utm.js"></script>
   <link rel="stylesheet" href="/style.css" />
-  <title>Recuperar documento</title>
+  <title>Recuperar Documento</title>
 </head>
 
 <body>
   <div class="container">
     <div class="card">
-      <h1>Recuperar documento</h1>
-      <p class="small">Se você já pagou, informe o código do pedido (order_id) para baixar.</p>
-      <input class="input" id="oid" placeholder="Cole aqui o código do pedido" />
-      <div class="cta-row"><button class="btn" id="btn">Buscar</button></div>
-      <div id="doc" class="preview" style="display:none"></div>
-      <div id="actions" style="display:none;gap:8px;margin-top:12px" class="cta-row">
-        <button class="btn" id="bdoc">Baixar .DOC</button>
-        <button class="btn btn-outline" id="bpdf">Baixar .PDF</button>
+      <h1>Seu Documento</h1>
+      <p id="info" class="small">Carregando documento...</p>
+
+      <div id="doc" class="preview" style="display:none" data-clarity-mask="true"></div>
+
+      <div id="actions" style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap">
+        <button class="btn" id="btnCopiar">Copiar</button>
+        <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
+        <button class="btn btn-outline" id="btnPdf">Baixar .PDF</button>
+        <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
+        <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener">Falar no WhatsApp</a>
+      </div>
+
+      <div id="nav-extra" style="margin-top:24px; padding-top:24px; border-top: 1px solid var(--border);">
+        <a href="/" class="btn btn-primary">Voltar ao Início</a>
+      </div>
+
+      <div class="small" style="margin-top:16px;opacity:.9">Este site não presta aconselhamento jurídico. Leia os
+        <a href="/termos.html" style="text-decoration:underline">Termos de Uso</a>.
       </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+
+  <script src="/recovery.js"></script>
+
   <script>
+    // --- Funções Helper (copiadas do success.html) ---
+
     function qs(n) { var u = new URL(location.href); return u.searchParams.get(n); }
-    var oid = qs('o'); if (oid) { document.getElementById('oid').value = oid; }
-    function toHtml(t) { return t.split('\n\n').map(p => '<p>' + p.replace(/\n/g, '<br/>') + '</p>').join(''); }
-    function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); (out.corpo_paragrafos || []).forEach(x => partes.push(x)); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); }
-    var html = '';
-    document.getElementById('btn').onclick = async function () {
-      var o = document.getElementById('oid').value.trim(); if (!o) { alert('Informe o código do pedido.'); return; }
-      var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: { order_id: o }, preview: false }) });
-      var j = await r.json(); if (!j || !j.output) { alert('Não encontrado. Aguarde mais alguns instantes ou verifique o código.'); return; }
-      var t = renderDocText(j.output); document.getElementById('doc').textContent = t; document.getElementById('doc').style.display = 'block';
-      html = toHtml(t); document.getElementById('actions').style.display = 'flex';
-    };
-    document.getElementById('bdoc').onclick = function () {
-      var full = '<html><head><meta charset="utf-8"><style>body{background:#fff;color:#000;font:12pt Times,serif;line-height:1.6;margin:0;padding:18mm;box-sizing:border-box}p{margin:0 0 12pt 0;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}</style></head><body>' + html + '</body></html>';
-      var blob = new Blob(['\ufeff', full], { type: 'application/msword' }); var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'documento.doc'; a.click(); URL.revokeObjectURL(a.href);
-    };
-    document.getElementById('bpdf').onclick = function () {
-      var host = document.createElement('div'); host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px';
-      host.innerHTML = '<div id="p" style="width:210mm;min-height:297mm;padding:18mm;background:#fff;color:#000;font:12pt Times,serif;line-height:1.6">' + html + '</div>'; document.body.appendChild(host);
-      html2pdf().set({ margin: 0, filename: 'documento.pdf', image: { type: 'jpeg', quality: .98 }, html2canvas: { scale: 2, backgroundColor: '#fff' }, jsPDF: { unit: 'mm', format: 'a4' } }).from(host.querySelector('#p')).save().then(() => host.remove());
-    };
+    var orderId = qs('o'); // Pega o Order ID da URL
+
+    var info = document.getElementById('info');
+    var docBox = document.getElementById('doc');
+    var actions = document.getElementById('actions');
+    var btnCopiar = document.getElementById('btnCopiar');
+    var btnDoc = document.getElementById('btnDoc');
+    var btnPdf = document.getElementById('btnPdf');
+    var btnZap = document.getElementById('btnZap');
+    var btnSuporte = document.getElementById('btnSuporte');
+
+    function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); var body = out.corpo_paragrafos || []; for (var i = 0; i < body.length; i++)partes.push(body[i]); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); }
+    function htmlBodyFromText(t) { return t.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join(''); }
+
+    // --- attachActions (simplificada: só download/cópia) ---
+    function attachActions(fullText, slug) {
+      var bodyHtml = htmlBodyFromText(fullText);
+
+      // Funções do recovery.js para baixar PDF e DOC
+      btnDoc.onclick = function () { LMRecovery.doc(bodyHtml, slug || 'documento'); };
+      btnPdf.onclick = function () { LMRecovery.pdf(bodyHtml, slug || 'documento'); };
+
+      // Funções de copiar e zap
+      btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar'; }, 1200); } catch (e) { } };
+      btnZap.onclick = function () { var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText); window.open(url, '_blank'); };
+      btnSuporte.href = 'https://wa.me/5547991323024?text=' + encodeURIComponent('Oi! Preciso de ajuda com meu documento. Pedido: ' + (orderId || ''));
+    }
+
+    // --- Função Principal para carregar o documento ---
+    async function carregarDocumento() {
+      if (!orderId) {
+        info.textContent = 'Link inválido. Não foi possível encontrar um ID de pedido na URL.';
+        info.style.color = 'var(--accent-error)';
+        return;
+      }
+
+      info.textContent = 'Buscando seu documento...';
+
+      // Tenta buscar o documento no servidor 10 vezes
+      for (var i = 0; i < 10; i++) {
+        try {
+          var rs = await fetch('/.netlify/functions/generate-doc', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
+          });
+
+          if (rs.ok) {
+            var js = await rs.json();
+            if (js && js.output) {
+              var fullText = renderDocText(js.output, null);
+              docBox.textContent = fullText;
+              docBox.style.display = 'block';
+              actions.style.display = 'flex';
+              info.textContent = '';
+
+              // Chama o attachActions. Precisamos do slug para o nome do arquivo.
+              // Vamos buscar o slug do banco (generate-doc não retorna)
+              // Por enquanto, vamos usar um nome genérico
+              attachActions(fullText, 'documento_cartasapp');
+              return; // Sucesso!
+            }
+          }
+        } catch (e) { /* Falha de rede, tenta de novo */ }
+
+        // Se falhou, espera um pouco antes de tentar de novo
+        await new Promise(function (r) { setTimeout(r, 1500); });
+      }
+
+      // Se o loop terminar sem sucesso
+      info.textContent = 'Documento não encontrado ou ainda não foi gerado. Se você acabou de pagar, aguarde 1 minuto e atualize a página.';
+      info.style.color = 'var(--accent-error)';
+    }
+
+    // Inicia o processo
+    carregarDocumento();
   </script>
 </body>
 
