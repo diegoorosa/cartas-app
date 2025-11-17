@@ -1,22 +1,21 @@
-// ARQUIVO: netlify/functions/send-email.js (VERSÃO FINAL COM PDF)
+// ARQUIVO: netlify/functions/send-email.js (VERSÃO FINAL COM PUPPETEER-CORE)
 
 const { createClient } = require('@supabase/supabase-js');
 const nodemailer = require('nodemailer');
-const html_to_pdf = require('html-pdf-node'); // A nova "Fábrica de PDFs"
+const puppeteer = require('puppeteer-core'); // A nova "Fábrica de PDFs" (Motor)
+const chrome = require('chrome-aws-lambda'); // O novo "Navegador Light"
 
 // Helper que transforma o JSON em HTML (para o PDF)
+// (Exatamente igual ao de antes)
 function renderDocHTML(out) {
     var partes = [];
     if (out.titulo) partes.push(`<h1>${out.titulo.toUpperCase()}</h1>`);
     if (out.saudacao) partes.push(`<p>${out.saudacao}</p>`);
-
     var body = out.corpo_paragrafos || [];
     for (var i = 0; i < body.length; i++) {
         partes.push(`<p>${body[i].replace(/\n/g, '<br>')}</p>`);
     }
-
     if (out.fechamento) partes.push(`<p>${out.fechamento.replace(/\n/g, '<br>')}</p>`);
-
     if (out.check_list_anexos && out.check_list_anexos.length > 0) {
         partes.push('<hr>');
         partes.push('<h3>CHECKLIST DE ANEXOS:</h3>');
@@ -26,7 +25,6 @@ function renderDocHTML(out) {
         });
         partes.push('</ul>');
     }
-
     if (out.observacoes_legais) {
         partes.push('<hr>');
         partes.push(`<p style="font-size: 10px; color: #555;">${out.observacoes_legais}</p>`);
@@ -34,14 +32,13 @@ function renderDocHTML(out) {
     return partes.join('\n');
 }
 
-// Estilos do PDF
+// Estilos do PDF (Exatamente igual ao de antes)
 const pdfStyles = `
 <style>
     body {
         font-family: 'Times New Roman', Times, serif;
         font-size: 12pt;
         line-height: 1.6;
-        padding: 2cm;
     }
     h1 {
         font-size: 16pt;
@@ -87,7 +84,7 @@ exports.handler = async (event) => {
             return { statusCode: 404, body: 'Documento não encontrado' };
         }
 
-        // 3. Transformar o JSON do documento em HTML
+        // 3. Transformar o JSON do documento em HTML (sem mudança)
         const outputJson = doc.output_json;
         const slug = doc.slug || 'documento';
         const docTitle = outputJson.titulo || slug;
@@ -95,9 +92,38 @@ exports.handler = async (event) => {
         const fullHtml = `<html><head>${pdfStyles}</head><body>${docHtmlBody}</body></html>`;
 
         // 4. GERAR O PDF (A grande mudança)
-        let options = { format: 'A4' };
-        let file = { content: fullHtml };
-        const pdfBuffer = await html_to_pdf.generatePdf(file, options);
+        let browser = null;
+        let pdfBuffer = null;
+
+        try {
+            // Configura o navegador "light"
+            browser = await puppeteer.launch({
+                args: chrome.args,
+                executablePath: await chrome.executablePath,
+                headless: chrome.headless,
+            });
+            const page = await browser.newPage();
+
+            // "Imprime" o HTML
+            await page.setContent(fullHtml, { waitUntil: 'networkidle0' });
+            pdfBuffer = await page.pdf({
+                format: 'A4',
+                printBackground: true,
+                margin: { top: '2cm', right: '1.8cm', bottom: '2cm', left: '1.8cm' }
+            });
+        } catch (pdfError) {
+            console.error('Erro ao gerar PDF:', pdfError);
+            return { statusCode: 500, body: JSON.stringify({ error: 'Falha ao gerar o PDF no servidor' }) };
+        } finally {
+            // Fecha o navegador
+            if (browser) {
+                await browser.close();
+            }
+        }
+
+        if (!pdfBuffer) {
+            return { statusCode: 500, body: JSON.stringify({ error: 'Buffer do PDF está vazio' }) };
+        }
 
         // 5. Configurar o "Carteiro" (Nodemailer) (sem mudança)
         const transporter = nodemailer.createTransport({
@@ -110,16 +136,13 @@ exports.handler = async (event) => {
             },
         });
 
-        // 6. Montar e Enviar o E-mail (com o ANEXO)
+        // 6. Montar e Enviar o E-mail (com o ANEXO) (sem mudança)
         await transporter.sendMail({
             from: `"CartasApp" <${process.env.EMAIL_USER}>`,
             to: email_to,
             subject: `Seu Documento Gerado: ${docTitle}`,
-            // Corpo do e-mail (agora mais simples)
-            text: `Olá!\n\nSeu documento "${docTitle}" gerado em nosso site está em anexo.\n\nObrigado por usar o CartasApp!\n\nhttps://www.cartasapp.com.br`,
+            text: `Olá!\n\nSeu documento "${docTitle}" gerado em nosso site está em anexo.\n\Obrigado por usar o CartasApp!\n\nhttps://www.cartasapp.com.br`,
             html: `<p>Olá!</p><p>Seu documento "${docTitle}" gerado em nosso site está em anexo.</p><p>Obrigado por usar o CartasApp!</p><p><a href="https://www.cartasapp.com.br">www.cartasapp.com.br</a></p>`,
-
-            // O Anexo em PDF!
             attachments: [
                 {
                     filename: `${slug}.pdf`,
