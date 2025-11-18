@@ -18,6 +18,32 @@ async function verifyCaptcha(token) {
 }
 // --- FIM DA NOVA FUNÇÃO ---
 
+// --- NOVAS FUNÇÕES HELPER (Sanitização XSS) ---
+// 1. A "lavagem": remove tags HTML
+function sanitize(str) {
+    if (!str || typeof str !== 'string') return str;
+    return str.replace(/<[^>]*>/g, '').trim();
+}
+
+// 2. A função que "lava" o payload inteiro
+function sanitizePayload(obj) {
+    if (typeof obj !== 'object' || obj === null) return obj;
+
+    // Itera sobre todas as chaves do payload (ex: nome, cpf, observacoes)
+    for (const key in obj) {
+        if (Object.hasOwnProperty.call(obj, key)) {
+            const value = obj[key];
+            if (typeof value === 'string') {
+                // Se for um texto, "lava" ele
+                obj[key] = sanitize(value);
+            }
+            // (Se for outro tipo, como 'dois_resps: true', ele ignora, o que é correto)
+        }
+    }
+    return obj;
+}
+// --- FIM DAS NOVAS FUNÇÕES ---
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
@@ -75,6 +101,7 @@ exports.handler = async (event) => {
             if (!isHuman) {
                 return { statusCode: 403, body: 'Falha na verificação do reCAPTCHA. Você é um robô?' };
             }
+            payload = sanitizePayload(payload);
         }
         // --- FIM DA VERIFICAÇÃO ---
 
