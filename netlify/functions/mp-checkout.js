@@ -1,25 +1,10 @@
-// ARQUIVO: mp-checkout.js (COM TRAVA reCAPTCHA)
+// ARQUIVO: netlify/functions/mp-checkout.js
 
 const { createClient } = require('@supabase/supabase-js');
 
-// --- NOVA FUNÇÃO HELPER (reCAPTCHA) ---
-async function verifyCaptcha(token) {
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
-    try {
-        const response = await fetch(url, { method: 'POST' });
-        const data = await response.json();
-        return data.success === true;
-    } catch (e) {
-        console.error('Erro ao verificar reCAPTCHA:', e);
-        return false;
-    }
-}
-// --- FIM DA NOVA FUNÇÃO ---
-
-// MAPA DE PREÇOS SEGURO (Copiado do seu arquivo)
+// Mapeamento de preços completo (mantido original)
 const PRICE_MAP = {
-    'default': 9.90, // Preço padrão, caso um slug não seja encontrado
+    'default': 9.90,
     'autorizacao-viagem-menor': 9.90,
     'carta-bagagem': 9.90,
     'carta-ecommerce': 9.90,
@@ -112,36 +97,24 @@ const PRICE_MAP = {
     "carta-bagagem-danificada": 9.90
 };
 
-
 exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
 
-        // --- NOVO: Adicionado 'captchaToken' ---
-        const { slug, payload, utm, captchaToken } = JSON.parse(event.body || '{}');
+        // CORREÇÃO: Removido captchaToken da extração e da validação
+        const { slug, payload, utm } = JSON.parse(event.body || '{}');
 
-        // (Preço já era seguro, copiado do seu arquivo)
-        const price = PRICE_MAP[slug] || PRICE_MAP['default'];
+        // Recupera o preço ou usa o default
+        const price = PRICE_MAP[slug] || PRICE_MAP[slug.split('?')[0]] || PRICE_MAP['default'];
 
         if (!slug) return { statusCode: 400, body: 'Missing slug' };
 
-        // --- NOVO: VERIFICA O reCAPTCHA ---
-        if (!captchaToken) {
-            return { statusCode: 403, body: 'reCAPTCHA token ausente' };
-        }
-        const isHuman = await verifyCaptcha(captchaToken);
-        if (!isHuman) {
-            return { statusCode: 403, body: 'Falha na verificação do reCAPTCHA. Você é um robô?' };
-        }
-        // --- FIM DA VERIFICAÇÃO ---
-
         const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
         const MP_TOKEN = process.env.MP_ACCESS_TOKEN;
-        const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br'; // URL atualizada
-
+        const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br';
         const orderId = crypto.randomUUID();
 
-        // (Resto do código copiado do seu arquivo, sem mudanças)
+        // Salva a intenção de compra + payload no Supabase para uso posterior no webhook
         try {
             await supabase.from('checkout_intents').insert({
                 order_id: orderId,
@@ -149,7 +122,10 @@ exports.handler = async (event) => {
                 payload: payload || null,
                 utm: utm || null
             });
-        } catch (e) { }
+        } catch (e) {
+            console.error('Erro ao salvar intent no Supabase:', e);
+            // Não bloqueia o fluxo se o log falhar, mas é ideal que funcione
+        }
 
         const pref = {
             items: [
@@ -176,11 +152,18 @@ exports.handler = async (event) => {
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${MP_TOKEN}` },
             body: JSON.stringify(pref)
         });
+
         const data = await r.json();
-        if (!r.ok || !data.init_point) return { statusCode: 400, body: JSON.stringify({ error: 'mp failed', data }) };
+
+        if (!r.ok || !data.init_point) {
+            console.error('Erro ao criar preferência MP:', data);
+            return { statusCode: 400, body: JSON.stringify({ error: 'Falha ao criar pagamento no Mercado Pago', details: data }) };
+        }
 
         return { statusCode: 200, body: JSON.stringify({ init_point: data.init_point, order_id: orderId }) };
+
     } catch (e) {
-        return { statusCode: 500, body: JSON.stringify({ error: 'mp-checkout error' }) };
+        console.error('Erro fatal no checkout:', e);
+        return { statusCode: 500, body: JSON.stringify({ error: 'Erro interno no processamento do checkout' }) };
     }
 };
