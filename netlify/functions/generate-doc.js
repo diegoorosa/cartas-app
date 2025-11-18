@@ -1,9 +1,9 @@
-// ARQUIVO: generate-doc.js (COM TRAVA reCAPTCHA)
+// ARQUIVO: generate-doc.js (CORRIGIDO)
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 
-// --- NOVA FUNÇÃO HELPER (reCAPTCHA) ---
+// --- FUNÇÃO HELPER (reCAPTCHA) ---
 async function verifyCaptcha(token) {
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
     const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
@@ -16,28 +16,21 @@ async function verifyCaptcha(token) {
         return false;
     }
 }
-// --- FIM DA NOVA FUNÇÃO ---
 
 // --- NOVAS FUNÇÕES HELPER (Sanitização XSS) ---
-// 1. A "lavagem": remove tags HTML
 function sanitize(str) {
     if (!str || typeof str !== 'string') return str;
     return str.replace(/<[^>]*>/g, '').trim();
 }
 
-// 2. A função que "lava" o payload inteiro
 function sanitizePayload(obj) {
     if (typeof obj !== 'object' || obj === null) return obj;
 
-    // Itera sobre todas as chaves do payload (ex: nome, cpf, observacoes)
+    // CORREÇÃO AQUI: Maneira segura de iterar
     for (const key in obj) {
-        if (Object.hasOwnProperty.call(obj, key)) {
-            const value = obj[key];
-            if (typeof value === 'string') {
-                // Se for um texto, "lava" ele
-                obj[key] = sanitize(value);
-            }
-            // (Se for outro tipo, como 'dois_resps: true', ele ignora, o que é correto)
+        const value = obj[key];
+        if (typeof value === 'string') {
+            obj[key] = sanitize(value);
         }
     }
     return obj;
@@ -65,9 +58,7 @@ async function callWithRetry(modelName, prompt, tries) {
 function parseJson(text) { try { return JSON.parse(text); } catch (e) { const clean = String(text || '').replace(/```json|```/g, '').trim(); return JSON.parse(clean); } }
 function todayBR() { return new Date().toLocaleDateString('pt-BR'); }
 
-// ======================================================
-// 1. PROMPT SYSTEM_VIAGEM ATUALIZADO (Copiado do seu arquivo)
-// ======================================================
+// CONSTANTES DE PROMPT (MANTIDAS IGUAIS)
 const SYSTEM_CARTA =
     'Você gera cartas formais no padrão brasileiro. Responda SOMENTE em JSON válido no formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e claro. Produza 3 a 4 parágrafos (60–90 palavras cada); 1) identificação e pedido, 2) cessação de cobranças, 3) confirmação por escrito, 4) estorno se houver cobrança posterior. Observacoes_legais: referência genérica ao CDC (Lei 8.078/90), sem aconselhamento jurídico.';
 
@@ -83,15 +74,14 @@ const SYSTEM_CONSUMO =
 exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
+
         const body = JSON.parse(event.body || '{}');
-        const payload = body.payload || null;
+        let payload = body.payload || null;
         const preview = !!body.preview;
-        const captchaToken = body.captchaToken; // --- NOVO: Recebe o token
+        const captchaToken = body.captchaToken;
 
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
 
-        // --- NOVO: VERIFICA O reCAPTCHA ---
-        // (O polling do success.html/recuperar.html não envia token, então pulamos a verificação se for só um poll)
         const isPoll = !payload.nome && !payload.menor_nome;
         if (!isPoll) {
             if (!captchaToken) {
@@ -101,14 +91,15 @@ exports.handler = async (event) => {
             if (!isHuman) {
                 return { statusCode: 403, body: 'Falha na verificação do reCAPTCHA. Você é um robô?' };
             }
+
+            // Sanitização corrigida
             payload = sanitizePayload(payload);
         }
-        // --- FIM DA VERIFICAÇÃO ---
 
         const tipo = String(payload.tipo || '').toLowerCase();
         const orderId = payload.order_id || payload.orderId || null;
 
-        // 1) Idempotência (Sem mudança)
+        // 1) Idempotência
         if (orderId) {
             const { data: rows } = await supabase
                 .from('generations')
@@ -121,14 +112,12 @@ exports.handler = async (event) => {
             }
         }
 
-        // 2) Verificação de Poll (Sem mudança)
-        if (isPoll) { // Usando a variável que já criamos
+        // 2) Verificação de Poll
+        if (isPoll) {
             return { statusCode: 404, body: 'Documento não encontrado no cache. Aguardando geração.' };
         }
 
-        // ======================================================
-        // 3. VALIDAÇÃO ATUALIZADA (Copiado do seu arquivo)
-        // ======================================================
+        // 3. VALIDAÇÃO
         if (tipo === 'autorizacao_viagem') {
             if (!payload.menor_nome || !payload.menor_nascimento || !payload.menor_doc || !payload.resp1_nome || !payload.resp1_cpf || !payload.destino || !payload.data_ida || !payload.data_volta || !payload.cidade_uf_emissao || !payload.acompanhante_tipo)
                 return { statusCode: 400, body: 'Campos obrigatórios (menor, resp1, viagem) ausentes' };
@@ -141,25 +130,21 @@ exports.handler = async (event) => {
             if (!payload.nome || !payload.cpf || !payload.cia || !payload.voo || !payload.data_voo || !payload.origem || !payload.destino || !payload.status || !payload.cidade_uf)
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         } else if (tipo === 'consumo') {
-            if (!payload.nome || !payload.cpf || !payload.loja || !payload.pedido || !payload.data_compra || !payload.motivo) // 'motivo' é o subtipo
+            if (!payload.nome || !payload.cpf || !payload.loja || !payload.pedido || !payload.data_compra || !payload.motivo)
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         } else {
             if (!payload.nome || !payload.cidade_uf || !payload.cpf)
                 return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
         }
 
-        // ======================================================
-        // 4. MONTAGEM DO PROMPT (UP) ATUALIZADA (Copiado do seu arquivo)
-        // ======================================================
+        // 4. MONTAGEM DO PROMPT
         let system = SYSTEM_CARTA, up = '';
         if (tipo === 'autorizacao_viagem') {
             const localData = (payload.cidade_uf_emissao || '') + ', ' + todayBR();
-
             let acompInfo = 'desacompanhado';
             if (payload.acompanhante_tipo !== 'desacompanhado') {
                 acompInfo = `Tipo: ${payload.acompanhante_tipo} | Nome: ${payload.acompanhante_nome || ''} (CPF ${payload.acompanhante_cpf || ''}, Doc ${payload.acompanhante_doc || ''}, Parentesco: ${payload.acompanhante_parentesco || ''})`;
             }
-
             up =
                 'Menor: ' + (payload.menor_nome || '') + ', nasc. ' + (payload.menor_nascimento || '') + ', doc ' + (payload.menor_doc || '') + '\n' +
                 'Responsável 1 (Autorizador): ' + (payload.resp1_nome || '') + ', CPF ' + (payload.resp1_cpf || '') + (payload.resp1_doc ? (', doc ' + payload.resp1_doc) : '') + ', parentesco ' + (payload.resp1_parentesco || '') + '\n' +
@@ -195,13 +180,13 @@ exports.handler = async (event) => {
                 'Motivo/Resumo: ' + (payload.motivo || 'não informado');
         }
 
-        // 5) Gera com retry (Sem mudança)
+        // 5) Gera com retry
         let text = null;
         for (const m of MODELS) { try { text = await callWithRetry(m, system + '\n\n' + up, 3); if (text) break; } catch (e) { } }
         if (!text) return { statusCode: 503, body: 'busy' };
         const output = parseJson(text);
 
-        // 6) Salva idempotente (Sem mudança)
+        // 6) Salva idempotente
         if (!preview && orderId) {
             await supabase
                 .from('generations')
