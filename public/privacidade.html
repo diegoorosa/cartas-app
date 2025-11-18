@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <title>Política de Privacidade | CartasApp</title>
+    <meta name="robots" content="noindex">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
+                <div class="nav-actions">
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">
+                        🌙
+                    </button>
+                    <a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">
+                        WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 40px; padding-bottom: 40px;">
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 24px;"><a href="/" class="small"
+                    style="text-decoration:none; color:var(--accent-primary)">← Voltar ao início</a></div>
+
+            <h1>Política de Privacidade</h1>
+            <p class="small">Última atualização: 17 de novembro de 2025</p>
+
+            <p>Sua privacidade é fundamental para o CartasApp. Esta política explica quais dados coletamos, por que os
+                coletamos e como os utilizamos e protegemos, em conformidade com a Lei Geral de Proteção de Dados (LGPD)
+                do Brasil.</p>
+
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">1. Quais Dados Coletamos</h2>
+            <p>Para gerar seus documentos, coletamos as informações que você insere voluntariamente nos formulários.
+                Isso pode incluir, mas não se limita a:</p>
+            <ul>
+                <li><strong>Dados Pessoais:</strong> Nome completo, CPF, e-mail, telefone, endereço (Cidade/UF).</li>
+                <li><strong>Dados Sensíveis (no formulário de viagem):</strong> Nome completo de menores de idade, data
+                    de nascimento e números de documentos (RG, Certidão ou Passaporte).</li>
+                <li><strong>Dados de Pagamento:</strong> Não armazenamos dados do seu cartão de crédito. O pagamento é
+                    processado inteiramente pelo Mercado Pago, que possui sua própria política de privacidade.</li>
+                <li><strong>Dados de Navegação:</strong> Coletamos dados anônimos sobre como você usa o site, através do
+                    Google Analytics e Microsoft Clarity, para melhorar sua experiência.</li>
+            </ul>
+
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">2. Como Usamos Seus Dados</h2>
+            <p>Usamos seus dados estritamente para os seguintes fins:</p>
+            <ul>
+                <li><strong>Geração do Documento:</strong> As informações que você preenche são enviadas à API do Google
+                    Gemini (IA) com o único propósito de gerar o texto do documento solicitado.</li>
+                <li><strong>Processamento do Pagamento:</strong> Usamos um ID de pedido para criar sua transação de
+                    pagamento junto ao Mercado Pago.</li>
+                <li><strong>Armazenamento e Recuperação:</strong> Armazenamos o documento gerado e o ID do seu pedido em
+                    nosso banco de dados (Supabase) para que você possa recuperá-lo após o pagamento (pelo site ou pelo
+                    link de e-mail).</li>
+                <li><strong>Comunicação:</strong> Usamos seu e-mail (caso você o forneça) para enviar o link de
+                    recuperação do seu documento.</li>
+                <li><strong>Segurança:</strong> Usamos o Google reCAPTCHA para proteger nossos formulários contra abuso
+                    e spam.</li>
+            </ul>
+
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">3. Compartilhamento de Dados</h2>
+            <p>Nós **não vendemos** seus dados pessoais. Seus dados são compartilhados apenas com os parceiros
+                tecnológicos essenciais para o funcionamento do serviço:</p>
+            <ul>
+                <li><strong>Google (Gemini e reCAPTCHA):</strong> Para gerar o documento e proteger o site.</li>
+                <li><strong>Supabase (Banco de Dados):</strong> Para armazenar seu documento gerado de forma segura.
+                </li>
+                <li><strong>Mercado Pago (Pagamentos):</strong> Para processar a transação financeira.</li>
+                <li><strong>Zoho Mail (E-mail):</strong> Para enviar o link de recuperação do seu documento.</li>
+                <li><strong>Netlify (Hospedagem):</strong> Onde nosso site e funções de backend operam.</li>
+            </ul>
+
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">4. Seus Direitos (LGPD)</h2>
+            <p>Você, como titular dos dados, tem o direito de:</p>
+            <ul>
+                <li><strong>Acessar</strong> seus dados.</li>
+                <li><strong>Corrigir</strong> dados incompletos ou incorretos.</li>
+                <li><strong>Solicitar a exclusão</strong> dos seus dados de nosso banco de dados.</li>
+            </ul>
+            <p>Para exercer seus direitos, por favor, entre em contato conosco. Os dados de documentos gerados são
+                mantidos em nosso sistema por um período razoável para fins de recuperação e, após esse período, são
+                excluídos.</p>
+
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">5. Contato</h2>
+            <p>Se você tiver qualquer dúvida sobre esta Política de Privacidade ou quiser solicitar a exclusão dos seus
+                dados, entre em contato conosco através do e-mail **contato@cartasapp.com.br** ou pelo nosso <a
+                    href="https://wa.me/5547991323024" target="_blank" rel="noopener">WhatsApp</a>.</p>
+
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            // Script do theme.js colado aqui para a página funcionar
+            function toggleTheme() {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            }
+            // Event listener para o botão (se existir)
+            var btn = document.querySelector('.btn-theme');
+            if (btn) btn.onclick = toggleTheme;
+
+            // Lógica de carregar o tema
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } else {
+                const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+                document.documentElement.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
+            }
+        })();
+    </script>
+</body>
+
+</html>
