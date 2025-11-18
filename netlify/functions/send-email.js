@@ -56,13 +56,29 @@ exports.handler = async (event) => {
             text: `Olá!\n\nSeu documento "${docTitle}" está pronto.\n\nPara visualizar e baixar seu documento (PDF ou .DOC), acesse o link seguro abaixo:\n\n${recoveryLink}\n\nObrigado por usar o CartasApp!\n`,
 
             // Versão em HTML do e-mail
-            html: `<p>Olá!</p>
-                   <p>Seu documento "${docTitle}" está pronto.</p>
-                   <p>Para visualizar e baixar seu documento (PDF ou .DOC), clique no link seguro abaixo:</p>
-                   <p><a href="${recoveryLink}" style="font-size: 16px; font-weight: bold; color: #ffffff; background-color: #3b82f6; padding: 12px 20px; text-decoration: none; border-radius: 8px;">Acessar meu Documento</a></p>
-                   <p style="font-size: 12px; color: #888;">Se o botão não funcionar, copie e cole este link no seu navegador:<br>${recoveryLink}</p>
-                   <br>
-                   <p>Obrigado por usar o CartasApp!</p>`
+            html: `
+  <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #3b82f6;">Seu documento está pronto! ✅</h2>
+    <p>Olá!</p>
+    <p>Obrigado por confiar no <strong>CartasApp</strong>. Seu documento <strong>${docTitle}</strong> foi gerado com sucesso.</p>
+    
+    <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+      <a href="${recoveryLink}" style="background-color: #10b981; color: white; padding: 14px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
+        📄 Baixar Documento (PDF/DOC)
+      </a>
+    </div>
+
+    <p style="font-size: 14px; color: #666;">
+      <strong>Dica Importante:</strong> Se for enviar por correio, recomendamos o uso de AR (Aviso de Recebimento). Se for por e-mail, anexe o PDF.
+    </p>
+    
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+    <p style="font-size: 12px; color: #888;">
+      Precisa de ajuda ou quer ajustar algo? Responda este e-mail ou nos chame no WhatsApp.<br>
+      Se o botão não funcionar: ${recoveryLink}
+    </p>
+  </div>
+`
         });
 
         return { statusCode: 200, body: JSON.stringify({ message: 'Email com link enviado com sucesso!' }) };
