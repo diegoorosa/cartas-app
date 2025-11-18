@@ -210,4 +210,4 @@ exports.handler = async (event) => {
     } catch (e) {
         return { statusCode: 500, body: JSON.stringify({ error: 'Falha na geração' }) };
     }
-};
+};;
