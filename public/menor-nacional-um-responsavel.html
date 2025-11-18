@@ -7,6 +7,7 @@
   <title>Guia: Como Viajar com Menor em Voo Nacional com Um dos Pais | CartasApp</title>
   <meta name="description"
     content="Guia completo sobre a autorização de viagem para menor em voo nacional com apenas um dos pais. Saiba o que é, quem assina e como gerar seu documento." />
+
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="/theme.js"></script>
   <script src="/utm.js"></script>
@@ -47,13 +48,24 @@
           em um voo nacional sem o outro genitor?"</p>
         <p><strong>A resposta curta é: SIM, você pode.</strong> No entanto, para embarcar, a lei brasileira exige que
           você apresente uma <strong>Autorização de Viagem por escrito</strong> do genitor que não estará presente.</p>
+
+        <div
+          style="background: var(--bg-secondary); padding: 24px; border-radius: 12px; text-align: center; margin-top: 24px; margin-bottom: 24px;">
+          <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 12px;">Gere sua Autorização Pronta em 2 Minutos</h2>
+          <p class="small" style="margin-bottom: 20px;">Não perca tempo! Nosso gerador cria o documento com todos os
+            dados necessários. Basta preencher e baixar.</p>
+          <a href="/viagem.html" class="btn btn-primary" style="font-size: 16px;">
+            Gerar Autorização Agora (R$ 9,90)
+          </a>
+        </div>
         <p>Sem esse documento, a companhia aérea e a Polícia Federal podem (e vão) barrar o embarque da criança. Entenda
           o que você precisa.</p>
 
         <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">O que a Lei (ECA) diz?</h2>
         <p>O Estatuto da Criança e do Adolescente (ECA) é claro. Para viagens nacionais, nenhuma autorização é
           necessária se a criança (menor de 16 anos) estiver acompanhada de <strong>ambos</strong> os pais ou de
-          <strong>apenas um</strong> deles.</p>
+          <strong>apenas um</strong> deles.
+        </p>
         <p>O problema é que, no balcão de check-in, a companhia aérea não tem como saber se você tem a guarda unilateral
           ou se o outro genitor está ciente e concorda com a viagem. Por isso, para evitar problemas legais (como a
           acusação de sequestro de menor), as companhias e a ANAC exigem a autorização por escrito como regra padrão.
@@ -111,7 +123,6 @@
 
   <script>
     (function () {
-      // Script do theme.js colado aqui para a página funcionar
       function toggleTheme() {
         const html = document.documentElement;
         const currentTheme = html.getAttribute('data-theme');
@@ -119,11 +130,8 @@
         html.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
       }
-      // Event listener para o botão (se existir)
       var btn = document.querySelector('.btn-theme');
       if (btn) btn.onclick = toggleTheme;
-
-      // Lógica de carregar o tema
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme) {
         document.documentElement.setAttribute('data-theme', savedTheme);
