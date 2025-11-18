@@ -1,4 +1,4 @@
-// ARQUIVO: generate-doc.js (CORRIGIDO)
+// ARQUIVO: generate-doc.js (CORRIGIDO PARA SUCESSO PÓS-PAGAMENTO)
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
@@ -25,8 +25,6 @@ function sanitize(str) {
 
 function sanitizePayload(obj) {
     if (typeof obj !== 'object' || obj === null) return obj;
-
-    // CORREÇÃO AQUI: Maneira segura de iterar
     for (const key in obj) {
         const value = obj[key];
         if (typeof value === 'string') {
@@ -35,7 +33,6 @@ function sanitizePayload(obj) {
     }
     return obj;
 }
-// --- FIM DAS NOVAS FUNÇÕES ---
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
@@ -58,7 +55,6 @@ async function callWithRetry(modelName, prompt, tries) {
 function parseJson(text) { try { return JSON.parse(text); } catch (e) { const clean = String(text || '').replace(/```json|```/g, '').trim(); return JSON.parse(clean); } }
 function todayBR() { return new Date().toLocaleDateString('pt-BR'); }
 
-// CONSTANTES DE PROMPT (MANTIDAS IGUAIS)
 const SYSTEM_CARTA =
     'Você gera cartas formais no padrão brasileiro. Responda SOMENTE em JSON válido no formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e claro. Produza 3 a 4 parágrafos (60–90 palavras cada); 1) identificação e pedido, 2) cessação de cobranças, 3) confirmação por escrito, 4) estorno se houver cobrança posterior. Observacoes_legais: referência genérica ao CDC (Lei 8.078/90), sem aconselhamento jurídico.';
 
@@ -82,8 +78,13 @@ exports.handler = async (event) => {
 
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
 
-        const isPoll = !payload.nome && !payload.menor_nome;
+        // --- LÓGICA CORRIGIDA DE VERIFICAÇÃO ---
+        // 1. É um "Poll" (apenas buscando documento já pago no success.html)?
+        //    Identificamos isso se o payload tiver APENAS 'order_id' e não tiver dados de geração (nome, etc.)
+        const isPoll = payload.order_id && !payload.nome && !payload.menor_nome && !payload.cpf;
+
         if (!isPoll) {
+            // Se NÃO for poll (ou seja, é uma geração de prévia ou criação nova), EXIGE reCAPTCHA
             if (!captchaToken) {
                 return { statusCode: 403, body: 'reCAPTCHA token ausente' };
             }
@@ -92,14 +93,15 @@ exports.handler = async (event) => {
                 return { statusCode: 403, body: 'Falha na verificação do reCAPTCHA. Você é um robô?' };
             }
 
-            // Sanitização corrigida
+            // Sanitização (só precisa sanitizar se estamos recebendo dados novos)
             payload = sanitizePayload(payload);
         }
+        // --- FIM DA VERIFICAÇÃO ---
 
         const tipo = String(payload.tipo || '').toLowerCase();
         const orderId = payload.order_id || payload.orderId || null;
 
-        // 1) Idempotência
+        // 1) Idempotência / Recuperação
         if (orderId) {
             const { data: rows } = await supabase
                 .from('generations')
@@ -108,19 +110,22 @@ exports.handler = async (event) => {
                 .order('created_at', { ascending: false })
                 .limit(1);
             if (rows && rows.length) {
+                // Se achou, retorna direto (pula qualquer geração)
                 return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
             }
         }
 
-        // 2) Verificação de Poll
+        // 2) Verificação de Poll Vazio
         if (isPoll) {
+            // Se era só um poll e não achou nada no banco (passo 1 falhou),
+            // retorna 404 para o frontend tentar de novo. Não tentamos gerar nada aqui.
             return { statusCode: 404, body: 'Documento não encontrado no cache. Aguardando geração.' };
         }
 
-        // 3. VALIDAÇÃO
+        // 3. VALIDAÇÃO (Apenas se formos gerar algo novo)
         if (tipo === 'autorizacao_viagem') {
             if (!payload.menor_nome || !payload.menor_nascimento || !payload.menor_doc || !payload.resp1_nome || !payload.resp1_cpf || !payload.destino || !payload.data_ida || !payload.data_volta || !payload.cidade_uf_emissao || !payload.acompanhante_tipo)
-                return { statusCode: 400, body: 'Campos obrigatórios (menor, resp1, viagem) ausentes' };
+                return { statusCode: 400, body: 'Campos obrigatórios ausentes' };
 
             if (payload.acompanhante_tipo !== 'desacompanhado') {
                 if (!payload.acompanhante_nome || !payload.acompanhante_cpf || !payload.acompanhante_doc || !payload.acompanhante_parentesco)
