@@ -259,6 +259,15 @@
                     var data = await r.json(); var out = data.output || data; var p = out.corpo_paragrafos || []; var keep = Math.max(1, Math.ceil(p.length * 0.6)); var parcial = p.slice(0, keep).join('\n\n') + '\n\n[...]'; var saud = out.saudacao || ''; var fech = out.fechamento || '';
                     previewBox.textContent = saud + '\n\n' + parcial + '\n\n' + fech + '\n\nChecklist de anexos: ' + (out.check_list_anexos || []).join('; ');
                     previewWrap.style.display = 'block';
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'generate_lead', {
+                            'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD',
+                            'event_category': 'engagement',
+                            'event_label': slug || 'generico', // AQUI É O PULO DO GATO: O Google vai saber se foi Smart Fit, Vivo, etc.
+                            'value': 2.00,
+                            'currency': 'BRL'
+                        });
+                    }
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
                     gtag('event', 'generate_lead', { method: 'preview', item_id: slug || 'autorizacao' });
                     btnPagar.disabled = false;

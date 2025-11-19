@@ -287,6 +287,15 @@
         var saud = out.saudacao || ''; var checklist = out.check_list_anexos || []; var chk2 = checklist.slice(0, 2); if (checklist.length > 2) chk2.push('...');
         previewBox.textContent = (saud ? saud + '\n\n' : '') + parcial + '\n\nChecklist (parcial): ' + chk2.join('; ');
         previewWrap.style.display = 'block';
+        if (typeof gtag === 'function') {
+          gtag('event', 'generate_lead', {
+            'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD',
+            'event_category': 'engagement',
+            'event_label': 'bagagem', // Mudamos o label para saber que veio da bagagem
+            'value': 2.00,
+            'currency': 'BRL'
+          });
+        }
         localStorage.setItem('pendingPayload', JSON.stringify(p));
         btnPagar.disabled = false;
       } catch (e) {

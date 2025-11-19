@@ -483,6 +483,16 @@
                     previewBox.textContent = finalPreview;
                     previewWrap.style.display = 'block';
 
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'generate_lead', {
+                            'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD',
+                            'event_category': 'engagement',
+                            'event_label': 'viagem_nacional', // Rótulo para você saber qual carta foi
+                            'value': 2.00,  // Damos um valor simbólico (R$ 2) para o Google priorizar isso
+                            'currency': 'BRL'
+                        });
+                    }
+
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
                     btnPagar.disabled = false;
                 } catch (e) {
