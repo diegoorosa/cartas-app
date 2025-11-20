@@ -5,8 +5,8 @@ const { createClient } = require('@supabase/supabase-js');
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-// Usando apenas os modelos 2.0 que sabemos que funcionam e tem cota
-const MODELS = ['gemini-2.0-flash-lite', 'gemini-2.0-flash-exp'];
+// USAR APENAS O MAIS RÁPIDO E DISPONÍVEL (Baseado nos seus prints)
+const MODEL_NAME = 'gemini-2.0-flash-lite';
 
 // --- HELPERS ---
 function getTodaySimple() {
@@ -37,10 +37,9 @@ function parseJson(text) {
     }
 }
 
-// --- PROMPTS ---
 const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON válido. Formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}.';
 
-// O MODELO JURÍDICO RICO (DO PDF 19)
+// PROMPT RICO (MANTIDO)
 const SYSTEM_VIAGEM_PERFEITO = `
 ${SYSTEM_BASE}
 Gere uma AUTORIZAÇÃO DE VIAGEM baseada estritamente neste modelo jurídico culto.
@@ -54,13 +53,13 @@ ESTRUTURA OBRIGATÓRIA DO TEXTO:
 - P4: "Ressalto que esta autorização é concedida em caráter específico para o trajeto e período supramencionados, não conferindo poderes gerais ou irrestritos."
 `;
 
-const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
+const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
 const SYSTEM_CONSUMO = `${SYSTEM_BASE} Carta consumidor. 3 parágrafos: Compra, Problema, Pedido CDC.`;
 
 exports.handler = async (event) => {
     try {
+        // Validação Inicial
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
-
         const body = JSON.parse(event.body || '{}');
         let payload = body.payload || null;
         const preview = !!body.preview;
@@ -68,7 +67,7 @@ exports.handler = async (event) => {
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
         if (!payload.order_id) payload = sanitizePayload(payload);
 
-        // --- TRAVA DE SEGURANÇA: Forçar Viagem ---
+        // Roteamento (Trava de Ferro)
         let tipo = String(payload.tipo || '').toLowerCase();
         if (payload.slug === 'autorizacao-viagem-menor' || payload.menor_nome) {
             tipo = 'autorizacao_viagem';
@@ -76,15 +75,15 @@ exports.handler = async (event) => {
 
         const orderId = payload.order_id || payload.orderId || null;
 
-        // Cache check
+        // Cache (Se já existe, retorna instantâneo)
         if (orderId) {
             const { data: rows } = await supabase.from('generations').select('output_json').eq('order_id', orderId).limit(1);
             if (rows && rows.length) return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
         }
 
-        // Preparação dos Dados
+        // Montagem do Prompt
         let system = SYSTEM_BASE, up = '';
-        const LINE = '____________________';
+        const LINE = '__________________________';
 
         if (tipo === 'autorizacao_viagem') {
             const docMenor = payload.menor_doc || `(preencher: ${LINE})`;
@@ -102,32 +101,30 @@ exports.handler = async (event) => {
 
             up = `PREENCHER: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
             system = SYSTEM_VIAGEM_PERFEITO;
-
         } else if (tipo === 'bagagem') {
             up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}\nVoo: ${payload.cia} ${payload.voo}\nOcorrência: ${payload.status}: ${payload.descricao}\nDespesas: ${payload.despesas}\nLocal: ${payload.cidade_uf}`;
             system = SYSTEM_BAGAGEM;
         } else {
-            // Consumo (Fallback)
-            up = `Consumidor: ${payload.nome}\nLoja: ${payload.loja} Pedido: ${payload.pedido}\nProblema: ${payload.motivo}\nDetalhes: ${payload.itens}\nLocal: ${payload.cidade_uf}`;
+            up = JSON.stringify(payload);
             system = SYSTEM_CONSUMO;
         }
 
-        // Chamada IA
-        let output = null;
-        for (const modelName of MODELS) {
-            try {
-                const model = genAI.getGenerativeModel({ model: modelName });
-                const result = await model.generateContent(system + '\n\nDADOS:\n' + up);
-                const text = result.response.text();
-                output = parseJson(text);
-                if (output) break; // Sucesso
-            } catch (err) {
-                console.log(`Erro ${modelName}:`, err.message);
-                continue;
-            }
-        }
+        // --- CHAMADA IA COM TIMEOUT DE 9 SEGUNDOS ---
+        // Netlify mata com 10s. Nós matamos com 9s para tratar o erro.
+        const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
-        if (!output) return { statusCode: 503, body: 'IA Indisponível. Tente novamente.' };
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout IA')), 9000)
+        );
+
+        const generatePromise = model.generateContent(system + '\n\nDADOS:\n' + up);
+
+        // "Corrida" entre a IA e o Relógio
+        const result = await Promise.race([generatePromise, timeoutPromise]);
+        const text = result.response.text();
+        const output = parseJson(text);
+
+        if (!output) throw new Error('JSON Inválido');
 
         // Assinatura
         if (tipo === 'autorizacao_viagem') {
@@ -138,9 +135,10 @@ exports.handler = async (event) => {
             }
             output.fechamento = `${cidadeData}${assinaturas}`;
         } else {
-            output.fechamento = `${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.\n\n\n\n__________________________________________________\n${payload.nome}`;
+            output.fechamento = `${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.\n\n\n\n__________________________________________________\n${payload.nome}\nCPF ${payload.cpf}`;
         }
 
+        // Salvar (Fire and Forget - Não espera salvar para responder)
         if (!preview && orderId) {
             supabase.from('generations').upsert({ order_id: orderId, slug: payload.slug || '', input_json: payload, output_json: output }, { onConflict: 'order_id' }).then(() => { });
         }
@@ -148,7 +146,9 @@ exports.handler = async (event) => {
         return { statusCode: 200, body: JSON.stringify({ output, cached: false }) };
 
     } catch (e) {
-        console.error('Erro Fatal:', e);
-        return { statusCode: 500, body: 'Erro interno no servidor.' };
+        console.error('Erro Função:', e.message);
+        // Se for timeout, avisa o usuário para tentar de novo (pode ser instabilidade do Google)
+        const msg = e.message === 'Timeout IA' ? 'Servidor ocupado. Clique novamente.' : 'Erro ao gerar documento.';
+        return { statusCode: 503, body: msg };
     }
 };
