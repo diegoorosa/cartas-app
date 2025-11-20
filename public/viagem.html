@@ -22,6 +22,7 @@
     <script
         type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");</script>
 
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <link rel="canonical" href="https://www.cartasapp.com.br/viagem.html" />
 
     <script type="application/ld+json">
@@ -85,8 +86,10 @@
                     <div
                         style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 32px;">
                         <p class="small" style="margin: 0; color: var(--text-secondary);">
-                            <strong>Documentos necessários:</strong> Nacional: certidão de nascimento (original/cópia)
-                            ou RG. Internacional: passaporte (recomendado). CPF não substitui documento de identidade.
+                            <strong>Documentos aceitos para embarque:</strong><br>
+                            • Criança (Nacional): Certidão de Nascimento ou RG.<br>
+                            • Criança (Internacional): Passaporte (ou RG para Mercosul).<br>
+                            • Adultos: RG, CNH, Passaporte ou Carteira de Trabalho.
                         </p>
                     </div>
 
@@ -102,8 +105,11 @@
                         <div id="err_menor_nascimento" class="small" style="display:none;color:#fca5a5;margin-top:4px;">
                             Data inválida.</div>
 
-                        <label class="label">Documento do menor (O que será usado na viagem)</label>
-                        <input class="input" id="menor_doc" placeholder="Ex.: Nº da Certidão, RG ou Passaporte" />
+                        <label class="label">Documento do menor (Opcional)</label>
+                        <input class="input" id="menor_doc" placeholder="Ex.: Certidão ou RG (pode deixar em branco)" />
+                        <p class="small" style="margin-top: 4px;">Informe o documento que a criança usará para embarcar.
+                        </p>
+
 
                         <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Viagem</h2>
 
@@ -145,13 +151,16 @@
                             style="margin-top:20px; background: var(--bg-secondary); padding: 16px; border-radius: 12px;">
                             <label class="label" style="margin-top: 0;">Nome completo do Acompanhante</label>
                             <input class="input" id="acomp_nome" placeholder="Ex.: Maria Souza (Mãe)" />
+
                             <label class="label">CPF do Acompanhante</label>
                             <input class="input" id="acomp_cpf" placeholder="000.000.000-00" inputmode="numeric"
                                 maxlength="14" />
                             <div id="err_acomp_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF
                                 inválido.</div>
-                            <label class="label">Documento do Acompanhante</label>
-                            <input class="input" id="acomp_doc" placeholder="Ex.: RG 99.888.777-6" />
+
+                            <label class="label">Documento do Acompanhante (Opcional)</label>
+                            <input class="input" id="acomp_doc" placeholder="Ex.: RG, CNH ou Passaporte" />
+
                             <label class="label">Parentesco com o menor</label>
                             <input class="input" id="acomp_parentesco" placeholder="Ex.: Mãe, Tia, Avó" />
                         </div>
@@ -159,17 +168,20 @@
                         <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Responsável(veis) que
                             AUTORIZAM (assinam)</h2>
                         <p class="small" style="margin-top: -16px; margin-bottom: 24px;">Preencha os dados de quem vai
-                            assinar (ex: o pai que fica).</p>
+                            assinar (ex: o pai que não vai viajar).</p>
 
                         <label class="label">Responsável 1 — Nome completo</label>
                         <input class="input" id="resp1_nome" placeholder="Ex.: João Souza (Pai)" />
+
                         <label class="label">Responsável 1 — CPF</label>
                         <input class="input" id="resp1_cpf" placeholder="000.000.000-00" inputmode="numeric"
                             maxlength="14" />
                         <div id="err_resp1_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF
                             inválido.</div>
-                        <label class="label">Responsável 1 — Documento (RG/Passaporte)</label>
-                        <input class="input" id="resp1_doc" placeholder="Ex.: RG 11.222.333-4" />
+
+                        <label class="label">Responsável 1 — Documento (Opcional)</label>
+                        <input class="input" id="resp1_doc" placeholder="Ex.: RG, CNH ou Passaporte" />
+
                         <label class="label">Parentesco</label>
                         <select class="input" id="resp1_parentesco">
                             <option>Pai</option>
@@ -190,13 +202,16 @@
                             </h3>
                             <label class="label">Nome completo</label>
                             <input class="input" id="resp2_nome" placeholder="Ex.: Maria Souza" />
+
                             <label class="label">CPF</label>
                             <input class="input" id="resp2_cpf" placeholder="000.000.000-00" inputmode="numeric"
                                 maxlength="14" />
                             <div id="err_resp2_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF
                                 inválido.</div>
-                            <label class="label">Documento (RG/Passaporte)</label>
-                            <input class="input" id="resp2_doc" placeholder="Ex.: RG 55.666.777-8" />
+
+                            <label class="label">Documento (Opcional)</label>
+                            <input class="input" id="resp2_doc" placeholder="Ex.: RG, CNH..." />
+
                             <label class="label">Parentesco</label>
                             <select class="input" id="resp2_parentesco">
                                 <option>Mãe</option>
@@ -208,9 +223,9 @@
                         <label class="label">Cidade/UF de emissão</label>
                         <input class="input" id="cidade_uf_emissao" placeholder="Ex.: Blumenau/SC" />
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
-                            <div><label class="label">E-mail</label><input class="input" id="email"
+                            <div><label class="label">E-mail (opcional)</label><input class="input" id="email"
                                     placeholder="Ex.: seu@email.com" /></div>
-                            <div><label class="label">Telefone</label><input class="input" id="telefone"
+                            <div><label class="label">Telefone (opcional)</label><input class="input" id="telefone"
                                     placeholder="Ex.: (47) 99999-9999" /></div>
                         </div>
                         <label class="label">Observações (opcional)</label>
@@ -286,10 +301,21 @@
         var SAVE_KEY = 'viagem_form_v2';
 
         function saveForm() { var o = {}; for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (!el) continue; if (el.type === 'checkbox') o[ids[i]] = el.checked; else o[ids[i]] = el.value; } localStorage.setItem(SAVE_KEY, JSON.stringify(o)); }
-        function loadForm() { try { var o = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); for (var k in o) { var el = document.getElementById(k); if (!el) continue; if (k === 'acompanhado_por' && o[k]) { var map = { 'nenhum': 'desacompanhado', 'resp1': 'outro_responsavel', 'resp2': 'outro_responsavel', 'terceiro': 'terceiro' }; document.getElementById('acompanhante_tipo').value = map[o[k]] || 'outro_responsavel'; } else if (el.type === 'checkbox') { el.checked = !!o[k]; } else { el.value = o[k]; } el.dispatchEvent(new Event('change')); } } catch (e) { } }
+        function loadForm() {
+            try {
+                var o = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); for (var k in o) {
+                    var el = document.getElementById(k); if (!el) continue; if (k === 'acompanhado_por' && o[k]) {
+                        var map = { 'nenhum': 'desacompanhado', 'resp1': 'outro_responsavel', 'resp2': 'outro_responsavel', 'terceiro': 'terceiro' };
+                        document.getElementById('acompanhante_tipo').value = map[o[k]] || 'outro_responsavel';
+                    } else if (el.type === 'checkbox') { el.checked = !!o[k]; } else { el.value = o[k]; } el.dispatchEvent(new Event('change'));
+                }
+            } catch (e) { }
+        }
         function attachAutosave() { for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (!el) continue; el.addEventListener('input', saveForm); el.addEventListener('change', saveForm); } }
 
-        var resp1_cpf = document.getElementById('resp1_cpf'); var resp2_cpf = document.getElementById('resp2_cpf'); var acomp_cpf = document.getElementById('acomp_cpf');
+        var resp1_cpf = document.getElementById('resp1_cpf');
+        var resp2_cpf = document.getElementById('resp2_cpf');
+        var acomp_cpf = document.getElementById('acomp_cpf');
         if (resp1_cpf) { resp1_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
         if (resp2_cpf) { resp2_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
         if (acomp_cpf) { acomp_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
@@ -297,35 +323,83 @@
         var dIds = ['menor_nascimento', 'data_ida', 'data_volta'];
         for (var i = 0; i < dIds.length; i++) { var e = document.getElementById(dIds[i]); if (e) { e.addEventListener('input', function (ev) { ev.target.value = maskDate(ev.target.value); }); } }
 
-        var acompSel = document.getElementById('acompanhante_tipo'); var acompanhanteBox = document.getElementById('acompanhanteBox');
-        acompSel.addEventListener('change', function () { acompanhanteBox.style.display = (this.value === 'terceiro' || this.value === 'outro_responsavel') ? 'block' : 'none'; });
+        var acompSel = document.getElementById('acompanhante_tipo');
+        var acompanhanteBox = document.getElementById('acompanhanteBox');
+        acompSel.addEventListener('change', function () {
+            acompanhanteBox.style.display = (this.value === 'terceiro' || this.value === 'outro_responsavel') ? 'block' : 'none';
+        });
 
-        var dois = document.getElementById('dois_resps'); var resp2Box = document.getElementById('resp2Box');
+        var dois = document.getElementById('dois_resps');
+        var resp2Box = document.getElementById('resp2Box');
         dois.addEventListener('change', function () { resp2Box.style.display = this.checked ? 'block' : 'none'; });
 
         function getPayload() {
-            if (resp1_cpf) resp1_cpf.value = maskCPF(resp1_cpf.value); if (resp2_cpf) resp2_cpf.value = maskCPF(resp2_cpf.value); if (acomp_cpf) acomp_cpf.value = maskCPF(acomp_cpf.value);
+            if (resp1_cpf) resp1_cpf.value = maskCPF(resp1_cpf.value);
+            if (resp2_cpf) resp2_cpf.value = maskCPF(resp2_cpf.value);
+            if (acomp_cpf) acomp_cpf.value = maskCPF(acomp_cpf.value);
+
             return {
-                slug: 'autorizacao-viagem-menor', tipo: 'autorizacao_viagem', entidade: 'Viagem',
-                menor_nome: document.getElementById('menor_nome').value.trim(), menor_nascimento: document.getElementById('menor_nascimento').value.trim(), menor_doc: document.getElementById('menor_doc').value.trim(),
-                viagem_tipo: document.getElementById('viagem_tipo').value, destino: document.getElementById('destino').value.trim(), data_ida: document.getElementById('data_ida').value.trim(), data_volta: document.getElementById('data_volta').value.trim(),
-                acompanhante_tipo: document.getElementById('acompanhante_tipo').value, acompanhante_nome: document.getElementById('acomp_nome').value.trim(), acompanhante_cpf: document.getElementById('acomp_cpf').value.trim(), acompanhante_doc: document.getElementById('acomp_doc').value.trim(), acompanhante_parentesco: document.getElementById('acomp_parentesco').value.trim(),
-                resp1_nome: document.getElementById('resp1_nome').value.trim(), resp1_cpf: document.getElementById('resp1_cpf').value.trim(), resp1_doc: document.getElementById('resp1_doc').value.trim(), resp1_parentesco: document.getElementById('resp1_parentesco').value,
-                dois_resps: document.getElementById('dois_resps').checked, resp2_nome: document.getElementById('resp2_nome').value.trim(), resp2_cpf: document.getElementById('resp2_cpf').value.trim(), resp2_doc: document.getElementById('resp2_doc').value.trim(), resp2_parentesco: document.getElementById('resp2_parentesco').value,
-                cidade_uf_emissao: document.getElementById('cidade_uf_emissao').value.trim(), email: document.getElementById('email').value.trim(), telefone: document.getElementById('telefone').value.trim(), observacoes: document.getElementById('observacoes').value.trim(),
+                slug: 'autorizacao-viagem-menor',
+                tipo: 'autorizacao_viagem',
+                entidade: 'Viagem',
+                menor_nome: document.getElementById('menor_nome').value.trim(),
+                menor_nascimento: document.getElementById('menor_nascimento').value.trim(),
+                menor_doc: document.getElementById('menor_doc').value.trim(),
+                viagem_tipo: document.getElementById('viagem_tipo').value,
+                destino: document.getElementById('destino').value.trim(),
+                data_ida: document.getElementById('data_ida').value.trim(),
+                data_volta: document.getElementById('data_volta').value.trim(),
+                acompanhante_tipo: document.getElementById('acompanhante_tipo').value,
+                acompanhante_nome: document.getElementById('acomp_nome').value.trim(),
+                acompanhante_cpf: document.getElementById('acomp_cpf').value.trim(),
+                acompanhante_doc: document.getElementById('acomp_doc').value.trim(),
+                acompanhante_parentesco: document.getElementById('acomp_parentesco').value.trim(),
+                resp1_nome: document.getElementById('resp1_nome').value.trim(),
+                resp1_cpf: document.getElementById('resp1_cpf').value.trim(),
+                resp1_doc: document.getElementById('resp1_doc').value.trim(),
+                resp1_parentesco: document.getElementById('resp1_parentesco').value,
+                dois_resps: document.getElementById('dois_resps').checked,
+                resp2_nome: document.getElementById('resp2_nome').value.trim(),
+                resp2_cpf: document.getElementById('resp2_cpf').value.trim(),
+                resp2_doc: document.getElementById('resp2_doc').value.trim(),
+                resp2_parentesco: document.getElementById('resp2_parentesco').value,
+                cidade_uf_emissao: document.getElementById('cidade_uf_emissao').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                telefone: document.getElementById('telefone').value.trim(),
+                observacoes: document.getElementById('observacoes').value.trim(),
                 utm: (window.LMUTM ? LMUTM.get() : {})
             };
         }
 
         function validateAll(p) {
-            var ok = true; function show(id, show) { var el = document.getElementById(id); if (el) el.style.display = show ? 'block' : 'none'; }
+            var ok = true;
+            function show(id, show) { var el = document.getElementById(id); if (el) el.style.display = show ? 'block' : 'none'; }
+
+            // Validação de Datas
             if (!/^\d{2}\/\d{2}\/\d{4}$/.test(p.menor_nascimento) || !isValidDateBR(p.menor_nascimento)) { show('err_menor_nascimento', true); ok = false; } else show('err_menor_nascimento', false);
             if (!isValidDateBR(p.data_ida)) { show('err_data_ida', true); ok = false; } else show('err_data_ida', false);
-            if (!isValidDateBR(p.data_volta)) { show('err_data_volta', true); ok = false; } else { var di = new Date(dateToISO(p.data_ida)); var dv = new Date(dateToISO(p.data_volta)); if (isNaN(di.getTime()) || isNaN(dv.getTime()) || dv.getTime() < di.getTime()) { show('err_data_volta', true); ok = false; } else show('err_data_volta', false); }
+            if (!isValidDateBR(p.data_volta)) { show('err_data_volta', true); ok = false; } else {
+                var di = new Date(dateToISO(p.data_ida)); var dv = new Date(dateToISO(p.data_volta));
+                if (isNaN(di.getTime()) || isNaN(dv.getTime()) || dv.getTime() < di.getTime()) { show('err_data_volta', true); ok = false; } else show('err_data_volta', false);
+            }
+
+            // Validação de CPF dos Responsáveis
             if (!isValidCPF(p.resp1_cpf)) { show('err_resp1_cpf', true); ok = false; } else show('err_resp1_cpf', false);
             if (p.dois_resps && !isValidCPF(p.resp2_cpf)) { show('err_resp2_cpf', true); ok = false; } else show('err_resp2_cpf', false);
-            if (p.acompanhante_tipo !== 'desacompanhado') { if (!p.acompanhante_nome || !p.acompanhante_doc || !p.acompanhante_parentesco) { ok = false; } if (!isValidCPF(p.acompanhante_cpf)) { show('err_acomp_cpf', true); ok = false; } else show('err_acomp_cpf', false); } else { show('err_acomp_cpf', false); }
-            if (!p.menor_nome || !p.menor_doc || !p.resp1_nome || !p.destino || !p.cidade_uf_emissao) ok = false;
+
+            // Validação do Acompanhante
+            if (p.acompanhante_tipo !== 'desacompanhado') {
+                if (!p.acompanhante_nome || !p.acompanhante_parentesco) {
+                    ok = false;
+                }
+                if (!isValidCPF(p.acompanhante_cpf)) { show('err_acomp_cpf', true); ok = false; } else show('err_acomp_cpf', false);
+            } else {
+                show('err_acomp_cpf', false);
+            }
+
+            // Campos Obrigatórios Principais (Documentos removidos daqui para serem opcionais)
+            if (!p.menor_nome || !p.resp1_nome || !p.destino || !p.cidade_uf_emissao) ok = false;
+
             return ok;
         }
 
@@ -338,10 +412,10 @@
 
         function captureLead(p) { fetch('/.netlify/functions/capture-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: p.email, telefone: p.telefone, nome: p.resp1_nome || p.menor_nome, slug: 'autorizacao-viagem-menor', payload: p }) }).catch(err => console.log('Lead capture bg error', err)); }
 
-        // --- TRAVA DE SEGURANÇA (RATE LIMIT) ---
+        // Rate Limit da Prévia
         function checkCooldown() {
             var last = localStorage.getItem('last_preview_ts');
-            if (last && (Date.now() - parseInt(last)) < 30000) { // 30 segundos
+            if (last && (Date.now() - parseInt(last)) < 30000) {
                 alert('Por favor, aguarde alguns segundos antes de gerar novamente.');
                 return false;
             }
@@ -350,8 +424,7 @@
 
         btnPreview.addEventListener('click', function () {
             (async function () {
-                if (!checkCooldown()) return; // Bloqueia se for rápido demais
-
+                if (!checkCooldown()) return;
                 btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
 
                 try {
@@ -364,7 +437,7 @@
 
                     if (payload.email || payload.telefone) { captureLead(payload); }
 
-                    // ATENÇÃO: Chamada SEM captchaToken
+                    // Chama a geração SEM captcha (pois é prévia)
                     var r = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ payload: payload, preview: true })
@@ -384,11 +457,9 @@
                     if (typeof gtag === 'function') { gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' }); }
 
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
-                    localStorage.setItem('last_preview_ts', Date.now()); // Grava o cooldown
+                    localStorage.setItem('last_preview_ts', Date.now());
 
-                    // Mantém o botão desabilitado por 30s visualmente também
                     setTimeout(function () { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }, 30000);
-
                     btnPagar.disabled = false;
 
                 } catch (e) {
@@ -398,14 +469,10 @@
             })();
         });
 
-        // O botão de Pagar ainda pode (e deve) ter alguma proteção ou deixar o MP cuidar
-        // Vou manter o código original de pagar que chama o mp-checkout.
-        // Se quiser remover o captcha do pagar também, é só remover o bloco de check.
-        // MANTIVE O CAPTCHA NO PAGAR PARA SEGURANÇA DO CHECKOUT (Recomendado)
         btnPagar.addEventListener('click', async function () {
             btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
             try {
-                // ReCAPTCHA SÓ NO PAGAMENTO (Para evitar bots criando milhares de pagamentos)
+                // CAPTCHA SÓ NO PAGAMENTO
                 var captchaToken = grecaptcha.getResponse();
                 if (!captchaToken) {
                     alert('Por favor, marque a caixa "Não sou um robô" antes de pagar.');
@@ -414,6 +481,13 @@
                 }
 
                 var payload = getPayload();
+                // Revalida se todos os campos obrigatórios estão ok
+                if (!validateAll(payload)) {
+                    alert('Preencha os campos obrigatórios.');
+                    throw new Error('Campos inválidos');
+                }
+
+                saveForm();
                 localStorage.setItem('pendingPayload', JSON.stringify(payload));
                 var slugStr = 'autorizacao-viagem-menor';
 
@@ -428,13 +502,12 @@
                 if (typeof gtag === 'function') { gtag('event', 'begin_checkout', { value: 9.9, currency: 'BRL', items: [{ item_id: slugStr }] }); }
                 showPaymentModal(data.init_point, data.order_id, slugStr);
             } catch (e) {
-                alert('Erro: ' + e.message);
+                if (e.message !== 'Campos inválidos') alert('Erro: ' + e.message);
                 btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
                 try { grecaptcha.reset(); } catch (e) { }
             }
         });
 
-        // (Função showPaymentModal continua a mesma do arquivo anterior...)
         function showPaymentModal(initPoint, orderId, slug) {
             var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
             var cardBG = isLight ? '#ffffff' : '#111827';
