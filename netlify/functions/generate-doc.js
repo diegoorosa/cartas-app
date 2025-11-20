@@ -1,6 +1,13 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 
+// --- CONFIGURAÇÕES ---
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+// Usando apenas os modelos 2.0 que sabemos que funcionam e tem cota
+const MODELS = ['gemini-2.0-flash-lite', 'gemini-2.0-flash-exp'];
+
 // --- HELPERS ---
 function getTodaySimple() {
     const date = new Date();
@@ -21,13 +28,6 @@ function sanitizePayload(obj) {
     return obj;
 }
 
-// --- CONFIGURAÇÕES ---
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-
-// Modelos rápidos e estáveis
-const MODELS = ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-2.5-flash'];
-
 function parseJson(text) {
     if (!text) return null;
     try { return JSON.parse(text); }
@@ -40,13 +40,13 @@ function parseJson(text) {
 // --- PROMPTS ---
 const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON válido. Formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}.';
 
-// O MODELO RICO (Baseado no Documento 19)
+// O MODELO JURÍDICO RICO (DO PDF 19)
 const SYSTEM_VIAGEM_PERFEITO = `
 ${SYSTEM_BASE}
 Gere uma AUTORIZAÇÃO DE VIAGEM baseada estritamente neste modelo jurídico culto.
 Não invente dados. Se faltar documento, use "portador(a) do documento nº ____________________".
 
-ESTRUTURA OBRIGATÓRIA DO TEXTO (Copie este estilo):
+ESTRUTURA OBRIGATÓRIA DO TEXTO:
 - P1: "Eu, [Nome Resp 1], portador(a) do CPF nº [CPF 1], [Doc 1], [se houver Resp 2: e eu, [Nome Resp 2], CPF [CPF 2]], na qualidade de [pai/mãe/responsáveis] do(a) menor [Nome Menor], nascido(a) em [Nasc], [Doc Menor], AUTORIZO(AMOS) EXPRESSAMENTE a referida criança/adolescente a realizar viagem [nacional/internacional], conforme as especificações descritas nesta autorização."
 - P2: "A presente autorização é válida exclusivamente para a viagem com destino a [Destino], com partida em [Data Ida] e retorno previsto para [Data Volta]. Qualquer alteração nas datas ou destino requer uma nova autorização."
 - P3 (Se acompanhado): "O(A) menor viajará acompanhado(a) por [Nome Acomp], portador(a) do CPF [CPF Acomp] e documento [Doc Acomp], que possui parentesco de [Parentesco] com o(a) menor, sendo este(a) responsável por sua segurança e bem-estar durante toda a viagem."
@@ -68,10 +68,8 @@ exports.handler = async (event) => {
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
         if (!payload.order_id) payload = sanitizePayload(payload);
 
-        // --- CORREÇÃO DE ROTA (TRAVA DE FERRO) ---
+        // --- TRAVA DE SEGURANÇA: Forçar Viagem ---
         let tipo = String(payload.tipo || '').toLowerCase();
-
-        // Se o slug for de viagem OU tiver nome de menor, FORÇA ser viagem.
         if (payload.slug === 'autorizacao-viagem-menor' || payload.menor_nome) {
             tipo = 'autorizacao_viagem';
         }
@@ -86,7 +84,7 @@ exports.handler = async (event) => {
 
         // Preparação dos Dados
         let system = SYSTEM_BASE, up = '';
-        const LINE = '__________________________';
+        const LINE = '____________________';
 
         if (tipo === 'autorizacao_viagem') {
             const docMenor = payload.menor_doc || `(preencher: ${LINE})`;
@@ -102,22 +100,19 @@ exports.handler = async (event) => {
                 acompTexto = `${nomeAcomp}, CPF ${payload.acompanhante_cpf || LINE}, ${docAcomp} (Parentesco: ${payload.acompanhante_parentesco || LINE})`;
             }
 
-            up = `PREENCHER MODELO VIAGEM: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
+            up = `PREENCHER: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
             system = SYSTEM_VIAGEM_PERFEITO;
 
         } else if (tipo === 'bagagem') {
             up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}\nVoo: ${payload.cia} ${payload.voo}\nOcorrência: ${payload.status}: ${payload.descricao}\nDespesas: ${payload.despesas}\nLocal: ${payload.cidade_uf}`;
             system = SYSTEM_BAGAGEM;
-        } else if (tipo === 'consumo') {
-            up = `Consumidor: ${payload.nome}\nLoja: ${payload.loja} Pedido: ${payload.pedido}\nProblema: ${payload.motivo}\nDetalhes: ${payload.itens}\nLocal: ${payload.cidade_uf}`;
-            system = SYSTEM_CONSUMO;
         } else {
-            // Só cai aqui se não for viagem, nem bagagem, nem consumo explícito
-            up = JSON.stringify(payload);
+            // Consumo (Fallback)
+            up = `Consumidor: ${payload.nome}\nLoja: ${payload.loja} Pedido: ${payload.pedido}\nProblema: ${payload.motivo}\nDetalhes: ${payload.itens}\nLocal: ${payload.cidade_uf}`;
             system = SYSTEM_CONSUMO;
         }
 
-        // Geração IA
+        // Chamada IA
         let output = null;
         for (const modelName of MODELS) {
             try {
@@ -125,19 +120,16 @@ exports.handler = async (event) => {
                 const result = await model.generateContent(system + '\n\nDADOS:\n' + up);
                 const text = result.response.text();
                 output = parseJson(text);
-                if (output) {
-                    console.log(`Sucesso: ${modelName}`);
-                    break;
-                }
+                if (output) break; // Sucesso
             } catch (err) {
-                console.log(`Erro ${modelName}: ${err.message}`);
+                console.log(`Erro ${modelName}:`, err.message);
                 continue;
             }
         }
 
         if (!output) return { statusCode: 503, body: 'IA Indisponível. Tente novamente.' };
 
-        // Injeção de Assinatura (Agora com o texto certo)
+        // Assinatura
         if (tipo === 'autorizacao_viagem') {
             const cidadeData = `${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
             let assinaturas = `\n\n\n\n\n__________________________________________________\n${payload.resp1_nome}\n(Assinatura com Firma Reconhecida)`;
@@ -145,10 +137,8 @@ exports.handler = async (event) => {
                 assinaturas += `\n\n\n\n\n__________________________________________________\n${payload.resp2_nome}\n(Assinatura com Firma Reconhecida)`;
             }
             output.fechamento = `${cidadeData}${assinaturas}`;
-        }
-        else {
-            const cidadeData = `${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.`;
-            output.fechamento = `${cidadeData}\n\n\n\n\n__________________________________________________\n${payload.nome}\nCPF ${payload.cpf}`;
+        } else {
+            output.fechamento = `${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.\n\n\n\n__________________________________________________\n${payload.nome}`;
         }
 
         if (!preview && orderId) {
@@ -159,6 +149,6 @@ exports.handler = async (event) => {
 
     } catch (e) {
         console.error('Erro Fatal:', e);
-        return { statusCode: 500, body: 'Erro interno.' };
+        return { statusCode: 500, body: 'Erro interno no servidor.' };
     }
 };
