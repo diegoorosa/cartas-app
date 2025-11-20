@@ -26,14 +26,12 @@ function sanitizePayload(obj) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-// LISTA DE MODELOS (PRIORIDADE):
-// 1. Tenta o 2.0 (Experimental, seu preferido)
-// 2. Se der Cota Excedida (429), tenta o 1.5 Flash Latest (Rápido e Estável)
-// 3. Se tudo falhar, tenta o Gemini Pro (Velho de guerra, mas funciona)
+// --- LISTA DE MODELOS ATUALIZADA (Baseada nos seus Prints) ---
+// Prioridade: Lite (30 RPM) -> Flash 2.0 (15 RPM) -> Flash 2.5 (10 RPM)
 const MODELS = [
-    'gemini-2.0-flash-exp',
-    'gemini-1.5-flash-latest',
-    'gemini-pro'
+    'gemini-2.0-flash-lite',
+    'gemini-2.0-flash',
+    'gemini-2.5-flash'
 ];
 
 function parseJson(text) {
@@ -120,7 +118,6 @@ exports.handler = async (event) => {
 
         for (const modelName of MODELS) {
             try {
-                // Tenta gerar
                 const model = genAI.getGenerativeModel({ model: modelName });
                 const result = await model.generateContent(system + '\n\n' + up);
                 const text = result.response.text();
@@ -128,20 +125,18 @@ exports.handler = async (event) => {
                 output = parseJson(text);
                 if (output) {
                     console.log(`Sucesso com modelo: ${modelName}`);
-                    break; // Se funcionou, sai do loop e entrega
+                    break;
                 }
             } catch (err) {
                 console.log(`Falha no modelo ${modelName}: ${err.message}`);
                 lastError = err.message;
-                // Se o erro for 429 (Quota) ou 404 (Not Found), o loop continua automaticamente para o próximo modelo da lista
                 continue;
             }
         }
 
         if (!output) {
             console.error('Todos os modelos falharam. Último erro:', lastError);
-            // Mensagem amigável pro usuário não ver erro de código
-            return { statusCode: 503, body: 'Sistema de IA sobrecarregado. Aguarde 1 minuto e tente novamente.' };
+            return { statusCode: 503, body: 'Sistema de IA sobrecarregado. Aguarde alguns instantes.' };
         }
 
         // Injeção de Assinatura
