@@ -25,7 +25,7 @@ function sanitizePayload(obj) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-// Modelos (Lite em primeiro para garantir cota)
+// Modelos rápidos e estáveis
 const MODELS = ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-2.5-flash'];
 
 function parseJson(text) {
@@ -40,7 +40,7 @@ function parseJson(text) {
 // --- PROMPTS ---
 const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON válido. Formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}.';
 
-// O MODELO PERFEITO (BASEADO NO SEU PDF 19)
+// O MODELO RICO (Baseado no Documento 19)
 const SYSTEM_VIAGEM_PERFEITO = `
 ${SYSTEM_BASE}
 Gere uma AUTORIZAÇÃO DE VIAGEM baseada estritamente neste modelo jurídico culto.
@@ -68,10 +68,11 @@ exports.handler = async (event) => {
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
         if (!payload.order_id) payload = sanitizePayload(payload);
 
-        // --- CORREÇÃO DE ROTEAMENTO (FORCE FIX) ---
-        // Se tem nome de menor, É VIAGEM. Não importa o que o 'tipo' diga.
+        // --- CORREÇÃO DE ROTA (TRAVA DE FERRO) ---
         let tipo = String(payload.tipo || '').toLowerCase();
-        if (payload.menor_nome || payload.viagem_tipo) {
+
+        // Se o slug for de viagem OU tiver nome de menor, FORÇA ser viagem.
+        if (payload.slug === 'autorizacao-viagem-menor' || payload.menor_nome) {
             tipo = 'autorizacao_viagem';
         }
 
@@ -83,7 +84,7 @@ exports.handler = async (event) => {
             if (rows && rows.length) return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
         }
 
-        // Preparação
+        // Preparação dos Dados
         let system = SYSTEM_BASE, up = '';
         const LINE = '__________________________';
 
@@ -101,8 +102,8 @@ exports.handler = async (event) => {
                 acompTexto = `${nomeAcomp}, CPF ${payload.acompanhante_cpf || LINE}, ${docAcomp} (Parentesco: ${payload.acompanhante_parentesco || LINE})`;
             }
 
-            up = `PREENCHER MODELO: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
-            system = SYSTEM_VIAGEM_PERFEITO; // Usa o prompt novo
+            up = `PREENCHER MODELO VIAGEM: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
+            system = SYSTEM_VIAGEM_PERFEITO;
 
         } else if (tipo === 'bagagem') {
             up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}\nVoo: ${payload.cia} ${payload.voo}\nOcorrência: ${payload.status}: ${payload.descricao}\nDespesas: ${payload.despesas}\nLocal: ${payload.cidade_uf}`;
@@ -111,14 +112,13 @@ exports.handler = async (event) => {
             up = `Consumidor: ${payload.nome}\nLoja: ${payload.loja} Pedido: ${payload.pedido}\nProblema: ${payload.motivo}\nDetalhes: ${payload.itens}\nLocal: ${payload.cidade_uf}`;
             system = SYSTEM_CONSUMO;
         } else {
+            // Só cai aqui se não for viagem, nem bagagem, nem consumo explícito
             up = JSON.stringify(payload);
             system = SYSTEM_CONSUMO;
         }
 
         // Geração IA
         let output = null;
-        let lastError = '';
-
         for (const modelName of MODELS) {
             try {
                 const model = genAI.getGenerativeModel({ model: modelName });
@@ -131,14 +131,13 @@ exports.handler = async (event) => {
                 }
             } catch (err) {
                 console.log(`Erro ${modelName}: ${err.message}`);
-                lastError = err.message;
                 continue;
             }
         }
 
         if (!output) return { statusCode: 503, body: 'IA Indisponível. Tente novamente.' };
 
-        // Injeção de Assinatura (MANTIDO O ESPAÇO BOM)
+        // Injeção de Assinatura (Agora com o texto certo)
         if (tipo === 'autorizacao_viagem') {
             const cidadeData = `${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
             let assinaturas = `\n\n\n\n\n__________________________________________________\n${payload.resp1_nome}\n(Assinatura com Firma Reconhecida)`;
