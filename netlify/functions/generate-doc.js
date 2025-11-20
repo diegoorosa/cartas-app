@@ -1,6 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 
+// --- HELPER (Sanitização) ---
 function sanitize(str) {
     if (!str || typeof str !== 'string') return str;
     return str.replace(/<[^>]*>/g, '').trim();
@@ -16,7 +17,8 @@ function sanitizePayload(obj) {
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-const MODELS = (process.env.GEMINI_MODELS || 'gemini-2.0-flash-exp,gemini-1.5-flash').split(',').map(s => s.trim()).filter(Boolean);
+// Usa o modelo flash para ser rápido, mas com prompt reforçado
+const MODELS = ['gemini-2.0-flash-exp', 'gemini-1.5-flash'];
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 async function callWithRetry(modelName, prompt, tries) {
@@ -31,17 +33,41 @@ async function callWithRetry(modelName, prompt, tries) {
         }
     }
 }
+
 function parseJson(text) {
     try { return JSON.parse(text); }
     catch (e) { const clean = String(text || '').replace(/```json|```/g, '').trim(); return JSON.parse(clean); }
 }
-function todayBR() { return new Date().toLocaleDateString('pt-BR'); }
 
-// --- PROMPTS (Mantidos e com a lógica da linha pontilhada) ---
-const SYSTEM_CARTA = 'Você gera cartas formais no padrão brasileiro. Responda SOMENTE em JSON válido...'; // (Resumido)
-const SYSTEM_VIAGEM = 'Você gera AUTORIZAÇÃO DE VIAGEM PARA MENOR no padrão brasileiro (Resolução CNJ). Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal jurídico. Se algum número de documento vier como "____", mantenha a linha no texto final para preenchimento manual. Estrutura: 1) Qualificação do Menor. 2) Qualificação dos Responsáveis. 3) Autorização. 4) Validade e Local.';
-const SYSTEM_BAGAGEM = 'Você gera carta à companhia aérea...';
-const SYSTEM_CONSUMO = 'Você gera carta de consumo...';
+function todayBR() {
+    return new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+// --- PROMPTS OTIMIZADOS E CORRIGIDOS ---
+
+const SYSTEM_CARTA = 'Você gera cartas formais. Responda SOMENTE JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}.';
+
+// PROMPT DE VIAGEM BLINDADO (Correção visual e jurídica)
+const SYSTEM_VIAGEM = `
+Você é um assistente jurídico. Gere uma AUTORIZAÇÃO DE VIAGEM PARA MENOR (Resolução CNJ) em JSON estrito.
+O formato de saída deve ser: {"titulo": "AUTORIZAÇÃO DE VIAGEM NACIONAL/INTERNACIONAL", "saudacao": "", "corpo_paragrafos": ["texto..."], "fechamento": "...", "check_list_anexos": []}.
+
+REGRAS VISUAIS E DE CONTEÚDO:
+1. NÃO USE numeração (1., 2., 3.) nos parágrafos. Use parágrafos distintos no array "corpo_paragrafos" para garantir espaçamento.
+2. NÃO INVENTE DADOS. Não coloque [estado civil], [profissão] ou [endereço]. Use APENAS Nome, CPF e Documento. Se faltar algo, ignore.
+3. SE FALTAR DOCUMENTO: Se o input vier como "____", escreva no texto: "portador(a) do documento nº ____________________".
+4. ASSINATURA: O campo "fechamento" DEVE conter a cidade/data e, logo abaixo, a linha de assinatura para os responsáveis citados.
+5. TOM: Formal, mas direto. Evite "juridiquês" desnecessário.
+
+ESTRUTURA DO TEXTO:
+- Parágrafo 1: Eu, [Nome Resp], portador do CPF [x] e Doc [y], na qualidade de [pai/mãe/tutor], AUTORIZO a viagem de [Nome Menor], nascido em [x], documento [y].
+- Parágrafo 2: A viagem será para [Destino], no período de [Datas].
+- Parágrafo 3: O menor viajará [acompanhado de X / desacompanhado]. (Se acompanhado, citar nome e doc do acompanhante).
+- Parágrafo 4: Esta autorização é válida pelo prazo da viagem.
+`;
+
+const SYSTEM_BAGAGEM = 'Você gera carta para bagagem. Responda JSON. Estrutura: 1) Identificação, 2) Voo/PIR, 3) Ocorrido, 4) Pedido de indenização.';
+const SYSTEM_CONSUMO = 'Você gera carta de consumidor. Responda JSON. Estrutura: 1) Compra/Pedido, 2) Problema, 3) Pedido de solução (CDC).';
 
 exports.handler = async (event) => {
     try {
@@ -50,49 +76,62 @@ exports.handler = async (event) => {
         const body = JSON.parse(event.body || '{}');
         let payload = body.payload || null;
         const preview = !!body.preview;
-
-        // REMOVIDA: Validação de Captcha
+        // Sem captcha check aqui
 
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
-        const isPoll = payload.order_id && !payload.nome && !payload.menor_nome;
 
-        if (!isPoll) payload = sanitizePayload(payload);
+        // Sanitização leve
+        if (!payload.order_id) payload = sanitizePayload(payload);
 
         const tipo = String(payload.tipo || '').toLowerCase();
         const orderId = payload.order_id || payload.orderId || null;
 
+        // 1) Cache: Se já existe, retorna rápido
         if (orderId) {
             const { data: rows } = await supabase.from('generations').select('output_json').eq('order_id', orderId).limit(1);
             if (rows && rows.length) return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
         }
 
-        if (isPoll) return { statusCode: 404, body: 'Aguardando geração.' };
-
-        // Lógica de preenchimento com linha (____) se vazio
+        // 2) Preparação Inteligente dos Dados
         let system = SYSTEM_CARTA, up = '';
-        const LINE = '__________________________';
+        const LINE = '__________________________'; // Linha visual para preencher a mão
 
         if (tipo === 'autorizacao_viagem') {
-            const localData = (payload.cidade_uf_emissao || 'Local') + ', ' + todayBR();
-            const docMenor = payload.menor_doc || `(Certidão/RG: ${LINE})`;
-            const docResp1 = payload.resp1_doc || `(RG/Doc: ${LINE})`;
-            const docResp2 = payload.resp2_doc || `(RG/Doc: ${LINE})`;
-            const docAcomp = payload.acompanhante_doc || `(RG/Doc: ${LINE})`;
+            // Lógica para garantir que a linha apareça se estiver vazio
+            const docMenor = payload.menor_doc || `(preencher: ${LINE})`;
 
-            let acompInfo = 'desacompanhado';
+            // Responsável 1
+            const docResp1 = payload.resp1_doc || `Doc: ${LINE}`;
+            const qualifResp1 = `${payload.resp1_nome}, CPF ${payload.resp1_cpf}, ${docResp1}`;
+
+            // Responsável 2 (se houver)
+            const docResp2 = payload.resp2_doc || `Doc: ${LINE}`;
+            const qualifResp2 = payload.dois_resps ? ` e ${payload.resp2_nome}, CPF ${payload.resp2_cpf}, ${docResp2}` : '';
+
+            // Acompanhante
+            let acompTexto = 'desacompanhado(a)';
             if (payload.acompanhante_tipo !== 'desacompanhado') {
-                acompInfo = `Tipo: ${payload.acompanhante_tipo} | Nome: ${payload.acompanhante_nome || LINE} (CPF ${payload.acompanhante_cpf || LINE}, Doc ${docAcomp}, Parentesco: ${payload.acompanhante_parentesco || LINE})`;
+                const docAcomp = payload.acompanhante_doc || `Doc: ${LINE}`;
+                const nomeAcomp = payload.acompanhante_nome || LINE;
+                const parentesco = payload.acompanhante_parentesco ? `(${payload.acompanhante_parentesco})` : '';
+                acompTexto = `acompanhado(a) por ${nomeAcomp} ${parentesco}, CPF ${payload.acompanhante_cpf || LINE}, ${docAcomp}`;
             }
 
-            up =
-                `Menor: ${payload.menor_nome}, nasc. ${payload.menor_nascimento}, documento ${docMenor}\n` +
-                `Responsável 1: ${payload.resp1_nome}, CPF ${payload.resp1_cpf}, documento ${docResp1}, parentesco ${payload.resp1_parentesco}\n` +
-                `Responsável 2: ${payload.dois_resps ? (payload.resp2_nome + ', CPF ' + payload.resp2_cpf + ', doc ' + docResp2) : 'não participa'}\n` +
-                `Viagem: ${payload.viagem_tipo} para ${payload.destino} de ${payload.data_ida} a ${payload.data_volta}\n` +
-                `Acompanhamento: ${acompInfo}\n` +
-                `Local e data de emissão: ${localData}`;
+            // Monta o "prompt do usuário" de forma que a IA só precise encaixar
+            up = `
+            GERAR DOCUMENTO COM ESTES DADOS:
+            Responsáveis: ${qualifResp1}${qualifResp2}.
+            Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}.
+            Viagem: ${payload.viagem_tipo} para ${payload.destino}.
+            Ida: ${payload.data_ida}. Volta: ${payload.data_volta}.
+            Condição: ${acompTexto}.
+            Cidade de Emissão: ${payload.cidade_uf_emissao || '________________'}.
+            Data de hoje: ${todayBR()}.
+            `;
 
+            // Força a assinatura no prompt do sistema
             system = SYSTEM_VIAGEM;
+
         } else if (tipo === 'bagagem') {
             up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}\nVoo: ${payload.cia} ${payload.voo} PIR ${payload.pir}\nOcorrência: ${payload.status}: ${payload.descricao}\nDespesas: ${payload.despesas}\nLocal: ${payload.cidade_uf}`;
             system = SYSTEM_BAGAGEM;
@@ -103,16 +142,45 @@ exports.handler = async (event) => {
             up = JSON.stringify(payload);
         }
 
+        // 3) Geração com IA
         let text = null;
-        for (const m of MODELS) { try { text = await callWithRetry(m, system + '\n\nDados:\n' + up, 2); if (text) break; } catch (e) { } }
-        if (!text) return { statusCode: 503, body: 'IA indisponível.' };
-        const output = parseJson(text);
+        for (const m of MODELS) {
+            try {
+                text = await callWithRetry(m, system + '\n\n' + up, 2);
+                if (text) break;
+            } catch (e) { console.log('Erro model:', m, e.message); }
+        }
 
+        if (!text) return { statusCode: 503, body: 'Serviço indisponível temporariamente.' };
+
+        let output = parseJson(text);
+
+        // 4) Pós-Processamento Garantido (Injeção de Assinatura)
+        // Se a IA esquecer a linha de assinatura, nós forçamos aqui no código
+        if (tipo === 'autorizacao_viagem') {
+            const cidadeData = `${payload.cidade_uf_emissao || 'Local'}, ${todayBR()}.`;
+
+            let assinaturas = `__________________________________________________\n${payload.resp1_nome}\n(Assinatura com Firma Reconhecida)`;
+
+            if (payload.dois_resps) {
+                assinaturas += `\n\n\n__________________________________________________\n${payload.resp2_nome}\n(Assinatura com Firma Reconhecida)`;
+            }
+
+            output.fechamento = `${cidadeData}\n\n\n${assinaturas}`;
+        }
+
+        // 5) Salvar no Banco
         if (!preview && orderId) {
-            await supabase.from('generations').upsert({ order_id: orderId, slug: payload.slug || '', input_json: payload, output_json: output }, { onConflict: 'order_id' });
+            await supabase.from('generations').upsert({
+                order_id: orderId,
+                slug: payload.slug || '',
+                input_json: payload,
+                output_json: output
+            }, { onConflict: 'order_id' });
         }
 
         return { statusCode: 200, body: JSON.stringify({ output, cached: false }) };
+
     } catch (e) {
         console.error(e);
         return { statusCode: 500, body: JSON.stringify({ error: 'Erro interno' }) };
