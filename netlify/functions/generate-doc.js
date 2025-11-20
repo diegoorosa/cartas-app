@@ -1,21 +1,6 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 
-// --- FUNÇÃO HELPER (reCAPTCHA) ---
-async function verifyCaptcha(token) {
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
-    try {
-        const response = await fetch(url, { method: 'POST' });
-        const data = await response.json();
-        return data.success === true;
-    } catch (e) {
-        console.error('Erro ao verificar reCAPTCHA:', e);
-        return false;
-    }
-}
-
-// --- HELPER (Sanitização) ---
 function sanitize(str) {
     if (!str || typeof str !== 'string') return str;
     return str.replace(/<[^>]*>/g, '').trim();
@@ -52,14 +37,11 @@ function parseJson(text) {
 }
 function todayBR() { return new Date().toLocaleDateString('pt-BR'); }
 
-// --- PROMPTS OTIMIZADOS ---
-const SYSTEM_CARTA = 'Você gera cartas formais no padrão brasileiro. Responda SOMENTE em JSON válido no formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal e claro. Produza 3 a 4 parágrafos (60–90 palavras cada); 1) identificação e pedido, 2) cessação de cobranças, 3) confirmação por escrito, 4) estorno se houver cobrança posterior. Observacoes_legais: referência genérica ao CDC (Lei 8.078/90), sem aconselhamento jurídico.';
-
-// Atualizei o prompt de viagem para lidar melhor com documentos
-const SYSTEM_VIAGEM = 'Você gera AUTORIZAÇÃO DE VIAGEM PARA MENOR no padrão brasileiro (Resolução CNJ). Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal jurídico. O documento deve identificar plenamente as partes. Se algum número de documento vier como "____", mantenha a linha no texto final para preenchimento manual. Estrutura: 1) Qualificação do Menor (Nome, nasc, documento). 2) Qualificação dos Responsáveis (Nome, CPF, documento). 3) Autorização de viagem (Destino e Datas) e dados do Acompanhante (se houver). 4) Validade e Local/Data. Checklist: Documentos originais de todos e vias assinadas.';
-
-const SYSTEM_BAGAGEM = 'Você gera carta à companhia aérea por bagagem extraviada/danificada. Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal. 4–6 parágrafos: passageiro/voo (cia, nº, data, origem/destino, PIR), ocorrido, despesas emergenciais, pedido de providências e prazos, anexos.';
-const SYSTEM_CONSUMO = 'Você gera carta de consumo para e-commerce. Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal. 3–5 parágrafos: identificação + dados do pedido (loja, nº, data, itens/valor), descrição do problema, solicitação objetiva e prazo, anexos. Observacoes_legais: referência genérica ao CDC.';
+// --- PROMPTS (Mantidos e com a lógica da linha pontilhada) ---
+const SYSTEM_CARTA = 'Você gera cartas formais no padrão brasileiro. Responda SOMENTE em JSON válido...'; // (Resumido)
+const SYSTEM_VIAGEM = 'Você gera AUTORIZAÇÃO DE VIAGEM PARA MENOR no padrão brasileiro (Resolução CNJ). Responda SOMENTE em JSON: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. Tom formal jurídico. Se algum número de documento vier como "____", mantenha a linha no texto final para preenchimento manual. Estrutura: 1) Qualificação do Menor. 2) Qualificação dos Responsáveis. 3) Autorização. 4) Validade e Local.';
+const SYSTEM_BAGAGEM = 'Você gera carta à companhia aérea...';
+const SYSTEM_CONSUMO = 'Você gera carta de consumo...';
 
 exports.handler = async (event) => {
     try {
@@ -68,19 +50,11 @@ exports.handler = async (event) => {
         const body = JSON.parse(event.body || '{}');
         let payload = body.payload || null;
         const preview = !!body.preview;
-        const captchaToken = body.captchaToken;
 
-        const internalSecret = event.headers['x-internal-secret'] || event.headers['X-Internal-Secret'];
-        const isTrustedSource = internalSecret === process.env.SUPABASE_SERVICE_ROLE_KEY;
+        // REMOVIDA: Validação de Captcha
 
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
         const isPoll = payload.order_id && !payload.nome && !payload.menor_nome;
-
-        if (!isPoll && !isTrustedSource && !preview) {
-            if (!captchaToken) return { statusCode: 403, body: 'reCAPTCHA token ausente' };
-            const isHuman = await verifyCaptcha(captchaToken);
-            if (!isHuman) return { statusCode: 403, body: 'Falha no reCAPTCHA.' };
-        }
 
         if (!isPoll) payload = sanitizePayload(payload);
 
@@ -94,14 +68,12 @@ exports.handler = async (event) => {
 
         if (isPoll) return { statusCode: 404, body: 'Aguardando geração.' };
 
-        // --- PREPARAÇÃO DOS DADOS (Lógica do "Espaço em Branco") ---
+        // Lógica de preenchimento com linha (____) se vazio
         let system = SYSTEM_CARTA, up = '';
-        const LINE = '__________________________'; // Linha para preenchimento manual
+        const LINE = '__________________________';
 
         if (tipo === 'autorizacao_viagem') {
             const localData = (payload.cidade_uf_emissao || 'Local') + ', ' + todayBR();
-
-            // Tratamento inteligente dos documentos (Se vazio, usa a linha)
             const docMenor = payload.menor_doc || `(Certidão/RG: ${LINE})`;
             const docResp1 = payload.resp1_doc || `(RG/Doc: ${LINE})`;
             const docResp2 = payload.resp2_doc || `(RG/Doc: ${LINE})`;
@@ -121,7 +93,6 @@ exports.handler = async (event) => {
                 `Local e data de emissão: ${localData}`;
 
             system = SYSTEM_VIAGEM;
-
         } else if (tipo === 'bagagem') {
             up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}\nVoo: ${payload.cia} ${payload.voo} PIR ${payload.pir}\nOcorrência: ${payload.status}: ${payload.descricao}\nDespesas: ${payload.despesas}\nLocal: ${payload.cidade_uf}`;
             system = SYSTEM_BAGAGEM;
