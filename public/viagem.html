@@ -263,6 +263,13 @@
                             <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$
                                 9,90)</button>
                         </div>
+
+                        <div class="price-badge">
+                            Oferta hoje: <span class="price-old">de R$ 29,90</span> <span class="price-new">por R$
+                                9,90</span>
+                            <span class="timer-text">⚡ O preço pode voltar ao normal em breve</span>
+                        </div>
+
                         <div class="guarantee-badge">
                             <span class="guarantee-icon">🔒</span>
                             <div>
@@ -302,6 +309,14 @@
             </div>
         </div>
     </footer>
+
+    <a href="https://wa.me/5547991323024?text=Ol%C3%A1!%20Estou%20no%20site%20e%20tenho%20d%C3%BAvidas%20sobre%20a%20autoriza%C3%A7%C3%A3o."
+        class="whatsapp-float" target="_blank">
+        <svg viewBox="0 0 32 32" class="whatsapp-icon">
+            <path
+                d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.99-2.335-.287-.272-.772-.257-1.058-.257-.1 0-.244.015-.373.015-.82 0-1.58.79-1.58 2.04 0 .425.113 1.305.79 2.59 1.48 2.81 3.83 4.945 6.42 5.98 2.93 1.17 2.93.63 3.645.63.715 0 1.903-.75 2.09-1.33.187-.575.187-1.06.143-1.145-.143-.244-.6-.373-1.518-.83z" />
+        </svg>
+    </a>
 
     <script src="/utm.js"></script>
     <script src="/recovery.js"></script>
@@ -414,28 +429,25 @@
         var btnPagar = document.getElementById('btnPagar');
         var previewWrap = document.getElementById('previewWrap');
         var previewBox = document.getElementById('previewBox');
-        var recaptchaError = document.getElementById('recaptcha-error'); // NOVO
+        var recaptchaError = document.getElementById('recaptcha-error');
 
         loadForm();
         attachAutosave();
 
-        // --- NOVA FUNÇÃO DE CAPTURA (ADICIONE ISSO) ---
         function captureLead(p) {
-            // Envia sem esperar a resposta (Fire and Forget)
             fetch('/.netlify/functions/capture-lead', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     email: p.email,
                     telefone: p.telefone,
-                    nome: p.resp1_nome || p.menor_nome, // Tenta pegar o nome do responsável ou do menor
+                    nome: p.resp1_nome || p.menor_nome,
                     slug: 'autorizacao-viagem-menor',
                     payload: p
                 })
             }).catch(err => console.log('Lead capture bg error', err));
         }
 
-        // --- LÓGICA DO BOTÃO DE PRÉVIA (btnPreview) ATUALIZADA ---
         btnPreview.addEventListener('click', function () {
             (async function () {
                 btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
@@ -454,12 +466,9 @@
                     }
                     saveForm();
 
-                    // --- AQUI ESTÁ A MÁGICA: CAPTURA O LEAD ---
-                    // Só captura se tiver pelo menos email ou telefone preenchido
                     if (payload.email || payload.telefone) {
                         captureLead(payload);
                     }
-                    // -------------------------------------------
 
                     var r = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -495,8 +504,8 @@
                         gtag('event', 'generate_lead', {
                             'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD',
                             'event_category': 'engagement',
-                            'event_label': 'viagem_nacional', // Rótulo para você saber qual carta foi
-                            'value': 2.00,  // Damos um valor simbólico (R$ 2) para o Google priorizar isso
+                            'event_label': 'viagem_nacional',
+                            'value': 2.00,
                             'currency': 'BRL'
                         });
                     }
@@ -515,18 +524,15 @@
             })();
         });
 
-        // --- LÓGICA DO BOTÃO DE PAGAR (btnPagar) ATUALIZADA ---
         btnPagar.addEventListener('click', async function () {
             btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
-            recaptchaError.style.display = 'none'; // NOVO
+            recaptchaError.style.display = 'none';
             try {
-                // --- NOVO: Verificação do reCAPTCHA ---
                 var captchaToken = grecaptcha.getResponse();
                 if (!captchaToken) {
                     recaptchaError.style.display = 'block';
                     throw new Error('reCAPTCHA não marcado');
                 }
-                // --- FIM DA VERIFICAÇÃO ---
 
                 var payload = getPayload();
                 if (!validateAll(payload)) {
@@ -545,7 +551,7 @@
                         slug: slugStr,
                         payload: payload,
                         utm: (window.LMUTM ? LMUTM.get() : {}),
-                        captchaToken: captchaToken // NOVO: Enviando o token
+                        captchaToken: captchaToken
                     })
                 });
 
@@ -565,11 +571,10 @@
                     alert('Não foi possível abrir o pagamento: ' + e.message);
                 }
                 btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
-                try { grecaptcha.reset(); } catch (e) { } // NOVO
+                try { grecaptcha.reset(); } catch (e) { }
             }
         });
 
-        // --- LÓGICA DO MODAL DE PAGAMENTO (showPaymentModal) ATUALIZADA ---
         function showPaymentModal(initPoint, orderId, slug) {
             var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
             var cardBG = isLight ? '#ffffff' : '#111827';
@@ -589,7 +594,6 @@
                 '</div>';
             document.body.appendChild(overlay);
 
-            // NOVO: Reseta o reCAPTCHA quando o modal é fechado
             document.getElementById('lm-close').onclick = function () {
                 overlay.remove();
                 try { grecaptcha.reset(); } catch (e) { }
