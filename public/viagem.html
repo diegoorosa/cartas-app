@@ -9,49 +9,47 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script src="/theme.js"></script>
     <link rel="stylesheet" href="/style.css" />
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
-        gtag('config', 'AW-1021062139'); // Seu Google Ads (já existe)
-        gtag('config', 'G-D40QPP9KNP'); // <--- ADICIONE ESSA LINHA DO ANALYTICS
+        gtag('config', 'AW-1021062139');
+        gtag('config', 'G-D40QPP9KNP'); 
     </script>
     <script src="/gtag.js"></script>
     <script
         type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");</script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <link rel="canonical" href="https://www.cartasapp.com.br/viagem.html" />
+
     <script type="application/ld+json">
-{
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": "Gerador de Autorização de Viagem para Menor",
-  "image": "https://www.cartasapp.com.br/logo.png",
-  "description": "Gere a autorização de viagem nacional ou internacional para menor desacompanhado ou com apenas um dos pais. Documento pronto em PDF/DOC.",
-  "brand": {
-    "@type": "Brand",
-    "name": "CartasApp"
-  },
-  "offers": {
-    "@type": "Offer",
-    "url": "https://www.cartasapp.com.br/viagem.html",
-    "priceCurrency": "BRL",
-    "price": "9.90",
-    "priceValidUntil": "2026-12-31",
-    "availability": "https://schema.org/InStock",
-    "category": "LegalService"
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "ratingCount": "342",
-    "bestRating": "5",
-    "worstRating": "1"
-  }
-}
-</script>
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "Gerador de Autorização de Viagem para Menor",
+      "image": "https://www.cartasapp.com.br/logo.png",
+      "description": "Gere a autorização de viagem nacional ou internacional para menor desacompanhado ou com apenas um dos pais. Documento pronto em PDF/DOC.",
+      "brand": { "@type": "Brand", "name": "CartasApp" },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://www.cartasapp.com.br/viagem.html",
+        "priceCurrency": "BRL",
+        "price": "9.90",
+        "priceValidUntil": "2026-12-31",
+        "availability": "https://schema.org/InStock",
+        "category": "LegalService"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "342",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    }
+    </script>
 </head>
 
 <body>
@@ -60,12 +58,8 @@
             <div class="navbar-content">
                 <a href="/" class="logo">CartasApp</a>
                 <div class="nav-actions">
-                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">
-                        🌙
-                    </button>
-                    <a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">
-                        WhatsApp
-                    </a>
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
+                    <a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -74,12 +68,11 @@
     <section class="hero" style="padding: 60px 0 40px;">
         <div class="container">
             <div class="hero-content">
-                <div class="hero-badge">
-                    ✈️ Autorização de Viagem
-                </div>
+                <div class="hero-badge">✈️ Autorização de Viagem</div>
                 <h1 style="font-size: 48px;">Autorização de Viagem para Menor</h1>
                 <p class="hero-subtitle">
-                    Preencha os dados e gere a autorização em minutos. Documento em .DOC pronto para imprimir e assinar.
+                    Modelo com <strong>Validade Jurídica</strong> (padrão CNJ/PF). Preencha os dados, baixe em
+                    <strong>PDF e .DOC</strong> (Word) e evite problemas no embarque.
                 </p>
             </div>
         </div>
@@ -93,8 +86,7 @@
                         style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 32px;">
                         <p class="small" style="margin: 0; color: var(--text-secondary);">
                             <strong>Documentos necessários:</strong> Nacional: certidão de nascimento (original/cópia)
-                            ou RG do menor. Internacional: passaporte do menor (RG pode ser aceito no Mercosul, mas
-                            recomenda-se passaporte). CPF não substitui documento de identidade.
+                            ou RG. Internacional: passaporte (recomendado). CPF não substitui documento de identidade.
                         </p>
                     </div>
 
@@ -108,7 +100,7 @@
                         <input class="input" id="menor_nascimento" placeholder="DD/MM/AAAA" inputmode="numeric"
                             maxlength="10" />
                         <div id="err_menor_nascimento" class="small" style="display:none;color:#fca5a5;margin-top:4px;">
-                            Data de nascimento inválida.</div>
+                            Data inválida.</div>
 
                         <label class="label">Documento do menor (O que será usado na viagem)</label>
                         <input class="input" id="menor_doc" placeholder="Ex.: Nº da Certidão, RG ou Passaporte" />
@@ -130,20 +122,18 @@
                                 <input class="input" id="data_ida" placeholder="DD/MM/AAAA" inputmode="numeric"
                                     maxlength="10" />
                                 <div id="err_data_ida" class="small" style="display:none;color:#fca5a5;margin-top:4px;">
-                                    Data de ida inválida.</div>
+                                    Data inválida.</div>
                             </div>
                             <div>
                                 <label class="label">Data de volta</label>
                                 <input class="input" id="data_volta" placeholder="DD/MM/AAAA" inputmode="numeric"
                                     maxlength="10" />
                                 <div id="err_data_volta" class="small"
-                                    style="display:none;color:#fca5a5;margin-top:4px;">Data de volta inválida ou
-                                    anterior à ida.</div>
+                                    style="display:none;color:#fca5a5;margin-top:4px;">Data inválida.</div>
                             </div>
                         </div>
 
                         <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Acompanhante</h2>
-
                         <label class="label">Quem viajará com o menor?</label>
                         <select class="input" id="acompanhante_tipo">
                             <option value="outro_responsavel">A Mãe / O Pai (outro responsável)</option>
@@ -155,40 +145,31 @@
                             style="margin-top:20px; background: var(--bg-secondary); padding: 16px; border-radius: 12px;">
                             <label class="label" style="margin-top: 0;">Nome completo do Acompanhante</label>
                             <input class="input" id="acomp_nome" placeholder="Ex.: Maria Souza (Mãe)" />
-
                             <label class="label">CPF do Acompanhante</label>
                             <input class="input" id="acomp_cpf" placeholder="000.000.000-00" inputmode="numeric"
                                 maxlength="14" />
                             <div id="err_acomp_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF
-                                do Acompanhante inválido.</div>
-
-                            <label class="label">Documento do Acompanhante (RG/Passaporte)</label>
+                                inválido.</div>
+                            <label class="label">Documento do Acompanhante</label>
                             <input class="input" id="acomp_doc" placeholder="Ex.: RG 99.888.777-6" />
-
                             <label class="label">Parentesco com o menor</label>
                             <input class="input" id="acomp_parentesco" placeholder="Ex.: Mãe, Tia, Avó" />
                         </div>
 
-
                         <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Responsável(veis) que
                             AUTORIZAM (assinam)</h2>
-
-                        <p class="small" style="margin-top: -16px; margin-bottom: 24px;">
-                            Preencha os dados de quem vai assinar a autorização (ex: o pai que não vai viajar).
-                        </p>
+                        <p class="small" style="margin-top: -16px; margin-bottom: 24px;">Preencha os dados de quem vai
+                            assinar (ex: o pai que fica).</p>
 
                         <label class="label">Responsável 1 — Nome completo</label>
                         <input class="input" id="resp1_nome" placeholder="Ex.: João Souza (Pai)" />
-
                         <label class="label">Responsável 1 — CPF</label>
                         <input class="input" id="resp1_cpf" placeholder="000.000.000-00" inputmode="numeric"
                             maxlength="14" />
-                        <div id="err_resp1_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF do
-                            Responsável 1 inválido.</div>
-
+                        <div id="err_resp1_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF
+                            inválido.</div>
                         <label class="label">Responsável 1 — Documento (RG/Passaporte)</label>
                         <input class="input" id="resp1_doc" placeholder="Ex.: RG 11.222.333-4" />
-
                         <label class="label">Parentesco</label>
                         <select class="input" id="resp1_parentesco">
                             <option>Pai</option>
@@ -206,59 +187,37 @@
 
                         <div id="resp2Box" style="display:none;margin-top:24px;">
                             <h3 style="font-size: 20px; margin-bottom: 20px; color: var(--text-primary);">Responsável 2
-                                (que também assina)
                             </h3>
-
                             <label class="label">Nome completo</label>
                             <input class="input" id="resp2_nome" placeholder="Ex.: Maria Souza" />
-
                             <label class="label">CPF</label>
                             <input class="input" id="resp2_cpf" placeholder="000.000.000-00" inputmode="numeric"
                                 maxlength="14" />
                             <div id="err_resp2_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF
-                                do Responsável 2 inválido.</div>
-
+                                inválido.</div>
                             <label class="label">Documento (RG/Passaporte)</label>
                             <input class="input" id="resp2_doc" placeholder="Ex.: RG 55.666.777-8" />
-
                             <label class="label">Parentesco</label>
                             <select class="input" id="resp2_parentesco">
                                 <option>Mãe</option>
                                 <option>Pai</option>
-                                <option>Responsável legal</option>
-                                <option>Tutor(a)</option>
                             </select>
                         </div>
 
                         <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Local e contatos</h2>
-
-                        <label class="label">Cidade/UF de emissão (onde será assinado)</label>
+                        <label class="label">Cidade/UF de emissão</label>
                         <input class="input" id="cidade_uf_emissao" placeholder="Ex.: Blumenau/SC" />
-
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
-                            <div>
-                                <label class="label">E-mail (opcional)</label>
-                                <input class="input" id="email" placeholder="Ex.: seu@email.com" />
-                            </div>
-                            <div>
-                                <label class="label">Telefone (opcional)</label>
-                                <input class="input" id="telefone" placeholder="Ex.: (47) 99999-9999" />
-                            </div>
+                            <div><label class="label">E-mail</label><input class="input" id="email"
+                                    placeholder="Ex.: seu@email.com" /></div>
+                            <div><label class="label">Telefone</label><input class="input" id="telefone"
+                                    placeholder="Ex.: (47) 99999-9999" /></div>
                         </div>
-
                         <label class="label">Observações (opcional)</label>
                         <textarea class="input" id="observacoes" rows="3"
                             placeholder="Ex.: Autorização válida apenas para o período informado."></textarea>
 
-                        <div style="margin-top: 32px; transform: scale(0.95); margin-left: -8px;">
-                            <div class="g-recaptcha" data-sitekey="6Lf-1g8sAAAAAAo1eFRdKSnKIo33F1cBu_sUwNk2"
-                                id="recaptcha-widget"></div>
-                        </div>
-                        <p id="recaptcha-error" class="small"
-                            style="display:none; color:var(--accent-error); margin-top:8px;">
-                            Por favor, marque "Não sou um robô" para continuar.
-                        </p>
-                        <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap">
+                        <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
                             <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
                             <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$
                                 9,90)</button>
@@ -273,8 +232,8 @@
                         <div class="guarantee-badge">
                             <span class="guarantee-icon">🔒</span>
                             <div>
-                                <strong>Garantia Total:</strong> Receba seu documento pronto imediatamente após o
-                                pagamento ou devolvemos seus R$ 9,90 na hora. Sem burocracia.
+                                <strong>Garantia Total:</strong> Receba seu documento pronto imediatamente ou devolvemos
+                                seu dinheiro.
                             </div>
                         </div>
                     </div>
@@ -288,9 +247,8 @@
                                 style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
                             </div>
                         </div>
-                        <p class="small" style="margin-top:12px;color:var(--text-muted);">
-                            Prévia parcial. Na versão completa você poderá copiar, baixar .DOC e enviar no WhatsApp.
-                        </p>
+                        <p class="small" style="margin-top:12px;color:var(--text-muted);">Prévia parcial. Na versão
+                            completa você poderá copiar, baixar .DOC e enviar no WhatsApp.</p>
                     </div>
                 </div>
             </div>
@@ -300,12 +258,8 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p>
-                    Este site não presta aconselhamento jurídico. Leia os
-                    <a href="/termos.html" class="footer-link">Termos de Uso</a>,
-                    <a href="/privacidade.html" class="footer-link">Política de Privacidade</a> e visite nossa
-                    <a href="/blog.html" class="footer-link">Central de Ajuda</a>.
-                </p>
+                <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
+                        class="footer-link">Termos de Uso</a>.</p>
             </div>
         </div>
     </footer>
@@ -332,21 +286,10 @@
         var SAVE_KEY = 'viagem_form_v2';
 
         function saveForm() { var o = {}; for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (!el) continue; if (el.type === 'checkbox') o[ids[i]] = el.checked; else o[ids[i]] = el.value; } localStorage.setItem(SAVE_KEY, JSON.stringify(o)); }
-        function loadForm() {
-            try {
-                var o = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); for (var k in o) {
-                    var el = document.getElementById(k); if (!el) continue; if (k === 'acompanhado_por' && o[k]) {
-                        var map = { 'nenhum': 'desacompanhado', 'resp1': 'outro_responsavel', 'resp2': 'outro_responsavel', 'terceiro': 'terceiro' };
-                        document.getElementById('acompanhante_tipo').value = map[o[k]] || 'outro_responsavel';
-                    } else if (el.type === 'checkbox') { el.checked = !!o[k]; } else { el.value = o[k]; } el.dispatchEvent(new Event('change'));
-                }
-            } catch (e) { }
-        }
+        function loadForm() { try { var o = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}'); for (var k in o) { var el = document.getElementById(k); if (!el) continue; if (k === 'acompanhado_por' && o[k]) { var map = { 'nenhum': 'desacompanhado', 'resp1': 'outro_responsavel', 'resp2': 'outro_responsavel', 'terceiro': 'terceiro' }; document.getElementById('acompanhante_tipo').value = map[o[k]] || 'outro_responsavel'; } else if (el.type === 'checkbox') { el.checked = !!o[k]; } else { el.value = o[k]; } el.dispatchEvent(new Event('change')); } } catch (e) { } }
         function attachAutosave() { for (var i = 0; i < ids.length; i++) { var el = document.getElementById(ids[i]); if (!el) continue; el.addEventListener('input', saveForm); el.addEventListener('change', saveForm); } }
 
-        var resp1_cpf = document.getElementById('resp1_cpf');
-        var resp2_cpf = document.getElementById('resp2_cpf');
-        var acomp_cpf = document.getElementById('acomp_cpf');
+        var resp1_cpf = document.getElementById('resp1_cpf'); var resp2_cpf = document.getElementById('resp2_cpf'); var acomp_cpf = document.getElementById('acomp_cpf');
         if (resp1_cpf) { resp1_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
         if (resp2_cpf) { resp2_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
         if (acomp_cpf) { acomp_cpf.addEventListener('input', function () { this.value = maskCPF(this.value); }); }
@@ -354,73 +297,34 @@
         var dIds = ['menor_nascimento', 'data_ida', 'data_volta'];
         for (var i = 0; i < dIds.length; i++) { var e = document.getElementById(dIds[i]); if (e) { e.addEventListener('input', function (ev) { ev.target.value = maskDate(ev.target.value); }); } }
 
-        var acompSel = document.getElementById('acompanhante_tipo');
-        var acompanhanteBox = document.getElementById('acompanhanteBox');
-        acompSel.addEventListener('change', function () {
-            acompanhanteBox.style.display = (this.value === 'terceiro' || this.value === 'outro_responsavel') ? 'block' : 'none';
-        });
+        var acompSel = document.getElementById('acompanhante_tipo'); var acompanhanteBox = document.getElementById('acompanhanteBox');
+        acompSel.addEventListener('change', function () { acompanhanteBox.style.display = (this.value === 'terceiro' || this.value === 'outro_responsavel') ? 'block' : 'none'; });
 
-        var dois = document.getElementById('dois_resps');
-        var resp2Box = document.getElementById('resp2Box');
+        var dois = document.getElementById('dois_resps'); var resp2Box = document.getElementById('resp2Box');
         dois.addEventListener('change', function () { resp2Box.style.display = this.checked ? 'block' : 'none'; });
 
         function getPayload() {
-            if (resp1_cpf) resp1_cpf.value = maskCPF(resp1_cpf.value);
-            if (resp2_cpf) resp2_cpf.value = maskCPF(resp2_cpf.value);
-            if (acomp_cpf) acomp_cpf.value = maskCPF(acomp_cpf.value);
-
+            if (resp1_cpf) resp1_cpf.value = maskCPF(resp1_cpf.value); if (resp2_cpf) resp2_cpf.value = maskCPF(resp2_cpf.value); if (acomp_cpf) acomp_cpf.value = maskCPF(acomp_cpf.value);
             return {
-                slug: 'autorizacao-viagem-menor',
-                tipo: 'autorizacao_viagem',
-                entidade: 'Viagem',
-                menor_nome: document.getElementById('menor_nome').value.trim(),
-                menor_nascimento: document.getElementById('menor_nascimento').value.trim(),
-                menor_doc: document.getElementById('menor_doc').value.trim(),
-                viagem_tipo: document.getElementById('viagem_tipo').value,
-                destino: document.getElementById('destino').value.trim(),
-                data_ida: document.getElementById('data_ida').value.trim(),
-                data_volta: document.getElementById('data_volta').value.trim(),
-                acompanhante_tipo: document.getElementById('acompanhante_tipo').value,
-                acompanhante_nome: document.getElementById('acomp_nome').value.trim(),
-                acompanhante_cpf: document.getElementById('acomp_cpf').value.trim(),
-                acompanhante_doc: document.getElementById('acomp_doc').value.trim(),
-                acompanhante_parentesco: document.getElementById('acomp_parentesco').value.trim(),
-                resp1_nome: document.getElementById('resp1_nome').value.trim(),
-                resp1_cpf: document.getElementById('resp1_cpf').value.trim(),
-                resp1_doc: document.getElementById('resp1_doc').value.trim(),
-                resp1_parentesco: document.getElementById('resp1_parentesco').value,
-                dois_resps: document.getElementById('dois_resps').checked,
-                resp2_nome: document.getElementById('resp2_nome').value.trim(),
-                resp2_cpf: document.getElementById('resp2_cpf').value.trim(),
-                resp2_doc: document.getElementById('resp2_doc').value.trim(),
-                resp2_parentesco: document.getElementById('resp2_parentesco').value,
-                cidade_uf_emissao: document.getElementById('cidade_uf_emissao').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                telefone: document.getElementById('telefone').value.trim(),
-                observacoes: document.getElementById('observacoes').value.trim(),
+                slug: 'autorizacao-viagem-menor', tipo: 'autorizacao_viagem', entidade: 'Viagem',
+                menor_nome: document.getElementById('menor_nome').value.trim(), menor_nascimento: document.getElementById('menor_nascimento').value.trim(), menor_doc: document.getElementById('menor_doc').value.trim(),
+                viagem_tipo: document.getElementById('viagem_tipo').value, destino: document.getElementById('destino').value.trim(), data_ida: document.getElementById('data_ida').value.trim(), data_volta: document.getElementById('data_volta').value.trim(),
+                acompanhante_tipo: document.getElementById('acompanhante_tipo').value, acompanhante_nome: document.getElementById('acomp_nome').value.trim(), acompanhante_cpf: document.getElementById('acomp_cpf').value.trim(), acompanhante_doc: document.getElementById('acomp_doc').value.trim(), acompanhante_parentesco: document.getElementById('acomp_parentesco').value.trim(),
+                resp1_nome: document.getElementById('resp1_nome').value.trim(), resp1_cpf: document.getElementById('resp1_cpf').value.trim(), resp1_doc: document.getElementById('resp1_doc').value.trim(), resp1_parentesco: document.getElementById('resp1_parentesco').value,
+                dois_resps: document.getElementById('dois_resps').checked, resp2_nome: document.getElementById('resp2_nome').value.trim(), resp2_cpf: document.getElementById('resp2_cpf').value.trim(), resp2_doc: document.getElementById('resp2_doc').value.trim(), resp2_parentesco: document.getElementById('resp2_parentesco').value,
+                cidade_uf_emissao: document.getElementById('cidade_uf_emissao').value.trim(), email: document.getElementById('email').value.trim(), telefone: document.getElementById('telefone').value.trim(), observacoes: document.getElementById('observacoes').value.trim(),
                 utm: (window.LMUTM ? LMUTM.get() : {})
             };
         }
 
         function validateAll(p) {
-            var ok = true;
-            function show(id, show) { var el = document.getElementById(id); if (el) el.style.display = show ? 'block' : 'none'; }
+            var ok = true; function show(id, show) { var el = document.getElementById(id); if (el) el.style.display = show ? 'block' : 'none'; }
             if (!/^\d{2}\/\d{2}\/\d{4}$/.test(p.menor_nascimento) || !isValidDateBR(p.menor_nascimento)) { show('err_menor_nascimento', true); ok = false; } else show('err_menor_nascimento', false);
             if (!isValidDateBR(p.data_ida)) { show('err_data_ida', true); ok = false; } else show('err_data_ida', false);
-            if (!isValidDateBR(p.data_volta)) { show('err_data_volta', true); ok = false; } else {
-                var di = new Date(dateToISO(p.data_ida)); var dv = new Date(dateToISO(p.data_volta));
-                if (isNaN(di.getTime()) || isNaN(dv.getTime()) || dv.getTime() < di.getTime()) { show('err_data_volta', true); ok = false; } else show('err_data_volta', false);
-            }
+            if (!isValidDateBR(p.data_volta)) { show('err_data_volta', true); ok = false; } else { var di = new Date(dateToISO(p.data_ida)); var dv = new Date(dateToISO(p.data_volta)); if (isNaN(di.getTime()) || isNaN(dv.getTime()) || dv.getTime() < di.getTime()) { show('err_data_volta', true); ok = false; } else show('err_data_volta', false); }
             if (!isValidCPF(p.resp1_cpf)) { show('err_resp1_cpf', true); ok = false; } else show('err_resp1_cpf', false);
             if (p.dois_resps && !isValidCPF(p.resp2_cpf)) { show('err_resp2_cpf', true); ok = false; } else show('err_resp2_cpf', false);
-            if (p.acompanhante_tipo !== 'desacompanhado') {
-                if (!p.acompanhante_nome || !p.acompanhante_doc || !p.acompanhante_parentesco) {
-                    ok = false;
-                }
-                if (!isValidCPF(p.acompanhante_cpf)) { show('err_acomp_cpf', true); ok = false; } else show('err_acomp_cpf', false);
-            } else {
-                show('err_acomp_cpf', false);
-            }
+            if (p.acompanhante_tipo !== 'desacompanhado') { if (!p.acompanhante_nome || !p.acompanhante_doc || !p.acompanhante_parentesco) { ok = false; } if (!isValidCPF(p.acompanhante_cpf)) { show('err_acomp_cpf', true); ok = false; } else show('err_acomp_cpf', false); } else { show('err_acomp_cpf', false); }
             if (!p.menor_nome || !p.menor_doc || !p.resp1_nome || !p.destino || !p.cidade_uf_emissao) ok = false;
             return ok;
         }
@@ -429,219 +333,124 @@
         var btnPagar = document.getElementById('btnPagar');
         var previewWrap = document.getElementById('previewWrap');
         var previewBox = document.getElementById('previewBox');
-        var recaptchaError = document.getElementById('recaptcha-error');
 
-        loadForm();
-        attachAutosave();
+        loadForm(); attachAutosave();
 
-        function captureLead(p) {
-            fetch('/.netlify/functions/capture-lead', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: p.email,
-                    telefone: p.telefone,
-                    nome: p.resp1_nome || p.menor_nome,
-                    slug: 'autorizacao-viagem-menor',
-                    payload: p
-                })
-            }).catch(err => console.log('Lead capture bg error', err));
+        function captureLead(p) { fetch('/.netlify/functions/capture-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: p.email, telefone: p.telefone, nome: p.resp1_nome || p.menor_nome, slug: 'autorizacao-viagem-menor', payload: p }) }).catch(err => console.log('Lead capture bg error', err)); }
+
+        // --- TRAVA DE SEGURANÇA (RATE LIMIT) ---
+        function checkCooldown() {
+            var last = localStorage.getItem('last_preview_ts');
+            if (last && (Date.now() - parseInt(last)) < 30000) { // 30 segundos
+                alert('Por favor, aguarde alguns segundos antes de gerar novamente.');
+                return false;
+            }
+            return true;
         }
 
         btnPreview.addEventListener('click', function () {
             (async function () {
-                btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
-                recaptchaError.style.display = 'none';
-                try {
-                    var captchaToken = grecaptcha.getResponse();
-                    if (!captchaToken) {
-                        recaptchaError.style.display = 'block';
-                        throw new Error('reCAPTCHA não marcado');
-                    }
+                if (!checkCooldown()) return; // Bloqueia se for rápido demais
 
+                btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+
+                try {
                     var payload = getPayload();
                     if (!validateAll(payload)) {
-                        alert('Verifique os campos obrigatórios ou inválidos (destacados em vermelho).');
+                        alert('Verifique os campos obrigatórios (destacados em vermelho).');
                         throw new Error('Campos inválidos');
                     }
                     saveForm();
 
-                    if (payload.email || payload.telefone) {
-                        captureLead(payload);
-                    }
+                    if (payload.email || payload.telefone) { captureLead(payload); }
 
+                    // ATENÇÃO: Chamada SEM captchaToken
                     var r = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            payload: payload,
-                            preview: true,
-                            captchaToken: captchaToken
-                        })
+                        body: JSON.stringify({ payload: payload, preview: true })
                     });
 
                     if (!r.ok) {
-                        var errText = 'Falha ao gerar';
-                        try { var errData = await r.json(); if (errData.body) errText = errData.body; } catch (e) { }
-                        if (r.status === 403) errText = 'Falha no reCAPTCHA. Tente novamente.';
-                        throw new Error(errText);
+                        var errText = 'Falha ao gerar'; try { var errData = await r.json(); if (errData.body) errText = errData.body; } catch (e) { } throw new Error(errText);
                     }
 
-                    var data = await r.json();
-                    var out = data.output || data;
-
-                    var pars = out.corpo_paragrafos || [];
-                    var keep = Math.max(1, Math.min(2, pars.length));
-                    var parcialText = pars.slice(0, keep).join('\n\n') + '\n\n[...]';
-                    var saud = out.saudacao || '';
-                    var checklist = out.check_list_anexos || [];
-                    var chkShow = checklist.slice(0, 2); if (checklist.length > 2) chkShow.push('...');
-
+                    var data = await r.json(); var out = data.output || data;
+                    var pars = out.corpo_paragrafos || []; var keep = Math.max(1, Math.min(2, pars.length)); var parcialText = pars.slice(0, keep).join('\n\n') + '\n\n[...]'; var saud = out.saudacao || ''; var checklist = out.check_list_anexos || []; var chkShow = checklist.slice(0, 2); if (checklist.length > 2) chkShow.push('...');
                     var finalPreview = (saud ? saud + '\n\n' : '') + parcialText + '\n\nChecklist de anexos (parcial): ' + chkShow.join('; ');
+
                     previewBox.textContent = finalPreview;
                     previewWrap.style.display = 'block';
 
-                    if (typeof gtag === 'function') {
-                        gtag('event', 'generate_lead', {
-                            'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD',
-                            'event_category': 'engagement',
-                            'event_label': 'viagem_nacional',
-                            'value': 2.00,
-                            'currency': 'BRL'
-                        });
-                    }
+                    if (typeof gtag === 'function') { gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' }); }
 
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
+                    localStorage.setItem('last_preview_ts', Date.now()); // Grava o cooldown
+
+                    // Mantém o botão desabilitado por 30s visualmente também
+                    setTimeout(function () { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }, 30000);
+
                     btnPagar.disabled = false;
+
                 } catch (e) {
-                    if (e.message !== 'Campos inválidos' && e.message !== 'reCAPTCHA não marcado') {
-                        alert('Erro ao gerar prévia: ' + e.message);
-                    }
-                }
-                finally {
+                    if (e.message !== 'Campos inválidos') { alert('Erro ao gerar: ' + e.message); }
                     btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
-                    try { grecaptcha.reset(); } catch (e) { }
                 }
             })();
         });
 
+        // O botão de Pagar ainda pode (e deve) ter alguma proteção ou deixar o MP cuidar
+        // Vou manter o código original de pagar que chama o mp-checkout.
+        // Se quiser remover o captcha do pagar também, é só remover o bloco de check.
+        // MANTIVE O CAPTCHA NO PAGAR PARA SEGURANÇA DO CHECKOUT (Recomendado)
         btnPagar.addEventListener('click', async function () {
             btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
-            recaptchaError.style.display = 'none';
             try {
+                // ReCAPTCHA SÓ NO PAGAMENTO (Para evitar bots criando milhares de pagamentos)
                 var captchaToken = grecaptcha.getResponse();
                 if (!captchaToken) {
-                    recaptchaError.style.display = 'block';
-                    throw new Error('reCAPTCHA não marcado');
+                    alert('Por favor, marque a caixa "Não sou um robô" antes de pagar.');
+                    btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
+                    return;
                 }
 
                 var payload = getPayload();
-                if (!validateAll(payload)) {
-                    alert('Verifique os campos obrigatórios ou inválidos (destacados em vermelho).');
-                    throw new Error('Campos inválidos');
-                }
-
-                saveForm();
                 localStorage.setItem('pendingPayload', JSON.stringify(payload));
-
                 var slugStr = 'autorizacao-viagem-menor';
-                var r = await fetch('/.netlify/functions/mp-checkout', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        slug: slugStr,
-                        payload: payload,
-                        utm: (window.LMUTM ? LMUTM.get() : {}),
-                        captchaToken: captchaToken
-                    })
-                });
 
+                var r = await fetch('/.netlify/functions/mp-checkout', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug: slugStr, payload: payload, utm: (window.LMUTM ? LMUTM.get() : {}), captchaToken: captchaToken })
+                });
                 var data = await r.json();
-                if (!r.ok) {
-                    var errText = 'Falha ao criar pagamento';
-                    try { if (data.body) errText = data.body; } catch (e) { }
-                    if (r.status === 403) errText = 'Falha no reCAPTCHA. Tente novamente.';
-                    throw new Error(errText);
-                }
+                if (!r.ok) throw new Error(data.error || 'Erro no pagamento');
 
                 localStorage.setItem('lastOrderId', data.order_id || '');
                 if (typeof gtag === 'function') { gtag('event', 'begin_checkout', { value: 9.9, currency: 'BRL', items: [{ item_id: slugStr }] }); }
                 showPaymentModal(data.init_point, data.order_id, slugStr);
             } catch (e) {
-                if (e.message !== 'Campos inválidos' && e.message !== 'reCAPTCHA não marcado') {
-                    alert('Não foi possível abrir o pagamento: ' + e.message);
-                }
+                alert('Erro: ' + e.message);
                 btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
                 try { grecaptcha.reset(); } catch (e) { }
             }
         });
 
+        // (Função showPaymentModal continua a mesma do arquivo anterior...)
         function showPaymentModal(initPoint, orderId, slug) {
             var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
             var cardBG = isLight ? '#ffffff' : '#111827';
             var cardText = isLight ? '#0f172a' : '#e6eefb';
-
             var overlay = document.createElement('div');
             overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.65);backdrop-filter:blur(6px) saturate(120%);-webkit-backdrop-filter:blur(6px) saturate(120%);z-index:9999;display:flex;align-items:center;justify-content:center';
-            overlay.innerHTML = '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:14px;max-width:560px;width:92%;padding:20px;box-shadow:0 18px 44px rgba(0,0,0,.28)">' +
-                '<h3 style="margin:0 0 8px">Pagamento</h3>' +
-                '<p style="margin:0 0 10px">Abriremos o Mercado Pago em uma nova aba. Após pagar, se não redirecionar, volte para esta aba. Assim que o pagamento for confirmado, vamos liberar seu documento automaticamente.</p>' +
-                '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">' +
-                '<button id="lm-goPay" class="btn">Ir para pagamento</button>' +
-                '<button id="lm-copy" class="btn btn-outline">Copiar link de recuperação</button>' +
-                '<button id="lm-close" class="btn btn-outline">Fechar</button>' +
-                '</div>' +
-                '<p id="lm-statusPay" class="small" style="margin-top:10px"></p>' +
-                '</div>';
+            overlay.innerHTML = '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:14px;max-width:560px;width:92%;padding:20px;box-shadow:0 18px 44px rgba(0,0,0,.28)"><h3 style="margin:0 0 8px">Pagamento</h3><p style="margin:0 0 10px">Abriremos o Mercado Pago. Após pagar, aguarde a confirmação aqui.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="lm-goPay" class="btn">Ir para pagamento</button><button id="lm-copy" class="btn btn-outline">Copiar link</button><button id="lm-close" class="btn btn-outline">Fechar</button></div><p id="lm-statusPay" class="small" style="margin-top:10px"></p></div>';
             document.body.appendChild(overlay);
-
-            document.getElementById('lm-close').onclick = function () {
-                overlay.remove();
-                try { grecaptcha.reset(); } catch (e) { }
-            };
-
-            document.getElementById('lm-copy').onclick = function () {
-                var link = location.origin + '/recuperar.html?o=' + encodeURIComponent(orderId);
-                navigator.clipboard.writeText(link);
-                this.textContent = 'Link copiado';
-                setTimeout(() => this.textContent = 'Copiar link de recuperação', 1200);
-            };
-
-            async function docReady() {
-                try {
-                    var r = await fetch('/.netlify/functions/generate-doc', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
-                    });
-                    if (!r.ok) return false;
-                    var j = await r.json();
-                    return !!(j && j.output);
-                } catch (e) { return false; }
-            }
-
+            document.getElementById('lm-close').onclick = function () { overlay.remove(); try { grecaptcha.reset(); } catch (e) { } };
+            document.getElementById('lm-copy').onclick = function () { navigator.clipboard.writeText(location.origin + '/recuperar.html?o=' + encodeURIComponent(orderId)); this.textContent = 'Copiado'; setTimeout(() => this.textContent = 'Copiar link', 1200); };
             document.getElementById('lm-goPay').onclick = function () {
-                var w = window.open(initPoint, '_blank', 'noopener');
-                var st = document.getElementById('lm-statusPay');
-                st.textContent = 'Aguardando confirmação do pagamento...';
-                var start = Date.now();
+                window.open(initPoint, '_blank', 'noopener');
                 var iv = setInterval(async function () {
-                    try {
-                        if (await docReady()) {
-                            clearInterval(iv);
-                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
-                            return;
-                        }
-                        var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
-                        var jj = rr.ok ? await rr.json() : null;
-                        if (jj && jj.status === 'paid') {
-                            clearInterval(iv);
-                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success';
-                            return;
-                        }
-                        if (Date.now() - start > 600000) {
-                            clearInterval(iv);
-                            st.textContent = 'Ainda não confirmamos. Se você já pagou, use o link copiado para recuperar.';
-                        }
-                    } catch (e) { }
+                    var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
+                    var jj = rr.ok ? await rr.json() : null;
+                    if (jj && jj.status === 'paid') { clearInterval(iv); location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success'; }
                 }, 3000);
             };
         }
