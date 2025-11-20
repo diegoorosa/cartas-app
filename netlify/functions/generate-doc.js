@@ -1,19 +1,18 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 
-// Helper simples de data (funciona em qualquer servidor)
+// --- HELPER DE DATA ---
 function getTodaySimple() {
     const date = new Date();
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    return date.toLocaleDateString('pt-BR');
 }
 
+// --- HELPER DE SANITIZAÇÃO ---
 function sanitize(str) {
     if (!str || typeof str !== 'string') return str;
     return str.replace(/<[^>]*>/g, '').trim();
 }
+
 function sanitizePayload(obj) {
     if (typeof obj !== 'object' || obj === null) return obj;
     for (const key in obj) {
@@ -23,32 +22,24 @@ function sanitizePayload(obj) {
     return obj;
 }
 
+// --- CONFIGURAÇÕES ---
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-const MODELS = ['gemini-2.0-flash-exp', 'gemini-1.5-flash'];
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-async function callWithRetry(modelName, prompt, tries) {
-    const model = genAI.getGenerativeModel({ model: modelName });
-    for (let i = 0; i < tries; i++) {
-        try {
-            const resp = await model.generateContent(prompt);
-            return resp.response.text();
-        } catch (err) {
-            console.log(`Erro tentativa ${i} modelo ${modelName}:`, err.message);
-            if (i < tries - 1) { await sleep(1000); continue; }
-            return null; // Retorna null se falhar todas
-        }
-    }
-    return null;
-}
+// LISTA DE MODELOS (PRIORIDADE):
+// 1. Tenta o 2.0 (Experimental, seu preferido)
+// 2. Se der Cota Excedida (429), tenta o 1.5 Flash Latest (Rápido e Estável)
+// 3. Se tudo falhar, tenta o Gemini Pro (Velho de guerra, mas funciona)
+const MODELS = [
+    'gemini-2.0-flash-exp',
+    'gemini-1.5-flash-latest',
+    'gemini-pro'
+];
 
 function parseJson(text) {
     if (!text) return null;
     try { return JSON.parse(text); }
     catch (e) {
-        // Tenta limpar markdown ```json
         const clean = String(text).replace(/```json|```/g, '').trim();
         try { return JSON.parse(clean); } catch (e2) { return null; }
     }
@@ -61,13 +52,13 @@ const SYSTEM_VIAGEM = `
 ${SYSTEM_BASE}
 Gere uma AUTORIZAÇÃO DE VIAGEM PARA MENOR (Resolução CNJ).
 REGRAS:
-1. NÃO use numeração nos parágrafos.
-2. NÃO invente dados (sem [estado civil], [profissão]).
+1. Texto corrido, formal, SEM numeração (1. 2.).
+2. NÃO invente dados (estado civil, profissão).
 3. Se faltar documento, escreva "portador(a) do documento nº ____________________".
 ESTRUTURA:
 - P1: Eu, [Nome Resp], CPF [x], Doc [y], [pai/mãe], AUTORIZO a viagem de [Nome Menor], nascido em [data], doc [y].
 - P2: Viagem para [Destino], período [Datas].
-- P3: Viajará [acompanhado de X / desacompanhado].
+- P3: O menor viajará [acompanhado de X / desacompanhado].
 - P4: Validade e Local.
 `;
 
@@ -94,7 +85,7 @@ exports.handler = async (event) => {
             if (rows && rows.length) return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
         }
 
-        // Preparação do Prompt
+        // Montagem do Prompt
         let system = SYSTEM_BASE, up = '';
         const LINE = '__________________________';
 
@@ -123,42 +114,55 @@ exports.handler = async (event) => {
             system = SYSTEM_CONSUMO;
         }
 
-        // Geração IA com Fallback seguro
+        // --- LÓGICA DE GERAÇÃO ROBUSTA (LOOP DE MODELOS) ---
         let output = null;
-        for (const m of MODELS) {
-            const text = await callWithRetry(m, system + '\n\n' + up, 2);
-            if (text) {
+        let lastError = '';
+
+        for (const modelName of MODELS) {
+            try {
+                // Tenta gerar
+                const model = genAI.getGenerativeModel({ model: modelName });
+                const result = await model.generateContent(system + '\n\n' + up);
+                const text = result.response.text();
+
                 output = parseJson(text);
-                if (output && output.corpo_paragrafos) break; // Sucesso
+                if (output) {
+                    console.log(`Sucesso com modelo: ${modelName}`);
+                    break; // Se funcionou, sai do loop e entrega
+                }
+            } catch (err) {
+                console.log(`Falha no modelo ${modelName}: ${err.message}`);
+                lastError = err.message;
+                // Se o erro for 429 (Quota) ou 404 (Not Found), o loop continua automaticamente para o próximo modelo da lista
+                continue;
             }
         }
 
-        // Se a IA falhar totalmente, retorna erro amigável em vez de crashar
         if (!output) {
-            console.error('IA falhou em gerar JSON válido');
-            return { statusCode: 503, body: 'Erro na inteligência artificial. Tente novamente em instantes.' };
+            console.error('Todos os modelos falharam. Último erro:', lastError);
+            // Mensagem amigável pro usuário não ver erro de código
+            return { statusCode: 503, body: 'Sistema de IA sobrecarregado. Aguarde 1 minuto e tente novamente.' };
         }
 
-        // Injeção de Assinatura (Segura)
+        // Injeção de Assinatura
         if (tipo === 'autorizacao_viagem') {
             const cidadeData = `${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
             let assinaturas = `\n\n\n\n\n__________________________________________________\n${payload.resp1_nome}\n(Assinatura com Firma Reconhecida)`;
-
             if (payload.dois_resps) {
                 assinaturas += `\n\n\n\n\n__________________________________________________\n${payload.resp2_nome}\n(Assinatura com Firma Reconhecida)`;
             }
             output.fechamento = `${cidadeData}${assinaturas}`;
         }
 
-        // Salvar no banco
+        // Salvar
         if (!preview && orderId) {
-            await supabase.from('generations').upsert({ order_id: orderId, slug: payload.slug || '', input_json: payload, output_json: output }, { onConflict: 'order_id' });
+            supabase.from('generations').upsert({ order_id: orderId, slug: payload.slug || '', input_json: payload, output_json: output }, { onConflict: 'order_id' }).then(() => { });
         }
 
         return { statusCode: 200, body: JSON.stringify({ output, cached: false }) };
 
     } catch (e) {
-        console.error('Erro Fatal:', e);
-        return { statusCode: 500, body: 'Erro interno no servidor.' };
+        console.error('Erro Fatal:', e.message);
+        return { statusCode: 500, body: 'Erro interno.' };
     }
 };
