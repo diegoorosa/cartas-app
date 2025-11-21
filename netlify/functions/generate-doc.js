@@ -5,19 +5,13 @@ const { createClient } = require('@supabase/supabase-js');
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-// MODELO RÁPIDO
+// MODELO
 const MODEL_NAME = 'gemini-2.0-flash-lite';
 
 // --- HELPERS ---
 function getTodaySimple() {
     const date = new Date();
-    // CORREÇÃO: Forçar fuso horário do Brasil para não virar o dia antes da hora
-    return date.toLocaleDateString('pt-BR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        timeZone: 'America/Sao_Paulo'
-    });
+    return date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function sanitize(str) {
@@ -45,6 +39,7 @@ function parseJson(text) {
 
 const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON válido. Formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}.';
 
+// PROMPT DE VIAGEM (Texto do PDF 19)
 const SYSTEM_VIAGEM_PERFEITO = `
 ${SYSTEM_BASE}
 Gere uma AUTORIZAÇÃO DE VIAGEM baseada estritamente neste modelo jurídico culto.
@@ -64,6 +59,7 @@ const SYSTEM_CONSUMO = `${SYSTEM_BASE} Carta consumidor. 3 parágrafos: Compra, 
 exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
+
         const body = JSON.parse(event.body || '{}');
         let payload = body.payload || null;
         const preview = !!body.preview;
@@ -71,21 +67,40 @@ exports.handler = async (event) => {
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
         if (!payload.order_id) payload = sanitizePayload(payload);
 
-        // Roteamento
-        let tipo = String(payload.tipo || '').toLowerCase();
-        if (payload.slug === 'autorizacao-viagem-menor' || payload.menor_nome) {
+        // --- ROTEAMENTO INFALÍVEL ---
+        let tipo = 'indefinido';
+
+        // Convertemos todo o payload para string para procurar palavras-chave
+        const payloadStr = JSON.stringify(payload).toLowerCase();
+        const slug = String(payload.slug || '').toLowerCase();
+
+        // REGRA 1: Se tem cheiro de viagem, É VIAGEM.
+        if (slug.includes('viagem') || payloadStr.includes('menor_nome') || payloadStr.includes('menor_nascimento') || payload.menor_nome) {
             tipo = 'autorizacao_viagem';
+        }
+        // REGRA 2: Se tem cheiro de bagagem, É BAGAGEM.
+        else if (slug.includes('bagagem') || payloadStr.includes('voo') || payloadStr.includes('pir')) {
+            tipo = 'bagagem';
+        }
+        // REGRA 3: Consumo (só se tiver dados de compra explícitos)
+        else if (payloadStr.includes('loja') || payloadStr.includes('pedido')) {
+            tipo = 'consumo';
+        }
+
+        // Se não caiu em nada, aborta. Não gera carta errada.
+        if (tipo === 'indefinido') {
+            return { statusCode: 400, body: 'Erro: Tipo de documento não identificado.' };
         }
 
         const orderId = payload.order_id || payload.orderId || null;
 
-        // Cache check
-        if (orderId) {
+        // Cache Check (Ignora na prévia para forçar atualização)
+        if (orderId && !preview) {
             const { data: rows } = await supabase.from('generations').select('output_json').eq('order_id', orderId).limit(1);
             if (rows && rows.length) return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
         }
 
-        // Preparação
+        // Montagem do Prompt
         let system = SYSTEM_BASE, up = '';
         const LINE = '__________________________';
 
@@ -103,18 +118,19 @@ exports.handler = async (event) => {
                 acompTexto = `${nomeAcomp}, CPF ${payload.acompanhante_cpf || LINE}, ${docAcomp} (Parentesco: ${payload.acompanhante_parentesco || LINE})`;
             }
 
-            up = `PREENCHER: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
+            up = `PREENCHER MODELO VIAGEM: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
             system = SYSTEM_VIAGEM_PERFEITO;
 
         } else if (tipo === 'bagagem') {
             up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}\nVoo: ${payload.cia} ${payload.voo}\nOcorrência: ${payload.status}: ${payload.descricao}\nDespesas: ${payload.despesas}\nLocal: ${payload.cidade_uf}`;
             system = SYSTEM_BAGAGEM;
         } else {
-            up = JSON.stringify(payload);
+            // Consumo
+            up = `Consumidor: ${payload.nome}\nLoja: ${payload.loja} Pedido: ${payload.pedido}\nProblema: ${payload.motivo}\nDetalhes: ${payload.itens}\nLocal: ${payload.cidade_uf}`;
             system = SYSTEM_CONSUMO;
         }
 
-        // Chamada IA
+        // Chamada IA (Timeout 9s)
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout IA')), 9000));
         const generatePromise = model.generateContent(system + '\n\nDADOS:\n' + up);
@@ -125,20 +141,19 @@ exports.handler = async (event) => {
 
         if (!output) throw new Error('JSON Inválido');
 
-        // --- INJEÇÃO DE ASSINATURA COM DATA BRASIL E ESPAÇO ---
+        // Assinatura
         if (tipo === 'autorizacao_viagem') {
-            // CORREÇÃO: Adicionado 4 quebras de linha antes da data para separar do texto
             const cidadeData = `\n\n\n\n${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
-
             let assinaturas = `\n\n\n\n\n__________________________________________________\n${payload.resp1_nome}\nCPF: ${payload.resp1_cpf}\n(Assinatura com Firma Reconhecida)`;
             if (payload.dois_resps) {
                 assinaturas += `\n\n\n\n\n__________________________________________________\n${payload.resp2_nome}\nCPF: ${payload.resp2_cpf}\n(Assinatura com Firma Reconhecida)`;
             }
             output.fechamento = `${cidadeData}${assinaturas}`;
         } else {
-            output.fechamento = `\n\n\n${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.\n\n\n\n__________________________________________________\n${payload.nome}\nCPF ${payload.cpf}`;
+            output.fechamento = `\n\n${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.\n\n\n\n__________________________________________________\n${payload.nome}\nCPF ${payload.cpf}`;
         }
 
+        // Salvar
         if (!preview && orderId) {
             supabase.from('generations').upsert({ order_id: orderId, slug: payload.slug || '', input_json: payload, output_json: output }, { onConflict: 'order_id' }).then(() => { });
         }
