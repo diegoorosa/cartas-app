@@ -179,7 +179,11 @@ exports.handler = async (event) => {
             }
             output.fechamento = `${cidadeData}${assinaturas}`;
         } else {
-            output.fechamento = `\n\n${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.\n\n\n\n__________________________________________________\n${payload.nome}\nCPF ${payload.cpf}`;
+            // Bloco de Bagagem/Outros (ATUALIZADO PARA FICAR IGUALMENTE BOM)
+            // Adicionei os mesmos \n\n\n\n para espaçamento
+            const cidadeData = `\n\n\n\n${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.`;
+            const assinatura = `\n\n\n\n\n__________________________________________________\n${payload.nome}\nCPF: ${payload.cpf}`;
+            output.fechamento = `${cidadeData}${assinatura}`;
         }
 
         // Salvar
