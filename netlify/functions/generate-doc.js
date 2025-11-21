@@ -88,20 +88,31 @@ exports.handler = async (event) => {
             return { statusCode: 404, body: 'Documento ainda não gerado ou não encontrado.' };
         }
 
-        // --- 3. ROTEAMENTO (Se tem dados, vamos gerar) ---
+        // --- ROTEAMENTO INFALÍVEL (ATUALIZADO) ---
         let tipo = 'indefinido';
         const payloadStr = JSON.stringify(payload).toLowerCase();
         const slug = String(payload.slug || '').toLowerCase();
 
+        // REGRA 1: Viagem (INTOCADA)
         if (slug.includes('viagem') || payloadStr.includes('menor_nome') || payload.menor_nome) {
             tipo = 'autorizacao_viagem';
         }
+        // REGRA 2: Bagagem (INTOCADA)
         else if (slug.includes('bagagem') || payloadStr.includes('voo') || payloadStr.includes('pir')) {
             tipo = 'bagagem';
         }
+        // REGRA 3: Consumo/Ecommerce (INTOCADA)
         else if (payloadStr.includes('loja') || payloadStr.includes('pedido')) {
             tipo = 'consumo';
-        } else {
+        }
+        // REGRA 4: NOVO - Pega Smart Fit, Vivo, etc (Genéricos)
+        // Se tiver 'cancelamento', 'reclamacao' ou vier do doc.html
+        else if (slug.includes('cancelamento') || slug.includes('reclamacao') || payload.motivo) {
+            tipo = 'consumo_generico';
+        }
+
+        // Se não caiu em nada, aborta.
+        if (tipo === 'indefinido') {
             return { statusCode: 400, body: 'Erro: Tipo de documento não identificado.' };
         }
 
@@ -130,8 +141,23 @@ exports.handler = async (event) => {
             up = `BAGAGEM: Passageiro: ${payload.nome}, CPF ${payload.cpf}. Voo: ${payload.cia} ${payload.voo}, Data Voo: ${payload.data_voo}. PIR: ${payload.pir || 'N/A'}. Ocorrência: ${payload.status}. Descrição: ${payload.descricao}. Pedido/Despesas: ${payload.despesas}. Cidade: ${payload.cidade_uf}.`;
             system = SYSTEM_BAGAGEM;
 
-        } else {
+        } else if (tipo === 'consumo') {
+            // E-commerce (INTOCADO)
             up = `CONSUMO: Consumidor: ${payload.nome}, CPF ${payload.cpf}. Loja: ${payload.loja} Pedido: ${payload.pedido} Data: ${payload.data_compra}. Problema: ${payload.motivo}. Detalhes: ${payload.itens}. Local: ${payload.cidade_uf}.`;
+            system = SYSTEM_CONSUMO;
+
+        } else if (tipo === 'consumo_generico') {
+            // NOVO BLOCO PARA SMART FIT/VIVO/ETC
+            // Usa o mesmo SYSTEM_CONSUMO mas monta os dados diferente (sem 'loja' e 'pedido' obrigatórios)
+            const empresa = slug.replace('carta-', '').replace('cancelamento-', '').replace('reclamacao-', '').replace(/-/g, ' ').toUpperCase();
+            up = `CARTA FORMAL:
+            Remetente: ${payload.nome}, CPF ${payload.cpf}.
+            Destinatário: ${empresa} (ou a quem interessar).
+            Cidade: ${payload.cidade_uf || payload.cidade}.
+            Dados do Contrato/Unidade: ${payload.contrato || 'Não informado'}.
+            Motivo/Solicitação: ${payload.motivo}.
+            Objetivo: Cancelamento ou Reclamação formal conforme CDC.`;
+
             system = SYSTEM_CONSUMO;
         }
 
@@ -146,18 +172,29 @@ exports.handler = async (event) => {
 
         if (!output) throw new Error('JSON Inválido');
 
-        // Injeção de Assinatura
+        // --- INJEÇÃO DE ASSINATURA ---
         if (tipo === 'autorizacao_viagem') {
+            // Viagem: Assinatura dupla e complexa (MANTIDA)
             const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
             const cidadeData = `${espacoForcado}${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
+
             let assinaturas = `\n\n\n\n\n__________________________________________________\n${payload.resp1_nome}\nCPF: ${payload.resp1_cpf}\n(Assinatura com Firma Reconhecida)`;
             if (payload.dois_resps) {
                 assinaturas += `\n\n\n\n\n__________________________________________________\n${payload.resp2_nome}\nCPF: ${payload.resp2_cpf}\n(Assinatura com Firma Reconhecida)`;
             }
             output.fechamento = `${cidadeData}${assinaturas}`;
+
         } else {
-            const cidadeData = `\n\n\n\n${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.`;
+            // Bagagem, Consumo e Genéricos (Smart Fit, etc)
+            // Usa o mesmo padrão de espaçamento bom
+            // Tenta pegar cidade de vários campos possíveis
+            const cidade = payload.cidade_uf || payload.cidade || 'Local';
+
+            const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
+            const cidadeData = `${espacoForcado}${cidade}, ${getTodaySimple()}.`;
+
             const assinatura = `\n\n\n\n\n__________________________________________________\n${payload.nome}\nCPF: ${payload.cpf}`;
+
             output.fechamento = `${cidadeData}${assinatura}`;
         }
 
