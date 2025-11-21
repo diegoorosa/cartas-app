@@ -57,7 +57,13 @@ ESTRUTURA OBRIGATÓRIA DO TEXTO (corpo_paragrafos):
 `;
 
 const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
-const SYSTEM_CONSUMO = `${SYSTEM_BASE} Carta consumidor. 3 parágrafos: Compra, Problema, Pedido CDC.`;
+const SYSTEM_CONSUMO = `${SYSTEM_BASE}
+Gere carta de consumidor formal.
+ESTRUTURA OBRIGATÓRIA:
+- P1: "Eu, [Nome], CPF [CPF], venho formalizar reclamação contra a empresa [NOME DA EMPRESA/LOJA] referente ao pedido/contrato [Dados]."
+- P2: Descrição detalhada do problema [Motivo].
+- P3: Pedido de solução imediata com base no CDC.
+`;
 
 exports.handler = async (event) => {
     try {
