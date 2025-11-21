@@ -171,7 +171,7 @@ exports.handler = async (event) => {
             if (empresaRaw.includes('oi')) empresa = 'OI';
             if (empresaRaw.includes('sky')) empresa = 'SKY';
 
-            up = `CARTA FORMAL:
+            up = `CARTA FORMAL PARA A EMPRESA ${empresa}:
             Remetente: ${payload.nome}, CPF ${payload.cpf}.
             Destinatário: ${empresa} (Setor de Atendimento/Jurídico).
             Cidade: ${payload.cidade_uf || payload.cidade}.
