@@ -61,8 +61,24 @@ ESTRUTURA OBRIGATÓRIA DO TEXTO (corpo_paragrafos):
 - P4: "Ressalto que esta autorização é concedida em caráter específico para o trajeto e período supramencionados, não conferindo poderes gerais ou irrestritos."
 `;
 
-const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
-const SYSTEM_CONSUMO = `${SYSTEM_BASE} Carta consumidor. 3 parágrafos: Compra, Problema, Pedido CDC.`;
+const SYSTEM_BAGAGEM = `${SYSTEM_BASE} 
+Gere carta para Cia Aérea.
+REGRAS:
+1. O local do ocorrido foi o aeroporto de desembarque (destino). A cidade informada no input é apenas para a assinatura da carta.
+2. Use os dados exatos de despesas fornecidos.
+ESTRUTURA:
+- P1: Identificação do passageiro, voo e data.
+- P2: Relato que ao desembarcar notou o problema (PIR).
+- P3: Descrição do dano/extravio: [INSERIR DESCRIÇÃO DO USUÁRIO].
+- P4: Pedido de reparação: [INSERIR PEDIDO/DESPESAS DO USUÁRIO].
+`;
+const SYSTEM_CONSUMO = `${SYSTEM_BASE} 
+Gere carta CDC.
+ESTRUTURA:
+- P1: Compra, Loja, Pedido e Data.
+- P2: Problema relatado.
+- P3: Pedido de solução (CDC).
+`;
 
 exports.handler = async (event) => {
     try {
@@ -130,8 +146,8 @@ exports.handler = async (event) => {
             system = SYSTEM_VIAGEM_PERFEITO;
 
         } else if (tipo === 'bagagem') {
-            // CORREÇÃO AQUI: Adicionei data_voo e pir
-            up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}. Voo: ${payload.cia} ${payload.voo} data ${payload.data_voo}. PIR: ${payload.pir || 'N/A'}. Ocorrência: ${payload.status}: ${payload.descricao}. Despesas: ${payload.despesas}. Local: ${payload.cidade_uf}.`;
+            // CORREÇÃO NO INPUT PARA IA NÃO CONFUNDIR LOCAL
+            up = `BAGAGEM: Passageiro: ${payload.nome}, CPF ${payload.cpf}. Voo: ${payload.cia} ${payload.voo}, Data Voo: ${payload.data_voo}. PIR: ${payload.pir}. Ocorrência: ${payload.status}. Descrição Dano: ${payload.descricao}. Pedido/Despesas: ${payload.despesas}. Cidade onde assina carta: ${payload.cidade_uf}.`;
             system = SYSTEM_BAGAGEM;
         
         } else {
