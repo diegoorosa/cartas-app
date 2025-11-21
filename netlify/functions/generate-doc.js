@@ -130,11 +130,13 @@ exports.handler = async (event) => {
             system = SYSTEM_VIAGEM_PERFEITO;
 
         } else if (tipo === 'bagagem') {
-            up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}\nVoo: ${payload.cia} ${payload.voo}\nOcorrência: ${payload.status}: ${payload.descricao}\nDespesas: ${payload.despesas}\nLocal: ${payload.cidade_uf}`;
+            // CORREÇÃO AQUI: Adicionei data_voo e pir
+            up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}. Voo: ${payload.cia} ${payload.voo} data ${payload.data_voo}. PIR: ${payload.pir || 'N/A'}. Ocorrência: ${payload.status}: ${payload.descricao}. Despesas: ${payload.despesas}. Local: ${payload.cidade_uf}.`;
             system = SYSTEM_BAGAGEM;
+        
         } else {
-            // Consumo
-            up = `Consumidor: ${payload.nome}\nLoja: ${payload.loja} Pedido: ${payload.pedido}\nProblema: ${payload.motivo}\nDetalhes: ${payload.itens}\nLocal: ${payload.cidade_uf}`;
+            // CORREÇÃO AQUI: Adicionei data_compra
+            up = `Consumidor: ${payload.nome}, CPF ${payload.cpf}. Loja: ${payload.loja} Pedido: ${payload.pedido} Data: ${payload.data_compra}. Problema: ${payload.motivo}. Detalhes: ${payload.itens}. Local: ${payload.cidade_uf}.`;
             system = SYSTEM_CONSUMO;
         }
 
