@@ -42,10 +42,14 @@ const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON vál
 // PROMPT VIAGEM (DO PDF 19 - RICO)
 const SYSTEM_VIAGEM_PERFEITO = `
 ${SYSTEM_BASE}
-Gere uma AUTORIZAÇÃO DE VIAGEM baseada estritamente neste modelo jurídico culto.
-Não invente dados. Se faltar documento, use "portador(a) do documento nº ____________________".
+Gere uma AUTORIZAÇÃO DE VIAGEM.
 
-ESTRUTURA OBRIGATÓRIA DO TEXTO:
+REGRAS ESTRITAS DE FORMATAÇÃO (JSON):
+1. O campo "titulo" deve ser APENAS: "AUTORIZAÇÃO DE VIAGEM".
+2. O campo "saudacao" deve ser EXATAMENTE UMA STRING VAZIA: "". NUNCA coloque o nome ou "Eu, [Nome]" neste campo. Deixe vazio.
+3. O texto começa direto no primeiro parágrafo do array "corpo_paragrafos".
+
+ESTRUTURA OBRIGATÓRIA DO TEXTO (corpo_paragrafos):
 - P1: "Eu, [Nome Resp 1], portador(a) do CPF nº [CPF 1], [Doc 1], [se houver Resp 2: e eu, [Nome Resp 2], CPF [CPF 2]], na qualidade de [pai/mãe/responsáveis] do(a) menor [Nome Menor], nascido(a) em [Nasc], [Doc Menor], AUTORIZO(AMOS) EXPRESSAMENTE a referida criança/adolescente a realizar viagem [nacional/internacional], conforme as especificações descritas nesta autorização."
 - P2: "A presente autorização é válida exclusivamente para a viagem com destino a [Destino], com partida em [Data Ida] e retorno previsto para [Data Volta]. Qualquer alteração nas datas ou destino requer uma nova autorização."
 - P3 (Se acompanhado): "O(A) menor viajará acompanhado(a) por [Nome Acomp], portador(a) do CPF [CPF Acomp] e documento [Doc Acomp], que possui parentesco de [Parentesco] com o(a) menor, sendo este(a) responsável por sua segurança e bem-estar durante toda a viagem."
