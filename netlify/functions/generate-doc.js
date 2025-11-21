@@ -151,7 +151,10 @@ exports.handler = async (event) => {
 
         // Assinatura
         if (tipo === 'autorizacao_viagem') {
-            const cidadeData = `\n\n\n\n\n\n${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
+            // TRUQUE: \u00A0 é um espaço invisível que obriga o PDF a pular a linha
+            const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
+            const cidadeData = `${espacoForcado}${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
+
             let assinaturas = `\n\n\n\n\n__________________________________________________\n${payload.resp1_nome}\nCPF: ${payload.resp1_cpf}\n(Assinatura com Firma Reconhecida)`;
             if (payload.dois_resps) {
                 assinaturas += `\n\n\n\n\n__________________________________________________\n${payload.resp2_nome}\nCPF: ${payload.resp2_cpf}\n(Assinatura com Firma Reconhecida)`;
