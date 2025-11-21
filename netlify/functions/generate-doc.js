@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 // MODELO
-const MODEL_NAME = 'gemini-2.0-flash-lite';
+const MODEL_NAME = 'gemini-2.0-flash';
 
 // --- HELPERS ---
 function getTodaySimple() {
@@ -184,7 +184,7 @@ exports.handler = async (event) => {
 
         // Chamada IA
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout IA')), 9000));
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout IA')), 9500));
         const generatePromise = model.generateContent(system + '\n\nDADOS:\n' + up);
 
         const result = await Promise.race([generatePromise, timeoutPromise]);
