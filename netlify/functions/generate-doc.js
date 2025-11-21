@@ -5,13 +5,19 @@ const { createClient } = require('@supabase/supabase-js');
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-// MODELO ÚNICO E RÁPIDO
+// MODELO RÁPIDO
 const MODEL_NAME = 'gemini-2.0-flash-lite';
 
 // --- HELPERS ---
 function getTodaySimple() {
     const date = new Date();
-    return date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+    // CORREÇÃO: Forçar fuso horário do Brasil para não virar o dia antes da hora
+    return date.toLocaleDateString('pt-BR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'America/Sao_Paulo'
+    });
 }
 
 function sanitize(str) {
@@ -39,24 +45,20 @@ function parseJson(text) {
 
 const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON válido. Formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}.';
 
-// PROMPT VIAGEM (COM CORREÇÃO DE DUPLICIDADE)
 const SYSTEM_VIAGEM_PERFEITO = `
 ${SYSTEM_BASE}
-Gere uma AUTORIZAÇÃO DE VIAGEM.
-REGRAS:
-1. O campo "titulo" DEVE SER EXATAMENTE: "AUTORIZAÇÃO DE VIAGEM".
-2. O campo "saudacao" DEVE SER VAZIO (""). Não coloque o nome aqui.
-3. Não invente dados. Se faltar documento, use "portador(a) do documento nº ____________________".
+Gere uma AUTORIZAÇÃO DE VIAGEM baseada estritamente neste modelo jurídico culto.
+Não invente dados. Se faltar documento, use "portador(a) do documento nº ____________________".
 
-ESTRUTURA OBRIGATÓRIA DO TEXTO (Array corpo_paragrafos):
+ESTRUTURA OBRIGATÓRIA DO TEXTO:
 - P1: "Eu, [Nome Resp 1], portador(a) do CPF nº [CPF 1], [Doc 1], [se houver Resp 2: e eu, [Nome Resp 2], CPF [CPF 2]], na qualidade de [pai/mãe/responsáveis] do(a) menor [Nome Menor], nascido(a) em [Nasc], [Doc Menor], AUTORIZO(AMOS) EXPRESSAMENTE a referida criança/adolescente a realizar viagem [nacional/internacional], conforme as especificações descritas nesta autorização."
 - P2: "A presente autorização é válida exclusivamente para a viagem com destino a [Destino], com partida em [Data Ida] e retorno previsto para [Data Volta]. Qualquer alteração nas datas ou destino requer uma nova autorização."
-- P3: (Se acompanhado) "O(A) menor viajará acompanhado(a) por [Nome Acomp], portador(a) do CPF [CPF Acomp] e documento [Doc Acomp], que possui parentesco de [Parentesco] com o(a) menor, sendo este(a) responsável por sua segurança e bem-estar durante toda a viagem."
-      (Se desacompanhado) "O(A) menor viajará desacompanhado(a), sob os cuidados da companhia de transporte, conforme as regras vigentes."
+- P3 (Se acompanhado): "O(A) menor viajará acompanhado(a) por [Nome Acomp], portador(a) do CPF [CPF Acomp] e documento [Doc Acomp], que possui parentesco de [Parentesco] com o(a) menor, sendo este(a) responsável por sua segurança e bem-estar durante toda a viagem."
+- P3 (Se desacompanhado): "O(A) menor viajará desacompanhado(a), sob os cuidados da companhia de transporte, conforme as regras vigentes."
 - P4: "Ressalto que esta autorização é concedida em caráter específico para o trajeto e período supramencionados, não conferindo poderes gerais ou irrestritos."
 `;
 
-const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
+const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
 const SYSTEM_CONSUMO = `${SYSTEM_BASE} Carta consumidor. 3 parágrafos: Compra, Problema, Pedido CDC.`;
 
 exports.handler = async (event) => {
@@ -77,13 +79,13 @@ exports.handler = async (event) => {
 
         const orderId = payload.order_id || payload.orderId || null;
 
-        // Cache (Ignora se for prévia)
-        if (orderId && !preview) {
+        // Cache check
+        if (orderId) {
             const { data: rows } = await supabase.from('generations').select('output_json').eq('order_id', orderId).limit(1);
             if (rows && rows.length) return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
         }
 
-        // Montagem do Prompt
+        // Preparação
         let system = SYSTEM_BASE, up = '';
         const LINE = '__________________________';
 
@@ -101,18 +103,18 @@ exports.handler = async (event) => {
                 acompTexto = `${nomeAcomp}, CPF ${payload.acompanhante_cpf || LINE}, ${docAcomp} (Parentesco: ${payload.acompanhante_parentesco || LINE})`;
             }
 
-            up = `PREENCHER MODELO VIAGEM: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
+            up = `PREENCHER: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
             system = SYSTEM_VIAGEM_PERFEITO;
 
         } else if (tipo === 'bagagem') {
             up = `Passageiro: ${payload.nome}, CPF ${payload.cpf}\nVoo: ${payload.cia} ${payload.voo}\nOcorrência: ${payload.status}: ${payload.descricao}\nDespesas: ${payload.despesas}\nLocal: ${payload.cidade_uf}`;
             system = SYSTEM_BAGAGEM;
         } else {
-            up = `Consumidor: ${payload.nome}\nLoja: ${payload.loja} Pedido: ${payload.pedido}\nProblema: ${payload.motivo}\nDetalhes: ${payload.itens}\nLocal: ${payload.cidade_uf}`;
+            up = JSON.stringify(payload);
             system = SYSTEM_CONSUMO;
         }
 
-        // Chamada IA (Timeout 9s)
+        // Chamada IA
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout IA')), 9000));
         const generatePromise = model.generateContent(system + '\n\nDADOS:\n' + up);
@@ -123,20 +125,18 @@ exports.handler = async (event) => {
 
         if (!output) throw new Error('JSON Inválido');
 
-        // --- INJEÇÃO DE ASSINATURA (AJUSTADA) ---
+        // --- INJEÇÃO DE ASSINATURA COM DATA BRASIL E ESPAÇO ---
         if (tipo === 'autorizacao_viagem') {
-            // Adicionado \n\n antes da data para dar espaço do texto
-            const cidadeData = `\n\n${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
+            // CORREÇÃO: Adicionado 4 quebras de linha antes da data para separar do texto
+            const cidadeData = `\n\n\n\n${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
 
-            // Adicionado CPF abaixo do nome
             let assinaturas = `\n\n\n\n\n__________________________________________________\n${payload.resp1_nome}\nCPF: ${payload.resp1_cpf}\n(Assinatura com Firma Reconhecida)`;
-
             if (payload.dois_resps) {
                 assinaturas += `\n\n\n\n\n__________________________________________________\n${payload.resp2_nome}\nCPF: ${payload.resp2_cpf}\n(Assinatura com Firma Reconhecida)`;
             }
             output.fechamento = `${cidadeData}${assinaturas}`;
         } else {
-            output.fechamento = `\n\n${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.\n\n\n\n__________________________________________________\n${payload.nome}\nCPF ${payload.cpf}`;
+            output.fechamento = `\n\n\n${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.\n\n\n\n__________________________________________________\n${payload.nome}\nCPF ${payload.cpf}`;
         }
 
         if (!preview && orderId) {
@@ -147,7 +147,7 @@ exports.handler = async (event) => {
 
     } catch (e) {
         console.error('Erro Função:', e.message);
-        const msg = e.message === 'Timeout IA' ? 'Servidor ocupado. Clique novamente.' : 'Erro ao gerar documento.';
+        const msg = e.message === 'Timeout IA' ? 'Servidor ocupado. Tente novamente.' : 'Erro ao gerar documento.';
         return { statusCode: 503, body: msg };
     }
 };
