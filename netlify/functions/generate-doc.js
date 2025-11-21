@@ -10,13 +10,8 @@ const MODEL_NAME = 'gemini-2.0-flash-lite';
 
 // --- HELPERS ---
 function getTodaySimple() {
-    // CORREÇÃO DA DATA: Força o horário de Brasília/SP
-    return new Date().toLocaleDateString('pt-BR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        timeZone: 'America/Sao_Paulo'
-    });
+    const date = new Date();
+    return date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'America/Sao_Paulo' });
 }
 
 function sanitize(str) {
@@ -44,16 +39,13 @@ function parseJson(text) {
 
 const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON válido. Formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}.';
 
-// PROMPT DE VIAGEM (Texto do PDF 19)
+// PROMPT VIAGEM (DO PDF 19 - RICO)
 const SYSTEM_VIAGEM_PERFEITO = `
 ${SYSTEM_BASE}
-Gere uma AUTORIZAÇÃO DE VIAGEM.
-REGRAS CRÍTICAS:
-1. O campo "titulo" deve ser APENAS: "AUTORIZAÇÃO DE VIAGEM".
-2. O campo "saudacao" deve ser VAZIO (""). NÃO coloque "Eu, Nome..." na saudação. Comece direto no parágrafo 1.
-3. Não invente dados. Se faltar documento, use "portador(a) do documento nº ____________________".
+Gere uma AUTORIZAÇÃO DE VIAGEM baseada estritamente neste modelo jurídico culto.
+Não invente dados. Se faltar documento, use "portador(a) do documento nº ____________________".
 
-ESTRUTURA OBRIGATÓRIA DO TEXTO (corpo_paragrafos):
+ESTRUTURA OBRIGATÓRIA DO TEXTO:
 - P1: "Eu, [Nome Resp 1], portador(a) do CPF nº [CPF 1], [Doc 1], [se houver Resp 2: e eu, [Nome Resp 2], CPF [CPF 2]], na qualidade de [pai/mãe/responsáveis] do(a) menor [Nome Menor], nascido(a) em [Nasc], [Doc Menor], AUTORIZO(AMOS) EXPRESSAMENTE a referida criança/adolescente a realizar viagem [nacional/internacional], conforme as especificações descritas nesta autorização."
 - P2: "A presente autorização é válida exclusivamente para a viagem com destino a [Destino], com partida em [Data Ida] e retorno previsto para [Data Volta]. Qualquer alteração nas datas ou destino requer uma nova autorização."
 - P3 (Se acompanhado): "O(A) menor viajará acompanhado(a) por [Nome Acomp], portador(a) do CPF [CPF Acomp] e documento [Doc Acomp], que possui parentesco de [Parentesco] com o(a) menor, sendo este(a) responsável por sua segurança e bem-estar durante toda a viagem."
@@ -61,24 +53,8 @@ ESTRUTURA OBRIGATÓRIA DO TEXTO (corpo_paragrafos):
 - P4: "Ressalto que esta autorização é concedida em caráter específico para o trajeto e período supramencionados, não conferindo poderes gerais ou irrestritos."
 `;
 
-const SYSTEM_BAGAGEM = `${SYSTEM_BASE} 
-Gere carta para Cia Aérea.
-REGRAS:
-1. O local do ocorrido foi o aeroporto de desembarque (destino). A cidade informada no input é apenas para a assinatura da carta.
-2. Use os dados exatos de despesas fornecidos.
-ESTRUTURA:
-- P1: Identificação do passageiro, voo e data.
-- P2: Relato que ao desembarcar notou o problema (PIR).
-- P3: Descrição do dano/extravio: [INSERIR DESCRIÇÃO DO USUÁRIO].
-- P4: Pedido de reparação: [INSERIR PEDIDO/DESPESAS DO USUÁRIO].
-`;
-const SYSTEM_CONSUMO = `${SYSTEM_BASE} 
-Gere carta CDC.
-ESTRUTURA:
-- P1: Compra, Loja, Pedido e Data.
-- P2: Problema relatado.
-- P3: Pedido de solução (CDC).
-`;
+const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
+const SYSTEM_CONSUMO = `${SYSTEM_BASE} Carta consumidor. 3 parágrafos: Compra, Problema, Pedido CDC.`;
 
 exports.handler = async (event) => {
     try {
@@ -91,10 +67,8 @@ exports.handler = async (event) => {
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
         if (!payload.order_id) payload = sanitizePayload(payload);
 
-        // --- ROTEAMENTO INFALÍVEL ---
+        // --- ROTEAMENTO INFALÍVEL (RESTAURADO) ---
         let tipo = 'indefinido';
-
-        // Convertemos todo o payload para string para procurar palavras-chave
         const payloadStr = JSON.stringify(payload).toLowerCase();
         const slug = String(payload.slug || '').toLowerCase();
 
@@ -111,14 +85,14 @@ exports.handler = async (event) => {
             tipo = 'consumo';
         }
 
-        // Se não caiu em nada, aborta. Não gera carta errada.
+        // Se não caiu em nada, aborta.
         if (tipo === 'indefinido') {
             return { statusCode: 400, body: 'Erro: Tipo de documento não identificado.' };
         }
 
         const orderId = payload.order_id || payload.orderId || null;
 
-        // Cache Check (Ignora na prévia para forçar atualização)
+        // Cache Check (Ignora na prévia)
         if (orderId && !preview) {
             const { data: rows } = await supabase.from('generations').select('output_json').eq('order_id', orderId).limit(1);
             if (rows && rows.length) return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
@@ -146,17 +120,17 @@ exports.handler = async (event) => {
             system = SYSTEM_VIAGEM_PERFEITO;
 
         } else if (tipo === 'bagagem') {
-            // CORREÇÃO NO INPUT PARA IA NÃO CONFUNDIR LOCAL
-            up = `BAGAGEM: Passageiro: ${payload.nome}, CPF ${payload.cpf}. Voo: ${payload.cia} ${payload.voo}, Data Voo: ${payload.data_voo}. PIR: ${payload.pir}. Ocorrência: ${payload.status}. Descrição Dano: ${payload.descricao}. Pedido/Despesas: ${payload.despesas}. Cidade onde assina carta: ${payload.cidade_uf}.`;
+            // CORREÇÃO: Incluindo os dados de data e pir para a IA não inventar
+            up = `BAGAGEM: Passageiro: ${payload.nome}, CPF ${payload.cpf}. Voo: ${payload.cia} ${payload.voo}, Data Voo: ${payload.data_voo}. PIR: ${payload.pir || 'N/A'}. Ocorrência: ${payload.status}. Descrição: ${payload.descricao}. Pedido/Despesas: ${payload.despesas}. Cidade: ${payload.cidade_uf}.`;
             system = SYSTEM_BAGAGEM;
-        
+
         } else {
-            // CORREÇÃO AQUI: Adicionei data_compra
-            up = `Consumidor: ${payload.nome}, CPF ${payload.cpf}. Loja: ${payload.loja} Pedido: ${payload.pedido} Data: ${payload.data_compra}. Problema: ${payload.motivo}. Detalhes: ${payload.itens}. Local: ${payload.cidade_uf}.`;
+            // CORREÇÃO: Incluindo os dados de compra
+            up = `CONSUMO: Consumidor: ${payload.nome}, CPF ${payload.cpf}. Loja: ${payload.loja} Pedido: ${payload.pedido} Data: ${payload.data_compra}. Problema: ${payload.motivo}. Detalhes: ${payload.itens}. Local: ${payload.cidade_uf}.`;
             system = SYSTEM_CONSUMO;
         }
 
-        // Chamada IA (Timeout 9s)
+        // Chamada IA
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout IA')), 9000));
         const generatePromise = model.generateContent(system + '\n\nDADOS:\n' + up);
@@ -167,9 +141,9 @@ exports.handler = async (event) => {
 
         if (!output) throw new Error('JSON Inválido');
 
-        // Assinatura
+        // --- INJEÇÃO DE ASSINATURA ---
         if (tipo === 'autorizacao_viagem') {
-            // TRUQUE: \u00A0 é um espaço invisível que obriga o PDF a pular a linha
+            // Espaço forçado com caractere invisível (sua configuração aprovada)
             const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
             const cidadeData = `${espacoForcado}${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
 
@@ -179,8 +153,7 @@ exports.handler = async (event) => {
             }
             output.fechamento = `${cidadeData}${assinaturas}`;
         } else {
-            // Bloco de Bagagem/Outros (ATUALIZADO PARA FICAR IGUALMENTE BOM)
-            // Adicionei os mesmos \n\n\n\n para espaçamento
+            // Espaço generoso também para bagagem
             const cidadeData = `\n\n\n\n${payload.cidade_uf || 'Local'}, ${getTodaySimple()}.`;
             const assinatura = `\n\n\n\n\n__________________________________________________\n${payload.nome}\nCPF: ${payload.cpf}`;
             output.fechamento = `${cidadeData}${assinatura}`;
