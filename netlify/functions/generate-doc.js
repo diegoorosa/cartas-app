@@ -147,16 +147,31 @@ exports.handler = async (event) => {
             system = SYSTEM_CONSUMO;
 
         } else if (tipo === 'consumo_generico') {
-            // NOVO BLOCO PARA SMART FIT/VIVO/ETC
-            // Usa o mesmo SYSTEM_CONSUMO mas monta os dados diferente (sem 'loja' e 'pedido' obrigatórios)
-            const empresa = slug.replace('carta-', '').replace('cancelamento-', '').replace('reclamacao-', '').replace(/-/g, ' ').toUpperCase();
+            // Tenta limpar o nome da empresa de forma mais inteligente
+            let empresaRaw = slug.replace('carta-', '').replace('cancelamento-', '').replace('reclamacao-', '');
+            // Se tiver hifens extras, pega só a primeira palavra (ex: vivo-cobranca -> VIVO)
+            // Ou usa uma lista de conhecidas
+            let empresa = empresaRaw.split('-')[0].toUpperCase();
+
+            // Ajuste fino para nomes compostos conhecidos
+            if (empresaRaw.includes('smart-fit')) empresa = 'SMART FIT';
+            if (empresaRaw.includes('bluefit')) empresa = 'BLUEFIT';
+            if (empresaRaw.includes('bodytech')) empresa = 'BODYTECH';
+            if (empresaRaw.includes('bio-ritmo')) empresa = 'BIO RITMO';
+            if (empresaRaw.includes('just-fit')) empresa = 'JUST FIT';
+            if (empresaRaw.includes('claro')) empresa = 'CLARO';
+            if (empresaRaw.includes('vivo')) empresa = 'VIVO';
+            if (empresaRaw.includes('tim')) empresa = 'TIM';
+            if (empresaRaw.includes('oi')) empresa = 'OI';
+            if (empresaRaw.includes('sky')) empresa = 'SKY';
+
             up = `CARTA FORMAL:
             Remetente: ${payload.nome}, CPF ${payload.cpf}.
-            Destinatário: ${empresa} (ou a quem interessar).
+            Destinatário: ${empresa} (Setor de Atendimento/Jurídico).
             Cidade: ${payload.cidade_uf || payload.cidade}.
-            Dados do Contrato/Unidade: ${payload.contrato || 'Não informado'}.
-            Motivo/Solicitação: ${payload.motivo}.
-            Objetivo: Cancelamento ou Reclamação formal conforme CDC.`;
+            Dados do Contrato/Instalação: ${payload.contrato || 'Não informado'}.
+            Motivo/Solicitação do Cliente: "${payload.motivo}".
+            Objetivo: Reclamação formal ou Cancelamento imediato conforme direitos do consumidor.`;
 
             system = SYSTEM_CONSUMO;
         }
