@@ -58,17 +58,18 @@ ESTRUTURA OBRIGATÓRIA DO TEXTO (corpo_paragrafos):
 
 const SYSTEM_MULTA = `
 ${SYSTEM_BASE}
-Você é um advogado especialista em trânsito. Gere um RECURSO DE MULTA (Defesa Prévia ou JARI).
+Você é um advogado especialista em Direito de Trânsito. Gere um RECURSO DE MULTA (Defesa Prévia ou JARI).
 REGRAS:
-1. Use linguagem formal e jurídica (Ilustríssimo Senhor Diretor, requerimento, deferimento).
-2. Use a tese de defesa fornecida pelo usuário e expanda com fundamentos do CTB (Código de Trânsito Brasileiro) e Constituição Federal (ampla defesa).
-3. Se o usuário disser "não fui eu", alegue erro de identificação. Se disser "placa escondida", cite Art. 90 do CTB.
+1. Use linguagem formal (Ilustríssimo Senhor Diretor, requerimento, deferimento).
+2. Use a tese de defesa fornecida pelo usuário e expanda com fundamentos do CTB (Código de Trânsito Brasileiro) e princípios constitucionais (Ampla Defesa/Contraditório).
+3. Se o usuário alegar erro de sinalização, cite o Art. 90 do CTB.
+
 ESTRUTURA:
-- Cabeçalho: "Ao Ilmo. Sr. Diretor do [Órgão Autuador]".
-- P1: Qualificação (Nome, CPF, CNH, Endereço) e Veículo (Placa, Modelo).
-- P2: Os Fatos: "O requerente foi autuado por suposta infração [Auto nº]...".
-- P3: O Direito/Defesa: Desenvolva o argumento do usuário de forma técnica.
-- P4: O Pedido: Requer o cancelamento do AIT e anulação dos pontos.
+- Cabeçalho: "Ao Ilmo. Sr. Diretor do [Órgão Autuador] ou Presidente da JARI".
+- P1 (Qualificação): Dados do condutor e do veículo.
+- P2 (Os Fatos): "O requerente foi notificado da infração [Auto nº], supostamente cometida em [Data]...".
+- P3 (O Direito/Defesa): Desenvolva o argumento jurídico baseado no relato: "[RELATO DO USUÁRIO]".
+- P4 (O Pedido): Requer o cancelamento do AIT e a anulação da pontuação.
 `;
 
 const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
@@ -123,7 +124,8 @@ exports.handler = async (event) => {
         if (slug.includes('viagem') || payloadStr.includes('menor_nome') || payload.menor_nome) {
             tipo = 'autorizacao_viagem';
         }
-        else if (slug.includes('multa') || payload.placa || payload.cnh) {
+        // Prioridade 2: MULTA (Novo)
+        else if (slug.includes('multa') || payload.placa || payload.cnh || payload.auto_infracao) {
             tipo = 'multa';
         }
         // REGRA 2: Bagagem (INTOCADA)
@@ -165,13 +167,14 @@ exports.handler = async (event) => {
 
             up = `PREENCHER MODELO VIAGEM: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
             system = SYSTEM_VIAGEM_PERFEITO;
+
         } else if (tipo === 'multa') {
-            // --- NOVO BLOCO DE MULTA ---
+            // --- NOVO INPUT MULTA ---
             up = `RECURSO MULTA:
-            Condutor: ${payload.nome}, CPF ${payload.cpf}, CNH ${payload.cnh || 'não informada'}, Endereço: ${payload.endereco}.
+            Condutor: ${payload.nome}, CPF ${payload.cpf}, CNH ${payload.cnh || 'N/A'}, Endereço: ${payload.endereco}.
             Veículo: ${payload.modelo}, Placa ${payload.placa}.
             Infração: Auto nº ${payload.auto_infracao}, Data ${payload.data_multa}, Órgão: ${payload.orgao}.
-            ARGUMENTOS DE DEFESA (Transformar em tese jurídica): "${payload.motivo}".
+            RELATO DE DEFESA (Argumentos): "${payload.motivo}".
             Cidade: ${payload.cidade_uf}.`;
             system = SYSTEM_MULTA;
 
