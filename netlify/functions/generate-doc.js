@@ -58,11 +58,16 @@ ESTRUTURA OBRIGATÓRIA DO TEXTO (corpo_paragrafos):
 
 const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
 const SYSTEM_CONSUMO = `${SYSTEM_BASE}
-Gere carta de consumidor formal.
-ESTRUTURA OBRIGATÓRIA:
-- P1: "Eu, [Nome], CPF [CPF], venho formalizar reclamação contra a empresa [NOME DA EMPRESA/LOJA] referente ao pedido/contrato [Dados]."
-- P2: Descrição detalhada do problema [Motivo].
-- P3: Pedido de solução imediata com base no CDC.
+Gere uma carta formal de reclamação/cancelamento (Código de Defesa do Consumidor).
+REGRAS CRÍTICAS:
+1. NÃO use colchetes com instruções (ex: [inserir motivo]). Use EXATAMENTE o texto fornecido no input.
+2. Se o motivo for curto, expanda-o com linguagem formal, mas mantenha o sentido original.
+3. O tom deve ser firme, exigindo os direitos do consumidor.
+
+ESTRUTURA:
+- P1: "Eu, [Nome], portador(a) do CPF [CPF], venho formalizar reclamação/pedido referente ao contrato/serviço junto à empresa [Empresa]."
+- P2: "O motivo desta solicitação é: [INSERIR AQUI O TEXTO DO MOTIVO DO USUÁRIO, SEM ALTERAR O SENTIDO]."
+- P3: "Diante do exposto, solicito o atendimento imediato desta demanda, sob pena de medidas judiciais e reclamação junto aos órgãos de proteção ao crédito e consumidor (PROCON)."
 `;
 
 exports.handler = async (event) => {
