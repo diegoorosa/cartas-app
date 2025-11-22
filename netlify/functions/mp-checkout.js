@@ -6,6 +6,7 @@ const { createClient } = require('@supabase/supabase-js');
 const PRICE_MAP = {
     'default': 9.90,
     'autorizacao-viagem-menor': 9.90,
+    "recurso-multa-transito": 9.90,
     'carta-bagagem': 9.90,
     'carta-ecommerce': 9.90,
     "carta-cancelamento-smart-fit": 9.90,
