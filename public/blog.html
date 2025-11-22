@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Blog e Central de Ajuda | CartasApp</title>
+    <title>Central de Ajuda Jurídica e Modelos | CartasApp</title>
     <meta name="description"
-        content="Guias completos, dicas e modelos de documentos para problemas com voos, bagagem, compras online e viagens com menores." />
+        content="Acesse nossa biblioteca de modelos jurídicos: recursos de multas (CTB), autorização de viagem para menores, cancelamento de contratos e direitos do consumidor." />
 
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script src="/theme.js"></script>
@@ -17,6 +17,61 @@
     <script src="/gtag.js"></script>
     <script
         type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");</script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Central de Modelos Jurídicos CartasApp",
+      "description": "Coleção de ferramentas para gerar documentos legais automaticamente.",
+      "url": "https://www.cartasapp.com.br/blog.html",
+      "provider": {
+        "@type": "Organization",
+        "name": "CartasApp",
+        "url": "https://www.cartasapp.com.br"
+      },
+      "hasPart": [
+        { "@type": "CreativeWork", "name": "Gerador de Recurso de Multa", "about": "Direito de Trânsito" },
+        { "@type": "CreativeWork", "name": "Autorização de Viagem para Menor", "about": "Direito de Família" },
+        { "@type": "CreativeWork", "name": "Cartas de Cancelamento", "about": "Direito do Consumidor" }
+      ]
+    }
+    </script>
+
+    <style>
+        .search-box {
+            max-width: 600px;
+            margin: -30px auto 40px;
+            position: relative;
+            z-index: 10;
+            padding: 0 20px;
+        }
+
+        .search-input-blog {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 16px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s;
+        }
+
+        .search-input-blog:focus {
+            border-color: var(--accent-primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            display: none;
+            color: var(--text-muted);
+        }
+    </style>
 </head>
 
 <body>
@@ -26,8 +81,8 @@
                 <a href="/" class="logo">CartasApp</a>
                 <div class="nav-links">
                     <a href="/" class="nav-link">Início</a>
+                    <a href="/multa.html" class="nav-link">Multas</a>
                     <a href="/viagem.html" class="nav-link">Viagem</a>
-                    <a href="/bagagem.html" class="nav-link">Bagagem</a>
                 </div>
                 <div class="nav-actions">
                     <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
@@ -37,192 +92,126 @@
         </div>
     </nav>
 
-    <div class="container" style="padding-top: 40px; padding-bottom: 60px;">
-        <div class="section-header" style="text-align:center; margin-bottom:40px;">
-            <h1 class="section-title">Central de Ajuda e Dicas</h1>
-            <p class="section-subtitle">Entenda seus direitos e saiba como resolver problemas burocráticos.</p>
-        </div>
-
-        <h2 style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-            ✈️ Viagem com Menores</h2>
-        <div class="grid" style="margin-bottom: 60px;">
-            <div class="card">
-                <h3 class="card-title">Nacional com 1 Pai</h3>
-                <p class="card-description">Como viajar em voo nacional com apenas um dos responsáveis.</p>
-                <div class="card-footer"><a href="/menor-nacional-um-responsavel.html"
-                        class="btn btn-outline btn-sm">Ler Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Nacional com 2 Pais</h3>
-                <p class="card-description">Quando é necessária a assinatura de ambos em viagens nacionais.</p>
-                <div class="card-footer"><a href="/menor-nacional-dois-responsaveis.html"
-                        class="btn btn-outline btn-sm">Ler Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Internacional com 1 Pai</h3>
-                <p class="card-description">Regras para viagem internacional acompanhado de apenas um genitor.</p>
-                <div class="card-footer"><a href="/menor-internacional-um-responsavel.html"
-                        class="btn btn-outline btn-sm">Ler Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Internacional com 2 Pais</h3>
-                <p class="card-description">Viagens internacionais desacompanhadas ou com terceiros.</p>
-                <div class="card-footer"><a href="/menor-internacional-dois-responsaveis.html"
-                        class="btn btn-outline btn-sm">Ler Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Viajando com Terceiros</h3>
-                <p class="card-description">Autorização para viajar com avós, tios ou amigos.</p>
-                <div class="card-footer"><a href="/menor-acompanhado-por-terceiro.html"
-                        class="btn btn-outline btn-sm">Ler Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Perguntas Frequentes (FAQ)</h3>
-                <p class="card-description">Tire dúvidas rápidas sobre firma reconhecida e documentos.</p>
-                <div class="card-footer"><a href="/autorizacao-viagem-faq.html" class="btn btn-outline btn-sm">Ler
-                        FAQ</a></div>
+    <section class="hero" style="padding: 80px 0 100px;">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">📚 Base de Conhecimento</div>
+                <h1 style="font-size: 42px;">Como podemos ajudar hoje?</h1>
+                <p class="hero-subtitle">Guias práticos e geradores de documentos automáticos para resolver seus
+                    problemas burocráticos.</p>
             </div>
         </div>
+    </section>
 
-        <h2 style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-            🚗 Multas e CNH</h2>
-        <div class="grid" style="margin-bottom: 60px;">
-            <div class="card">
-                <h3 class="card-title">Como Recorrer de Multas</h3>
-                <p class="card-description">Guia passo a passo para montar sua defesa prévia ou recurso JARI.</p>
-                <div class="card-footer"><a href="/multa.html" class="btn btn-outline btn-sm">Criar Recurso</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Lei Seca e Bafômetro</h3>
-                <p class="card-description">Entenda seus direitos e como recorrer da multa de recusa.</p>
-                <div class="card-footer"><a href="/multa.html" class="btn btn-outline btn-sm">Criar Recurso</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Pontos na Carteira</h3>
-                <p class="card-description">Como transferir pontos ou evitar a suspensão da CNH.</p>
-                <div class="card-footer"><a href="/multa.html" class="btn btn-outline btn-sm">Criar Recurso</a></div>
+    <div class="search-box">
+        <input type="text" id="filterInput" class="search-input-blog"
+            placeholder="🔎 Digite para buscar (ex: multa, latam, smart fit)...">
+    </div>
+
+    <div class="container" style="padding-bottom: 80px;">
+
+        <div class="category-group" data-category="multa">
+            <h2
+                style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--text-primary);">
+                🚗 Multas e Direito de Trânsito (CTB)
+            </h2>
+            <div class="grid" style="margin-bottom: 60px;">
+                <article class="card searchable-card" data-tags="multa transito recurso defesa ctb velocidade radar">
+                    <h3 class="card-title">Gerador de Recurso de Multa</h3>
+                    <p class="card-description">Monte sua Defesa Prévia ou Recurso JARI usando Inteligência Artificial.
+                        Argumentação baseada no CTB para multas de velocidade, sinal vermelho e mais.</p>
+                    <div class="card-footer"><a href="/multa.html" class="btn btn-primary btn-sm">Gerar Recurso</a>
+                    </div>
+                </article>
+                <article class="card searchable-card" data-tags="lei seca bafometro recusa multa suspensao">
+                    <h3 class="card-title">Lei Seca e Bafômetro</h3>
+                    <p class="card-description">Foi multado por recusa ao bafômetro (Art. 165-A)? Gere uma defesa
+                        técnica para tentar evitar a suspensão da CNH.</p>
+                    <div class="card-footer"><a href="/multa.html" class="btn btn-outline btn-sm">Gerar Defesa</a></div>
+                </article>
+                <article class="card searchable-card" data-tags="pontos carteira cnh suspensao">
+                    <h3 class="card-title">Excesso de Pontos na CNH</h3>
+                    <p class="card-description">Estourou os pontos? Veja como apresentar recurso administrativo para não
+                        perder o direito de dirigir.</p>
+                    <div class="card-footer"><a href="/multa.html" class="btn btn-outline btn-sm">Gerar Recurso</a>
+                    </div>
+                </article>
             </div>
         </div>
 
-        <h2 style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-            🧳 Problemas com Bagagem</h2>
-        <div class="grid" style="margin-bottom: 60px;">
-            <div class="card">
-                <h3 class="card-title">Mala Extraviada (Geral)</h3>
-                <p class="card-description">O que fazer se sua mala não chegar na esteira.</p>
-                <div class="card-footer"><a href="/bagagem-extraviada.html" class="btn btn-outline btn-sm">Ler Guia</a>
-                </div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Mala Danificada (Geral)</h3>
-                <p class="card-description">Como reclamar de danos e avarias na sua bagagem.</p>
-                <div class="card-footer"><a href="/bagagem-danificada.html" class="btn btn-outline btn-sm">Ler Guia</a>
-                </div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Problemas na GOL</h3>
-                <p class="card-description">Extravio e danos específicos em voos da GOL.</p>
-                <div class="card-footer">
-                    <a href="/bagagem-extraviada-gol.html" class="btn btn-outline btn-sm"
-                        style="margin-bottom:8px">Extravio</a>
-                    <a href="/bagagem-danificada-gol.html" class="btn btn-outline btn-sm">Dano</a>
-                </div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Problemas na LATAM</h3>
-                <p class="card-description">Extravio e danos específicos em voos da LATAM.</p>
-                <div class="card-footer">
-                    <a href="/bagagem-extraviada-latam.html" class="btn btn-outline btn-sm"
-                        style="margin-bottom:8px">Extravio</a>
-                    <a href="/bagagem-danificada-latam.html" class="btn btn-outline btn-sm">Dano</a>
-                </div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Problemas na Azul</h3>
-                <p class="card-description">Extravio e danos específicos em voos da Azul.</p>
-                <div class="card-footer">
-                    <a href="/bagagem-extraviada-azul.html" class="btn btn-outline btn-sm"
-                        style="margin-bottom:8px">Extravio</a>
-                    <a href="/bagagem-danificada-azul.html" class="btn btn-outline btn-sm">Dano</a>
-                </div>
+        <div class="category-group" data-category="viagem">
+            <h2
+                style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--text-primary);">
+                ✈️ Viagem com Menores (Res. CNJ)
+            </h2>
+            <div class="grid" style="margin-bottom: 60px;">
+                <article class="card searchable-card"
+                    data-tags="viagem menor nacional autorizacao pai mae aviao onibus">
+                    <h3 class="card-title">Viagem Nacional (1 Responsável)</h3>
+                    <p class="card-description">Modelo padrão para viagens dentro do Brasil quando a criança viaja com
+                        apenas um dos pais ou responsáveis.</p>
+                    <div class="card-footer"><a href="/viagem.html" class="btn btn-outline btn-sm">Gerar Autorização</a>
+                    </div>
+                </article>
+                <article class="card searchable-card" data-tags="viagem menor internacional exterior passaporte">
+                    <h3 class="card-title">Viagem Internacional</h3>
+                    <p class="card-description">Obrigatório para menores saindo do Brasil. Atende às exigências da
+                        Polícia Federal para embarque internacional.</p>
+                    <div class="card-footer"><a href="/viagem.html" class="btn btn-outline btn-sm">Gerar Autorização</a>
+                    </div>
+                </article>
+                <article class="card searchable-card" data-tags="viagem desacompanhado terceiro avo tia aeroporto">
+                    <h3 class="card-title">Menor Desacompanhado/Terceiros</h3>
+                    <p class="card-description">Autorização para criança viajar sozinha (serviço de acompanhante da cia
+                        aérea) ou com avós/tios.</p>
+                    <div class="card-footer"><a href="/viagem.html" class="btn btn-outline btn-sm">Gerar Autorização</a>
+                    </div>
+                </article>
             </div>
         </div>
 
-        <h2 style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-            🛒 Direitos do Consumidor</h2>
-        <div class="grid">
-            <div class="card">
-                <h3 class="card-title">Atraso na Entrega</h3>
-                <p class="card-description">O que fazer quando a compra online não chega no prazo.</p>
-                <div class="card-footer"><a href="/atraso-na-entrega.html" class="btn btn-outline btn-sm">Ler Guia</a>
-                </div>
+        <div class="category-group" data-category="consumo">
+            <h2
+                style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--text-primary);">
+                🛒 Cancelamentos e Consumidor
+            </h2>
+            <div class="grid" style="margin-bottom: 60px;">
+                <article class="card searchable-card" data-tags="academia smart fit bluefit selfit cancelar multa">
+                    <h3 class="card-title">Cancelar Academia (Smart Fit/Outras)</h3>
+                    <p class="card-description">Gere a carta de cancelamento formal para evitar renovações automáticas e
+                        multas abusivas na sua academia.</p>
+                    <div class="card-footer"><a href="/doc.html?slug=carta-cancelamento-smart-fit"
+                            class="btn btn-primary btn-sm">Gerar Carta</a></div>
+                </article>
+                <article class="card searchable-card"
+                    data-tags="vivo claro tim oi telefonia internet cobranca indevida anatel">
+                    <h3 class="card-title">Problemas com Telefonia (Vivo/Claro/Tim)</h3>
+                    <p class="card-description">Cobrança indevida ou dificuldade para cancelar? Gere uma reclamação
+                        formal baseada nas regras da ANATEL.</p>
+                    <div class="card-footer"><a href="/doc.html?slug=carta-reclamacao-vivo-cobranca-indevida"
+                            class="btn btn-outline btn-sm">Reclamar</a></div>
+                </article>
+                <article class="card searchable-card" data-tags="voo atraso cancelamento latam gol azul anac reembolso">
+                    <h3 class="card-title">Atraso ou Cancelamento de Voo</h3>
+                    <p class="card-description">Seu voo atrasou mais de 4h? Solicite indenização e reembolso conforme a
+                        Resolução 400 da ANAC.</p>
+                    <div class="card-footer"><a href="/doc.html?slug=carta-reembolso-atraso-voo-latam"
+                            class="btn btn-outline btn-sm">Pedir Reembolso</a></div>
+                </article>
+                <article class="card searchable-card" data-tags="bagagem mala extraviada danificada quebrada">
+                    <h3 class="card-title">Bagagem Extraviada ou Danificada</h3>
+                    <p class="card-description">Sua mala sumiu ou chegou quebrada? Gere a carta de Declaração de Bagagem
+                        para proteger seus direitos.</p>
+                    <div class="card-footer"><a href="/bagagem.html" class="btn btn-outline btn-sm">Gerar Declaração</a>
+                    </div>
+                </article>
             </div>
-            <div class="card">
-                <h3 class="card-title">Direito de Arrependimento</h3>
-                <p class="card-description">Como devolver compras online em até 7 dias sem motivo.</p>
-                <div class="card-footer"><a href="/direito-de-arrependimento.html" class="btn btn-outline btn-sm">Ler
-                        Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Produto Não Entregue</h3>
-                <p class="card-description">Como pedir estorno se a loja sumir ou não entregar.</p>
-                <div class="card-footer"><a href="/produto-nao-entregue.html" class="btn btn-outline btn-sm">Ler
-                        Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Cancelar Smart Fit</h3>
-                <p class="card-description">Passo a passo para cancelar sem ir ao balcão.</p>
-                <div class="card-footer"><a href="/como-cancelar-smart-fit.html" class="btn btn-outline btn-sm">Ler
-                        Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Reclamação Vivo</h3>
-                <p class="card-description">Contestar cobrança indevida na fatura da Vivo.</p>
-                <div class="card-footer"><a href="/reclamacao-vivo-cobranca.html" class="btn btn-outline btn-sm">Ler
-                        Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Reclamação Claro</h3>
-                <p class="card-description">Contestar cobrança indevida na fatura da Claro.</p>
-                <div class="card-footer"><a href="/reclamacao-claro-cobranca.html" class="btn btn-outline btn-sm">Ler
-                        Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Cancelar Plano de Saúde</h3>
-                <p class="card-description">Como cancelar imediatamente pela RN 412 da ANS.</p>
-                <div class="card-footer"><a href="/como-cancelar-plano-de-saude.html" class="btn btn-outline btn-sm">Ler
-                        Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Reclamação Enel</h3>
-                <p class="card-description">Contestar conta de luz alta ou cobrança indevida.</p>
-                <div class="card-footer"><a href="/reclamacao-enel-cobranca-indevida.html"
-                        class="btn btn-outline btn-sm">Ler Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Cancelar Faculdade</h3>
-                <p class="card-description">Como trancar ou cancelar matrícula sem pagar o semestre todo.</p>
-                <div class="card-footer"><a href="/como-cancelar-matricula-faculdade.html"
-                        class="btn btn-outline btn-sm">Ler Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Cancelar Nubank</h3>
-                <p class="card-description">Como encerrar a conta e o cartão definitivamente.</p>
-                <div class="card-footer"><a href="/como-cancelar-cartao-nubank.html" class="btn btn-outline btn-sm">Ler
-                        Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Atraso Voo GOL</h3>
-                <p class="card-description">Indenização por atraso de mais de 4h na GOL.</p>
-                <div class="card-footer"><a href="/reembolso-atraso-voo-gol.html" class="btn btn-outline btn-sm">Ler
-                        Guia</a></div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Atraso Voo LATAM</h3>
-                <p class="card-description">Indenização por atraso de mais de 4h na LATAM.</p>
-                <div class="card-footer"><a href="/reembolso-atraso-voo-latam.html" class="btn btn-outline btn-sm">Ler
-                        Guia</a></div>
-            </div>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+            <div style="font-size: 40px; margin-bottom: 10px;">😕</div>
+            <h3>Nenhum documento encontrado</h3>
+            <p>Tente buscar por palavras como "multa", "viagem", "mala" ou "cancelar".</p>
         </div>
 
     </div>
@@ -240,24 +229,56 @@
     </footer>
 
     <script>
-        (function () {
-            function toggleTheme() {
-                const html = document.documentElement;
-                const currentTheme = html.getAttribute('data-theme');
-                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                html.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-            }
-            var btn = document.querySelector('.btn-theme');
-            if (btn) btn.onclick = toggleTheme;
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            } else {
-                const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-                document.documentElement.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
-            }
-        })();
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('filterInput');
+            const cards = document.querySelectorAll('.searchable-card');
+            const groups = document.querySelectorAll('.category-group');
+            const emptyState = document.getElementById('emptyState');
+
+            input.addEventListener('input', function (e) {
+                const term = e.target.value.toLowerCase().trim();
+                let hasVisibleCards = false;
+
+                // 1. Filtra os Cards
+                cards.forEach(card => {
+                    // Busca no título, na descrição e nas tags escondidas (data-tags)
+                    const content = (card.innerText + " " + card.getAttribute('data-tags')).toLowerCase();
+
+                    if (content.includes(term)) {
+                        card.parentElement.style.display = 'grid'; // Garante que o grid pai apareça
+                        card.style.display = 'block';
+                        hasVisibleCards = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // 2. Esconde Títulos de Seções Vazias
+                groups.forEach(group => {
+                    const visibleInGroup = group.querySelectorAll('.searchable-card[style="display: block;"]');
+                    // Se estamos buscando, esconde o título se não tiver cards visíveis dentro
+                    if (term !== '' && visibleInGroup.length === 0) {
+                        group.style.display = 'none';
+                    } else {
+                        group.style.display = 'block';
+                    }
+
+                    // Correção para quando limpa a busca: mostrar tudo
+                    if (term === '') {
+                        const allCardsInGroup = group.querySelectorAll('.searchable-card');
+                        allCardsInGroup.forEach(c => c.style.display = 'block');
+                        group.style.display = 'block';
+                    }
+                });
+
+                // 3. Estado Vazio
+                if (!hasVisibleCards && term !== '') {
+                    emptyState.style.display = 'block';
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 

@@ -188,12 +188,32 @@
 
         function checkCooldown() { var last = localStorage.getItem('last_preview_ts'); if (last && (Date.now() - parseInt(last)) < 30000) { alert('Aguarde 30s para gerar novamente.'); return false; } return true; }
 
+        // Função para salvar Lead (Recuperação)
+        function captureLead(p) {
+            // Só captura se tiver contato
+            if (!p.email && !p.telefone) return;
+
+            fetch('/.netlify/functions/capture-lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: p.email,
+                    telefone: p.telefone,
+                    nome: p.nome,
+                    slug: 'recurso-multa-transito',
+                    payload: p
+                })
+            }).catch(err => console.log('Lead capture bg error', err));
+        }
+
         // PRÉVIA
         btnPreview.addEventListener('click', async function () {
             if (!checkCooldown()) return;
             btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
             try {
-                var p = getPayload(); if (!validateAll(p)) { alert('Preencha os campos obrigatórios.'); throw new Error('Inválido'); }
+                var p = getPayload();
+                if (!validateAll(p)) { alert('Preencha os campos obrigatórios.'); throw new Error('Inválido'); }
+                captureLead(p);
 
                 var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: p, preview: true }) });
                 if (!r.ok) throw new Error('Falha ao gerar');
