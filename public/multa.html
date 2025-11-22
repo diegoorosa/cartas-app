@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Recurso de Multa de Trânsito (Defesa Prévia/JARI) | CartasApp</title>
+    <meta name="description"
+        content="Gere seu recurso de multa de trânsito personalizado com IA. Defesa prévia ou JARI. Baseado no CTB. Baixe em PDF/DOC." />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'AW-1021062139');
+        gtag('config', 'G-D40QPP9KNP');
+    </script>
+    <script src="/gtag.js"></script>
+    <script
+        type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");</script>
+    <link rel="canonical" href="https://www.cartasapp.com.br/multa.html" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
+                <div class="nav-actions"><button class="btn-theme" onclick="toggleTheme()">🌙</button><a
+                        href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" style="padding: 60px 0 40px;">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">🚗 Multas e Trânsito</div>
+                <h1 style="font-size: 48px;">Recurso de Multa de Trânsito</h1>
+                <p class="hero-subtitle">Não pague sem recorrer! Gere sua defesa personalizada baseada no Código de
+                    Trânsito Brasileiro (CTB) em minutos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="card">
+                    <div id="formArea">
+                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 24px;">Condutor / Proprietário
+                        </h2>
+                        <label class="label">Nome completo</label><input class="input" id="nome"
+                            placeholder="Ex.: João da Silva" />
+                        <label class="label">CPF</label><input class="input" id="cpf" placeholder="000.000.000-00"
+                            inputmode="numeric" maxlength="14" />
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+                            <div><label class="label">CNH (Carteira de Motorista)</label><input class="input" id="cnh"
+                                    placeholder="Nº Registro CNH" /></div>
+                            <div><label class="label">Endereço Completo</label><input class="input" id="endereco"
+                                    placeholder="Rua, Nº, Bairro, Cidade/UF" /></div>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+                            <div><label class="label">E-mail</label><input class="input" id="email"
+                                    placeholder="seu@email.com" /></div>
+                            <div><label class="label">Telefone</label><input class="input" id="telefone"
+                                    placeholder="(00) 00000-0000" /></div>
+                        </div>
+
+                        <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Veículo e Infração</h2>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <div><label class="label">Placa do Veículo</label><input class="input" id="placa"
+                                    placeholder="ABC-1234" style="text-transform:uppercase;" /></div>
+                            <div><label class="label">Modelo/Marca</label><input class="input" id="modelo"
+                                    placeholder="Ex.: Fiat Uno 2010" /></div>
+                        </div>
+
+                        <label class="label">Órgão Autuador (Quem multou?)</label>
+                        <input class="input" id="orgao"
+                            placeholder="Ex.: DETRAN/SP, PRF, Prefeitura de Curitiba, DNIT" />
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+                            <div><label class="label">Nº do Auto de Infração</label><input class="input"
+                                    id="auto_infracao" placeholder="Ex.: A001234567" /></div>
+                            <div><label class="label">Data da Multa</label><input class="input" id="data_multa"
+                                    placeholder="DD/MM/AAAA" inputmode="numeric" maxlength="10" /></div>
+                        </div>
+
+                        <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Sua Defesa</h2>
+                        <p class="small" style="margin-top:-15px; margin-bottom:15px;">A IA vai transformar sua
+                            explicação em termos jurídicos formais.</p>
+
+                        <label class="label">O que aconteceu? (Seus argumentos)</label>
+                        <textarea class="input" id="motivo" rows="5"
+                            placeholder="Ex.: Fui multado por avançar sinal vermelho, mas era de madrugada e o local é perigoso. Ou: A placa de velocidade estava coberta por uma árvore. Ou: Eu não estava nesse local nesse dia."></textarea>
+
+                        <label class="label">Local (Cidade/UF da defesa)</label><input class="input" id="cidade_uf"
+                            placeholder="Ex.: Blumenau/SC" />
+
+                        <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
+                            <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
+                            <button class="btn btn-primary" id="btnPagar" disabled>Gerar recurso completo (R$
+                                9,90)</button>
+                        </div>
+
+                        <div class="guarantee-badge"><span class="guarantee-icon">🔒</span>
+                            <div><strong>Garantia Total:</strong> Receba seu recurso pronto imediatamente ou devolvemos
+                                seu dinheiro.</div>
+                        </div>
+                    </div>
+
+                    <div id="previewWrap"
+                        style="display:none; margin-top:32px; padding-top:32px; border-top:1px solid var(--border);">
+                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">Prévia do documento</h2>
+                        <div
+                            style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;">
+                            <div id="previewBox"
+                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
+                            </div>
+                        </div>
+                        <p class="small" style="margin-top:12px;color:var(--text-muted);">Prévia parcial. Versão
+                            completa liberada após pagamento.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
+                        class="footer-link">Termos de Uso</a>.</p>
+            </div>
+        </div>
+    </footer>
+    <a href="https://wa.me/5547991323024?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20no%20CartasApp." class="whatsapp-float"
+        target="_blank" aria-label="Falar no WhatsApp"><svg viewBox="0 0 24 24" class="whatsapp-icon">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+        </svg></a>
+
+    <script src="/utm.js"></script>
+    <script>
+        function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; }
+        function isValidCPF(cpf) { var s = (cpf || '').replace(/\D/g, ''); if (s.length !== 11) return false; if (/^(\d)\1{10}$/.test(s)) return false; var i, sum = 0, rest; for (i = 1; i <= 9; i++) sum += parseInt(s.substring(i - 1, i)) * (11 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(9, 10))) return false; sum = 0; for (i = 1; i <= 10; i++) sum += parseInt(s.substring(i - 1, i)) * (12 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(10, 11))) return false; return true; }
+        function maskDate(v) { v = (v || '').replace(/\D/g, '').slice(0, 8); if (v.length >= 5) v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3'); else if (v.length >= 3) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2'); return v; }
+
+        var cpfEl = document.getElementById('cpf'); cpfEl.addEventListener('input', function () { cpfEl.value = maskCPF(cpfEl.value); });
+        var dataMultaEl = document.getElementById('data_multa'); if (dataMultaEl) { dataMultaEl.addEventListener('input', function () { this.value = maskDate(this.value); }); }
+
+        function getPayload() {
+            cpfEl.value = maskCPF(cpfEl.value);
+            return {
+                tipo: 'multa', // NOVO TIPO
+                slug: 'recurso-multa-transito',
+                nome: document.getElementById('nome').value.trim(),
+                cpf: document.getElementById('cpf').value.trim(),
+                cnh: document.getElementById('cnh').value.trim(),
+                endereco: document.getElementById('endereco').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                telefone: document.getElementById('telefone').value.trim(),
+
+                placa: document.getElementById('placa').value.trim().toUpperCase(),
+                modelo: document.getElementById('modelo').value.trim(),
+                orgao: document.getElementById('orgao').value.trim(),
+                auto_infracao: document.getElementById('auto_infracao').value.trim(),
+                data_multa: document.getElementById('data_multa').value.trim(),
+
+                motivo: document.getElementById('motivo').value.trim(), // Defesa do usuário
+                cidade_uf: document.getElementById('cidade_uf').value.trim(),
+                utm: (window.LMUTM ? LMUTM.get() : {})
+            };
+        }
+
+        function validateAll(p) {
+            if (!p.nome || !p.cpf || !isValidCPF(p.cpf) || !p.placa || !p.orgao || !p.motivo || !p.cidade_uf) return false;
+            return true;
+        }
+
+        var btnPreview = document.getElementById('btnPreview'); var btnPagar = document.getElementById('btnPagar'); var previewWrap = document.getElementById('previewWrap'); var previewBox = document.getElementById('previewBox');
+
+        function checkCooldown() { var last = localStorage.getItem('last_preview_ts'); if (last && (Date.now() - parseInt(last)) < 30000) { alert('Aguarde 30s para gerar novamente.'); return false; } return true; }
+
+        // PRÉVIA
+        btnPreview.addEventListener('click', async function () {
+            if (!checkCooldown()) return;
+            btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+            try {
+                var p = getPayload(); if (!validateAll(p)) { alert('Preencha os campos obrigatórios.'); throw new Error('Inválido'); }
+
+                var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: p, preview: true }) });
+                if (!r.ok) throw new Error('Falha ao gerar');
+
+                var d = await r.json(); var out = d.output || d; var pr = out.corpo_paragrafos || []; var parcial = pr.slice(0, 2).join('\n\n') + '\n\n[...]';
+                previewBox.textContent = (out.saudacao || '') + '\n\n' + parcial;
+                previewWrap.style.display = 'block';
+
+                // PIXEL MULTA
+                if (typeof gtag === 'function') { gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': 'multa', 'value': 2.00, 'currency': 'BRL' }); }
+
+                localStorage.setItem('pendingPayload', JSON.stringify(p));
+                localStorage.setItem('last_preview_ts', Date.now());
+                btnPagar.disabled = false;
+            } catch (e) { if (e.message !== 'Inválido') alert('Erro: ' + e.message); } finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
+        });
+
+        // PAGAR
+        btnPagar.addEventListener('click', async function () {
+            btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
+            try {
+                var p = getPayload(); if (!validateAll(p)) { alert('Verifique campos.'); throw new Error('Inválido'); }
+                var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: 'recurso-multa-transito', payload: p, utm: (window.LMUTM ? LMUTM.get() : {}) }) });
+                var data = await r.json(); if (!r.ok) throw new Error(data.error);
+                showPaymentModal(data.init_point, data.order_id, 'recurso-multa-transito');
+            } catch (e) { if (e.message !== 'Inválido') alert('Erro no pagamento: ' + e.message); btnPagar.disabled = false; btnPagar.textContent = 'Gerar recurso (R$ 9,90)'; }
+        });
+
+        function showPaymentModal(initPoint, orderId, slug) {
+            var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
+            var cardBG = isLight ? '#ffffff' : '#111827'; var cardText = isLight ? '#0f172a' : '#e6eefb';
+            var overlay = document.createElement('div');
+            overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
+            overlay.innerHTML = '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:16px;max-width:400px;width:90%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;"><div style="font-size:40px;margin-bottom:16px;">💸</div><h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3><p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique abaixo para finalizar.</p><div style="display:flex;flex-direction:column;gap:12px;"><button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix/Cartão)</button><button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir</button></div><p id="lm-statusPay" class="small" style="margin-top:16px;font-size:12px;opacity:0.8;"></p></div>';
+            document.body.appendChild(overlay);
+            document.getElementById('lm-close').onclick = function () { overlay.remove(); var btn = document.getElementById('btnPagar'); if (btn) { btn.disabled = false; btn.textContent = 'Gerar recurso (R$ 9,90)'; } };
+            async function docReady() { try { var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: { order_id: orderId }, preview: false }) }); if (!r.ok) return false; var j = await r.json(); return !!(j && j.output); } catch (e) { return false; } }
+            document.getElementById('lm-goPay').onclick = function () { window.open(initPoint, '_blank', 'noopener'); var btn = this; btn.textContent = 'Verificando...'; var iv = setInterval(async function () { try { if (await docReady()) { clearInterval(iv); location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success'; return; } var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)); var jj = rr.ok ? await rr.json() : null; if (jj && jj.status === 'paid') { clearInterval(iv); location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success'; } } catch (e) { } }, 3000); };
+        }
+    </script>
+</body>
+
+</html>

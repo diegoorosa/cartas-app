@@ -56,6 +56,21 @@ ESTRUTURA OBRIGATÓRIA DO TEXTO (corpo_paragrafos):
 - P4: "Ressalto que esta autorização é concedida em caráter específico para o trajeto e período supramencionados, não conferindo poderes gerais ou irrestritos."
 `;
 
+const SYSTEM_MULTA = `
+${SYSTEM_BASE}
+Você é um advogado especialista em trânsito. Gere um RECURSO DE MULTA (Defesa Prévia ou JARI).
+REGRAS:
+1. Use linguagem formal e jurídica (Ilustríssimo Senhor Diretor, requerimento, deferimento).
+2. Use a tese de defesa fornecida pelo usuário e expanda com fundamentos do CTB (Código de Trânsito Brasileiro) e Constituição Federal (ampla defesa).
+3. Se o usuário disser "não fui eu", alegue erro de identificação. Se disser "placa escondida", cite Art. 90 do CTB.
+ESTRUTURA:
+- Cabeçalho: "Ao Ilmo. Sr. Diretor do [Órgão Autuador]".
+- P1: Qualificação (Nome, CPF, CNH, Endereço) e Veículo (Placa, Modelo).
+- P2: Os Fatos: "O requerente foi autuado por suposta infração [Auto nº]...".
+- P3: O Direito/Defesa: Desenvolva o argumento do usuário de forma técnica.
+- P4: O Pedido: Requer o cancelamento do AIT e anulação dos pontos.
+`;
+
 const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
 const SYSTEM_CONSUMO = `${SYSTEM_BASE}
 Gere uma carta formal de reclamação/cancelamento (Código de Defesa do Consumidor).
@@ -108,6 +123,9 @@ exports.handler = async (event) => {
         if (slug.includes('viagem') || payloadStr.includes('menor_nome') || payload.menor_nome) {
             tipo = 'autorizacao_viagem';
         }
+        else if (slug.includes('multa') || payload.placa || payload.cnh) {
+            tipo = 'multa';
+        }
         // REGRA 2: Bagagem (INTOCADA)
         else if (slug.includes('bagagem') || payloadStr.includes('voo') || payloadStr.includes('pir')) {
             tipo = 'bagagem';
@@ -147,6 +165,15 @@ exports.handler = async (event) => {
 
             up = `PREENCHER MODELO VIAGEM: Resps: ${qualifResp1}${qualifResp2}. Menor: ${payload.menor_nome}, Nasc: ${payload.menor_nascimento}, Doc: ${docMenor}. Viagem p/ ${payload.destino}. Datas: ${payload.data_ida} a ${payload.data_volta}. Acomp: ${acompTexto}. Cidade: ${payload.cidade_uf_emissao || 'Local'}.`;
             system = SYSTEM_VIAGEM_PERFEITO;
+        } else if (tipo === 'multa') {
+            // --- NOVO BLOCO DE MULTA ---
+            up = `RECURSO MULTA:
+            Condutor: ${payload.nome}, CPF ${payload.cpf}, CNH ${payload.cnh || 'não informada'}, Endereço: ${payload.endereco}.
+            Veículo: ${payload.modelo}, Placa ${payload.placa}.
+            Infração: Auto nº ${payload.auto_infracao}, Data ${payload.data_multa}, Órgão: ${payload.orgao}.
+            ARGUMENTOS DE DEFESA (Transformar em tese jurídica): "${payload.motivo}".
+            Cidade: ${payload.cidade_uf}.`;
+            system = SYSTEM_MULTA;
 
         } else if (tipo === 'bagagem') {
             up = `BAGAGEM: Passageiro: ${payload.nome}, CPF ${payload.cpf}. Voo: ${payload.cia} ${payload.voo}, Data Voo: ${payload.data_voo}. PIR: ${payload.pir || 'N/A'}. Ocorrência: ${payload.status}. Descrição: ${payload.descricao}. Pedido/Despesas: ${payload.despesas}. Cidade: ${payload.cidade_uf}.`;
