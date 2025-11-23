@@ -120,6 +120,17 @@ exports.handler = async (event) => {
         const preview = !!body.preview;
 
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
+
+        // ============ VERIFICAÇÃO ADMIN (NOVA) ============
+        const SENHA_ADMIN = process.env.ADMIN_KEY || null;
+        const isAdmin = SENHA_ADMIN && payload.admin_key === SENHA_ADMIN;
+
+        // Se for admin, cria um order_id fictício para permitir geração
+        if (isAdmin && !payload.order_id) {
+            payload.order_id = `ADMIN-${Date.now()}`;
+        }
+        // ==================================================
+
         if (!payload.order_id) payload = sanitizePayload(payload);
 
         const orderId = payload.order_id || payload.orderId || null;
@@ -133,50 +144,44 @@ exports.handler = async (event) => {
         }
 
         // --- 2. VERIFICAÇÃO DE "SÓ RECUPERAÇÃO" (A CORREÇÃO) ---
-        // Se chegamos aqui, não estava no banco.
-        // Se o payload NÃO tem dados para gerar (sem slug, sem nome), então é uma tentativa falha de recuperação.
-        // Retorna 404 em vez de tentar gerar e dar erro.
-        if (!payload.slug && !payload.menor_nome && !payload.nome) {
-            return { statusCode: 404, body: 'Documento ainda não gerado ou não encontrado.' };
+        // ============ EXCEÇÃO ADMIN (NOVA) ============
+        // Admin pode gerar mesmo sem dados completos
+        if (!isAdmin) {
+            if (!payload.slug && !payload.menor_nome && !payload.nome) {
+                return { statusCode: 404, body: 'Documento ainda não gerado ou não encontrado.' };
+            }
         }
+        // ==============================================
 
-        // --- ROTEAMENTO INFALÍVEL (ATUALIZADO) ---
+        // --- ROTEAMENTO INFALÍVEL (continua igual) ---
         let tipo = 'indefinido';
         const payloadStr = JSON.stringify(payload).toLowerCase();
         const slug = String(payload.slug || '').toLowerCase();
 
-        // REGRA 1: Viagem (INTOCADA)
         if (slug.includes('viagem') || payloadStr.includes('menor_nome') || payload.menor_nome) {
             tipo = 'autorizacao_viagem';
         }
-        // Prioridade 2: MULTA (Novo)
         else if (slug.includes('multa') || payload.placa || payload.cnh || payload.auto_infracao) {
             tipo = 'multa';
         }
-        // Prioridade 2.1: REEMBOLSO PASSAGEM (Novo - Adicionado Aqui)
         else if (slug.includes('reembolso')) {
             tipo = 'reembolso_passagem';
         }
-        // REGRA 2: Bagagem (INTOCADA)
         else if (slug.includes('bagagem') || payloadStr.includes('voo') || payloadStr.includes('pir')) {
             tipo = 'bagagem';
         }
-        // REGRA 3: Consumo/Ecommerce (INTOCADA)
         else if (payloadStr.includes('loja') || payloadStr.includes('pedido')) {
             tipo = 'consumo';
         }
-        // REGRA 4: NOVO - Pega Smart Fit, Vivo, etc (Genéricos)
-        // Se tiver 'cancelamento', 'reclamacao' ou vier do doc.html
         else if (slug.includes('cancelamento') || slug.includes('reclamacao') || payload.motivo) {
             tipo = 'consumo_generico';
         }
 
-        // Se não caiu em nada, aborta.
         if (tipo === 'indefinido') {
             return { statusCode: 400, body: 'Erro: Tipo de documento não identificado.' };
         }
 
-        // Montagem do Prompt
+        // Montagem do Prompt (continua igual, todo o código)
         let system = SYSTEM_BASE, up = '';
         const LINE = '__________________________';
 
@@ -198,7 +203,6 @@ exports.handler = async (event) => {
             system = SYSTEM_VIAGEM_PERFEITO;
 
         } else if (tipo === 'multa') {
-            // --- NOVO INPUT MULTA ---
             up = `RECURSO MULTA:
             Condutor: ${payload.nome}, CPF ${payload.cpf}, CNH ${payload.cnh || 'N/A'}, Endereço: ${payload.endereco}.
             Veículo: ${payload.modelo}, Placa ${payload.placa}.
@@ -208,7 +212,6 @@ exports.handler = async (event) => {
             system = SYSTEM_MULTA;
 
         } else if (tipo === 'reembolso_passagem') {
-            // --- NOVO INPUT REEMBOLSO ---
             up = `REEMBOLSO PASSAGEM (ART 740 CC):
             Passageiro: ${payload.nome}, CPF ${payload.cpf}. Cidade: ${payload.cidade_uf}.
             Companhia: ${payload.cia}. Reserva: ${payload.reserva}.
@@ -223,18 +226,13 @@ exports.handler = async (event) => {
             system = SYSTEM_BAGAGEM;
 
         } else if (tipo === 'consumo') {
-            // E-commerce (INTOCADO)
             up = `CONSUMO: Consumidor: ${payload.nome}, CPF ${payload.cpf}. Loja: ${payload.loja} Pedido: ${payload.pedido} Data: ${payload.data_compra}. Problema: ${payload.motivo}. Detalhes: ${payload.itens}. Local: ${payload.cidade_uf}.`;
             system = SYSTEM_CONSUMO;
 
         } else if (tipo === 'consumo_generico') {
-            // Tenta limpar o nome da empresa de forma mais inteligente
             let empresaRaw = slug.replace('carta-', '').replace('cancelamento-', '').replace('reclamacao-', '');
-            // Se tiver hifens extras, pega só a primeira palavra (ex: vivo-cobranca -> VIVO)
-            // Ou usa uma lista de conhecidas
             let empresa = empresaRaw.split('-')[0].toUpperCase();
 
-            // Ajuste fino para nomes compostos conhecidos
             if (empresaRaw.includes('smart-fit')) empresa = 'SMART FIT';
             if (empresaRaw.includes('bluefit')) empresa = 'BLUEFIT';
             if (empresaRaw.includes('bodytech')) empresa = 'BODYTECH';
@@ -257,7 +255,7 @@ exports.handler = async (event) => {
             system = SYSTEM_CONSUMO;
         }
 
-        // Chamada IA
+        // Chamada IA (continua igual)
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout IA')), 9500));
         const generatePromise = model.generateContent(system + '\n\nDADOS:\n' + up);
@@ -268,9 +266,8 @@ exports.handler = async (event) => {
 
         if (!output) throw new Error('JSON Inválido');
 
-        // --- INJEÇÃO DE ASSINATURA ---
+        // --- INJEÇÃO DE ASSINATURA (continua igual) ---
         if (tipo === 'autorizacao_viagem') {
-            // Viagem: Assinatura dupla e complexa (MANTIDA)
             const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
             const cidadeData = `${espacoForcado}${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
 
@@ -281,25 +278,24 @@ exports.handler = async (event) => {
             output.fechamento = `${cidadeData}${assinaturas}`;
 
         } else {
-            // Bagagem, Consumo e Genéricos (Smart Fit, etc)
-            // Usa o mesmo padrão de espaçamento bom
-            // Tenta pegar cidade de vários campos possíveis
             const cidade = payload.cidade_uf || payload.cidade || 'Local';
-
             const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
             const cidadeData = `${espacoForcado}${cidade}, ${getTodaySimple()}.`;
-
             const assinatura = `\n\n\n\n\n__________________________________________________\n${payload.nome}\nCPF: ${payload.cpf}`;
-
             output.fechamento = `${cidadeData}${assinatura}`;
         }
 
-        // Salvar
-        if (!preview && orderId) {
-            supabase.from('generations').upsert({ 
-                order_id: orderId, 
-                slug: payload.slug || '', input_json: payload, output_json: output }, { onConflict: 'order_id' }).then(() => { });
+        // ============ SALVAR COM LÓGICA ADMIN (MODIFICADO) ============
+        // Salva se: (não é preview E tem orderId) OU (é admin)
+        if (orderId && (!preview || isAdmin)) {
+            supabase.from('generations').upsert({
+                order_id: orderId,
+                slug: payload.slug || '',
+                input_json: payload,
+                output_json: output
+            }, { onConflict: 'order_id' }).then(() => { });
         }
+        // ==============================================================
 
         return { statusCode: 200, body: JSON.stringify({ output, cached: false }) };
 
