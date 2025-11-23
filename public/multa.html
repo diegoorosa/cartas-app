@@ -254,6 +254,67 @@
             document.getElementById('lm-goPay').onclick = function () { window.open(initPoint, '_blank', 'noopener'); var btn = this; btn.textContent = 'Verificando...'; var iv = setInterval(async function () { try { if (await docReady()) { clearInterval(iv); location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success'; return; } var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)); var jj = rr.ok ? await rr.json() : null; if (jj && jj.status === 'paid') { clearInterval(iv); location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success'; } } catch (e) { } }, 3000); };
         }
     </script>
+    <script>
+        (function () {
+            // Verifica se a URL tem ?modo=admin
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('modo') === 'admin') {
+                const btnArea = document.querySelector('#btnPagar').parentElement;
+
+                // Cria o botão VIP
+                const btnAdmin = document.createElement('button');
+                btnAdmin.className = 'btn';
+                btnAdmin.style.backgroundColor = '#8b5cf6'; // Roxo para diferenciar
+                btnAdmin.style.color = 'white';
+                btnAdmin.style.border = 'none';
+                btnAdmin.innerText = '👑 Gerar Admin';
+
+                btnAdmin.onclick = async function () {
+                    const senha = prompt("Digite a senha de Admin:");
+                    if (!senha) return;
+
+                    btnAdmin.innerText = 'Gerando...';
+                    btnAdmin.disabled = true;
+
+                    try {
+                        var p = getPayload();
+                        // Adiciona a chave mestra no pacote
+                        p.admin_key = senha;
+
+                        // Chama a geração (modo preview=false para vir completo)
+                        var r = await fetch('/.netlify/functions/generate-doc', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ payload: p, preview: false })
+                        });
+
+                        if (!r.ok) throw new Error('Senha errada ou erro no servidor');
+
+                        var data = await r.json();
+                        // Redireciona direto para o sucesso (simulando pagamento aprovado)
+                        // O ID gerado será algo como ADMIN-1734...
+                        // Precisamos pegar o order_id que o backend usou? 
+                        // Simplificação: Vamos apenas mostrar o doc na tela ou baixar
+
+                        if (data.output) {
+                            // Gambiarra inteligente: Joga o texto no previewBox e libera download
+                            document.getElementById('previewBox').textContent = data.raw_text;
+                            document.getElementById('previewWrap').style.display = 'block';
+                            alert("Documento Admin Gerado com Sucesso! Copie abaixo.");
+                        }
+
+                    } catch (e) {
+                        alert('Erro: ' + e.message);
+                    } finally {
+                        btnAdmin.innerText = '👑 Gerar Admin';
+                        btnAdmin.disabled = false;
+                    }
+                };
+
+                btnArea.appendChild(btnAdmin);
+            }
+        })();
+    </script>
 </body>
 
 </html>

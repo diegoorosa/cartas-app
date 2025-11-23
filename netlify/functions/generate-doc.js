@@ -294,12 +294,49 @@ exports.handler = async (event) => {
             output.fechamento = `${cidadeData}${assinatura}`;
         }
 
-        // Salvar
-        if (!preview && orderId) {
-            supabase.from('generations').upsert({ order_id: orderId, slug: payload.slug || '', input_json: payload, output_json: output }, { onConflict: 'order_id' }).then(() => { });
+        // ---------------------------------------------------------
+        // 4. CONSTRUÇÃO DO TEXTO FINAL (Necessário para salvar e exibir)
+        // ---------------------------------------------------------
+        let fullText = '';
+        if (output.saudacao) fullText += output.saudacao + '\n\n';
+
+        if (Array.isArray(output.corpo_paragrafos)) {
+            fullText += output.corpo_paragrafos.join('\n\n');
+        } else {
+            fullText += String(output.corpo_paragrafos);
         }
 
-        return { statusCode: 200, body: JSON.stringify({ output, cached: false }) };
+        if (output.fechamento) fullText += '\n\n' + output.fechamento;
+
+        // ---------------------------------------------------------
+        // 5. LÓGICA ADMIN + SALVAR NO SUPABASE
+        // ---------------------------------------------------------
+        const SENHA_MESTRA = "JMF2025_SUPREMO";
+        const isAdmin = (payload.admin_key === SENHA_MESTRA);
+
+        // Salva se NÃO for preview (venda real) OU se for Admin (teste/manual)
+        if (!isPreview || isAdmin) {
+            const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+            // Se for Admin e não tiver ID, cria um ID "ADMIN-..."
+            // Se for cliente normal e não tiver ID, tenta usar o do payload ou ignora (pois o checkout cria antes)
+            const finalOrderId = payload.order_id || (isAdmin ? `ADMIN-${Date.now()}` : null);
+
+            if (finalOrderId) {
+                await supabase.from('generations').upsert({
+                    order_id: finalOrderId,
+                    slug: slug,
+                    content: fullText, // Salva o texto completo para recuperação
+                    meta: payload
+                }, { onConflict: 'order_id' });
+            }
+        }
+
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ output: output, raw_text: fullText })
+        };
 
     } catch (e) {
         console.error('Erro Função:', e.message);
