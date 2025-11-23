@@ -256,15 +256,13 @@
     </script>
     <script>
         (function () {
-            // Verifica se a URL tem ?modo=admin
             const params = new URLSearchParams(window.location.search);
             if (params.get('modo') === 'admin') {
                 const btnArea = document.querySelector('#btnPagar').parentElement;
 
-                // Cria o botão VIP
                 const btnAdmin = document.createElement('button');
                 btnAdmin.className = 'btn';
-                btnAdmin.style.backgroundColor = '#8b5cf6'; // Roxo para diferenciar
+                btnAdmin.style.backgroundColor = '#8b5cf6';
                 btnAdmin.style.color = 'white';
                 btnAdmin.style.border = 'none';
                 btnAdmin.innerText = '👑 Gerar Admin';
@@ -278,10 +276,8 @@
 
                     try {
                         var p = getPayload();
-                        // Adiciona a chave mestra no pacote
                         p.admin_key = senha;
 
-                        // Chama a geração (modo preview=false para vir completo)
                         var r = await fetch('/.netlify/functions/generate-doc', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -291,16 +287,40 @@
                         if (!r.ok) throw new Error('Senha errada ou erro no servidor');
 
                         var data = await r.json();
-                        // Redireciona direto para o sucesso (simulando pagamento aprovado)
-                        // O ID gerado será algo como ADMIN-1734...
-                        // Precisamos pegar o order_id que o backend usou? 
-                        // Simplificação: Vamos apenas mostrar o doc na tela ou baixar
 
                         if (data.output) {
-                            // Gambiarra inteligente: Joga o texto no previewBox e libera download
-                            document.getElementById('previewBox').textContent = data.raw_text;
+                            // 🔥 CORREÇÃO: Monta o texto completo do documento
+                            let fullText = '';
+                            if (data.output.saudacao) fullText += data.output.saudacao + '\n\n';
+
+                            if (Array.isArray(data.output.corpo_paragrafos)) {
+                                fullText += data.output.corpo_paragrafos.join('\n\n');
+                            } else {
+                                fullText += String(data.output.corpo_paragrafos);
+                            }
+
+                            if (data.output.fechamento) fullText += '\n\n' + data.output.fechamento;
+
+                            // Exibe no preview
+                            document.getElementById('previewBox').textContent = fullText;
                             document.getElementById('previewWrap').style.display = 'block';
-                            alert("Documento Admin Gerado com Sucesso! Copie abaixo.");
+
+                            alert("✅ Documento Admin Gerado com Sucesso!\n\nRole para baixo para copiar ou baixar.");
+
+                            // 🎁 BONUS: Habilita os botões de download
+                            document.getElementById('previewBox').style.whiteSpace = 'pre-wrap';
+
+                            // Adiciona botão de copiar
+                            const copyBtn = document.createElement('button');
+                            copyBtn.className = 'btn btn-primary';
+                            copyBtn.style.marginTop = '16px';
+                            copyBtn.innerText = '📋 Copiar Documento';
+                            copyBtn.onclick = async function () {
+                                await navigator.clipboard.writeText(fullText);
+                                copyBtn.innerText = '✅ Copiado!';
+                                setTimeout(() => { copyBtn.innerText = '📋 Copiar Documento'; }, 2000);
+                            };
+                            document.getElementById('previewWrap').appendChild(copyBtn);
                         }
 
                     } catch (e) {
