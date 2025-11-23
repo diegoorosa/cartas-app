@@ -90,7 +90,7 @@ ESTRUTURA DE SAIDA JSON (MANTENHA O PADRÃO):
     "Parágrafo 1: Qualificação do passageiro e relato da compra (reserva, datas, valor).",
     "Parágrafo 2: Relato do cancelamento e da negativa/multa abusiva da empresa.",
     "Parágrafo 3: Fundamentação jurídica agressiva citando Art. 740 CC e CDC.",
-    "Parágrafo 4: Pedido formal de reembolso de 95% do valor + taxas na conta bancária, sob pena de processo judicial."
+    "Parágrafo 4: Pedido formal de restituição imediata de 95% do valor pago + taxas de embarque. (NÃO solicite dados bancários no texto, apenas exija a devolução)."
   ],
   "fechamento": "Local e Data.\\n\\n[Nome do Passageiro]\\nCPF: [CPF]",
   "check_list_anexos": ["Comprovante da compra da passagem", "Protocolo de cancelamento", "Cópia do RG/CPF"]
