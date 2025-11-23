@@ -28,6 +28,23 @@ function sanitizePayload(obj) {
     return obj;
 }
 
+function sanitizeOutput(obj) {
+    if (typeof obj === 'string') {
+        return sanitize(obj);
+    }
+    if (Array.isArray(obj)) {
+        return obj.map(item => sanitizeOutput(item));
+    }
+    if (typeof obj === 'object' && obj !== null) {
+        const newObj = {};
+        for (const key in obj) {
+            newObj[key] = sanitizeOutput(obj[key]);
+        }
+        return newObj;
+    }
+    return obj;
+}
+
 function parseJson(text) {
     if (!text) return null;
     try { return JSON.parse(text); }
@@ -37,7 +54,7 @@ function parseJson(text) {
     }
 }
 
-const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON válido. Formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}.';
+const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON válido. Formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. NÃO use formatação Markdown (**negrito**) ou HTML (<b>) dentro dos textos JSON. Use apenas texto plano.';
 
 // PROMPT VIAGEM PERFEITO
 const SYSTEM_VIAGEM_PERFEITO = `
@@ -63,6 +80,7 @@ REGRAS:
 1. Use linguagem formal (Ilustríssimo Senhor Diretor, requerimento, deferimento).
 2. Use a tese de defesa fornecida pelo usuário e expanda com fundamentos do CTB (Código de Trânsito Brasileiro) e princípios constitucionais (Ampla Defesa/Contraditório).
 3. Se o usuário alegar erro de sinalização, cite o Art. 90 do CTB.
+4. NÃO use títulos em negrito (ex: <b>DOS FATOS</b>). Use apenas texto corrido ou CAIXA ALTA se necessário.
 
 ESTRUTURA:
 - Cabeçalho: "Ao Ilmo. Sr. Diretor do [Órgão Autuador] ou Presidente da JARI".
