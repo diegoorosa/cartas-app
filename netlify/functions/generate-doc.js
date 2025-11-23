@@ -273,16 +273,21 @@ exports.handler = async (event) => {
             system = SYSTEM_CONSUMO;
         }
 
-        // Chamada IA (continua igual)
+        // Chamada IA
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
         const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout IA')), 9500));
         const generatePromise = model.generateContent(system + '\n\nDADOS:\n' + up);
 
         const result = await Promise.race([generatePromise, timeoutPromise]);
         const text = result.response.text();
-        const output = parseJson(text);
+
+        // 🔥 CORREÇÃO AQUI: Trocar 'const' por 'let'
+        let output = parseJson(text);
 
         if (!output) throw new Error('JSON Inválido');
+
+        // Agora sanitiza (remove <b>, <strong>, etc)
+        output = sanitizeOutput(output);
 
         // --- INJEÇÃO DE ASSINATURA (continua igual) ---
         if (tipo === 'autorizacao_viagem') {
