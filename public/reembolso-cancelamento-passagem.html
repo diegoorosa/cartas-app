@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Reembolso de Passagem Aérea (Cancelamento) | CartasApp</title>
+    <meta name="description"
+        content="Cancelou a passagem e a cia aérea quer ficar com tudo? A Lei limita a multa a 5%. Gere sua carta exigindo o reembolso de 95% agora." />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'AW-1021062139');
+        gtag('config', 'G-D40QPP9KNP');
+    </script>
+    <script src="/gtag.js"></script>
+    <script
+        type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");</script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
+                <div class="nav-actions"><button class="btn-theme" onclick="toggleTheme()">🌙</button><a
+                        href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" style="padding: 60px 0 40px;">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">✈️ Direito do Passageiro</div>
+                <h1 style="font-size: 48px;">Reembolso de Passagem Cancelada</h1>
+                <p class="hero-subtitle">A companhia quer cobrar uma multa abusiva? O Art. 740 do Código Civil limita a
+                    retenção
+                    a <strong>5%</strong>. Exija seus 95% de volta.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="card">
+                    <div id="formArea">
+                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 24px;">Seus Dados</h2>
+                        <label class="label">Nome completo</label><input class="input" id="nome"
+                            placeholder="Ex.: Maria Oliveira" />
+                        <label class="label">CPF</label><input class="input" id="cpf" placeholder="000.000.000-00"
+                            inputmode="numeric" maxlength="14" />
+                        <label class="label">Cidade/UF</label><input class="input" id="cidade_uf"
+                            placeholder="Ex.: São Paulo/SP" />
+
+                        <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Dados da Passagem</h2>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <div><label class="label">Companhia Aérea</label><input class="input" id="cia"
+                                    placeholder="Ex.: LATAM, GOL, Azul" /></div>
+                            <div><label class="label">Código da Reserva (Localizador)</label><input class="input"
+                                    id="reserva" placeholder="Ex.: ABC1234" /></div>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+                            <div><label class="label">Data da Compra (Aprox)</label><input class="input"
+                                    id="data_compra" placeholder="DD/MM/AAAA" maxlength="10" /></div>
+                            <div><label class="label">Data do Voo</label><input class="input" id="data_voo"
+                                    placeholder="DD/MM/AAAA" maxlength="10" /></div>
+                        </div>
+
+                        <label class="label">Valor Pago (Total)</label><input class="input" id="valor_pago"
+                            placeholder="Ex.: R$ 1.200,00" />
+
+                        <label class="label">Motivo do cancelamento (Opcional)</label>
+                        <textarea class="input" id="motivo" rows="3"
+                            placeholder="Ex.: Motivos de saúde, imprevisto no trabalho, desistência pessoal..."></textarea>
+                        <p class="small" style="margin-top:4px;">A lei garante o reembolso independente do motivo, desde
+                            que avisado
+                            com antecedência.</p>
+
+                        <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
+                            <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
+                            <button class="btn btn-primary" id="btnPagar" disabled>Gerar carta completa (R$
+                                9,90)</button>
+                        </div>
+
+                        <div class="guarantee-badge"><span class="guarantee-icon">🔒</span>
+                            <div><strong>Garantia Total:</strong> Receba seu documento pronto ou devolvemos seu
+                                dinheiro.</div>
+                        </div>
+                    </div>
+
+                    <div id="previewWrap"
+                        style="display:none; margin-top:32px; padding-top:32px; border-top:1px solid var(--border);">
+                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">Prévia do documento</h2>
+                        <div
+                            style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;">
+                            <div id="previewBox"
+                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
+                            </div>
+                        </div>
+                        <p class="small" style="margin-top:12px;color:var(--text-muted);">Prévia parcial. Versão
+                            completa liberada
+                            após pagamento.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
+                        class="footer-link">Termos de
+                        Uso</a>.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/utm.js"></script>
+    <script>
+        function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; }
+        function maskDate(v) { v = (v || '').replace(/\D/g, '').slice(0, 8); if (v.length >= 5) v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3'); else if (v.length >= 3) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2'); return v; }
+
+        var cpfEl = document.getElementById('cpf'); cpfEl.addEventListener('input', function () { cpfEl.value = maskCPF(cpfEl.value); });
+        var d1 = document.getElementById('data_compra'); if (d1) d1.addEventListener('input', function () { this.value = maskDate(this.value) });
+        var d2 = document.getElementById('data_voo'); if (d2) d2.addEventListener('input', function () { this.value = maskDate(this.value) });
+
+        function getPayload() {
+            return {
+                tipo: 'reembolso_passagem', // TIPO NOVO
+                slug: 'reembolso-cancelamento-passagem',
+                nome: document.getElementById('nome').value.trim(),
+                cpf: document.getElementById('cpf').value.trim(),
+                cidade_uf: document.getElementById('cidade_uf').value.trim(),
+                cia: document.getElementById('cia').value.trim(),
+                reserva: document.getElementById('reserva').value.trim(),
+                data_compra: document.getElementById('data_compra').value.trim(),
+                data_voo: document.getElementById('data_voo').value.trim(),
+                valor_pago: document.getElementById('valor_pago').value.trim(),
+                motivo: document.getElementById('motivo').value.trim(),
+                utm: (window.LMUTM ? LMUTM.get() : {})
+            };
+        }
+
+        function validateAll(p) {
+            if (!p.nome || !p.cpf || !p.cia || !p.reserva || !p.valor_pago || !p.cidade_uf) return false;
+            return true;
+        }
+
+        var btnPreview = document.getElementById('btnPreview'); var btnPagar = document.getElementById('btnPagar'); var previewWrap = document.getElementById('previewWrap'); var previewBox = document.getElementById('previewBox');
+
+        function checkCooldown() { var last = localStorage.getItem('last_preview_ts'); if (last && (Date.now() - parseInt(last)) < 30000) { alert('Aguarde 30s.'); return false; } return true; }
+
+        // Captura Lead (Recuperação)
+        function captureLead(p) {
+            if (!p.nome) return;
+            fetch('/.netlify/functions/capture-lead', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome: p.nome, slug: 'reembolso-passagem', payload: p })
+            }).catch(err => console.log('Lead capture error', err));
+        }
+
+        btnPreview.addEventListener('click', async function () {
+            if (!checkCooldown()) return;
+            btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+            try {
+                var p = getPayload(); if (!validateAll(p)) { alert('Preencha os campos obrigatórios.'); throw new Error('Inválido'); }
+                captureLead(p);
+
+                var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: p, preview: true }) });
+                if (!r.ok) throw new Error('Falha');
+                var d = await r.json(); var out = d.output || d; var pr = out.corpo_paragrafos || []; var parcial = pr.slice(0, 2).join('\n\n') + '\n\n[...]';
+                previewBox.textContent = (out.saudacao || '') + '\n\n' + parcial;
+                previewWrap.style.display = 'block';
+                localStorage.setItem('pendingPayload', JSON.stringify(p));
+                localStorage.setItem('last_preview_ts', Date.now());
+                btnPagar.disabled = false;
+            } catch (e) { if (e.message !== 'Inválido') alert('Erro: ' + e.message); } finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
+        });
+
+        btnPagar.addEventListener('click', async function () {
+            btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
+            try {
+                var p = getPayload(); if (!validateAll(p)) { alert('Verifique campos.'); throw new Error('Inválido'); }
+                var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: 'reembolso-cancelamento-passagem', payload: p, utm: (window.LMUTM ? LMUTM.get() : {}) }) });
+                var data = await r.json(); if (!r.ok) throw new Error(data.error);
+                showPaymentModal(data.init_point, data.order_id);
+            } catch (e) { if (e.message !== 'Inválido') alert('Erro: ' + e.message); btnPagar.disabled = false; btnPagar.textContent = 'Gerar carta completa (R$ 9,90)'; }
+        });
+
+        function showPaymentModal(initPoint, orderId) {
+            var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
+            var cardBG = isLight ? '#ffffff' : '#111827'; var cardText = isLight ? '#0f172a' : '#e6eefb';
+            var overlay = document.createElement('div');
+            overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
+            overlay.innerHTML = '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:16px;max-width:400px;width:90%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;"><div style="font-size:40px;margin-bottom:16px;">💸</div><h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3><p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique abaixo para finalizar.</p><div style="display:flex;flex-direction:column;gap:12px;"><button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix/Cartão)</button><button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir</button></div></div>';
+            document.body.appendChild(overlay);
+            document.getElementById('lm-close').onclick = function () { overlay.remove(); var btn = document.getElementById('btnPagar'); if (btn) { btn.disabled = false; btn.textContent = 'Gerar carta completa (R$ 9,90)'; } };
+            async function docReady() { try { var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: { order_id: orderId }, preview: false }) }); if (!r.ok) return false; var j = await r.json(); return !!(j && j.output); } catch (e) { return false; } }
+            document.getElementById('lm-goPay').onclick = function () { window.open(initPoint, '_blank', 'noopener'); var btn = this; btn.textContent = 'Verificando...'; var iv = setInterval(async function () { try { if (await docReady()) { clearInterval(iv); location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=reembolso-passagem&s=success'; return; } var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)); var jj = rr.ok ? await rr.json() : null; if (jj && jj.status === 'paid') { clearInterval(iv); location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=reembolso-passagem&s=success'; } } catch (e) { } }, 3000); };
+        }
+    </script>
+</body>
+
+</html>

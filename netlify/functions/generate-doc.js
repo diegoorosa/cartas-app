@@ -72,6 +72,31 @@ ESTRUTURA:
 - P4 (O Pedido): Requer o cancelamento do AIT e a anulação da pontuação.
 `;
 
+const SYSTEM_PASSAGEM = `
+${SYSTEM_BASE}
+ATUAÇÃO: Você é um advogado especialista em Direito do Consumidor e Aéreo.
+CONTEXTO: O usuário cancelou uma passagem aérea e a companhia quer cobrar multa abusiva.
+TAREFA: Redigir uma NOTIFICAÇÃO EXTRAJUDICIAL exigindo o reembolso de 95% do valor.
+
+ARGUMENTAÇÃO JURÍDICA OBRIGATÓRIA:
+1. Cite o Art. 740, § 3º do Código Civil: A retenção máxima permitida em caso de cancelamento é de 5%.
+2. Cite o Art. 51, IV do Código de Defesa do Consumidor (CDC): Cláusulas que retiram o direito de reembolso são nulas de pleno direito.
+3. Mencione que a prática configura enriquecimento ilícito da companhia.
+
+ESTRUTURA DE SAIDA JSON (MANTENHA O PADRÃO):
+{
+  "saudacao": "À [Nome da Cia Aérea] - A/C Departamento Jurídico",
+  "corpo_paragrafos": [
+    "Parágrafo 1: Qualificação do passageiro e relato da compra (reserva, datas, valor).",
+    "Parágrafo 2: Relato do cancelamento e da negativa/multa abusiva da empresa.",
+    "Parágrafo 3: Fundamentação jurídica agressiva citando Art. 740 CC e CDC.",
+    "Parágrafo 4: Pedido formal de reembolso de 95% do valor + taxas na conta bancária, sob pena de processo judicial."
+  ],
+  "fechamento": "Local e Data.\\n\\n[Nome do Passageiro]\\nCPF: [CPF]",
+  "check_list_anexos": ["Comprovante da compra da passagem", "Protocolo de cancelamento", "Cópia do RG/CPF"]
+}
+`;
+
 const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
 const SYSTEM_CONSUMO = `${SYSTEM_BASE}
 Gere uma carta formal de reclamação/cancelamento (Código de Defesa do Consumidor).
@@ -128,6 +153,10 @@ exports.handler = async (event) => {
         else if (slug.includes('multa') || payload.placa || payload.cnh || payload.auto_infracao) {
             tipo = 'multa';
         }
+        // Prioridade 2.1: REEMBOLSO PASSAGEM (Novo - Adicionado Aqui)
+        else if (slug.includes('reembolso')) {
+            tipo = 'reembolso_passagem';
+        }
         // REGRA 2: Bagagem (INTOCADA)
         else if (slug.includes('bagagem') || payloadStr.includes('voo') || payloadStr.includes('pir')) {
             tipo = 'bagagem';
@@ -177,6 +206,17 @@ exports.handler = async (event) => {
             RELATO DE DEFESA (Argumentos): "${payload.motivo}".
             Cidade: ${payload.cidade_uf}.`;
             system = SYSTEM_MULTA;
+
+        } else if (tipo === 'reembolso_passagem') {
+            // --- NOVO INPUT REEMBOLSO ---
+            up = `REEMBOLSO PASSAGEM (ART 740 CC):
+            Passageiro: ${payload.nome}, CPF ${payload.cpf}. Cidade: ${payload.cidade_uf}.
+            Companhia: ${payload.cia}. Reserva: ${payload.reserva}.
+            Data Compra: ${payload.data_compra}. Data Voo: ${payload.data_voo}.
+            Valor Pago: ${payload.valor_pago}.
+            Motivo Cancelamento: ${payload.motivo}.
+            OBJETIVO: Notificação Extrajudicial exigindo 95% de reembolso.`;
+            system = SYSTEM_PASSAGEM;
 
         } else if (tipo === 'bagagem') {
             up = `BAGAGEM: Passageiro: ${payload.nome}, CPF ${payload.cpf}. Voo: ${payload.cia} ${payload.voo}, Data Voo: ${payload.data_voo}. PIR: ${payload.pir || 'N/A'}. Ocorrência: ${payload.status}. Descrição: ${payload.descricao}. Pedido/Despesas: ${payload.despesas}. Cidade: ${payload.cidade_uf}.`;
