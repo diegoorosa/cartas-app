@@ -476,35 +476,35 @@
             var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
             var cardBG = isLight ? '#ffffff' : '#111827';
             var cardText = isLight ? '#0f172a' : '#e6eefb';
-            
+
             var overlay = document.createElement('div');
             overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
-            
+
             // HTML simplificado: Sem botão de copiar, foco total no pagamento
-            overlay.innerHTML = 
+            overlay.innerHTML =
                 '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:16px;max-width:400px;width:90%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;">' +
-                    '<div style="font-size:40px;margin-bottom:16px;">💸</div>' +
-                    '<h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3>' +
-                    '<p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique no botão abaixo para finalizar o pagamento com segurança no Mercado Pago.</p>' +
-                    
-                    '<div style="display:flex;flex-direction:column;gap:12px;">' +
-                        '<button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix ou Cartão)</button>' +
-                        '<button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir dados</button>' +
-                    '</div>' +
-                    
-                    '<p id="lm-statusPay" class="small" style="margin-top:16px;font-size:12px;opacity:0.8;"></p>' +
+                '<div style="font-size:40px;margin-bottom:16px;">💸</div>' +
+                '<h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3>' +
+                '<p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique no botão abaixo para finalizar o pagamento com segurança no Mercado Pago.</p>' +
+
+                '<div style="display:flex;flex-direction:column;gap:12px;">' +
+                '<button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix ou Cartão)</button>' +
+                '<button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir dados</button>' +
+                '</div>' +
+
+                '<p id="lm-statusPay" class="small" style="margin-top:16px;font-size:12px;opacity:0.8;"></p>' +
                 '</div>';
-            
+
             document.body.appendChild(overlay);
 
             // LÓGICA DO BOTÃO FECHAR (CORRIGIDA)
             // Remove o modal e REATIVA o botão de pagar lá atrás
-            document.getElementById('lm-close').onclick = function () { 
-                overlay.remove(); 
-                try { grecaptcha.reset(); } catch (e) { } 
-                
+            document.getElementById('lm-close').onclick = function () {
+                overlay.remove();
+                try { grecaptcha.reset(); } catch (e) { }
+
                 var btnPagar = document.getElementById('btnPagar');
-                if(btnPagar) {
+                if (btnPagar) {
                     btnPagar.disabled = false;
                     btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
                 }
@@ -527,12 +527,12 @@
             document.getElementById('lm-goPay').onclick = function () {
                 // Abre o Mercado Pago em nova aba
                 window.open(initPoint, '_blank', 'noopener');
-                
+
                 // Muda o status no modal
                 var btn = this;
                 btn.textContent = 'Verificando pagamento...';
                 document.getElementById('lm-statusPay').textContent = 'Aguarde, estamos confirmando seu pagamento...';
-                
+
                 // Começa a verificar se pagou a cada 3 segundos
                 var iv = setInterval(async function () {
                     try {
@@ -545,14 +545,117 @@
                         // 2. Verifica status do pedido (fallback)
                         var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
                         var jj = rr.ok ? await rr.json() : null;
-                        if (jj && jj.status === 'paid') { 
-                            clearInterval(iv); 
-                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success'; 
+                        if (jj && jj.status === 'paid') {
+                            clearInterval(iv);
+                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success';
                         }
-                    } catch(e) {}
+                    } catch (e) { }
                 }, 3000);
             };
         }
+    </script>
+    <script>
+        (function () {
+            // Verifica se a URL tem ?modo=admin
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('modo') === 'admin') {
+                // Procura o botão de pagar (funciona mesmo se o ID for diferente)
+                const btnPagar = document.querySelector('[id*="Pagar"], [id*="pagar"]') || document.getElementById('btnPagar');
+                if (!btnPagar) return; // Se não achar botão, não faz nada
+
+                const btnArea = btnPagar.parentElement;
+
+                // Cria o botão Admin
+                const btnAdmin = document.createElement('button');
+                btnAdmin.className = 'btn';
+                btnAdmin.style.backgroundColor = '#8b5cf6';
+                btnAdmin.style.color = 'white';
+                btnAdmin.style.border = 'none';
+                btnAdmin.innerText = '👑 Gerar Admin';
+
+                btnAdmin.onclick = async function () {
+                    const senha = prompt("Digite a senha de Admin:");
+                    if (!senha) return;
+
+                    btnAdmin.innerText = 'Gerando...';
+                    btnAdmin.disabled = true;
+
+                    try {
+                        // Usa a função getPayload() que já existe na página
+                        var p = getPayload();
+                        p.admin_key = senha;
+
+                        var r = await fetch('/.netlify/functions/generate-doc', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ payload: p, preview: false })
+                        });
+
+                        if (!r.ok) throw new Error('Senha errada ou erro no servidor');
+
+                        var data = await r.json();
+
+                        if (data.output) {
+                            // 🔥 Monta o texto completo do documento
+                            let fullText = '';
+                            if (data.output.saudacao) fullText += data.output.saudacao + '\n\n';
+
+                            if (Array.isArray(data.output.corpo_paragrafos)) {
+                                fullText += data.output.corpo_paragrafos.join('\n\n');
+                            } else {
+                                fullText += String(data.output.corpo_paragrafos);
+                            }
+
+                            if (data.output.fechamento) fullText += '\n\n' + data.output.fechamento;
+
+                            // Exibe no preview (funciona em qualquer página)
+                            const previewBox = document.getElementById('previewBox');
+                            const previewWrap = document.getElementById('previewWrap');
+
+                            if (previewBox && previewWrap) {
+                                previewBox.textContent = fullText;
+                                previewBox.style.whiteSpace = 'pre-wrap';
+                                previewWrap.style.display = 'block';
+
+                                // Remove botões antigos se existirem
+                                const oldCopyBtn = document.getElementById('admin-copy-btn');
+                                if (oldCopyBtn) oldCopyBtn.remove();
+
+                                // Adiciona botão de copiar
+                                const copyBtn = document.createElement('button');
+                                copyBtn.id = 'admin-copy-btn';
+                                copyBtn.className = 'btn btn-primary';
+                                copyBtn.style.marginTop = '16px';
+                                copyBtn.innerText = '📋 Copiar Documento';
+                                copyBtn.onclick = async function () {
+                                    await navigator.clipboard.writeText(fullText);
+                                    copyBtn.innerText = '✅ Copiado!';
+                                    setTimeout(() => { copyBtn.innerText = '📋 Copiar Documento'; }, 2000);
+                                };
+                                previewWrap.appendChild(copyBtn);
+
+                                // Rola a página para o preview
+                                previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                                alert("✅ Documento Admin Gerado!\n\nRole para baixo para copiar.");
+                            } else {
+                                // Fallback: mostra em alert se não tiver preview
+                                alert("✅ Documento Gerado!\n\n" + fullText.substring(0, 500) + "...\n\n(Copie do console)");
+                                console.log(fullText);
+                            }
+                        }
+
+                    } catch (e) {
+                        alert('❌ Erro: ' + e.message);
+                    } finally {
+                        btnAdmin.innerText = '👑 Gerar Admin';
+                        btnAdmin.disabled = false;
+                    }
+                };
+
+                btnArea.appendChild(btnAdmin);
+            }
+        })();
     </script>
 </body>
 

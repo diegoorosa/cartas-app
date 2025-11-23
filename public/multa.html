@@ -256,10 +256,16 @@
     </script>
     <script>
         (function () {
+            // Verifica se a URL tem ?modo=admin
             const params = new URLSearchParams(window.location.search);
             if (params.get('modo') === 'admin') {
-                const btnArea = document.querySelector('#btnPagar').parentElement;
+                // Procura o botão de pagar (funciona mesmo se o ID for diferente)
+                const btnPagar = document.querySelector('[id*="Pagar"], [id*="pagar"]') || document.getElementById('btnPagar');
+                if (!btnPagar) return; // Se não achar botão, não faz nada
 
+                const btnArea = btnPagar.parentElement;
+
+                // Cria o botão Admin
                 const btnAdmin = document.createElement('button');
                 btnAdmin.className = 'btn';
                 btnAdmin.style.backgroundColor = '#8b5cf6';
@@ -275,6 +281,7 @@
                     btnAdmin.disabled = true;
 
                     try {
+                        // Usa a função getPayload() que já existe na página
                         var p = getPayload();
                         p.admin_key = senha;
 
@@ -289,7 +296,7 @@
                         var data = await r.json();
 
                         if (data.output) {
-                            // 🔥 CORREÇÃO: Monta o texto completo do documento
+                            // 🔥 Monta o texto completo do documento
                             let fullText = '';
                             if (data.output.saudacao) fullText += data.output.saudacao + '\n\n';
 
@@ -301,30 +308,45 @@
 
                             if (data.output.fechamento) fullText += '\n\n' + data.output.fechamento;
 
-                            // Exibe no preview
-                            document.getElementById('previewBox').textContent = fullText;
-                            document.getElementById('previewWrap').style.display = 'block';
+                            // Exibe no preview (funciona em qualquer página)
+                            const previewBox = document.getElementById('previewBox');
+                            const previewWrap = document.getElementById('previewWrap');
 
-                            alert("✅ Documento Admin Gerado com Sucesso!\n\nRole para baixo para copiar ou baixar.");
+                            if (previewBox && previewWrap) {
+                                previewBox.textContent = fullText;
+                                previewBox.style.whiteSpace = 'pre-wrap';
+                                previewWrap.style.display = 'block';
 
-                            // 🎁 BONUS: Habilita os botões de download
-                            document.getElementById('previewBox').style.whiteSpace = 'pre-wrap';
+                                // Remove botões antigos se existirem
+                                const oldCopyBtn = document.getElementById('admin-copy-btn');
+                                if (oldCopyBtn) oldCopyBtn.remove();
 
-                            // Adiciona botão de copiar
-                            const copyBtn = document.createElement('button');
-                            copyBtn.className = 'btn btn-primary';
-                            copyBtn.style.marginTop = '16px';
-                            copyBtn.innerText = '📋 Copiar Documento';
-                            copyBtn.onclick = async function () {
-                                await navigator.clipboard.writeText(fullText);
-                                copyBtn.innerText = '✅ Copiado!';
-                                setTimeout(() => { copyBtn.innerText = '📋 Copiar Documento'; }, 2000);
-                            };
-                            document.getElementById('previewWrap').appendChild(copyBtn);
+                                // Adiciona botão de copiar
+                                const copyBtn = document.createElement('button');
+                                copyBtn.id = 'admin-copy-btn';
+                                copyBtn.className = 'btn btn-primary';
+                                copyBtn.style.marginTop = '16px';
+                                copyBtn.innerText = '📋 Copiar Documento';
+                                copyBtn.onclick = async function () {
+                                    await navigator.clipboard.writeText(fullText);
+                                    copyBtn.innerText = '✅ Copiado!';
+                                    setTimeout(() => { copyBtn.innerText = '📋 Copiar Documento'; }, 2000);
+                                };
+                                previewWrap.appendChild(copyBtn);
+
+                                // Rola a página para o preview
+                                previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                                alert("✅ Documento Admin Gerado!\n\nRole para baixo para copiar.");
+                            } else {
+                                // Fallback: mostra em alert se não tiver preview
+                                alert("✅ Documento Gerado!\n\n" + fullText.substring(0, 500) + "...\n\n(Copie do console)");
+                                console.log(fullText);
+                            }
                         }
 
                     } catch (e) {
-                        alert('Erro: ' + e.message);
+                        alert('❌ Erro: ' + e.message);
                     } finally {
                         btnAdmin.innerText = '👑 Gerar Admin';
                         btnAdmin.disabled = false;

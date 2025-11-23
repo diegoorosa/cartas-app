@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
+
 <head>
     <meta charset="utf-8" />
     <title>Gerar Carta</title>
@@ -15,15 +16,19 @@
         gtag('config', 'G-D40QPP9KNP');
     </script>
     <script src="/gtag.js"></script>
-    <script type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");</script>
+    <script
+        type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");</script>
     <link rel="canonical" href="https://www.cartasapp.com.br/doc.html" />
 </head>
+
 <body>
     <nav class="navbar">
         <div class="container">
             <div class="navbar-content">
                 <a href="/" class="logo">CartasApp</a>
-                <div class="nav-actions"><button class="btn-theme" onclick="toggleTheme()">🌙</button><a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">WhatsApp</a></div>
+                <div class="nav-actions"><button class="btn-theme" onclick="toggleTheme()">🌙</button><a
+                        href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">WhatsApp</a>
+                </div>
             </div>
         </div>
     </nav>
@@ -44,30 +49,58 @@
                 <div class="card" id="card">
                     <div id="formArea">
                         <h2 class="section-title" style="font-size: 24px; margin-bottom: 24px;">Seus dados</h2>
-                        <label class="label">Nome completo</label><input class="input" id="nome" placeholder="Ex.: João da Silva" />
-                        <label class="label">CPF</label><input class="input" id="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" /><div id="cpfError" class="small" style="display:none;color:#fca5a5">CPF inválido.</div>
-                        <label class="label">Cidade/UF</label><input class="input" id="cidade" placeholder="Ex.: São Paulo/SP" />
-                        <label class="label">Unidade/Contrato (opcional)</label><input class="input" id="contrato" placeholder="Ex.: Unidade Vila Mariana, Contrato 12345" />
-                        <label class="label">Motivo ou resumo do caso</label><textarea class="input" id="motivo" rows="3" placeholder="Ex.: cobrança de mensalidade..."></textarea>
+                        <label class="label">Nome completo</label><input class="input" id="nome"
+                            placeholder="Ex.: João da Silva" />
+                        <label class="label">CPF</label><input class="input" id="cpf" placeholder="000.000.000-00"
+                            inputmode="numeric" maxlength="14" />
+                        <div id="cpfError" class="small" style="display:none;color:#fca5a5">CPF inválido.</div>
+                        <label class="label">Cidade/UF</label><input class="input" id="cidade"
+                            placeholder="Ex.: São Paulo/SP" />
+                        <label class="label">Unidade/Contrato (opcional)</label><input class="input" id="contrato"
+                            placeholder="Ex.: Unidade Vila Mariana, Contrato 12345" />
+                        <label class="label">Motivo ou resumo do caso</label><textarea class="input" id="motivo"
+                            rows="3" placeholder="Ex.: cobrança de mensalidade..."></textarea>
 
                         <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap">
                             <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
-                            <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$ 9,90)</button>
+                            <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$
+                                9,90)</button>
                         </div>
-                        <div class="guarantee-badge"><span class="guarantee-icon">🔒</span><div><strong>Garantia Total:</strong> Receba seu documento pronto ou devolvemos seu dinheiro.</div></div>
+                        <div class="guarantee-badge"><span class="guarantee-icon">🔒</span>
+                            <div><strong>Garantia Total:</strong> Receba seu documento pronto ou devolvemos seu
+                                dinheiro.</div>
+                        </div>
                     </div>
 
-                    <div id="previewWrap" style="display:none; margin-top:32px; padding-top:32px; border-top:1px solid var(--border);">
+                    <div id="previewWrap"
+                        style="display:none; margin-top:32px; padding-top:32px; border-top:1px solid var(--border);">
                         <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">Prévia do documento</h2>
-                        <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;"><div id="previewBox" style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);"></div></div>
-                        <p class="small" style="margin-top:12px;color:var(--text-muted);">Prévia parcial. Versão completa liberada após pagamento.</p>
+                        <div
+                            style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;">
+                            <div id="previewBox"
+                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
+                            </div>
+                        </div>
+                        <p class="small" style="margin-top:12px;color:var(--text-muted);">Prévia parcial. Versão
+                            completa liberada após pagamento.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <footer class="footer"><div class="container"><div class="footer-content"><p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html" class="footer-link">Termos de Uso</a>.</p></div></div></footer>
-    <a href="https://wa.me/5547991323024?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20no%20CartasApp." class="whatsapp-float" target="_blank" aria-label="Falar no WhatsApp"><svg viewBox="0 0 24 24" class="whatsapp-icon"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg></a>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
+                        class="footer-link">Termos de Uso</a>.</p>
+            </div>
+        </div>
+    </footer>
+    <a href="https://wa.me/5547991323024?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20no%20CartasApp." class="whatsapp-float"
+        target="_blank" aria-label="Falar no WhatsApp"><svg viewBox="0 0 24 24" class="whatsapp-icon">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+        </svg></a>
     <script src="/slugs.js"></script>
     <script src="/recovery.js"></script>
     <script>
@@ -78,7 +111,7 @@
         if (titleParam) { document.title = titleParam + ' | Gerador'; docTitle.textContent = titleParam; } else if (cfg) { document.title = cfg.title + ' | Gerador'; docTitle.textContent = cfg.title; } else { docTitle.textContent = 'Modelo não encontrado'; formArea.style.display = 'none'; }
 
         function maskCPF(v) { v = (v || '').replace(/\D/g, '').slice(0, 11); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d)/, '$1.$2'); v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); return v; } function isValidCPF(cpf) { var s = (cpf || '').replace(/\D/g, ''); if (s.length !== 11) return false; if (/^(\d)\1{10}$/.test(s)) return false; var i, sum = 0, rest; for (i = 1; i <= 9; i++)sum += parseInt(s.substring(i - 1, i)) * (11 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(9, 10))) return false; sum = 0; for (i = 1; i <= 10; i++)sum += parseInt(s.substring(i - 1, i)) * (12 - i); rest = (sum * 10) % 11; if (rest === 10 || rest === 11) rest = 0; if (rest !== parseInt(s.substring(10, 11))) return false; return true; }
-        var nomeInput=document.getElementById('nome'), cpfInput=document.getElementById('cpf'), cidadeInput=document.getElementById('cidade'), contratoInput=document.getElementById('contrato'), motivoInput=document.getElementById('motivo');
+        var nomeInput = document.getElementById('nome'), cpfInput = document.getElementById('cpf'), cidadeInput = document.getElementById('cidade'), contratoInput = document.getElementById('contrato'), motivoInput = document.getElementById('motivo');
         cpfInput.addEventListener('input', function () { this.value = maskCPF(this.value); });
 
         function getPayload() { cpfInput.value = maskCPF(cpfInput.value); return { slug: slug, tipo: cfg ? cfg.tipo : '', entidade: cfg ? cfg.brand : '', nome: nomeInput.value.trim(), cpf: cpfInput.value.trim(), cidade_uf: cidadeInput.value.trim(), contrato: contratoInput.value.trim(), motivo: motivoInput.value.trim(), utm: window.LMUTM ? LMUTM.get() : {} }; }
@@ -89,7 +122,7 @@
 
         // PRÉVIA
         btnPreview.addEventListener('click', async function () {
-            if(!checkCooldown()) return;
+            if (!checkCooldown()) return;
             btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
             try {
                 var p = getPayload(); if (!p.nome || !p.cidade_uf || !isValidCPF(p.cpf)) { alert('Preencha corretamente.'); throw new Error('Inválido'); }
@@ -102,7 +135,7 @@
                 localStorage.setItem('pendingPayload', JSON.stringify(p));
                 localStorage.setItem('last_preview_ts', Date.now());
                 btnPagar.disabled = false;
-            } catch (e) { if(e.message!=='Inválido') alert('Erro: ' + e.message); } finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
+            } catch (e) { if (e.message !== 'Inválido') alert('Erro: ' + e.message); } finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
         });
 
         // PAGAR
@@ -113,7 +146,7 @@
                 var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: slug, payload: p, utm: (window.LMUTM ? LMUTM.get() : {}) }) });
                 var data = await r.json(); if (!r.ok) throw new Error(data.error);
                 showPaymentModal(data.init_point, data.order_id, slug);
-            } catch (e) { if(e.message!=='Inválido') alert('Erro: ' + e.message); btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)'; }
+            } catch (e) { if (e.message !== 'Inválido') alert('Erro: ' + e.message); btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)'; }
         });
 
         function showPaymentModal(initPoint, orderId, slug) {
@@ -121,12 +154,116 @@
             var cardBG = isLight ? '#ffffff' : '#111827'; var cardText = isLight ? '#0f172a' : '#e6eefb';
             var overlay = document.createElement('div');
             overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
-            overlay.innerHTML = '<div style="background:'+cardBG+';color:'+cardText+';border:1px solid var(--border);border-radius:16px;max-width:400px;width:90%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;"><div style="font-size:40px;margin-bottom:16px;">💸</div><h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3><p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique abaixo para finalizar.</p><div style="display:flex;flex-direction:column;gap:12px;"><button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix/Cartão)</button><button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir</button></div><p id="lm-statusPay" class="small" style="margin-top:16px;font-size:12px;opacity:0.8;"></p></div>';
+            overlay.innerHTML = '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:16px;max-width:400px;width:90%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;"><div style="font-size:40px;margin-bottom:16px;">💸</div><h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3><p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique abaixo para finalizar.</p><div style="display:flex;flex-direction:column;gap:12px;"><button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix/Cartão)</button><button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir</button></div><p id="lm-statusPay" class="small" style="margin-top:16px;font-size:12px;opacity:0.8;"></p></div>';
             document.body.appendChild(overlay);
-            document.getElementById('lm-close').onclick = function () { overlay.remove(); var btn = document.getElementById('btnPagar'); if(btn) { btn.disabled=false; btn.textContent='Gerar documento completo (R$ 9,90)'; } };
+            document.getElementById('lm-close').onclick = function () { overlay.remove(); var btn = document.getElementById('btnPagar'); if (btn) { btn.disabled = false; btn.textContent = 'Gerar documento completo (R$ 9,90)'; } };
             async function docReady() { try { var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: { order_id: orderId }, preview: false }) }); if (!r.ok) return false; var j = await r.json(); return !!(j && j.output); } catch (e) { return false; } }
             document.getElementById('lm-goPay').onclick = function () { window.open(initPoint, '_blank', 'noopener'); var btn = this; btn.textContent = 'Verificando...'; var iv = setInterval(async function () { try { if (await docReady()) { clearInterval(iv); location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug || 'documento') + '&s=success'; return; } var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)); var jj = rr.ok ? await rr.json() : null; if (jj && jj.status === 'paid') { clearInterval(iv); location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success'; } } catch (e) { } }, 3000); };
         }
     </script>
+    <script>
+        (function () {
+            // Verifica se a URL tem ?modo=admin
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('modo') === 'admin') {
+                // Procura o botão de pagar (funciona mesmo se o ID for diferente)
+                const btnPagar = document.querySelector('[id*="Pagar"], [id*="pagar"]') || document.getElementById('btnPagar');
+                if (!btnPagar) return; // Se não achar botão, não faz nada
+
+                const btnArea = btnPagar.parentElement;
+
+                // Cria o botão Admin
+                const btnAdmin = document.createElement('button');
+                btnAdmin.className = 'btn';
+                btnAdmin.style.backgroundColor = '#8b5cf6';
+                btnAdmin.style.color = 'white';
+                btnAdmin.style.border = 'none';
+                btnAdmin.innerText = '👑 Gerar Admin';
+
+                btnAdmin.onclick = async function () {
+                    const senha = prompt("Digite a senha de Admin:");
+                    if (!senha) return;
+
+                    btnAdmin.innerText = 'Gerando...';
+                    btnAdmin.disabled = true;
+
+                    try {
+                        // Usa a função getPayload() que já existe na página
+                        var p = getPayload();
+                        p.admin_key = senha;
+
+                        var r = await fetch('/.netlify/functions/generate-doc', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ payload: p, preview: false })
+                        });
+
+                        if (!r.ok) throw new Error('Senha errada ou erro no servidor');
+
+                        var data = await r.json();
+
+                        if (data.output) {
+                            // 🔥 Monta o texto completo do documento
+                            let fullText = '';
+                            if (data.output.saudacao) fullText += data.output.saudacao + '\n\n';
+
+                            if (Array.isArray(data.output.corpo_paragrafos)) {
+                                fullText += data.output.corpo_paragrafos.join('\n\n');
+                            } else {
+                                fullText += String(data.output.corpo_paragrafos);
+                            }
+
+                            if (data.output.fechamento) fullText += '\n\n' + data.output.fechamento;
+
+                            // Exibe no preview (funciona em qualquer página)
+                            const previewBox = document.getElementById('previewBox');
+                            const previewWrap = document.getElementById('previewWrap');
+
+                            if (previewBox && previewWrap) {
+                                previewBox.textContent = fullText;
+                                previewBox.style.whiteSpace = 'pre-wrap';
+                                previewWrap.style.display = 'block';
+
+                                // Remove botões antigos se existirem
+                                const oldCopyBtn = document.getElementById('admin-copy-btn');
+                                if (oldCopyBtn) oldCopyBtn.remove();
+
+                                // Adiciona botão de copiar
+                                const copyBtn = document.createElement('button');
+                                copyBtn.id = 'admin-copy-btn';
+                                copyBtn.className = 'btn btn-primary';
+                                copyBtn.style.marginTop = '16px';
+                                copyBtn.innerText = '📋 Copiar Documento';
+                                copyBtn.onclick = async function () {
+                                    await navigator.clipboard.writeText(fullText);
+                                    copyBtn.innerText = '✅ Copiado!';
+                                    setTimeout(() => { copyBtn.innerText = '📋 Copiar Documento'; }, 2000);
+                                };
+                                previewWrap.appendChild(copyBtn);
+
+                                // Rola a página para o preview
+                                previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                                alert("✅ Documento Admin Gerado!\n\nRole para baixo para copiar.");
+                            } else {
+                                // Fallback: mostra em alert se não tiver preview
+                                alert("✅ Documento Gerado!\n\n" + fullText.substring(0, 500) + "...\n\n(Copie do console)");
+                                console.log(fullText);
+                            }
+                        }
+
+                    } catch (e) {
+                        alert('❌ Erro: ' + e.message);
+                    } finally {
+                        btnAdmin.innerText = '👑 Gerar Admin';
+                        btnAdmin.disabled = false;
+                    }
+                };
+
+                btnArea.appendChild(btnAdmin);
+            }
+        })();
+    </script>
 </body>
+
 </html>
