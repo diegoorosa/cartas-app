@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 // MODELO
-const MODEL_NAME = 'gemini-2.0-flash';
+const MODELS = ['gemini-2.5-flash-lite', 'gemini-2.5-flash'];
 
 // --- HELPERS ---
 function getTodaySimple() {
@@ -128,6 +128,49 @@ ESTRUTURA:
 - P2: "O motivo desta solicitação é: [INSERIR AQUI O TEXTO DO MOTIVO DO USUÁRIO, SEM ALTERAR O SENTIDO]."
 - P3: "Diante do exposto, solicito o atendimento imediato desta demanda, sob pena de medidas judiciais e reclamação junto aos órgãos de proteção ao crédito e consumidor (PROCON)."
 `;
+
+// --- FUNÇÃO DE CHAMADA SEGURA ---
+async function callAIWithFallback(prompt, maxTotalTime = 9500) {
+    const startTime = Date.now();
+
+    for (let i = 0; i < MODELS.length; i++) {
+        const modelName = MODELS[i];
+        const isLast = i === MODELS.length - 1;
+
+        // Calcula tempo restante
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = maxTotalTime - elapsedTime;
+
+        if (remainingTime < 1500) throw new Error('Tempo esgotado para IA');
+
+        // Define orçamento de tempo para esta tentativa
+        // Se for o primeiro modelo, tenta por 5.5s. Se for o último, usa o resto do tempo.
+        const attemptTimeout = isLast ? remainingTime : Math.min(5500, remainingTime);
+
+        try {
+            console.log(`Tentando modelo: ${modelName} (Timeout: ${attemptTimeout}ms)`);
+            const model = genAI.getGenerativeModel({ model: modelName });
+
+            const generatePromise = model.generateContent(prompt);
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('TIMEOUT_LOCAL')), attemptTimeout)
+            );
+
+            const result = await Promise.race([generatePromise, timeoutPromise]);
+            const text = result.response.text();
+            const json = parseJson(text);
+
+            if (json) return json; // Sucesso!
+            console.log(`Modelo ${modelName} retornou JSON inválido.`);
+
+        } catch (e) {
+            console.error(`Falha no modelo ${modelName}: ${e.message}`);
+            // Se for o último e falhou, lança erro final
+            if (isLast) throw new Error('Todos os modelos de IA falharam ou deram timeout.');
+            // Se não for o último, o loop continua para o próximo modelo (fallback)
+        }
+    }
+}
 
 exports.handler = async (event) => {
     try {
@@ -273,20 +316,15 @@ exports.handler = async (event) => {
             system = SYSTEM_CONSUMO;
         }
 
-        // Chamada IA
-        const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout IA')), 9500));
-        const generatePromise = model.generateContent(system + '\n\nDADOS:\n' + up);
+        // --- CHAMADA IA COM FALLBACK (NOVO SISTEMA) ---
+        const fullPrompt = system + '\n\nDADOS:\n' + up;
 
-        const result = await Promise.race([generatePromise, timeoutPromise]);
-        const text = result.response.text();
+        // AQUI ESTÁ A CORREÇÃO DO 'let' E O USO DO FALLBACK
+        let output = await callAIWithFallback(fullPrompt);
 
-        // 🔥 CORREÇÃO AQUI: Trocar 'const' por 'let'
-        let output = parseJson(text);
+        if (!output) throw new Error('Falha crítica na geração IA');
 
-        if (!output) throw new Error('JSON Inválido');
-
-        // Agora sanitiza (remove <b>, <strong>, etc)
+        // Sanitização (Remove tags HTML <b>, etc)
         output = sanitizeOutput(output);
 
         // --- INJEÇÃO DE ASSINATURA (continua igual) ---
@@ -324,7 +362,10 @@ exports.handler = async (event) => {
 
     } catch (e) {
         console.error('Erro Função:', e.message);
-        const msg = e.message === 'Timeout IA' ? 'Servidor ocupado. Tente novamente.' : 'Erro ao gerar documento.';
+        // Se for erro de timeout ou IA, pede pro usuário tentar de novo (é transiente)
+        const msg = (e.message.includes('TIMEOUT') || e.message.includes('IA'))
+            ? 'O sistema está sobrecarregado. Por favor, tente novamente em 10 segundos.'
+            : 'Erro ao gerar documento.';
         return { statusCode: 503, body: msg };
     }
 };

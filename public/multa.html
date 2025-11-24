@@ -209,7 +209,12 @@
         // PRÉVIA
         btnPreview.addEventListener('click', async function () {
             if (!checkCooldown()) return;
-            btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+            // ✅ DESABILITA O BOTÃO IMEDIATAMENTE
+            btnPreview.disabled = true;
+            btnPreview.style.opacity = '0.5';
+            btnPreview.style.cursor = 'not-allowed';
+            btnPreview.textContent = '⏳ Gerando... (aguarde 30s)';
+
             try {
                 var p = getPayload();
                 if (!validateAll(p)) { alert('Preencha os campos obrigatórios.'); throw new Error('Inválido'); }
@@ -228,7 +233,17 @@
                 localStorage.setItem('pendingPayload', JSON.stringify(p));
                 localStorage.setItem('last_preview_ts', Date.now());
                 btnPagar.disabled = false;
-            } catch (e) { if (e.message !== 'Inválido') alert('Erro: ' + e.message); } finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
+            } catch (e) {
+                if (e.message !== 'Inválido') alert('Erro: ' + e.message);
+            } finally {
+                // ✅ SÓ REABILITA APÓS 30 SEGUNDOS
+                setTimeout(() => {
+                    btnPreview.disabled = false;
+                    btnPreview.style.opacity = '1';
+                    btnPreview.style.cursor = 'pointer';
+                    btnPreview.textContent = 'Gerar prévia';
+                }, 30000); // 30 segundos
+            }
         });
 
         // PAGAR
