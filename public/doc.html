@@ -54,6 +54,17 @@
                         <label class="label">CPF</label><input class="input" id="cpf" placeholder="000.000.000-00"
                             inputmode="numeric" maxlength="14" />
                         <div id="cpfError" class="small" style="display:none;color:#fca5a5">CPF inválido.</div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px; margin-top: 16px;">
+                            <div>
+                                <label class="label">E-mail (opcional)</label>
+                                <input class="input" id="email" placeholder="seu@email.com" />
+                            </div>
+                            <div>
+                                <label class="label">Telefone (opcional)</label>
+                                <input class="input" id="telefone" placeholder="(00) 00000-0000" />
+                            </div>
+                        </div>
                         <label class="label">Cidade/UF</label><input class="input" id="cidade"
                             placeholder="Ex.: São Paulo/SP" />
                         <label class="label">Unidade/Contrato (opcional)</label><input class="input" id="contrato"
@@ -114,18 +125,55 @@
         var nomeInput = document.getElementById('nome'), cpfInput = document.getElementById('cpf'), cidadeInput = document.getElementById('cidade'), contratoInput = document.getElementById('contrato'), motivoInput = document.getElementById('motivo');
         cpfInput.addEventListener('input', function () { this.value = maskCPF(this.value); });
 
-        function getPayload() { cpfInput.value = maskCPF(cpfInput.value); return { slug: slug, tipo: cfg ? cfg.tipo : '', entidade: cfg ? cfg.brand : '', nome: nomeInput.value.trim(), cpf: cpfInput.value.trim(), cidade_uf: cidadeInput.value.trim(), contrato: contratoInput.value.trim(), motivo: motivoInput.value.trim(), utm: window.LMUTM ? LMUTM.get() : {} }; }
+        // PAYLOAD ATUALIZADO COM NOVOS CAMPOS
+        function getPayload() {
+            cpfInput.value = maskCPF(cpfInput.value);
+            return {
+                slug: slug,
+                tipo: cfg ? cfg.tipo : '',
+                entidade: cfg ? cfg.brand : '',
+                nome: nomeInput.value.trim(),
+                cpf: cpfInput.value.trim(),
+                email: document.getElementById('email').value.trim(), // NOVO
+                telefone: document.getElementById('telefone').value.trim(), // NOVO
+                cidade_uf: cidadeInput.value.trim(),
+                contrato: contratoInput.value.trim(),
+                motivo: motivoInput.value.trim(),
+                utm: window.LMUTM ? LMUTM.get() : {}
+            };
+        }
 
         var btnPreview = document.getElementById('btnPreview'); var btnPagar = document.getElementById('btnPagar'); var previewWrap = document.getElementById('previewWrap'); var previewBox = document.getElementById('previewBox');
 
         function checkCooldown() { var last = localStorage.getItem('last_preview_ts'); if (last && (Date.now() - parseInt(last)) < 30000) { alert('Aguarde 30s.'); return false; } return true; }
+
+        // NOVA FUNÇÃO DE CAPTURA DE LEAD
+        function captureLead(p) {
+            if (!p.email && !p.telefone) return;
+            fetch('/.netlify/functions/capture-lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: p.email,
+                    telefone: p.telefone,
+                    nome: p.nome,
+                    slug: slug || 'generico',
+                    payload: p
+                })
+            }).catch(err => console.log('Lead capture bg error', err));
+        }
 
         // PRÉVIA
         btnPreview.addEventListener('click', async function () {
             if (!checkCooldown()) return;
             btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
             try {
-                var p = getPayload(); if (!p.nome || !p.cidade_uf || !isValidCPF(p.cpf)) { alert('Preencha corretamente.'); throw new Error('Inválido'); }
+                var p = getPayload();
+                if (!p.nome || !p.cidade_uf || !isValidCPF(p.cpf)) { alert('Preencha corretamente.'); throw new Error('Inválido'); }
+
+                // CHAMADA DA CAPTURA DE LEAD (AGORA SIM!)
+                captureLead(p);
+
                 var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: p, preview: true }) });
                 if (!r.ok) throw new Error('Falha');
                 var d = await r.json(); var out = d.output || d; var pr = out.corpo_paragrafos || []; var parcial = pr.slice(0, 2).join('\n\n') + '\n\n[...]';
