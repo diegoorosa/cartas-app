@@ -81,10 +81,11 @@ REGRAS:
 2. Use a tese de defesa fornecida pelo usuário e expanda com fundamentos do CTB (Código de Trânsito Brasileiro) e princípios constitucionais (Ampla Defesa/Contraditório).
 3. Se o usuário alegar erro de sinalização, cite o Art. 90 do CTB.
 4. NÃO use títulos em negrito (ex: <b>DOS FATOS</b>). Use apenas texto corrido ou CAIXA ALTA se necessário.
+5. PROIBIDO INVENTAR DADOS: Não coloque "CEP XXXXX", "Chassi XXXX", "Renavam XXXX" ou espaços em branco (____). Use APENAS os dados fornecidos no input (Nome, CPF, CNH, Endereço, Placa, Modelo, Auto, Data, Órgão). Se faltar o CEP ou Bairro, coloque apenas a Cidade/UF fornecida.
 
 ESTRUTURA:
 - Cabeçalho: "Ao Ilmo. Sr. Diretor do [Órgão Autuador] ou Presidente da JARI".
-- P1 (Qualificação): Dados do condutor e do veículo.
+- P1 (Qualificação): "Eu, [Nome], inscrito no CPF sob nº [CPF], portador da CNH nº [CNH], residente e domiciliado em [Endereço], [Cidade/UF], proprietário/condutor do veículo [Modelo], Placa [Placa], venho respeitosamente à presença de Vossa Senhoria..."
 - P2 (Os Fatos): "O requerente foi notificado da infração [Auto nº], supostamente cometida em [Data]...".
 - P3 (O Direito/Defesa): Desenvolva o argumento jurídico baseado no relato: "[RELATO DO USUÁRIO]".
 - P4 (O Pedido): Requer o cancelamento do AIT e a anulação da pontuação.
