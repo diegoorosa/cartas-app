@@ -163,27 +163,73 @@
             }).catch(err => console.log('Lead capture bg error', err));
         }
 
-        // PRÉVIA
+        // PRÉVIA COM RETENTATIVA AUTOMÁTICA
         btnPreview.addEventListener('click', async function () {
             if (!checkCooldown()) return;
-            btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
-            try {
-                var p = getPayload();
-                if (!p.nome || !p.cidade_uf || !isValidCPF(p.cpf)) { alert('Preencha corretamente.'); throw new Error('Inválido'); }
 
-                // CHAMADA DA CAPTURA DE LEAD (AGORA SIM!)
-                captureLead(p);
+            btnPreview.disabled = true;
+            btnPreview.textContent = 'Gerando...';
 
-                var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: p, preview: true }) });
-                if (!r.ok) throw new Error('Falha');
-                var d = await r.json(); var out = d.output || d; var pr = out.corpo_paragrafos || []; var parcial = pr.slice(0, 2).join('\n\n') + '\n\n[...]';
-                previewBox.textContent = (out.saudacao || '') + '\n\n' + parcial;
-                previewWrap.style.display = 'block';
-                if (typeof gtag === 'function') { gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': slug || 'generico', 'value': 2.00, 'currency': 'BRL' }); }
-                localStorage.setItem('pendingPayload', JSON.stringify(p));
-                localStorage.setItem('last_preview_ts', Date.now());
-                btnPagar.disabled = false;
-            } catch (e) { if (e.message !== 'Inválido') alert('Erro: ' + e.message); } finally { btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia'; }
+            async function tentarGerar(tentativa) {
+                var vaiTentarDeNovo = false;
+                try {
+                    var p = getPayload();
+                    if (!p.nome || !p.cidade_uf || !isValidCPF(p.cpf)) {
+                        alert('Preencha corretamente.');
+                        btnPreview.disabled = false;
+                        btnPreview.textContent = 'Gerar prévia';
+                        return;
+                    }
+
+                    // Captura lead apenas na primeira tentativa
+                    if (tentativa === 1) captureLead(p);
+
+                    var r = await fetch('/.netlify/functions/generate-doc', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ payload: p, preview: true })
+                    });
+
+                    // --- LÓGICA DE RETRY (ERRO 503) ---
+                    if (r.status === 503 && tentativa === 1) {
+                        console.log('Servidor ocupado (503), tentando novamente...');
+                        btnPreview.textContent = '↻ Reconectando...';
+                        vaiTentarDeNovo = true;
+                        await new Promise(res => setTimeout(res, 2000));
+                        return tentarGerar(2);
+                    }
+
+                    if (!r.ok) throw new Error('Falha');
+
+                    var d = await r.json();
+                    var out = d.output || d;
+                    var pr = out.corpo_paragrafos || [];
+                    var parcial = pr.slice(0, 2).join('\n\n') + '\n\n[...]';
+
+                    previewBox.textContent = (out.saudacao || '') + '\n\n' + parcial;
+                    previewWrap.style.display = 'block';
+
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': slug || 'generico', 'value': 2.00, 'currency': 'BRL' });
+                    }
+
+                    localStorage.setItem('pendingPayload', JSON.stringify(p));
+                    localStorage.setItem('last_preview_ts', Date.now());
+                    btnPagar.disabled = false;
+
+                } catch (e) {
+                    if (!vaiTentarDeNovo) {
+                        if (e.message !== 'Inválido') alert('Erro: ' + e.message);
+                    }
+                } finally {
+                    if (!vaiTentarDeNovo) {
+                        btnPreview.disabled = false;
+                        btnPreview.textContent = 'Gerar prévia';
+                    }
+                }
+            }
+
+            tentarGerar(1);
         });
 
         // PAGAR

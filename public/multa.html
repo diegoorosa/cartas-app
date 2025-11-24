@@ -206,44 +206,94 @@
             }).catch(err => console.log('Lead capture bg error', err));
         }
 
-        // PRÉVIA
+        // PRÉVIA COM RETENTATIVA AUTOMÁTICA E VISUAL MANTIDO
         btnPreview.addEventListener('click', async function () {
             if (!checkCooldown()) return;
-            // ✅ DESABILITA O BOTÃO IMEDIATAMENTE
+
+            // 1. TRAVA VISUAL IMEDIATA (SEU CÓDIGO)
             btnPreview.disabled = true;
             btnPreview.style.opacity = '0.5';
             btnPreview.style.cursor = 'not-allowed';
             btnPreview.textContent = '⏳ Gerando... (aguarde 30s)';
 
-            try {
-                var p = getPayload();
-                if (!validateAll(p)) { alert('Preencha os campos obrigatórios.'); throw new Error('Inválido'); }
-                captureLead(p);
-
-                var r = await fetch('/.netlify/functions/generate-doc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: p, preview: true }) });
-                if (!r.ok) throw new Error('Falha ao gerar');
-
-                var d = await r.json(); var out = d.output || d; var pr = out.corpo_paragrafos || []; var parcial = pr.slice(0, 2).join('\n\n') + '\n\n[...]';
-                previewBox.textContent = (out.saudacao || '') + '\n\n' + parcial;
-                previewWrap.style.display = 'block';
-
-                // PIXEL MULTA
-                if (typeof gtag === 'function') { gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': 'multa', 'value': 2.00, 'currency': 'BRL' }); }
-
-                localStorage.setItem('pendingPayload', JSON.stringify(p));
-                localStorage.setItem('last_preview_ts', Date.now());
-                btnPagar.disabled = false;
-            } catch (e) {
-                if (e.message !== 'Inválido') alert('Erro: ' + e.message);
-            } finally {
-                // ✅ SÓ REABILITA APÓS 30 SEGUNDOS
-                setTimeout(() => {
-                    btnPreview.disabled = false;
-                    btnPreview.style.opacity = '1';
-                    btnPreview.style.cursor = 'pointer';
-                    btnPreview.textContent = 'Gerar prévia';
-                }, 30000); // 30 segundos
+            // Validação antes de começar a recursão
+            var p = getPayload();
+            if (!validateAll(p)) {
+                alert('Preencha os campos obrigatórios.');
+                // Reseta visual imediatamente se inválido
+                btnPreview.disabled = false;
+                btnPreview.style.opacity = '1';
+                btnPreview.style.cursor = 'pointer';
+                btnPreview.textContent = 'Gerar prévia';
+                return;
             }
+
+            // FUNÇÃO INTERNA PARA TENTAR ATÉ 2 VEZES
+            async function tentarGerar(tentativa) {
+                // Variável para controlar se vai haver próxima tentativa
+                var vaiTentarDeNovo = false;
+
+                try {
+                    // Captura Lead apenas na primeira tentativa
+                    if (tentativa === 1) captureLead(p);
+
+                    var r = await fetch('/.netlify/functions/generate-doc', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ payload: p, preview: true })
+                    });
+
+                    // --- LÓGICA DE RETRY (ERRO 503) ---
+                    if (r.status === 503 && tentativa === 1) {
+                        console.log('Servidor ocupado (503), tentando novamente...');
+                        btnPreview.textContent = '↻ Reconectando...'; // Feedback para o usuário não fechar
+                        vaiTentarDeNovo = true;
+                        await new Promise(res => setTimeout(res, 2000)); // Espera 2s
+                        return tentarGerar(2); // TENTA A SEGUNDA VEZ
+                    }
+
+                    if (!r.ok) throw new Error('Falha ao gerar');
+
+                    // --- SUCESSO ---
+                    var d = await r.json();
+                    var out = d.output || d;
+                    var pr = out.corpo_paragrafos || [];
+                    var parcial = pr.slice(0, 2).join('\n\n') + '\n\n[...]';
+
+                    previewBox.textContent = (out.saudacao || '') + '\n\n' + parcial;
+                    previewWrap.style.display = 'block';
+
+                    // PIXEL MULTA (Mantido seu código)
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': 'multa', 'value': 2.00, 'currency': 'BRL' });
+                    }
+
+                    localStorage.setItem('pendingPayload', JSON.stringify(p));
+                    localStorage.setItem('last_preview_ts', Date.now());
+                    btnPagar.disabled = false;
+
+                } catch (e) {
+                    // Só mostra alerta de erro se falhou na ÚLTIMA tentativa
+                    if (!vaiTentarDeNovo) {
+                        if (e.message !== 'Inválido') alert('Erro: ' + e.message);
+                    }
+                } finally {
+                    // --- COOLDOWN DE 30S (SEU CÓDIGO) ---
+                    // Só ativa o timer se NÃO for tentar de novo.
+                    // Se for tentar de novo, o 'finally' da próxima execução cuidará disso.
+                    if (!vaiTentarDeNovo) {
+                        setTimeout(() => {
+                            btnPreview.disabled = false;
+                            btnPreview.style.opacity = '1';
+                            btnPreview.style.cursor = 'pointer';
+                            btnPreview.textContent = 'Gerar prévia';
+                        }, 30000); // 30 segundos
+                    }
+                }
+            }
+
+            // Dispara a primeira tentativa
+            tentarGerar(1);
         });
 
         // PAGAR

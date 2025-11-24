@@ -395,51 +395,87 @@
             return true;
         }
 
+        // PRÉVIA COM RETENTATIVA AUTOMÁTICA
         btnPreview.addEventListener('click', function () {
-            (async function () {
-                if (!checkCooldown()) return;
-                btnPreview.disabled = true; btnPreview.textContent = 'Gerando...';
+            if (!checkCooldown()) return;
 
+            btnPreview.disabled = true;
+            btnPreview.textContent = 'Gerando...';
+
+            async function tentarGerar(tentativa) {
+                var vaiTentarDeNovo = false;
                 try {
                     var payload = getPayload();
                     if (!validateAll(payload)) {
                         alert('Verifique os campos obrigatórios (destacados em vermelho).');
-                        throw new Error('Campos inválidos');
+                        btnPreview.disabled = false;
+                        btnPreview.textContent = 'Gerar prévia';
+                        return;
                     }
-                    saveForm();
 
-                    if (payload.email || payload.telefone) { captureLead(payload); }
+                    saveForm(); // Mantido
 
-                    // Chamada SEM Captcha
+                    // Captura lead na primeira tentativa
+                    if (tentativa === 1 && (payload.email || payload.telefone)) {
+                        captureLead(payload);
+                    }
+
                     var r = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ payload: payload, preview: true })
                     });
 
-                    if (!r.ok) {
-                        var errText = 'Falha ao gerar'; try { var errData = await r.json(); if (errData.body) errText = errData.body; } catch (e) { } throw new Error(errText);
+                    // --- LÓGICA DE RETRY (ERRO 503) ---
+                    if (r.status === 503 && tentativa === 1) {
+                        console.log('Servidor ocupado (503), tentando novamente...');
+                        btnPreview.textContent = '↻ Reconectando...';
+                        vaiTentarDeNovo = true;
+                        await new Promise(res => setTimeout(res, 2000));
+                        return tentarGerar(2);
                     }
 
-                    var data = await r.json(); var out = data.output || data;
-                    var pars = out.corpo_paragrafos || []; var keep = Math.max(1, Math.min(2, pars.length)); var parcialText = pars.slice(0, keep).join('\n\n') + '\n\n[...]'; var saud = out.saudacao || ''; var checklist = out.check_list_anexos || []; var chkShow = checklist.slice(0, 2); if (checklist.length > 2) chkShow.push('...');
+                    if (!r.ok) {
+                        var errText = 'Falha ao gerar';
+                        try { var errData = await r.json(); if (errData.body) errText = errData.body; } catch (e) { }
+                        throw new Error(errText);
+                    }
+
+                    var data = await r.json();
+                    var out = data.output || data;
+                    var pars = out.corpo_paragrafos || [];
+                    var keep = Math.max(1, Math.min(2, pars.length));
+                    var parcialText = pars.slice(0, keep).join('\n\n') + '\n\n[...]';
+                    var saud = out.saudacao || '';
+                    var checklist = out.check_list_anexos || [];
+                    var chkShow = checklist.slice(0, 2);
+                    if (checklist.length > 2) chkShow.push('...');
                     var finalPreview = (saud ? saud + '\n\n' : '') + parcialText + '\n\nChecklist de anexos (parcial): ' + chkShow.join('; ');
 
                     previewBox.textContent = finalPreview;
                     previewWrap.style.display = 'block';
                     paySection.style.display = 'block';
-                    btnPreview.parentElement.style.display = 'none'; // Esconde botão prévia
 
-                    if (typeof gtag === 'function') { gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' }); }
+                    // ESCONDE O BOTÃO DE PRÉVIA (Comportamento Original)
+                    btnPreview.parentElement.style.display = 'none';
+
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' });
+                    }
 
                     localStorage.setItem('pendingPayload', JSON.stringify(payload));
                     localStorage.setItem('last_preview_ts', Date.now());
                     btnPagar.disabled = false;
 
                 } catch (e) {
-                    if (e.message !== 'Campos inválidos') { alert('Erro ao gerar: ' + e.message); }
-                    btnPreview.disabled = false; btnPreview.textContent = 'Gerar prévia';
+                    if (!vaiTentarDeNovo) {
+                        if (e.message !== 'Campos inválidos') { alert('Erro ao gerar: ' + e.message); }
+                        btnPreview.disabled = false;
+                        btnPreview.textContent = 'Gerar prévia';
+                    }
                 }
-            })();
+            }
+
+            tentarGerar(1);
         });
 
         btnPagar.addEventListener('click', async function () {
