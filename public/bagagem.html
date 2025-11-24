@@ -93,9 +93,19 @@
             <label class="label">Cidade/UF (onde você mora)</label><input class="input" id="cidade_uf"
               placeholder="Ex.: Blumenau/SC" />
 
-            <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap">
-              <button class="btn btn-secondary" id="btnPreview">Gerar prévia</button>
-              <button class="btn btn-primary" id="btnPagar" disabled>Gerar documento completo (R$ 9,90)</button>
+            <div style="margin-top:20px;">
+              <div id="previewBtnArea">
+                <button class="btn btn-secondary" id="btnPreview" style="width:100%">Gerar prévia</button>
+              </div>
+              <div id="paySection"
+                style="display:none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+                <div class="price-badge" style="margin-bottom: 20px;">
+                  Oferta hoje: <span class="price-old">de R$ 29,90</span> <span class="price-new">por R$ 9,90</span>
+                  <span class="timer-text">⚡ O preço pode voltar ao normal em breve</span>
+                </div>
+                <button class="btn btn-primary" id="btnPagar" style="width: 100%;">Gerar documento completo (R$
+                  9,90)</button>
+              </div>
             </div>
 
             <div class="guarantee-badge"><span class="guarantee-icon">🔒</span>
@@ -172,6 +182,7 @@
     }
 
     var btnPreview = document.getElementById('btnPreview'); var btnPagar = document.getElementById('btnPagar'); var previewWrap = document.getElementById('previewWrap'); var previewBox = document.getElementById('previewBox');
+    var paySection = document.getElementById('paySection');
 
     function checkCooldown() { var last = localStorage.getItem('last_preview_ts'); if (last && (Date.now() - parseInt(last)) < 30000) { alert('Aguarde 30s.'); return false; } return true; }
 
@@ -179,17 +190,14 @@
     btnPreview.addEventListener('click', async function () {
       if (!checkCooldown()) return;
 
-      // 1. TRAVA VISUAL
       btnPreview.disabled = true;
       btnPreview.style.opacity = '0.5';
       btnPreview.style.cursor = 'not-allowed';
       btnPreview.textContent = '⏳ Gerando... (aguarde 30s)';
 
-      // Validação antes
       var p = getPayload();
       if (!validateAll(p)) {
         alert('Preencha todos os campos.');
-        // Reseta visual imediatamente se inválido
         btnPreview.disabled = false;
         btnPreview.style.opacity = '1';
         btnPreview.style.cursor = 'pointer';
@@ -201,14 +209,10 @@
         var vaiTentarDeNovo = false;
         try {
           var r = await fetch('/.netlify/functions/generate-doc', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ payload: p, preview: true })
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ payload: p, preview: true })
           });
 
-          // RETRY LOGIC
           if (r.status === 503 && tentativa === 1) {
-            console.log('Servidor ocupado (503), tentando novamente...');
             btnPreview.textContent = '↻ Reconectando...';
             vaiTentarDeNovo = true;
             await new Promise(res => setTimeout(res, 2000));
@@ -225,6 +229,10 @@
           previewBox.textContent = (out.saudacao || '') + '\n\n' + parcial;
           previewWrap.style.display = 'block';
 
+          // PROMOÇÃO
+          paySection.style.display = 'block';
+          document.getElementById('previewBtnArea').style.display = 'none';
+
           if (typeof gtag === 'function') {
             gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': 'bagagem', 'value': 2.00, 'currency': 'BRL' });
           }
@@ -238,8 +246,7 @@
             if (e.message !== 'Inválido') alert('Erro: ' + e.message);
           }
         } finally {
-          // Só libera após 30s se não for tentar de novo
-          if (!vaiTentarDeNovo) {
+          if (!vaiTentarDeNovo && paySection.style.display === 'none') {
             setTimeout(() => {
               btnPreview.disabled = false;
               btnPreview.style.opacity = '1';
@@ -249,7 +256,6 @@
           }
         }
       }
-
       tentarGerar(1);
     });
 
