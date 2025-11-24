@@ -175,32 +175,38 @@
 
     function checkCooldown() { var last = localStorage.getItem('last_preview_ts'); if (last && (Date.now() - parseInt(last)) < 30000) { alert('Aguarde 30s.'); return false; } return true; }
 
-    // PRÉVIA COM RETENTATIVA AUTOMÁTICA
+    // PRÉVIA (BAGAGEM)
     btnPreview.addEventListener('click', async function () {
       if (!checkCooldown()) return;
 
+      // 1. TRAVA VISUAL
       btnPreview.disabled = true;
-      btnPreview.textContent = 'Gerando...';
+      btnPreview.style.opacity = '0.5';
+      btnPreview.style.cursor = 'not-allowed';
+      btnPreview.textContent = '⏳ Gerando... (aguarde 30s)';
+
+      // Validação antes
+      var p = getPayload();
+      if (!validateAll(p)) {
+        alert('Preencha todos os campos.');
+        // Reseta visual imediatamente se inválido
+        btnPreview.disabled = false;
+        btnPreview.style.opacity = '1';
+        btnPreview.style.cursor = 'pointer';
+        btnPreview.textContent = 'Gerar prévia';
+        return;
+      }
 
       async function tentarGerar(tentativa) {
         var vaiTentarDeNovo = false;
         try {
-          var p = getPayload();
-          if (!validateAll(p)) {
-            alert('Preencha todos os campos.');
-            // Destrava se inválido
-            btnPreview.disabled = false;
-            btnPreview.textContent = 'Gerar prévia';
-            return; // Sai sem lançar erro
-          }
-
           var r = await fetch('/.netlify/functions/generate-doc', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ payload: p, preview: true })
           });
 
-          // --- LÓGICA DE RETRY (ERRO 503) ---
+          // RETRY LOGIC
           if (r.status === 503 && tentativa === 1) {
             console.log('Servidor ocupado (503), tentando novamente...');
             btnPreview.textContent = '↻ Reconectando...';
@@ -232,9 +238,14 @@
             if (e.message !== 'Inválido') alert('Erro: ' + e.message);
           }
         } finally {
+          // Só libera após 30s se não for tentar de novo
           if (!vaiTentarDeNovo) {
-            btnPreview.disabled = false;
-            btnPreview.textContent = 'Gerar prévia';
+            setTimeout(() => {
+              btnPreview.disabled = false;
+              btnPreview.style.opacity = '1';
+              btnPreview.style.cursor = 'pointer';
+              btnPreview.textContent = 'Gerar prévia';
+            }, 30000);
           }
         }
       }

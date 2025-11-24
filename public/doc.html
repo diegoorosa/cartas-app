@@ -163,25 +163,32 @@
             }).catch(err => console.log('Lead capture bg error', err));
         }
 
-        // PRÉVIA COM RETENTATIVA AUTOMÁTICA
+        // PRÉVIA (DOC GERAL)
         btnPreview.addEventListener('click', async function () {
             if (!checkCooldown()) return;
 
+            // 1. TRAVA VISUAL
             btnPreview.disabled = true;
-            btnPreview.textContent = 'Gerando...';
+            btnPreview.style.opacity = '0.5';
+            btnPreview.style.cursor = 'not-allowed';
+            btnPreview.textContent = '⏳ Gerando... (aguarde 30s)';
+
+            // Validação antes
+            var p = getPayload();
+            if (!p.nome || !p.cidade_uf || !isValidCPF(p.cpf)) {
+                alert('Preencha corretamente.');
+                // Reseta visual imediatamente
+                btnPreview.disabled = false;
+                btnPreview.style.opacity = '1';
+                btnPreview.style.cursor = 'pointer';
+                btnPreview.textContent = 'Gerar prévia';
+                return;
+            }
 
             async function tentarGerar(tentativa) {
                 var vaiTentarDeNovo = false;
                 try {
-                    var p = getPayload();
-                    if (!p.nome || !p.cidade_uf || !isValidCPF(p.cpf)) {
-                        alert('Preencha corretamente.');
-                        btnPreview.disabled = false;
-                        btnPreview.textContent = 'Gerar prévia';
-                        return;
-                    }
-
-                    // Captura lead apenas na primeira tentativa
+                    // Captura lead na primeira tentativa
                     if (tentativa === 1) captureLead(p);
 
                     var r = await fetch('/.netlify/functions/generate-doc', {
@@ -190,7 +197,7 @@
                         body: JSON.stringify({ payload: p, preview: true })
                     });
 
-                    // --- LÓGICA DE RETRY (ERRO 503) ---
+                    // RETRY LOGIC
                     if (r.status === 503 && tentativa === 1) {
                         console.log('Servidor ocupado (503), tentando novamente...');
                         btnPreview.textContent = '↻ Reconectando...';
@@ -223,8 +230,12 @@
                     }
                 } finally {
                     if (!vaiTentarDeNovo) {
-                        btnPreview.disabled = false;
-                        btnPreview.textContent = 'Gerar prévia';
+                        setTimeout(() => {
+                            btnPreview.disabled = false;
+                            btnPreview.style.opacity = '1';
+                            btnPreview.style.cursor = 'pointer';
+                            btnPreview.textContent = 'Gerar prévia';
+                        }, 30000);
                     }
                 }
             }

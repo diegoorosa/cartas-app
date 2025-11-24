@@ -395,20 +395,27 @@
             return true;
         }
 
-        // PRÉVIA COM RETENTATIVA AUTOMÁTICA
+        // PRÉVIA (VIAGEM)
         btnPreview.addEventListener('click', function () {
             if (!checkCooldown()) return;
 
+            // 1. TRAVA VISUAL
             btnPreview.disabled = true;
-            btnPreview.textContent = 'Gerando...';
+            btnPreview.style.opacity = '0.5';
+            btnPreview.style.cursor = 'not-allowed';
+            btnPreview.textContent = '⏳ Gerando... (aguarde 30s)';
 
             async function tentarGerar(tentativa) {
                 var vaiTentarDeNovo = false;
                 try {
                     var payload = getPayload();
+                    // Validação antes
                     if (!validateAll(payload)) {
                         alert('Verifique os campos obrigatórios (destacados em vermelho).');
+                        // Reseta visual imediatamente
                         btnPreview.disabled = false;
+                        btnPreview.style.opacity = '1';
+                        btnPreview.style.cursor = 'pointer';
                         btnPreview.textContent = 'Gerar prévia';
                         return;
                     }
@@ -425,7 +432,7 @@
                         body: JSON.stringify({ payload: payload, preview: true })
                     });
 
-                    // --- LÓGICA DE RETRY (ERRO 503) ---
+                    // RETRY LOGIC
                     if (r.status === 503 && tentativa === 1) {
                         console.log('Servidor ocupado (503), tentando novamente...');
                         btnPreview.textContent = '↻ Reconectando...';
@@ -455,7 +462,7 @@
                     previewWrap.style.display = 'block';
                     paySection.style.display = 'block';
 
-                    // ESCONDE O BOTÃO DE PRÉVIA (Comportamento Original)
+                    // ESCONDE O BOTÃO DE PRÉVIA (Comportamento Original de Viagem)
                     btnPreview.parentElement.style.display = 'none';
 
                     if (typeof gtag === 'function') {
@@ -469,7 +476,10 @@
                 } catch (e) {
                     if (!vaiTentarDeNovo) {
                         if (e.message !== 'Campos inválidos') { alert('Erro ao gerar: ' + e.message); }
+                        // Em caso de erro, força reset visual para tentar de novo
                         btnPreview.disabled = false;
+                        btnPreview.style.opacity = '1';
+                        btnPreview.style.cursor = 'pointer';
                         btnPreview.textContent = 'Gerar prévia';
                     }
                 }
