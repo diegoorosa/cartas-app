@@ -3,30 +3,42 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Dúvidas Frequentes - Autorização de Viagem | CartasApp</title>
+  <title>Central de Ajuda - Autorização de Viagem | CartasApp</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="/theme.js"></script>
   <link rel="stylesheet" href="/style.css" />
   <style>
+    .faq-category {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-top: 32px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+    }
+
     .faq-item {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
       border-radius: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .faq-item:hover {
+      border-color: var(--accent-primary);
     }
 
     .faq-question {
-      padding: 20px;
+      padding: 18px 20px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .faq-question:hover {
-      background: var(--card-hover);
+      font-size: 15px;
     }
 
     .faq-answer {
@@ -35,7 +47,8 @@
       display: none;
       line-height: 1.6;
       border-top: 1px solid var(--border);
-      padding-top: 20px;
+      padding-top: 16px;
+      font-size: 14px;
     }
 
     .faq-item.active .faq-answer {
@@ -45,6 +58,19 @@
     .icon-plus {
       font-size: 20px;
       color: var(--accent-primary);
+      font-weight: bold;
+    }
+
+    /* Destaque para avisos */
+    .alert-box {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -62,9 +88,9 @@
   <section class="hero" style="padding: 60px 0 40px;">
     <div class="container">
       <div class="hero-content">
-        <div class="hero-badge">❓ Central de Ajuda</div>
-        <h1>Dúvidas sobre a Autorização</h1>
-        <p class="hero-subtitle">Veja como preencher corretamente e evitar problemas no embarque.</p>
+        <div class="hero-badge">❓ Central de Dúvidas</div>
+        <h1>Perguntas Frequentes</h1>
+        <p class="hero-subtitle">Tudo o que você precisa saber para embarcar sem problemas.</p>
       </div>
     </div>
   </section>
@@ -73,90 +99,147 @@
     <div class="container">
       <div style="max-width: 800px; margin: 0 auto;">
 
-        <div class="card" style="margin-bottom: 40px; border-color: var(--accent-primary);">
-          <h2 class="section-title" style="font-size: 20px; margin-bottom: 16px;">📝 Como preencher o site?</h2>
-          <p>Muitas pessoas confundem quem deve assinar. A regra é simples:</p>
-          <ul style="list-style: none; padding: 0; margin-top: 16px;">
-            <li style="margin-bottom: 12px;">🚫 <strong>Quem FICA em casa:</strong> É o "Responsável que Autoriza".
-              (Geralmente o Pai ou a Mãe que não vai viajar).</li>
-            <li style="margin-bottom: 12px;">✈️ <strong>Quem VIAJA junto:</strong> É o "Acompanhante". (A mãe, o avô, a
-              tia).</li>
-            <li>👶 <strong>Menor:</strong> É a criança ou adolescente que vai viajar.</li>
-          </ul>
-          <div style="margin-top: 20px; background: rgba(59, 130, 246, 0.1); padding: 12px; border-radius: 8px;">
-            <strong>Exemplo:</strong> A mãe viaja com o filho e o pai fica. <br>
-            No site, coloque o <strong>Pai</strong> como "Responsável 1" e a <strong>Mãe</strong> como "Acompanhante".
-          </div>
+        <div class="alert-box">
+          <strong>⚠️ Regra de Ouro:</strong> Para viagens nacionais, a autorização só é obrigatória se a criança (até 16
+          anos) viajar <strong>sozinha</strong> ou com <strong>pessoas que não sejam parentes</strong> (tios e avós com
+          documento não precisam, se provarem parentesco). Para internacional, a regra é mais rígida.
         </div>
 
-        <h2 class="section-title">Perguntas Frequentes</h2>
+        <div class="faq-category">✍️ Assinaturas e Responsáveis</div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            Tenho a guarda da criança. Preciso da assinatura do pai?
+            Tenho a guarda da criança. O pai precisa assinar?
             <span class="icon-plus">+</span>
           </div>
           <div class="faq-answer">
             <strong>Sim, precisa.</strong> Ter a guarda (mesmo que unilateral) define com quem a criança mora, mas não
-            tira o direito do pai de autorizar viagens. Para viajar sem a assinatura dele, você precisaria de uma
-            "Supressão Judicial" (ordem do juiz). Se não tiver isso, o mais rápido é fazer a autorização aqui no site e
-            pedir para ele assinar.
+            retira o "Poder Familiar" do pai. Para viajar sem a assinatura dele, você precisaria de uma ordem judicial
+            específica. Se não tiver, a autorização dele é obrigatória.
           </div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            Preciso ir ao cartório (Reconhecer Firma)?
+            O pai mora em outra cidade. Como ele assina?
             <span class="icon-plus">+</span>
           </div>
           <div class="faq-answer">
-            <strong>Sim, é obrigatório.</strong> As companhias aéreas e a Polícia Federal exigem o reconhecimento de
-            firma para garantir que a assinatura é verdadeira. Sem o selo do cartório, o documento pode ser recusado no
-            embarque.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            O pai mora em outra cidade/estado. Como faço?
-            <span class="icon-plus">+</span>
-          </div>
-          <div class="faq-answer">
-            É simples:
+            O processo é simples:
             1. Gere o documento aqui no site.
-            2. Envie o arquivo PDF para ele (por WhatsApp ou E-mail).
-            3. Ele imprime lá, assina, reconhece firma no cartório da cidade dele e te envia o papel original por
-            Correio (Sedex).
-            <br><br>A criança precisa embarcar com a via original em papel.
+            2. Envie o arquivo PDF para ele (WhatsApp/E-mail).
+            3. Ele imprime lá, assina, reconhece firma no cartório da cidade dele.
+            4. Ele te envia o papel original por Correio (Sedex).
+            <br><strong>Atenção:</strong> A criança precisa embarcar com o papel original assinado.
           </div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            Quantas vias (cópias) preciso levar?
+            O pai é falecido. Como faço?
             <span class="icon-plus">+</span>
           </div>
           <div class="faq-answer">
-            Leve sempre <strong>2 vias originais</strong> (ambas assinadas e com firma reconhecida). Uma via fica retida
-            com a Polícia Federal ou Companhia Aérea no embarque, e a outra fica com você para comprovar a autorização
-            durante a viagem e na volta.
+            Nesse caso, <strong>não precisa de autorização</strong>. Basta apresentar a <strong>Certidão de
+              Óbito</strong> original (ou cópia autenticada) no momento do embarque, junto com os documentos da criança,
+            para provar que você é a única responsável viva.
           </div>
         </div>
 
         <div class="faq-item">
           <div class="faq-question" onclick="toggleFaq(this)">
-            A criança tem RG. Preciso levar Certidão de Nascimento?
+            O pai "sumiu" ou se recusa a assinar. O que fazer?
             <span class="icon-plus">+</span>
           </div>
           <div class="faq-answer">
-            Se a criança já tem RG, use o número do RG no preenchimento. Para maiores de 12 anos, o embarque só é
-            permitido com documento com FOTO (RG ou Passaporte). Para menores de 12, a Certidão ainda é aceita, mas o RG
-            é sempre mais seguro.
+            Se o pai não quer assinar ou está em local incerto, nosso formulário <strong>não serve</strong>. Você
+            precisará procurar a Vara da Infância e Juventude da sua cidade para solicitar um "Suprimento Judicial" (uma
+            autorização dada pelo Juiz).
           </div>
         </div>
 
-        <div style="text-align: center; margin-top: 40px;">
-          <a href="/viagem.html" class="btn btn-primary">Voltar e Gerar Autorização</a>
+        <div class="faq-category">🏢 Cartório e Documentos</div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Preciso mesmo reconhecer firma em cartório?
+            <span class="icon-plus">+</span>
+          </div>
+          <div class="faq-answer">
+            <strong>Sim, é indispensável.</strong> Como é um documento particular, a empresa de transporte (avião ou
+            ônibus) exige o selo do cartório para ter certeza que a assinatura não é falsificada. Sem isso, o embarque é
+            negado.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Posso mostrar a autorização na tela do celular?
+            <span class="icon-plus">+</span>
+          </div>
+          <div class="faq-answer">
+            <strong>Não.</strong> A Polícia e as companhias aéreas exigem o documento <strong>físico
+              (impresso)</strong>. Uma via ficará retida com eles no aeroporto/rodoviária para arquivo. Leve sempre o
+            papel.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            A criança tem RG. Preciso da Certidão de Nascimento?
+            <span class="icon-plus">+</span>
+          </div>
+          <div class="faq-answer">
+            Se a criança já tem RG, use o número do RG. Para maiores de 12 anos, o embarque é <strong>obrigatório com
+              documento com FOTO</strong> (RG ou Passaporte). A Certidão de Nascimento não é aceita para adolescentes
+            maiores de 12 anos.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Quantas cópias preciso levar?
+            <span class="icon-plus">+</span>
+          </div>
+          <div class="faq-answer">
+            O ideal são <strong>2 vias originais</strong> (ambas assinadas e com firma reconhecida). Uma via fica com a
+            empresa de transporte na ida, e a outra fica com você para garantir a volta ou para comprovação policial se
+            necessário.
+          </div>
+        </div>
+
+        <div class="faq-category">📝 Como Preencher</div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Quem é o "Responsável" e quem é o "Acompanhante"?
+            <span class="icon-plus">+</span>
+          </div>
+          <div class="faq-answer">
+            Essa é a maior dúvida! A regra é:
+            <br>👉 <strong>Responsável (que autoriza):</strong> É quem NÃO vai viajar (ex: o Pai que fica em casa).
+            <br>👉 <strong>Acompanhante:</strong> É o adulto que VAI viajar com a criança (ex: a Mãe, a Avó, a Tia).
+            <br><br>Se a criança for viajar sozinha (desacompanhada), selecione a opção "Desacompanhado".
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Errei um dado no preenchimento. E agora?
+            <span class="icon-plus">+</span>
+          </div>
+          <div class="faq-answer">
+            Se você ainda não reconheceu firma, basta gerar um novo documento no site com os dados corretos. Se já
+            reconheceu firma, terá que fazer outro e ir ao cartório novamente, pois rasuras não são aceitas.
+          </div>
+        </div>
+
+        <div
+          style="text-align: center; margin-top: 40px; display: flex; flex-direction: column; gap: 16px; align-items: center;">
+          <p class="small">Tirou suas dúvidas? Gere seu documento agora:</p>
+          <a href="/viagem.html" class="btn btn-primary" style="width: 100%; max-width: 300px;">Gerar Autorização de
+            Viagem</a>
+          <a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm">Ainda tenho dúvidas (WhatsApp)</a>
         </div>
 
       </div>
@@ -166,7 +249,8 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
-        <p>CartasApp &copy; 2025. Este site oferece modelos de documentos e não presta consultoria jurídica.</p>
+        <p>CartasApp &copy; 2025. Este site oferece modelos padronizados e não presta consultoria jurídica
+          personalizada.</p>
       </div>
     </div>
   </footer>
