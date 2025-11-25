@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dúvidas - Reembolso de Passagem Aérea | CartasApp</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+        /* MESMO ESTILO */
+        .faq-category {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-top: 32px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .faq-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .faq-question {
+            padding: 18px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .faq-answer {
+            padding: 0 20px 20px;
+            color: var(--text-secondary);
+            display: none;
+            line-height: 1.6;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            font-size: 14px;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .icon-plus {
+            font-size: 20px;
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
+                <div class="nav-actions"><button class="btn-theme" onclick="toggleTheme()">🌙</button></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" style="padding: 60px 0 40px;">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">✈️ Reembolso de Passagem</div>
+                <h1>Dúvidas Frequentes</h1>
+                <p class="hero-subtitle">Cancelei a viagem. Quanto recebo de volta?</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto;">
+
+                <div class="faq-category">💰 Valores e Multas</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        A companhia quer ficar com 100% do valor. Pode isso?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <strong>Não, isso é ilegal.</strong> O Código Civil (Art. 740) determina que a multa
+                        compensatória não pode ultrapassar 5% do valor da passagem se o cancelamento for feito com
+                        antecedência. Reter 100% (ou mesmo 50%) é considerado cláusula abusiva pelo Código de Defesa do
+                        Consumidor.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Comprei na tarifa "Light/Promo". Tenho direito?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        As companhias alegam que tarifas promocionais não têm reembolso. Porém, a lei brasileira (Código
+                        Civil e CDC) está acima das regras internas da companhia. Na justiça, o entendimento majoritário
+                        é que a multa de 100% é abusiva em qualquer tarifa, pois configura enriquecimento ilícito da
+                        empresa que poderá revender o assento.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        As taxas de embarque são devolvidas?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <strong>Sim, sempre.</strong> As taxas de embarque não são da companhia aérea, são do aeroporto.
+                        Se você não embarcou, a taxa deve ser devolvida integralmente (100%), independente do tipo de
+                        passagem.
+                    </div>
+                </div>
+
+                <div class="faq-category">📝 O Processo</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Como a carta me ajuda?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        A carta é uma <strong>Notificação Extrajudicial</strong>. Ela mostra para a companhia aérea que
+                        você conhece seus direitos e cita os artigos da lei que obrigam a devolução. Muitas vezes, ao
+                        receber uma notificação formal bem fundamentada, a empresa prefere fazer um acordo do que
+                        arriscar um processo judicial.
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <a href="/reembolso-cancelamento-passagem.html" class="btn btn-primary">Gerar Pedido de
+                        Reembolso</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>CartasApp &copy; 2025.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFaq(el) { el.parentElement.classList.toggle('active'); var icon = el.querySelector('.icon-plus'); icon.textContent = el.parentElement.classList.contains('active') ? '-' : '+'; }
+    </script>
+</body>
+
+</html>

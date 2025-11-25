@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dúvidas - Bagagem Extraviada ou Danificada | CartasApp</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+        .faq-category {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-top: 32px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .faq-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .faq-question {
+            padding: 18px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .faq-answer {
+            padding: 0 20px 20px;
+            color: var(--text-secondary);
+            display: none;
+            line-height: 1.6;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            font-size: 14px;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .icon-plus {
+            font-size: 20px;
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
+                <div class="nav-actions"><button class="btn-theme" onclick="toggleTheme()">🌙</button></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" style="padding: 60px 0 40px;">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">🧳 Bagagem</div>
+                <h1>Dúvidas Frequentes</h1>
+                <p class="hero-subtitle">Saiba seus direitos em caso de extravio ou danos à mala.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto;">
+
+                <div class="faq-category">🕵️ Mala Extraviada (Perdida)</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Minha mala sumiu. Tenho direito a dinheiro imediato?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <strong>Sim, se você estiver fora do seu domicílio.</strong> A ANAC determina que a companhia
+                        aérea deve pagar despesas emergenciais (itens de higiene e roupas básicas). Guarde todas as
+                        notas fiscais do que você comprar para exigir o reembolso na carta.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Qual o prazo para a mala aparecer?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Para voos nacionais, a empresa tem <strong>7 dias</strong> para encontrar e devolver a mala.
+                        Para voos internacionais, são <strong>21 dias</strong>. Se passar desse prazo, a mala é
+                        considerada extraviada definitivamente e você deve ser indenizado pelo valor da mala e do
+                        conteúdo.
+                    </div>
+                </div>
+
+                <div class="faq-category">💔 Mala Danificada (Quebrada)</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        A mala chegou quebrada. O que eu faço?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Você tem direito ao conserto da mala, substituição por uma nova ou indenização em dinheiro. O
+                        ideal é reclamar ainda no aeroporto (fazer o RIB). Se saiu do aeroporto, você tem <strong>7 dias
+                            corridos</strong> para enviar uma carta formal de reclamação (protesto) exigindo o reparo.
+                    </div>
+                </div>
+
+                <div class="faq-category">📄 Sobre a Carta</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Para que serve a carta gerada aqui?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Muitas vezes o atendimento telefônico da companhia enrola o passageiro. A carta formaliza o
+                        pedido de indenização ou reembolso de despesas com base no Código de Defesa do Consumidor e
+                        Resolução 400 da ANAC. É a prova oficial de que você cobrou seus direitos, essencial caso
+                        precise processar a empresa depois.
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <a href="/bagagem.html" class="btn btn-primary">Gerar Carta de Reclamação</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>CartasApp &copy; 2025.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFaq(el) { el.parentElement.classList.toggle('active'); var icon = el.querySelector('.icon-plus'); icon.textContent = el.parentElement.classList.contains('active') ? '-' : '+'; }
+    </script>
+</body>
+
+</html>

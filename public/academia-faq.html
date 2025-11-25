@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dúvidas - Cancelamento de Academia | CartasApp</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+        /* MESMO ESTILO DO ANTERIOR */
+        .faq-category {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-top: 32px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .faq-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .faq-question {
+            padding: 18px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .faq-answer {
+            padding: 0 20px 20px;
+            color: var(--text-secondary);
+            display: none;
+            line-height: 1.6;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            font-size: 14px;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .icon-plus {
+            font-size: 20px;
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
+                <div class="nav-actions"><button class="btn-theme" onclick="toggleTheme()">🌙</button></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" style="padding: 60px 0 40px;">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">💪 Cancelamento Academia</div>
+                <h1>Dúvidas Frequentes</h1>
+                <p class="hero-subtitle">Saiba como cancelar sem precisar ir ao balcão.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto;">
+
+                <div class="faq-category">🚫 O Cancelamento</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Eles dizem que só cancelam pessoalmente. A carta serve?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <strong>Sim, serve.</strong> O Código de Defesa do Consumidor proíbe dificultar o cancelamento.
+                        Exigir presença física é considerado prática abusiva. A carta serve como <strong>Notificação
+                            Extrajudicial</strong>, provando que você formalizou o pedido de encerramento. Se eles
+                        continuarem cobrando após o recebimento da carta, você pode exigir o dinheiro em dobro na
+                        justiça.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Como envio a carta para a academia?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Para ter validade legal como prova, recomendamos duas formas:
+                        <ol style="margin-top:8px; padding-left:20px;">
+                            <li><strong>E-mail:</strong> Envie o PDF gerado para o e-mail da unidade ou SAC, com o
+                                assunto "NOTIFICAÇÃO DE CANCELAMENTO". Guarde o e-mail enviado.</li>
+                            <li><strong>Correios (Mais seguro):</strong> Imprima e envie por Carta Registrada com AR
+                                (Aviso de Recebimento). O recibo do correio é a prova cabal de que eles receberam.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-category">💸 Multas e Cobranças</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Posso cancelar sem pagar a multa de fidelidade?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        A multa só pode ser cobrada se estiver clara no contrato e não ultrapassar 10% do valor
+                        restante. Porém, se você está cancelando por <strong>motivo de saúde</strong>, <strong>mudança
+                            de cidade</strong> (para onde não tem a academia) ou <strong>falha no serviço</strong>
+                        (aparelhos quebrados, lotação), a lei entende que a multa deve ser isenta. Nossa carta usa esses
+                        argumentos para te defender.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Continuam cobrando no meu cartão. O que faço?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Se você já enviou a carta (e tem o comprovante de envio) e eles continuam cobrando, isso é
+                        <strong>cobrança indevida</strong>. Você pode abrir uma reclamação no Procon ou Consumidor.gov
+                        anexando a carta que gerou aqui. Geralmente, só de mencionar que você tem essa notificação
+                        formalizada, a academia resolve para evitar processo.
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <a href="/doc.html?slug=carta-cancelamento-smart-fit" class="btn btn-primary">Gerar Carta de
+                        Cancelamento</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>CartasApp &copy; 2025.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFaq(el) { el.parentElement.classList.toggle('active'); var icon = el.querySelector('.icon-plus'); icon.textContent = el.parentElement.classList.contains('active') ? '-' : '+'; }
+    </script>
+</body>
+
+</html>

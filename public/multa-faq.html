@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dúvidas sobre Recurso de Multa | CartasApp</title>
+    <meta name="description"
+        content="Tire suas dúvidas sobre como usar o gerador de recursos de multa, garantias, prazos e como enviar ao Detran." />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+        .faq-category {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-top: 32px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        .faq-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .faq-question {
+            padding: 18px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .faq-answer {
+            padding: 0 20px 20px;
+            color: var(--text-secondary);
+            display: none;
+            line-height: 1.6;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            font-size: 14px;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .icon-plus {
+            font-size: 20px;
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        .alert-box {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="/" class="logo">CartasApp</a>
+                <div class="nav-actions"><button class="btn-theme" onclick="toggleTheme()">🌙</button></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" style="padding: 60px 0 40px;">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">🚗 Multas e CNH</div>
+                <h1>Dúvidas Frequentes</h1>
+                <p class="hero-subtitle">Entenda como funciona o recurso e suas chances de defesa.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto;">
+
+                <div class="alert-box">
+                    <strong>⚠️ Importante:</strong> O CartasApp fornece um modelo de defesa técnica baseado no seu
+                    relato. <strong>Não garantimos o cancelamento da multa</strong>, pois a decisão final é exclusiva do
+                    órgão de trânsito (JARI/Detran). O recurso serve para exercer seu direito de defesa.
+                </div>
+
+                <div class="faq-category">🎯 Sobre o Resultado</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        É certeza que vou ganhar o recurso?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <strong>Não existe causa ganha.</strong> Quem promete 100% de garantia está mentindo. O
+                        deferimento (vitória) depende da análise dos julgadores da JARI. O nosso documento aumenta suas
+                        chances pois utiliza a linguagem técnica e os artigos corretos do Código de Trânsito Brasileiro
+                        (CTB), evitando erros comuns de quem recorre "de qualquer jeito".
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Se eu perder, o valor da multa aumenta?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <strong>Não.</strong> Recorrer é um direito seu e não gera punição extra. Se o recurso for
+                        indeferido (negado), você pagará apenas o valor original da multa (geralmente com 20% de
+                        desconto se pagar até o vencimento). Você não perde nada por tentar.
+                    </div>
+                </div>
+
+                <div class="faq-category">💰 Pagamentos e Prazos</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Preciso pagar a multa para recorrer?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Para a <strong>Defesa Prévia</strong> e recurso à <strong>JARI (1ª instância)</strong>,
+                        geralmente <strong>não é necessário pagar a multa</strong> antecipadamente. O recurso gera o
+                        "efeito suspensivo", impedindo que os pontos caiam na carteira até o fim do processo.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Qual o prazo para enviar o recurso?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        O prazo vem escrito na notificação que você recebeu (carta amarela). Geralmente são 15 ou 30
+                        dias após o recebimento. Se você perder esse prazo, as chances de sucesso diminuem
+                        drasticamente. <strong>Não deixe para a última hora.</strong>
+                    </div>
+                </div>
+
+                <div class="faq-category">📝 Como Usar o Documento</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Como envio o recurso para o Detran/PRF?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Você tem 3 opções (verifique qual o seu órgão aceita):
+                        1. <strong>Online (Recomendado):</strong> Pelo site ou aplicativo do Detran do seu estado ou app
+                        "Carteira Digital de Trânsito". Basta salvar nosso arquivo em PDF e fazer o upload.
+                        2. <strong>Correios:</strong> Imprima, assine e envie como Carta Registrada (AR) para o endereço
+                        que consta na multa.
+                        3. <strong>Presencial:</strong> Leve impresso e assinado ao protocolo do órgão de trânsito.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Preciso anexar mais alguma coisa?
+                        <span class="icon-plus">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Sim! O recurso sozinho não basta. Você deve anexar cópias de:
+                        <ul style="margin-top:8px; padding-left:20px;">
+                            <li>CNH do condutor;</li>
+                            <li>Documento do veículo (CRLV);</li>
+                            <li>A Notificação da Multa (cópia ou print);</li>
+                            <li>Comprovante de residência.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <a href="/multa.html" class="btn btn-primary">Voltar e Gerar Recurso</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>CartasApp &copy; 2025. Ferramenta de automação de documentos.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleFaq(el) {
+            el.parentElement.classList.toggle('active');
+            var icon = el.querySelector('.icon-plus');
+            icon.textContent = el.parentElement.classList.contains('active') ? '-' : '+';
+        }
+    </script>
+</body>
+
+</html>
