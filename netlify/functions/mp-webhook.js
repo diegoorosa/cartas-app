@@ -7,7 +7,6 @@ exports.handler = async (event) => {
     if (event.httpMethod !== 'POST') return { statusCode: 200, body: 'ok' };
 
     const MP_TOKEN = process.env.MP_ACCESS_TOKEN;
-    // Ajuste para garantir que a URL base esteja correta
     const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br';
     const body = JSON.parse(event.body || '{}');
 
@@ -18,7 +17,6 @@ exports.handler = async (event) => {
       return r.ok ? r.json() : null;
     }
 
-    // ... (Lógica de identificar ID do pagamento igual ao original) ...
     let payment = null;
     if (body?.data?.id) payment = await getPayment(body.data.id);
     else if (body?.id) payment = await getPayment(body.id);
@@ -33,34 +31,52 @@ exports.handler = async (event) => {
 
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-    // Verifica se já foi gerado para economizar processamento
+    // Verifica se já foi gerado
     const g = await supabase.from('generations').select('id').eq('order_id', orderId).maybeSingle();
     if (g.data) return { statusCode: 200, body: 'already generated' };
 
-    // Recupera o payload salvo no momento do checkout
+    // Recupera o payload
     const ci = await supabase.from('checkout_intents').select('payload, slug').eq('order_id', orderId).maybeSingle();
     const payload = ci.data?.payload || null;
 
     if (!payload) return { statusCode: 200, body: 'no payload found' };
 
-    payload.order_id = orderId; // Garante o ID no payload
+    payload.order_id = orderId;
 
-    // --- AQUI ESTÁ A CORREÇÃO: CHAMADA "VIP" ---
-    // Chamamos a função de geração passando o header secreto para pular o captcha
-    const r = await fetch(`${BASE_URL}/.netlify/functions/generate-doc`, {
+    // 1. GERA O DOCUMENTO
+    const rGen = await fetch(`${BASE_URL}/.netlify/functions/generate-doc`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-internal-secret': process.env.SUPABASE_SERVICE_ROLE_KEY // Usando a chave do Supabase como segredo
+        'x-internal-secret': process.env.SUPABASE_SERVICE_ROLE_KEY
       },
       body: JSON.stringify({ payload, preview: false })
     });
 
-    const data = await r.json();
+    if (!rGen.ok) console.error('Erro ao gerar doc no webhook');
+
+    // 2. ENVIA O E-MAIL AUTOMATICAMENTE (NOVO!)
+    // Se o cliente preencheu o e-mail no formulário, já enviamos agora.
+    if (payload.email && payload.email.includes('@')) {
+      try {
+        console.log(`Enviando e-mail automático para: ${payload.email}`);
+        await fetch(`${BASE_URL}/.netlify/functions/send-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            order_id: orderId,
+            email_to: payload.email
+          })
+        });
+      } catch (errEmail) {
+        console.error('Erro ao enviar e-mail automático:', errEmail);
+      }
+    }
+
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
 
   } catch (e) {
     console.error('Webhook Error:', e);
-    return { statusCode: 200, body: 'error handled' }; // Retorna 200 pro MP não ficar tentando de novo em loop eterno
+    return { statusCode: 200, body: 'error handled' };
   }
 };
