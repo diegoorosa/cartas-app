@@ -350,12 +350,13 @@ exports.handler = async (event) => {
         // ============ SALVAR COM LÓGICA ADMIN (MODIFICADO) ============
         // Salva se: (não é preview E tem orderId) OU (é admin)
         if (orderId && (!preview || isAdmin)) {
-            supabase.from('generations').upsert({
+            // AQUI ESTÁ O AWAIT QUE FALTAVA:
+            await supabase.from('generations').upsert({
                 order_id: orderId,
                 slug: payload.slug || '',
                 input_json: payload,
                 output_json: output
-            }, { onConflict: 'order_id' }).then(() => { });
+            }, { onConflict: 'order_id' });
         }
         // ==============================================================
 
