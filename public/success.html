@@ -71,7 +71,23 @@
     </footer>
 
     <script src="/recovery.js"></script>
-    <script> var SEND_TO_CONVERSAO = 'AW-1021062139/eWBbCPil_7kbEPvX8OYD'; function qs(n) { var u = new URL(location.href); return u.searchParams.get(n); } var orderId = qs('o'); var slug = qs('slug'); var s = qs('s'); var info = document.getElementById('info'); var retry = document.getElementById('retry'); var btnBack = document.getElementById('btnBack'); var btnPay = document.getElementById('btnPay'); var docBox = document.getElementById('doc'); var actions = document.getElementById('actions'); var btnCopiar = document.getElementById('btnCopiar'); var btnDoc = document.getElementById('btnDoc'); var btnPdf = document.getElementById('btnPdf'); var btnZap = document.getElementById('btnZap'); var btnSuporte = document.getElementById('btnSuporte');
+    <script>
+        var SEND_TO_CONVERSAO = 'AW-1021062139/eWBbCPil_7kbEPvX8OYD';
+        function qs(n) { var u = new URL(location.href); return u.searchParams.get(n); }
+        var orderId = qs('o');
+        var slug = qs('slug');
+        var s = qs('s');
+        var info = document.getElementById('info');
+        var retry = document.getElementById('retry');
+        var btnBack = document.getElementById('btnBack');
+        var btnPay = document.getElementById('btnPay');
+        var docBox = document.getElementById('doc');
+        var actions = document.getElementById('actions');
+        var btnCopiar = document.getElementById('btnCopiar');
+        var btnDoc = document.getElementById('btnDoc');
+        var btnPdf = document.getElementById('btnPdf');
+        var btnZap = document.getElementById('btnZap');
+        var btnSuporte = document.getElementById('btnSuporte');
         var navExtra = document.getElementById('nav-extra');
         var btnNovoDoc = document.getElementById('btnNovoDoc');
         var emailSection = document.getElementById('email-section');
@@ -79,11 +95,36 @@
         var emailButton = document.getElementById('email-button');
         var emailStatus = document.getElementById('email-status');
 
-        function getOrderStatus() { return fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)).then(function (r) { return r.ok ? r.json() : null; }); } btnBack.onclick = function () { if (slug && slug.indexOf('autoriza-viagem') > -1) location.href = '/viagem.html'; else if (slug && slug.indexOf('carta-bagagem') > -1) location.href = '/bagagem.html'; else location.href = '/'; }; btnPay.onclick = async function () { var payloadStr = localStorage.getItem('pendingPayload'); if (!payloadStr) { btnBack.onclick(); return; } try { var p = JSON.parse(payloadStr); var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: p.slug || slug || 'documento', utm: p.utm || {} }) }); var data = await r.json(); if (r.ok && data.init_point) location.href = data.init_point; } catch (e) { } }; function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); var body = out.corpo_paragrafos || []; for (var i = 0; i < body.length; i++)partes.push(body[i]); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); } function htmlBodyFromText(t) { return t.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join(''); } function onceConv(id) { try { var k = 'c:' + id; if (localStorage.getItem(k)) return false; localStorage.setItem(k, '1'); return true; } catch (e) { return true; } } function normalizeEmail(v) { if (!v) return ''; return String(v).trim().toLowerCase(); } function normalizePhone(v) { if (!v) return ''; var d = String(v).replace(/\D/g, ''); if (d.indexOf('55') !== 0) d = '55' + d; return d; } async function sha256Hex(s) { if (!s) return ''; var enc = new TextEncoder().encode(s); var buf = await crypto.subtle.digest('SHA-256', enc); var a = Array.from(new Uint8Array(buf)); return a.map(function (b) { return b.toString(16).padStart(2, '0'); }).join(''); } async function buildECData() { try { var p = JSON.parse(localStorage.getItem('pendingPayload') || '{}'); var em = normalizeEmail(p.email); var ph = normalizePhone(p.telefone); var ec = {}; if (em) ec.email = await sha256Hex(em); if (ph) ec.phone_number = await sha256Hex(ph); ec.address = { country: 'BR' }; return ec; } catch (e) { return { address: { country: 'BR' } }; } }
+        function getOrderStatus() { return fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId)).then(function (r) { return r.ok ? r.json() : null; }); }
 
-        // ======================================================
-        // FUNÇÃO attachActions COM O NOVO 'emailButton.onclick'
-        // ======================================================
+        // --- LÓGICA DE ROTEAMENTO CORRIGIDA (BTN VOLTAR) ---
+        function getPageUrl(slugStr) {
+            var s = (slugStr || '').toLowerCase();
+            if (s.indexOf('multa') > -1) return '/multa.html';
+            if (s.indexOf('viagem') > -1) return '/viagem.html';
+            if (s.indexOf('bagagem') > -1) return '/bagagem.html'; // Serve para extraviada e danificada
+            if (s.indexOf('reembolso') > -1) return '/reembolso-cancelamento-passagem.html';
+            if (s.indexOf('ecommerce') > -1) return '/ecommerce.html';
+
+            // Padrão (Smart Fit, Bancos, etc)
+            if (slugStr) return '/doc.html?slug=' + encodeURIComponent(slugStr);
+            return '/';
+        }
+
+        btnBack.onclick = function () {
+            location.href = getPageUrl(slug);
+        };
+
+        btnPay.onclick = async function () { var payloadStr = localStorage.getItem('pendingPayload'); if (!payloadStr) { btnBack.onclick(); return; } try { var p = JSON.parse(payloadStr); var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: p.slug || slug || 'documento', utm: p.utm || {} }) }); var data = await r.json(); if (r.ok && data.init_point) location.href = data.init_point; } catch (e) { } };
+
+        function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); var body = out.corpo_paragrafos || []; for (var i = 0; i < body.length; i++)partes.push(body[i]); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); }
+        function htmlBodyFromText(t) { return t.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join(''); }
+        function onceConv(id) { try { var k = 'c:' + id; if (localStorage.getItem(k)) return false; localStorage.setItem(k, '1'); return true; } catch (e) { return true; } }
+        function normalizeEmail(v) { if (!v) return ''; return String(v).trim().toLowerCase(); }
+        function normalizePhone(v) { if (!v) return ''; var d = String(v).replace(/\D/g, ''); if (d.indexOf('55') !== 0) d = '55' + d; return d; }
+        async function sha256Hex(s) { if (!s) return ''; var enc = new TextEncoder().encode(s); var buf = await crypto.subtle.digest('SHA-256', enc); var a = Array.from(new Uint8Array(buf)); return a.map(function (b) { return b.toString(16).padStart(2, '0'); }).join(''); }
+        async function buildECData() { try { var p = JSON.parse(localStorage.getItem('pendingPayload') || '{}'); var em = normalizeEmail(p.email); var ph = normalizePhone(p.telefone); var ec = {}; if (em) ec.email = await sha256Hex(em); if (ph) ec.phone_number = await sha256Hex(ph); ec.address = { country: 'BR' }; return ec; } catch (e) { return { address: { country: 'BR' } }; } }
+
         function attachActions(fullText, payload) {
             var bodyHtml = htmlBodyFromText(fullText);
             btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar'; }, 1200); } catch (e) { } };
@@ -94,19 +135,14 @@
             LMRecovery.saveGeneratedDoc({ html: bodyHtml, payload: payload || null, meta: { type: (payload && payload.tipo) || slug || '', orderId: orderId || '', filename: 'documento' } });
             localStorage.removeItem('pendingPayload');
 
-            // Lógica dos botões de navegação
+            // --- CORREÇÃO DO BOTÃO "GERAR NOVO DOCUMENTO" ---
             if (btnNovoDoc) {
-                if (slug && slug.indexOf('autorizacao-viagem') > -1) {
-                    btnNovoDoc.href = '/viagem.html';
-                } else if (slug && slug.indexOf('carta-bagagem') > -1) {
-                    btnNovoDoc.href = '/bagagem.html';
-                } else {
-                    btnNovoDoc.href = slug ? '/doc.html?slug=' + encodeURIComponent(slug) : '/';
-                }
+                btnNovoDoc.href = getPageUrl(slug);
             }
+            // -----------------------------------------------
+
             if (navExtra) navExtra.style.display = 'flex';
 
-            // --- Lógica do E-mail ATUALIZADA com Cooldown ---
             if (emailSection) emailSection.style.display = 'block';
             if (payload && payload.email) {
                 emailInput.value = payload.email;
@@ -120,7 +156,6 @@
                     return;
                 }
 
-                // 1. TRAVA O BOTÃO
                 emailButton.disabled = true;
                 emailButton.textContent = 'Enviando...';
                 emailStatus.textContent = 'Preparando o envio...';
@@ -145,7 +180,6 @@
                     emailStatus.style.color = 'var(--accent-error)';
                 }
 
-                // 2. INICIA O COOLDOWN DE 60 SEGUNDOS (INDEPENDENTE DE SUCESSO OU FALHA)
                 let countdown = 60;
                 emailButton.textContent = `Aguarde ${countdown}s`;
 
@@ -156,20 +190,16 @@
                     } else {
                         clearInterval(interval);
                         emailButton.textContent = 'Enviar';
-                        emailButton.disabled = false; // 3. REABILITA O BOTÃO
+                        emailButton.disabled = false;
                     }
                 }, 1000);
             };
         }
 
-        // --- Resto do código (gerarFinalIdempotente, flow, etc.) ---
-        // NENHUMA MUDANÇA DAQUI PARA BAIXO
-
         async function gerarFinalIdempotente() {
             try {
                 if (info) info.textContent = 'Gerando seu documento...';
 
-                // 1) Server-first:
                 if (orderId) {
                     for (var i = 0; i < 5; i++) {
                         try {
@@ -187,7 +217,7 @@
                                     docBox.style.display = 'block';
                                     actions.style.display = 'flex';
                                     if (info) info.textContent = '';
-                                    attachActions(fullTextS, null); // Payload é 'null' aqui
+                                    attachActions(fullTextS, null);
                                     return;
                                 }
                             }
@@ -196,7 +226,6 @@
                     }
                 }
 
-                // 2) Fallback local:
                 var payloadStr = localStorage.getItem('pendingPayload');
                 if (!payloadStr) {
                     if (info) info.textContent = 'Pagamento confirmado. Ainda estamos preparando seu documento. Aguarde alguns instantes e não feche esta página.';
@@ -216,7 +245,7 @@
                                     docBox.style.display = 'block';
                                     actions.style.display = 'flex';
                                     if (info) info.textContent = '';
-                                    attachActions(fullTextS2, null); // Payload é 'null' aqui
+                                    attachActions(fullTextS2, null);
                                     return;
                                 }
                             }
@@ -227,7 +256,6 @@
                     return;
                 }
 
-                // 3) Gera com o payload local (e grava/vincula ao order_id)
                 var payload = JSON.parse(payloadStr);
                 payload.order_id = orderId || null;
 
@@ -244,14 +272,15 @@
                 docBox.style.display = 'block';
                 actions.style.display = 'flex';
                 if (info) info.textContent = '';
-                attachActions(fullText, payload); // Payload ESTÁ PRESENTE aqui
+                attachActions(fullText, payload);
 
             } catch (e) {
                 if (info) info.textContent = 'Falha ao preparar o documento. Tente novamente em instantes.';
                 if (retry) retry.style.display = 'flex';
             }
         }
-        async function sendConversionEC() { var ec = await buildECData(); gtag('event', 'conversion', { send_to: SEND_TO_CONVERSAO, value: 9.9, currency: 'BRL', transaction_id: orderId, user_data: ec }); } async function flow() { if (s === 'failure') { info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.'; retry.style.display = 'flex'; return; } info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...'; if (!orderId) { info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.'; retry.style.display = 'flex'; return; } var start = Date.now(); while (Date.now() - start < 60000) { var st = await getOrderStatus().catch(function () { return null; }); if (st && st.status === 'paid') { if (onceConv(orderId)) { await sendConversionEC(); } info.textContent = 'Pagamento confirmado. Gerando seu documento...'; await gerarFinalIdempotente(); return; } await new Promise(function (r) { setTimeout(r, 2000); }); } info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.'; retry.style.display = 'flex'; } flow(); </script>
+        async function sendConversionEC() { var ec = await buildECData(); gtag('event', 'conversion', { send_to: SEND_TO_CONVERSAO, value: 9.9, currency: 'BRL', transaction_id: orderId, user_data: ec }); } async function flow() { if (s === 'failure') { info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.'; retry.style.display = 'flex'; return; } info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...'; if (!orderId) { info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.'; retry.style.display = 'flex'; return; } var start = Date.now(); while (Date.now() - start < 60000) { var st = await getOrderStatus().catch(function () { return null; }); if (st && st.status === 'paid') { if (onceConv(orderId)) { await sendConversionEC(); } info.textContent = 'Pagamento confirmado. Gerando seu documento...'; await gerarFinalIdempotente(); return; } await new Promise(function (r) { setTimeout(r, 2000); }); } info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.'; retry.style.display = 'flex'; } flow(); 
+    </script>
 </body>
 
 </html>
