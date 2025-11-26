@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 // MODELO
-const MODELS = ['gemini-2.5-flash-lite', 'gemini-2.5-flash'];
+const MODELS = ['gemini-2.5-flash-lite', 'gemini-2.0-flash-lite'];
 
 // --- HELPERS ---
 function getTodaySimple() {
