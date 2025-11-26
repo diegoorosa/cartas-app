@@ -2,7 +2,10 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
+  // Início da execução para controle de tempo (Netlify limite ~10s ou 26s)
+  const startTime = Date.now();
+
   try {
     if (event.httpMethod !== 'POST') return { statusCode: 200, body: 'ok' };
 
@@ -43,33 +46,53 @@ exports.handler = async (event) => {
 
     payload.order_id = orderId;
 
-    // 1. GERA O DOCUMENTO
-    const rGen = await fetch(`${BASE_URL}/.netlify/functions/generate-doc`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-internal-secret': process.env.SUPABASE_SERVICE_ROLE_KEY
-      },
-      body: JSON.stringify({ payload, preview: false })
-    });
+    // --- 1. GERA O DOCUMENTO COM RETENTATIVA (RETRY) ---
+    let gerouSucesso = false;
 
-    if (!rGen.ok) console.error('Erro ao gerar doc no webhook');
+    // Tenta até 3 vezes se houver tempo
+    for (let i = 1; i <= 3; i++) {
+      const elapsed = Date.now() - startTime;
+      // Se já passou de 8 segundos totais, não arrisca outra tentativa (evita timeout do webhook)
+      if (elapsed > 8000) break;
 
-    // 2. ENVIA O E-MAIL AUTOMATICAMENTE (NOVO!)
-    // Se o cliente preencheu o e-mail no formulário, já enviamos agora.
-    if (payload.email && payload.email.includes('@')) {
       try {
-        console.log(`Enviando e-mail automático para: ${payload.email}`);
-        await fetch(`${BASE_URL}/.netlify/functions/send-email`, {
+        if (i > 1) console.log(`Tentativa ${i} de gerar documento no webhook...`);
+
+        const rGen = await fetch(`${BASE_URL}/.netlify/functions/generate-doc`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-internal-secret': process.env.SUPABASE_SERVICE_ROLE_KEY
+          },
+          body: JSON.stringify({ payload, preview: false })
+        });
+
+        if (rGen.ok) {
+          gerouSucesso = true;
+          break; // Sucesso! Sai do loop
+        } else {
+          console.log(`Erro na tentativa ${i}: ${rGen.status}`);
+          // Se falhou, espera 1s antes de tentar de novo (se tiver tempo)
+          await new Promise(res => setTimeout(res, 1000));
+        }
+      } catch (errGen) {
+        console.error(`Exception na tentativa ${i}:`, errGen);
+      }
+    }
+
+    if (!gerouSucesso) console.error('FALHA FINAL: Não foi possível gerar o documento após tentativas no webhook.');
+
+    // 2. ENVIA O E-MAIL AUTOMATICAMENTE (Se gerou sucesso)
+    if (gerouSucesso && payload.email && payload.email.includes('@')) {
+      try {
+        // Dispara e esquece (não espera o await pra não travar o retorno do webhook)
+        fetch(`${BASE_URL}/.netlify/functions/send-email`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            order_id: orderId,
-            email_to: payload.email
-          })
-        });
+          body: JSON.stringify({ order_id: orderId, email_to: payload.email })
+        }).catch(e => console.error('Erro envio email bg:', e));
       } catch (errEmail) {
-        console.error('Erro ao enviar e-mail automático:', errEmail);
+        console.error('Erro ao chamar envio de email:', errEmail);
       }
     }
 
