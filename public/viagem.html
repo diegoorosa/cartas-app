@@ -476,6 +476,20 @@
 
                     previewBox.textContent = finalPreview;
                     previewWrap.style.display = 'block';
+
+                    // --- BLOQUEIO ANTI-CÓPIA (NOVO) ---
+                    previewBox.style.userSelect = 'none';
+                    previewBox.style.webkitUserSelect = 'none';
+                    previewBox.style.mozUserSelect = 'none';
+
+                    previewBox.oncontextmenu = function (e) {
+                        e.preventDefault(); return false;
+                    };
+                    previewBox.oncopy = function (e) {
+                        e.preventDefault(); return false;
+                    };
+                    // ----------------------------------
+
                     paySection.style.display = 'block';
 
                     // ESCONDE O BOTÃO DE PRÉVIA (Comportamento Original de Viagem)

@@ -242,6 +242,24 @@
                     previewBox.textContent = (out.saudacao || '') + '\n\n' + parcial;
                     previewWrap.style.display = 'block';
 
+                    // --- BLOQUEIO ANTI-CÓPIA (NOVO) ---
+                    // 1. Impede seleção de texto (mouse não marca azul)
+                    previewBox.style.userSelect = 'none';
+                    previewBox.style.webkitUserSelect = 'none'; // Para iPhone/Safari
+                    previewBox.style.mozUserSelect = 'none';    // Para Firefox
+
+                    // 2. Bloqueia botão direito do mouse
+                    previewBox.oncontextmenu = function (e) {
+                        e.preventDefault();
+                        return false;
+                    };
+
+                    // 3. Bloqueia atalho de copiar (caso consiga selecionar algo)
+                    previewBox.oncopy = function (e) {
+                        e.preventDefault();
+                        return false;
+                    };
+
                     // PROMOÇÃO
                     paySection.style.display = 'block';
                     document.getElementById('previewBtnArea').style.display = 'none';
