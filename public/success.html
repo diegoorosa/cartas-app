@@ -8,51 +8,166 @@
     <script src="/utm.js"></script>
     <link rel="stylesheet" href="/style.css" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
-    <script> window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'AW-1021062139', { 'allow_enhanced_conversions': true }); </script>
-    <script
-        type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");</script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'AW-1021062139', { 'allow_enhanced_conversions': true });
+    </script>
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "u4x90t35gk");
+    </script>
     <title>Documento pronto</title>
 </head>
 
 <body>
     <div class="container">
         <div class="card">
-            <h1>Seu documento</h1>
-            <p id="info" class="small"></p>
-            <div id="retry" style="display:none; margin:10px 0; gap:8px; flex-wrap:wrap"> <button class="btn"
-                    id="btnBack">Voltar ao formulário</button> <button class="btn btn-outline" id="btnPay">Pagar
-                    agora</button> </div>
-            <div id="doc" class="preview" style="display:none" data-clarity-mask="true"></div>
+            <h1 style="margin-bottom: 8px;">Documento gerado (ou em processamento)</h1>
 
-            <div id="actions" style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap"> <button class="btn"
-                    id="btnCopiar">Copiar</button> <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
-                <button class="btn btn-outline" id="btnPdf">Baixar .PDF</button>
-                <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
-                <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener">Falar no WhatsApp</a>
+            <p class="small" style="margin-bottom: 12px; color: var(--text-secondary);">
+                Use esta página para acompanhar a confirmação do pagamento e acessar o seu documento.
+                A mensagem logo abaixo será atualizada automaticamente pelo sistema.
+            </p>
+
+            <!-- mensagem dinâmica controlada pelo JS -->
+            <p id="info" class="small" style="margin-bottom: 8px;"></p>
+
+            <!-- bloco mostrado quando o pagamento não foi concluído -->
+            <div id="retry"
+                 style="display:none; margin:10px 0; gap:8px; flex-wrap:wrap">
+                <button class="btn" id="btnBack">Voltar ao formulário</button>
+                <button class="btn btn-outline" id="btnPay">Pagar agora</button>
             </div>
 
+            <!-- texto completo do documento -->
+            <div id="doc" class="preview" style="display:none" data-clarity-mask="true"></div>
+
+            <!-- botões de ação sobre o documento -->
+            <div id="actions"
+                 style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap">
+                <button class="btn" id="btnCopiar">Copiar</button>
+                <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
+                <button class="btn btn-outline" id="btnPdf">Baixar .PDF</button>
+                <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
+                <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener">
+                    Falar no WhatsApp
+                </a>
+            </div>
+
+            <!-- próximos passos / instruções genéricas -->
+            <div class="small"
+                 style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
+                <strong>O que fazer agora?</strong>
+                <ol style="margin:8px 0 0 18px; padding:0;">
+                    <li>Assim que o texto aparecer acima, revise se todos os dados estão corretos.</li>
+                    <li>Use os botões para <strong>baixar em Word/PDF</strong> e salvar em um lugar seguro.</li>
+                    <li>Envie o documento por <strong>e-mail ou WhatsApp</strong> e, se necessário, leve impresso
+                        (cartório, empresa, companhia aérea, órgão de trânsito etc.).</li>
+                </ol>
+            </div>
+
+            <!-- envio por e-mail (já existente, mantido) -->
             <div id="email-section"
-                style="display:none; margin-top:24px; padding-top:24px; border-top: 1px solid var(--border);">
+                 style="display:none; margin-top:24px; padding-top:24px; border-top: 1px solid var(--border);">
                 <label class="label" style="margin-top:0;">Enviar por e-mail</label>
                 <div style="display:flex; gap:8px;">
-                    <input class="input" id="email-input" type="email" placeholder="digite_seu_email@exemplo.com"
-                        style="flex:1;">
+                    <input class="input" id="email-input" type="email"
+                           placeholder="digite_seu_email@exemplo.com"
+                           style="flex:1;">
                     <button class="btn btn-secondary" id="email-button"
-                        style="padding-left:16px; padding-right:16px;">Enviar</button>
+                            style="padding-left:16px; padding-right:16px;">
+                        Enviar
+                    </button>
                 </div>
                 <p class="small" id="email-status" style="margin-top:8px;"></p>
             </div>
 
+            <!-- navegação extra (já existente, mantida) -->
             <div id="nav-extra"
-                style="display:none; gap:8px; margin-top:24px; padding-top:24px; border-top: 1px solid var(--border); flex-wrap:wrap">
+                 style="display:none; gap:8px; margin-top:24px; padding-top:24px;
+                        border-top: 1px solid var(--border); flex-wrap:wrap">
                 <a class="btn btn-primary" id="btnNovoDoc">Gerar Novo Documento</a>
                 <a href="/" class="btn btn-outline">Voltar ao Início</a>
             </div>
 
-            <p class="small" style="margin-top:8px">Dica: envie por e-mail para a empresa e leve impresso se necessário.
+            <!-- dica rápida -->
+            <p class="small" style="margin-top:8px;">
+                Dica: salve uma cópia em seu e-mail e leve o documento impresso se houver
+                atendimento presencial (cartório, empresa, companhia aérea, órgão público etc.).
             </p>
-            <div class="small" style="margin-top:16px;opacity:.9">Este site não presta aconselhamento jurídico. Leia os
+
+            <!-- mini disclaimer interno -->
+            <div class="small" style="margin-top:16px; opacity:.9">
+                Este site não presta aconselhamento jurídico. Leia os
                 <a href="/termos.html" style="text-decoration:underline">Termos de Uso</a>.
+            </div>
+
+            <!-- seção de outros documentos sugeridos (upsell genérico) -->
+            <div id="extra-docs"
+                 style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
+                <h2 class="section-title"
+                    style="font-size:20px; margin-bottom:12px;">
+                    Outros documentos que podem te ajudar
+                </h2>
+
+                <div style="display:grid; gap:12px;">
+                    <a href="/viagem.html"
+                       style="display:block; text-decoration:none; padding:12px 14px;
+                              border-radius:12px; border:1px solid var(--border);
+                              background:var(--bg-secondary);">
+                        <div class="small" style="font-weight:600; margin-bottom:4px;">
+                            Autorização de Viagem para Menor
+                        </div>
+                        <div class="small" style="color:var(--text-secondary);">
+                            Modelo alinhado às exigências da Polícia Federal / CNJ, pronto para
+                            imprimir e reconhecer firma.
+                        </div>
+                    </a>
+
+                    <a href="/multa.html"
+                       style="display:block; text-decoration:none; padding:12px 14px;
+                              border-radius:12px; border:1px solid var(--border);
+                              background:var(--bg-secondary);">
+                        <div class="small" style="font-weight:600; margin-bottom:4px;">
+                            Recurso de Multa de Trânsito
+                        </div>
+                        <div class="small" style="color:var(--text-secondary);">
+                            Gere um recurso personalizado com base na sua situação para tentar
+                            evitar pontos e valores indevidos.
+                        </div>
+                    </a>
+
+                    <a href="/reembolso-cancelamento-passagem.html"
+                       style="display:block; text-decoration:none; padding:12px 14px;
+                              border-radius:12px; border:1px solid var(--border);
+                              background:var(--bg-secondary);">
+                        <div class="small" style="font-weight:600; margin-bottom:4px;">
+                            Reembolso de Passagem Aérea
+                        </div>
+                        <div class="small" style="color:var(--text-secondary);">
+                            Carta para pedir reembolso quando a companhia desconta mais do que
+                            os 5% previstos em lei.
+                        </div>
+                    </a>
+
+                    <a href="/bagagem.html"
+                       style="display:block; text-decoration:none; padding:12px 14px;
+                              border-radius:12px; border:1px solid var(--border);
+                              background:var(--bg-secondary);">
+                        <div class="small" style="font-weight:600; margin-bottom:4px;">
+                            Reclamação de Bagagem Extraviada ou Danificada
+                        </div>
+                        <div class="small" style="color:var(--text-secondary);">
+                            Modelo de reclamação para companhias aéreas em caso de
+                            extravio, dano ou atraso na entrega da bagagem.
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -117,7 +232,7 @@
 
         btnPay.onclick = async function () { var payloadStr = localStorage.getItem('pendingPayload'); if (!payloadStr) { btnBack.onclick(); return; } try { var p = JSON.parse(payloadStr); var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: p.slug || slug || 'documento', utm: p.utm || {} }) }); var data = await r.json(); if (r.ok && data.init_point) location.href = data.init_point; } catch (e) { } };
 
-        function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); var body = out.corpo_paragrafos || []; for (var i = 0; i < body.length; i++)partes.push(body[i]); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); }
+        function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); var body = out.corpo_paragrafos || []; for (var i = 0; i < body.length; i++) partes.push(body[i]); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); }
         function htmlBodyFromText(t) { return t.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join(''); }
         function onceConv(id) { try { var k = 'c:' + id; if (localStorage.getItem(k)) return false; localStorage.setItem(k, '1'); return true; } catch (e) { return true; } }
         function normalizeEmail(v) { if (!v) return ''; return String(v).trim().toLowerCase(); }
@@ -279,7 +394,7 @@
                 if (retry) retry.style.display = 'flex';
             }
         }
-        async function sendConversionEC() { var ec = await buildECData(); gtag('event', 'conversion', { send_to: SEND_TO_CONVERSAO, value: 9.9, currency: 'BRL', transaction_id: orderId, user_data: ec }); } async function flow() { if (s === 'failure') { info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.'; retry.style.display = 'flex'; return; } info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...'; if (!orderId) { info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.'; retry.style.display = 'flex'; return; } var start = Date.now(); while (Date.now() - start < 60000) { var st = await getOrderStatus().catch(function () { return null; }); if (st && st.status === 'paid') { if (onceConv(orderId)) { await sendConversionEC(); } info.textContent = 'Pagamento confirmado. Gerando seu documento...'; await gerarFinalIdempotente(); return; } await new Promise(function (r) { setTimeout(r, 2000); }); } info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.'; retry.style.display = 'flex'; } flow(); 
+        async function sendConversionEC() { var ec = await buildECData(); gtag('event', 'conversion', { send_to: SEND_TO_CONVERSAO, value: 9.9, currency: 'BRL', transaction_id: orderId, user_data: ec }); } async function flow() { if (s === 'failure') { info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.'; retry.style.display = 'flex'; return; } info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...'; if (!orderId) { info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.'; retry.style.display = 'flex'; return; } var start = Date.now(); while (Date.now() - start < 60000) { var st = await getOrderStatus().catch(function () { return null; }); if (st && st.status === 'paid') { if (onceConv(orderId)) { await sendConversionEC(); } info.textContent = 'Pagamento confirmado. Gerando seu documento...'; await gerarFinalIdempotente(); return; } await new Promise(function (r) { setTimeout(r, 2000); }); } info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.'; retry.style.display = 'flex'; } flow();
     </script>
 </body>
 
