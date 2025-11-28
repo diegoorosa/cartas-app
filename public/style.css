@@ -989,3 +989,22 @@ input[type=checkbox] {
     flex-direction: column;
   }
 }
+
+/* Bloco de segurança jurídica / legal note */
+.legal-note {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.5);
+  color: #e5e7eb;
+}
+
+/* Ajuste específico para o tema claro (melhor contraste) */
+html[data-theme=light] .legal-note {
+  background: #e0f2fe;
+  /* azul bem claro */
+  border-color: #bae6fd;
+  /* borda azul clara */
+  color: #0f172a;
+  /* texto escuro */
+}
