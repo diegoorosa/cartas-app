@@ -71,7 +71,7 @@
                 </ol>
             </div>
 
-            <!-- envio por e-mail (já existente, mantido) -->
+            <!-- envio por e-mail -->
             <div id="email-section"
                  style="display:none; margin-top:24px; padding-top:24px; border-top: 1px solid var(--border);">
                 <label class="label" style="margin-top:0;">Enviar por e-mail</label>
@@ -87,7 +87,7 @@
                 <p class="small" id="email-status" style="margin-top:8px;"></p>
             </div>
 
-            <!-- navegação extra (já existente, mantida) -->
+            <!-- navegação extra -->
             <div id="nav-extra"
                  style="display:none; gap:8px; margin-top:24px; padding-top:24px;
                         border-top: 1px solid var(--border); flex-wrap:wrap">
@@ -117,6 +117,7 @@
 
                 <div style="display:grid; gap:12px;">
                     <a href="/viagem.html"
+                       data-doc="viagem"
                        style="display:block; text-decoration:none; padding:12px 14px;
                               border-radius:12px; border:1px solid var(--border);
                               background:var(--bg-secondary);">
@@ -130,6 +131,7 @@
                     </a>
 
                     <a href="/multa.html"
+                       data-doc="multa"
                        style="display:block; text-decoration:none; padding:12px 14px;
                               border-radius:12px; border:1px solid var(--border);
                               background:var(--bg-secondary);">
@@ -143,6 +145,7 @@
                     </a>
 
                     <a href="/reembolso-cancelamento-passagem.html"
+                       data-doc="reembolso"
                        style="display:block; text-decoration:none; padding:12px 14px;
                               border-radius:12px; border:1px solid var(--border);
                               background:var(--bg-secondary);">
@@ -156,6 +159,7 @@
                     </a>
 
                     <a href="/bagagem.html"
+                       data-doc="bagagem"
                        style="display:block; text-decoration:none; padding:12px 14px;
                               border-radius:12px; border:1px solid var(--border);
                               background:var(--bg-secondary);">
@@ -395,6 +399,60 @@
             }
         }
         async function sendConversionEC() { var ec = await buildECData(); gtag('event', 'conversion', { send_to: SEND_TO_CONVERSAO, value: 9.9, currency: 'BRL', transaction_id: orderId, user_data: ec }); } async function flow() { if (s === 'failure') { info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.'; retry.style.display = 'flex'; return; } info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...'; if (!orderId) { info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.'; retry.style.display = 'flex'; return; } var start = Date.now(); while (Date.now() - start < 60000) { var st = await getOrderStatus().catch(function () { return null; }); if (st && st.status === 'paid') { if (onceConv(orderId)) { await sendConversionEC(); } info.textContent = 'Pagamento confirmado. Gerando seu documento...'; await gerarFinalIdempotente(); return; } await new Promise(function (r) { setTimeout(r, 2000); }); } info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.'; retry.style.display = 'flex'; } flow();
+    </script>
+
+    <!-- Script de upsell inteligente baseado no slug -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                var s = (window.slug || '').toLowerCase();
+                var cards = document.querySelectorAll('#extra-docs a[data-doc]');
+                if (!cards.length) return;
+
+                function hide(docType) {
+                    cards.forEach(function (c) {
+                        if (c.getAttribute('data-doc') === docType) {
+                            c.style.display = 'none';
+                        }
+                    });
+                }
+
+                function prioritize(order) {
+                    var container = document.querySelector('#extra-docs > div');
+                    if (!container) return;
+                    order.forEach(function (docType) {
+                        cards.forEach(function (c) {
+                            if (c.getAttribute('data-doc') === docType) {
+                                container.prepend(c);
+                            }
+                        });
+                    });
+                }
+
+                if (s.indexOf('viagem') > -1) {
+                    // Comprou AUTORIZAÇÃO DE VIAGEM
+                    hide('viagem');
+                    prioritize(['reembolso', 'bagagem', 'multa']);
+                } else if (s.indexOf('reembolso') > -1) {
+                    // Comprou REEMBOLSO DE PASSAGEM
+                    hide('reembolso');
+                    prioritize(['bagagem', 'viagem', 'multa']);
+                } else if (s.indexOf('bagagem') > -1) {
+                    // Comprou BAGAGEM
+                    hide('bagagem');
+                    prioritize(['reembolso', 'viagem', 'multa']);
+                } else if (s.indexOf('multa') > -1) {
+                    // Comprou RECURSO DE MULTA
+                    hide('multa');
+                    prioritize(['reembolso', 'bagagem', 'viagem']);
+                } else {
+                    // Outros tipos (academias, serviços etc.)
+                    prioritize(['reembolso', 'multa', 'bagagem', 'viagem']);
+                }
+            } catch (e) {
+                console.error('Upsell error', e);
+            }
+        });
     </script>
 </body>
 
