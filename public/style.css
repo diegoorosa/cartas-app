@@ -925,3 +925,67 @@ input[type=checkbox] {
   margin-top: 4px;
   display: block;
 }
+
+/* ====== Multi-step formulário viagem (passos) ====== */
+
+.step-indicator {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.step-item {
+  flex: 1;
+  min-width: 120px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.step-item.active {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: rgba(59, 130, 246, 0.06);
+  font-weight: 600;
+}
+
+.step-item.completed {
+  border-color: var(--accent-success);
+  color: var(--accent-success);
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.form-step {
+  display: none;
+}
+
+.form-navigation {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.required-star {
+  color: #ef4444;
+  margin-left: 4px;
+}
+
+@media (max-width: 768px) {
+  .step-indicator {
+    flex-direction: column;
+  }
+
+  .step-item {
+    min-width: auto;
+  }
+
+  .form-navigation {
+    flex-direction: column;
+  }
+}
