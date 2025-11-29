@@ -117,6 +117,7 @@ ESTRUTURA DE SAIDA JSON (MANTENHA O PADRÃO):
 `;
 
 const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
+
 const SYSTEM_CONSUMO = `${SYSTEM_BASE}
 Gere uma carta formal de reclamação/cancelamento (Código de Defesa do Consumidor).
 REGRAS CRÍTICAS:
@@ -130,6 +131,54 @@ ESTRUTURA:
 - P3: "Diante do exposto, solicito o atendimento imediato desta demanda, sob pena de medidas judiciais e reclamação junto aos órgãos de proteção ao crédito e consumidor (PROCON)."
 `;
 
+// NOVO: NEGATIVAÇÃO INDEVIDA
+const SYSTEM_NEGATIVACAO = `
+${SYSTEM_BASE}
+ATUAÇÃO: Você é um advogado especialista em Direito do Consumidor e proteção ao crédito.
+TAREFA: Redigir uma NOTIFICAÇÃO EXTRAJUDICIAL por NEGATIVAÇÃO INDEVIDA em cadastros de inadimplentes (SPC, Serasa etc.).
+
+REGRAS:
+1. O campo "titulo" deve ser "NOTIFICAÇÃO POR NEGATIVAÇÃO INDEVIDA".
+2. O campo "saudacao" deve ser "À [Nome da empresa credora]" ou variação equivalente.
+3. Use linguagem formal, em 3 a 6 parágrafos, descrevendo fatos, fundamentos jurídicos e pedidos.
+4. Utilize os dados fornecidos: empresa credora, órgão de cadastro, data da negativação, valor e MOTIVO informado pelo usuário (por que é indevida).
+5. Fundamente com o Código de Defesa do Consumidor (arts. 6º, 14 e 43) e responsabilidade objetiva da empresa pelo dano causado.
+6. Deixe claro que a negativação indevida pode gerar dano moral.
+
+ESTRUTURA DO "corpo_paragrafos" (exemplo orientativo, adapte ao caso):
+- P1: Qualificação do consumidor (nome, CPF, endereço, referência à empresa e ao órgão de proteção ao crédito).
+- P2: Relato objetivo dos fatos (quando descobriu a negativação, número do registro/contrato, valor, data).
+- P3: Explicação do porquê a negativação é indevida (não reconhece a dívida, dívida já paga, prescrição, erro de cadastro etc.), usando o MOTIVO do usuário.
+- P4: Fundamentação jurídica resumida com CDC.
+- P5 (opcional): Pedido de retirada imediata da negativação, regularização dos cadastros e envio de comprovação ao consumidor.
+
+"check_list_anexos" deve sugerir anexar: comprovante de negativação (SPC/Serasa), comprovante de pagamento (se houver), contrato ou fatura, documento de identidade.
+`;
+
+// NOVO: CONTESTAÇÃO CARTÃO DE CRÉDITO
+const SYSTEM_CARTAO = `
+${SYSTEM_BASE}
+ATUAÇÃO: Você é advogado especialista em Direito do Consumidor e relações bancárias.
+TAREFA: Redigir uma NOTIFICAÇÃO DE CONTESTAÇÃO DE LANÇAMENTO EM CARTÃO DE CRÉDITO.
+
+REGRAS:
+1. O campo "titulo" deve ser "CONTESTAÇÃO DE LANÇAMENTO EM CARTÃO DE CRÉDITO".
+2. O campo "saudacao" deve ser "À [Nome do banco emissor] – A/C Setor de Cartões" ou equivalente.
+3. Use linguagem formal e objetiva, em 3 a 6 parágrafos.
+4. Utilize os dados fornecidos: banco emissor, bandeira, últimos dígitos do cartão, fatura (mês/ano), data, valor e estabelecimento do lançamento contestado, além do MOTIVO.
+5. Fundamente com o Código de Defesa do Consumidor (arts. 6º e 14) e com o dever do fornecedor de serviço financeiro de garantir segurança nas transações.
+6. Deixe claro que o consumidor não reconhece a cobrança ou que o serviço/produto não foi prestado/entregue conforme combinado.
+
+ESTRUTURA DO "corpo_paragrafos":
+- P1: Qualificação do titular do cartão (nome, CPF, endereço) e identificação básica do cartão e do banco emissor.
+- P2: Descrição da fatura e do(s) lançamento(s) contestado(s) (data, valor, estabelecimento, número da fatura).
+- P3: Explicação do motivo da contestação (não reconhecimento, fraude, produto/serviço não prestado, valor diferente etc.), usando o MOTIVO do usuário.
+- P4: Fundamentação jurídica com base no CDC e no dever de segurança e informação clara.
+- P5 (opcional): Pedido de abertura de processo de contestação, suspensão da cobrança até a apuração, estorno dos valores e envio de resposta formal ao consumidor.
+
+"check_list_anexos" deve sugerir anexar: cópia da fatura, comprovantes de contato com o banco, boletim de ocorrência (se houver suspeita de fraude), comprovantes de que o serviço/produto não foi prestado (e-mails, protocolos etc.).
+`;
+
 // --- FUNÇÃO DE CHAMADA SEGURA ---
 async function callAIWithFallback(prompt, maxTotalTime = 9500) {
     const startTime = Date.now();
@@ -138,14 +187,11 @@ async function callAIWithFallback(prompt, maxTotalTime = 9500) {
         const modelName = MODELS[i];
         const isLast = i === MODELS.length - 1;
 
-        // Calcula tempo restante
         const elapsedTime = Date.now() - startTime;
         const remainingTime = maxTotalTime - elapsedTime;
 
         if (remainingTime < 1500) throw new Error('Tempo esgotado para IA');
 
-        // Define orçamento de tempo para esta tentativa
-        // Se for o primeiro modelo, tenta por 5.5s. Se for o último, usa o resto do tempo.
         const attemptTimeout = isLast ? remainingTime : Math.min(5500, remainingTime);
 
         try {
@@ -161,14 +207,12 @@ async function callAIWithFallback(prompt, maxTotalTime = 9500) {
             const text = result.response.text();
             const json = parseJson(text);
 
-            if (json) return json; // Sucesso!
+            if (json) return json;
             console.log(`Modelo ${modelName} retornou JSON inválido.`);
 
         } catch (e) {
             console.error(`Falha no modelo ${modelName}: ${e.message}`);
-            // Se for o último e falhou, lança erro final
             if (isLast) throw new Error('Todos os modelos de IA falharam ou deram timeout.');
-            // Se não for o último, o loop continua para o próximo modelo (fallback)
         }
     }
 }
@@ -183,21 +227,20 @@ exports.handler = async (event) => {
 
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
 
-        // ============ VERIFICAÇÃO ADMIN (NOVA) ============
+        // ============ VERIFICAÇÃO ADMIN ============
         const SENHA_ADMIN = process.env.ADMIN_KEY || null;
         const isAdmin = SENHA_ADMIN && payload.admin_key === SENHA_ADMIN;
 
-        // Se for admin, cria um order_id fictício para permitir geração
         if (isAdmin && !payload.order_id) {
             payload.order_id = `ADMIN-${Date.now()}`;
         }
-        // ==================================================
+        // ===========================================
 
         if (!payload.order_id) payload = sanitizePayload(payload);
 
         const orderId = payload.order_id || payload.orderId || null;
 
-        // --- 1. CHECK DE CACHE (Recuperação) ---
+        // --- 1. CHECK DE CACHE ---
         if (orderId && !preview) {
             const { data: rows } = await supabase.from('generations').select('output_json').eq('order_id', orderId).limit(1);
             if (rows && rows.length) {
@@ -205,17 +248,14 @@ exports.handler = async (event) => {
             }
         }
 
-        // --- 2. VERIFICAÇÃO DE "SÓ RECUPERAÇÃO" (A CORREÇÃO) ---
-        // ============ EXCEÇÃO ADMIN (NOVA) ============
-        // Admin pode gerar mesmo sem dados completos
+        // --- 2. VERIFICAÇÃO DE "SÓ RECUPERAÇÃO" ---
         if (!isAdmin) {
             if (!payload.slug && !payload.menor_nome && !payload.nome) {
                 return { statusCode: 404, body: 'Documento ainda não gerado ou não encontrado.' };
             }
         }
-        // ==============================================
 
-        // --- ROTEAMENTO INFALÍVEL (continua igual) ---
+        // --- ROTEAMENTO ---
         let tipo = 'indefinido';
         const payloadStr = JSON.stringify(payload).toLowerCase();
         const slug = String(payload.slug || '').toLowerCase();
@@ -228,6 +268,12 @@ exports.handler = async (event) => {
         }
         else if (slug.includes('reembolso')) {
             tipo = 'reembolso_passagem';
+        }
+        else if (slug.includes('negativacao')) {
+            tipo = 'negativacao';
+        }
+        else if (slug.includes('cartao') && slug.includes('contestacao')) {
+            tipo = 'cartao_contestacao';
         }
         else if (slug.includes('bagagem') || payloadStr.includes('voo') || payloadStr.includes('pir')) {
             tipo = 'bagagem';
@@ -243,7 +289,7 @@ exports.handler = async (event) => {
             return { statusCode: 400, body: 'Erro: Tipo de documento não identificado.' };
         }
 
-        // Montagem do Prompt (continua igual, todo o código)
+        // --- MONTAGEM DO PROMPT ---
         let system = SYSTEM_BASE, up = '';
         const LINE = '__________________________';
 
@@ -313,22 +359,38 @@ exports.handler = async (event) => {
             Dados do Contrato/Instalação: ${payload.contrato || 'Não informado'}.
             Motivo/Solicitação do Cliente: "${payload.motivo}".
             Objetivo: Reclamação formal ou Cancelamento imediato conforme direitos do consumidor.`;
-
             system = SYSTEM_CONSUMO;
+
+        } else if (tipo === 'negativacao') {
+            up = `NEGATIVAÇÃO INDEVIDA:
+            Consumidor: ${payload.nome}, CPF ${payload.cpf}, Endereço: ${payload.endereco || ''}, Cidade: ${payload.cidade_uf || ''}.
+            Empresa credora: ${payload.empresa || ''}.
+            Órgão de proteção ao crédito: ${payload.orgao_cadastro || ''}.
+            Data da negativação: ${payload.data_negativacao || ''}.
+            Valor apontado: ${payload.valor_divida || ''}.
+            Número de contrato/título (se houver): ${payload.numero_contrato || 'Não informado'}.
+            Situação alegada (motivo da indevida): ${payload.motivo || ''}.`;
+            system = SYSTEM_NEGATIVACAO;
+
+        } else if (tipo === 'cartao_contestacao') {
+            up = `CONTESTAÇÃO DE LANÇAMENTO EM CARTÃO DE CRÉDITO:
+            Titular: ${payload.nome}, CPF ${payload.cpf}, Endereço: ${payload.endereco || ''}, Cidade: ${payload.cidade_uf || ''}.
+            Banco emissor: ${payload.banco_emissor || ''}. Bandeira: ${payload.bandeira || ''}.
+            Últimos dígitos do cartão: ${payload.ultimos_digitos || ''}.
+            Fatura (mês/ano): ${payload.mes_ano_fatura || ''}.
+            Lançamento contestado: Data ${payload.data_lancamento || ''}, Valor ${payload.valor_lancamento || ''}, Estabelecimento: ${payload.estabelecimento || ''}.
+            Motivo da contestação: ${payload.motivo || ''}.`;
+            system = SYSTEM_CARTAO;
         }
 
-        // --- CHAMADA IA COM FALLBACK (NOVO SISTEMA) ---
         const fullPrompt = system + '\n\nDADOS:\n' + up;
 
-        // AQUI ESTÁ A CORREÇÃO DO 'let' E O USO DO FALLBACK
         let output = await callAIWithFallback(fullPrompt);
-
         if (!output) throw new Error('Falha crítica na geração IA');
 
-        // Sanitização (Remove tags HTML <b>, etc)
         output = sanitizeOutput(output);
 
-        // --- INJEÇÃO DE ASSINATURA (continua igual) ---
+        // --- ASSINATURA / FECHAMENTO ---
         if (tipo === 'autorizacao_viagem') {
             const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
             const cidadeData = `${espacoForcado}${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
@@ -347,10 +409,8 @@ exports.handler = async (event) => {
             output.fechamento = `${cidadeData}${assinatura}`;
         }
 
-        // ============ SALVAR COM LÓGICA ADMIN (MODIFICADO) ============
-        // Salva se: (não é preview E tem orderId) OU (é admin)
+        // --- SALVAR NO SUPABASE ---
         if (orderId && (!preview || isAdmin)) {
-            // AQUI ESTÁ O AWAIT QUE FALTAVA:
             await supabase.from('generations').upsert({
                 order_id: orderId,
                 slug: payload.slug || '',
@@ -358,13 +418,11 @@ exports.handler = async (event) => {
                 output_json: output
             }, { onConflict: 'order_id' });
         }
-        // ==============================================================
 
         return { statusCode: 200, body: JSON.stringify({ output, cached: false }) };
 
     } catch (e) {
         console.error('Erro Função:', e.message);
-        // Se for erro de timeout ou IA, pede pro usuário tentar de novo (é transiente)
         const msg = (e.message.includes('TIMEOUT') || e.message.includes('IA'))
             ? 'O sistema está sobrecarregado. Por favor, tente novamente em 10 segundos.'
             : 'Erro ao gerar documento.';
