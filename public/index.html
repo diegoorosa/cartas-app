@@ -67,26 +67,26 @@
     </style>
 </head>
 
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-content">
-                <a href="/" class="logo">CartasApp</a>
-                <div class="nav-links">
-                    <a href="#viagem" class="nav-link">Viagem</a>
-                    <a href="#multa" class="nav-link">Multas</a>
-                    <a href="#reembolso" class="nav-link">Reembolso</a>
-                    <a href="#bagagem" class="nav-link">Bagagem</a>
-                    <a href="#consumo" class="nav-link">Consumo</a>
-                </div>
-                <div class="nav-actions">
-                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
-                    <a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">WhatsApp</a>
-                    <button class="mobile-menu-btn">☰</button>
-                </div>
+<nav class="navbar">
+    <div class="container">
+        <div class="navbar-content">
+            <a href="/" class="logo">CartasApp</a>
+            <div class="nav-links">
+                <a href="#viagem" class="nav-link">Viagem</a>
+                <a href="#multa" class="nav-link">Multas</a>
+                <a href="#reembolso" class="nav-link">Reembolso</a>
+                <a href="#bagagem" class="nav-link">Bagagem</a>
+                <a href="#consumo" class="nav-link">Consumo</a>
+                <a href="/sobre.html" class="nav-link">Sobre</a>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
+                <a href="https://wa.me/5547991323024" class="btn btn-secondary btn-sm" target="_blank">WhatsApp</a>
+                <button class="mobile-menu-btn">☰</button>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <section class="hero">
         <div class="container">
@@ -501,17 +501,20 @@
     </section>
 
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p>
-                    Este site não presta aconselhamento jurídico. Leia os
-                    <a href="/termos.html" class="footer-link">Termos de Uso</a>,
-                    <a href="/privacidade.html" class="footer-link">Política de Privacidade</a> e visite nossa
-                    <a href="/blog.html" class="footer-link">Central de Ajuda</a>.
-                </p>
-            </div>
+    <div class="container">
+        <div class="footer-content">
+            <p>
+                Este site não presta aconselhamento jurídico. Leia os
+                <a href="/termos.html" class="footer-link">Termos de Uso</a>,
+                <a href="/privacidade.html" class="footer-link">Política de Privacidade</a>,
+                conheça mais em
+                <a href="/sobre.html" class="footer-link">Sobre o CartasApp</a>
+                e visite nossa
+                <a href="/blog.html" class="footer-link">Central de Ajuda</a>.
+            </p>
         </div>
-    </footer>
+    </div>
+</footer>
 
     <script>
         // Script para mostrar/esconder cards

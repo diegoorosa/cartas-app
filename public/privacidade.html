@@ -29,15 +29,26 @@
 
     <div class="container" style="padding-top: 40px; padding-bottom: 40px;">
         <div class="card" style="max-width: 800px; margin: 0 auto;">
-            <div style="margin-bottom: 24px;"><a href="/" class="small"
-                    style="text-decoration:none; color:var(--accent-primary)">← Voltar ao início</a></div>
+            <div style="margin-bottom: 24px;">
+                <a href="/" class="small"
+                   style="text-decoration:none; color:var(--accent-primary)">
+                    ← Voltar ao início
+                </a>
+            </div>
 
             <h1>Política de Privacidade</h1>
             <p class="small">Última atualização: 17 de novembro de 2025</p>
 
-            <p>Sua privacidade é fundamental para o CartasApp. Esta política explica quais dados coletamos, por que os
+            <p>
+                Sua privacidade é fundamental para o CartasApp. Esta política explica quais dados coletamos, por que os
                 coletamos e como os utilizamos e protegemos, em conformidade com a Lei Geral de Proteção de Dados (LGPD)
-                do Brasil.</p>
+                do Brasil.
+            </p>
+
+            <p>
+                O responsável pelo tratamento dos dados pessoais é o <strong>CartasApp</strong>, projeto individual
+                mantido por <strong>[Seu Nome]</strong>, em <strong>[Cidade/UF]</strong>, Brasil.
+            </p>
 
             <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">1. Quais Dados Coletamos</h2>
             <p>Para gerar seus documentos, coletamos as informações que você insere voluntariamente nos formulários.
@@ -69,7 +80,7 @@
             </ul>
 
             <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">3. Compartilhamento de Dados</h2>
-            <p>Nós **não vendemos** seus dados pessoais. Seus dados são compartilhados apenas com os parceiros
+            <p>Nós <strong>não vendemos</strong> seus dados pessoais. Seus dados são compartilhados apenas com os parceiros
                 tecnológicos essenciais para o funcionamento do serviço:</p>
             <ul>
                 <li><strong>Google (Gemini e reCAPTCHA):</strong> Para gerar o documento e proteger o site.</li>
@@ -93,15 +104,16 @@
 
             <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">5. Contato</h2>
             <p>Se você tiver qualquer dúvida sobre esta Política de Privacidade ou quiser solicitar a exclusão dos seus
-                dados, entre em contato conosco através do e-mail **contato@cartasapp.com.br** ou pelo nosso <a
-                    href="https://wa.me/5547991323024" target="_blank" rel="noopener">WhatsApp</a>.</p>
+                dados, entre em contato conosco através do e-mail
+                <strong>contato@cartasapp.com.br</strong> ou pelo nosso
+                <a href="https://wa.me/5547991323024" target="_blank" rel="noopener">WhatsApp</a>.
+            </p>
 
         </div>
     </div>
 
     <script>
         (function () {
-            // Script do theme.js colado aqui para a página funcionar
             function toggleTheme() {
                 const html = document.documentElement;
                 const currentTheme = html.getAttribute('data-theme');
@@ -109,11 +121,9 @@
                 html.setAttribute('data-theme', newTheme);
                 localStorage.setItem('theme', newTheme);
             }
-            // Event listener para o botão (se existir)
             var btn = document.querySelector('.btn-theme');
             if (btn) btn.onclick = toggleTheme;
 
-            // Lógica de carregar o tema
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme) {
                 document.documentElement.setAttribute('data-theme', savedTheme);
