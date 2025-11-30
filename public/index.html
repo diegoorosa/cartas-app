@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Gerador de Cartas e Documentos Profissionais | CartasApp</title>
     <meta name="description"
-        content="Gere documentos como autorizações de viagem para menor, cartas de bagagem extraviada, cancelamentos, contestação de cartão de crédito e negativação indevida. Prévia grátis e download em PDF ou DOC." />
+        content="Gere documentos como autorizações de viagem para menor, cartas de bagagem extraviada, cancelamentos, contestação de cartão de crédito, negativação indevida e mais. Prévia grátis e download em PDF ou DOC." />
     <script src="/theme.js"></script>
     <script src="/utm.js"></script>
     <link rel="stylesheet" href="/style.css" />
@@ -55,7 +55,6 @@
 </script>
 
     <style>
-        /* Estilo para esconder cards extras */
         .hidden-card {
             display: none;
         }
@@ -95,7 +94,8 @@
             <h1>Gere documentos profissionais automaticamente</h1>
             <p class="hero-subtitle">
                 Autorizações de viagem, cartas de bagagem, cancelamento de serviços,
-                contestação de cartão de crédito e negativação indevida. Prévia gratuita, download em DOC ou PDF.
+                contestação de cartão de crédito, negativação indevida, plano de saúde, arrependimento de compra online
+                e mais. Prévia gratuita, download em DOC ou PDF.
             </p>
             <div class="hero-actions">
                 <a href="/viagem.html" class="btn btn-primary">Gerar Autorização de Viagem</a>
@@ -113,7 +113,7 @@
 <section class="container">
     <div class="search-container">
         <input type="text" class="search-input"
-            placeholder="Buscar documentos (ex: viagem, multa, nome sujo, cartão, bagagem, cancelamento)..."
+            placeholder="Buscar documentos (ex: viagem, multa, nome sujo, cartão, plano de saúde, arrependimento, bagagem, cancelamento)..."
             id="searchInput">
     </div>
 </section>
@@ -270,7 +270,7 @@
     <div class="container">
         <div class="section-header">
             <h2 class="section-title">Cartas de Consumo</h2>
-            <p class="section-subtitle">Cancelamentos e reclamações de serviços</p>
+            <p class="section-subtitle">Cancelamentos, reclamações e defesa do consumidor</p>
         </div>
 
         <div class="category-section" id="academias">
@@ -439,7 +439,7 @@
                             class="btn btn-primary btn-sm">Gerar carta</a></div>
                 </div>
 
-                <!-- NOVO: Contestação de compra no cartão -->
+                <!-- Contestação de compra no cartão -->
                 <div class="card"
                     data-search="contestação compra cartão crédito não reconheço cobrança indevida estorno chargeback fatura">
                     <div class="card-icon">💳</div>
@@ -450,7 +450,7 @@
                             carta</a></div>
                 </div>
 
-                <!-- NOVO: Negativação indevida -->
+                <!-- Negativação indevida -->
                 <div class="card"
                     data-search="negativação indevida nome sujo spc serasa limpar nome dívida já paga não reconheço">
                     <div class="card-icon">📉</div>
@@ -464,6 +464,40 @@
             <button class="btn btn-outline btn-sm show-more-btn" onclick="toggleSection('gridBancos', this)">Ver
                 mais bancos</button>
         </div>
+
+        <!-- NOVA SUBSEÇÃO: Saúde e Compras Online -->
+        <div class="category-section" id="outros-consumo" style="margin-top: 60px;">
+            <h3 class="category-title"
+                style="font-size: 28px; font-weight: 700; margin-bottom: 24px; color: var(--text-primary);">
+                🩺 Saúde e Compras Online
+            </h3>
+            <div class="grid">
+                <div class="card"
+                    data-search="plano de saúde negativa cobertura exame cirurgia tratamento unimed amil sulamerica bradesco saúde ans cdc">
+                    <div class="card-icon">🏥</div>
+                    <h3 class="card-title">Negativa de Cobertura (Plano de Saúde)</h3>
+                    <p class="card-description">
+                        Carta para contestar negativa de exame, cirurgia ou tratamento pelo plano de saúde, com base no
+                        CDC e normas da ANS.
+                    </p>
+                    <div class="card-footer"><a href="/plano-saude-negativa.html" class="btn btn-primary btn-sm">Gerar
+                            carta</a></div>
+                </div>
+
+                <div class="card"
+                    data-search="direito arrependimento compra online internet art 49 cdc cancelar compra reembolso integral 7 dias ecommerce">
+                    <div class="card-icon">🛒</div>
+                    <h3 class="card-title">Direito de Arrependimento (Compra Online)</h3>
+                    <p class="card-description">
+                        Carta para exercer o direito de arrependimento em até 7 dias (art. 49 do CDC) e pedir reembolso
+                        integral de compra online.
+                    </p>
+                    <div class="card-footer"><a href="/arrependimento-compra-online.html"
+                            class="btn btn-primary btn-sm">Gerar carta</a></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </section>
 
@@ -540,7 +574,6 @@
 </footer>
 
 <script>
-    // Script para mostrar/esconder cards
     function toggleSection(gridId, btn) {
         var grid = document.getElementById(gridId);
         var hiddenCards = grid.querySelectorAll('.hidden-card');
@@ -556,7 +589,6 @@
         }
     }
 
-    // Search functionality
     document.addEventListener('DOMContentLoaded', function () {
         var searchInput = document.getElementById('searchInput');
         var allCards = document.querySelectorAll('.card[data-search]');
@@ -600,7 +632,6 @@
         });
     });
 
-    // Script do tema
     (function () {
         function toggleTheme() {
             const html = document.documentElement;

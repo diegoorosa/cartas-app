@@ -56,7 +56,7 @@ function parseJson(text) {
 
 const SYSTEM_BASE = 'Você é um assistente jurídico. Responda APENAS JSON válido. Formato: {"titulo":"","saudacao":"","corpo_paragrafos":["..."],"fechamento":"","check_list_anexos":["..."],"observacoes_legais":""}. NÃO use formatação Markdown (**negrito**) ou HTML (<b>) dentro dos textos JSON. Use apenas texto plano.';
 
-// PROMPT VIAGEM PERFEITO
+// VIAGEM
 const SYSTEM_VIAGEM_PERFEITO = `
 ${SYSTEM_BASE}
 Gere uma AUTORIZAÇÃO DE VIAGEM.
@@ -73,6 +73,7 @@ ESTRUTURA OBRIGATÓRIA DO TEXTO (corpo_paragrafos):
 - P4: "Ressalto que esta autorização é concedida em caráter específico para o trajeto e período supramencionados, não conferindo poderes gerais ou irrestritos."
 `;
 
+// MULTA
 const SYSTEM_MULTA = `
 ${SYSTEM_BASE}
 Você é um advogado especialista em Direito de Trânsito. Gere um RECURSO DE MULTA (Defesa Prévia ou JARI).
@@ -91,6 +92,7 @@ ESTRUTURA:
 - P4 (O Pedido): Requer o cancelamento do AIT e a anulação da pontuação.
 `;
 
+// REEMBOLSO PASSAGEM
 const SYSTEM_PASSAGEM = `
 ${SYSTEM_BASE}
 ATUAÇÃO: Você é um advogado especialista em Direito do Consumidor e Aéreo.
@@ -102,22 +104,16 @@ ARGUMENTAÇÃO JURÍDICA OBRIGATÓRIA:
 2. Cite o Art. 51, IV do Código de Defesa do Consumidor (CDC): Cláusulas que retiram o direito de reembolso são nulas de pleno direito.
 3. Mencione que a prática configura enriquecimento ilícito da companhia.
 
-ESTRUTURA DE SAIDA JSON (MANTENHA O PADRÃO):
-{
-  "saudacao": "À [Nome da Cia Aérea] - A/C Departamento Jurídico",
-  "corpo_paragrafos": [
-    "Parágrafo 1: Qualificação do passageiro e relato da compra (reserva, datas, valor).",
-    "Parágrafo 2: Relato do cancelamento e da negativa/multa abusiva da empresa.",
-    "Parágrafo 3: Fundamentação jurídica agressiva citando Art. 740 CC e CDC.",
-    "Parágrafo 4: Pedido formal de restituição imediata de 95% do valor pago + taxas de embarque. (NÃO solicite dados bancários no texto, apenas exija a devolução)."
-  ],
-  "fechamento": "Local e Data.\\n\\n[Nome do Passageiro]\\nCPF: [CPF]",
-  "check_list_anexos": ["Comprovante da compra da passagem", "Protocolo de cancelamento", "Cópia do RG/CPF"]
-}
+ESTRUTURA:
+- saudacao: "À [Nome da Cia Aérea] - A/C Departamento Jurídico".
+- corpo_paragrafos: 4 parágrafos (compra, cancelamento, fundamentação, pedido de reembolso de 95%).
+- check_list_anexos: incluir comprovante da compra, protocolo de cancelamento, cópia de documento.
 `;
 
-const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas, Pedido.`;
+// BAGAGEM
+const SYSTEM_BAGAGEM = `${SYSTEM_BASE} Carta para bagagem extraviada/danificada. 4 parágrafos: Voo, Ocorrido, Despesas/Prejuízos, Pedido de indenização/reembolso. Inclua menção à responsabilidade objetiva da companhia aérea (CDC).`;
 
+// CONSUMO GENÉRICO
 const SYSTEM_CONSUMO = `${SYSTEM_BASE}
 Gere uma carta formal de reclamação/cancelamento (Código de Defesa do Consumidor).
 REGRAS CRÍTICAS:
@@ -127,8 +123,8 @@ REGRAS CRÍTICAS:
 
 ESTRUTURA:
 - P1: "Eu, [Nome], portador(a) do CPF [CPF], venho formalizar reclamação/pedido referente ao contrato/serviço junto à empresa [Empresa]."
-- P2: "O motivo desta solicitação é: [INSERIR AQUI O TEXTO DO MOTIVO DO USUÁRIO, SEM ALTERAR O SENTIDO]."
-- P3: "Diante do exposto, solicito o atendimento imediato desta demanda, sob pena de medidas judiciais e reclamação junto aos órgãos de proteção ao crédito e consumidor (PROCON)."
+- P2: "O motivo desta solicitação é: [Motivo do usuário]."
+- P3: "Diante do exposto, solicito o atendimento imediato desta demanda, sob pena de medidas judiciais e reclamação junto aos órgãos de proteção ao consumidor (PROCON)."
 `;
 
 // NOVO: NEGATIVAÇÃO INDEVIDA
@@ -145,17 +141,10 @@ REGRAS:
 5. Fundamente com o Código de Defesa do Consumidor (arts. 6º, 14 e 43) e responsabilidade objetiva da empresa pelo dano causado.
 6. Deixe claro que a negativação indevida pode gerar dano moral.
 
-ESTRUTURA DO "corpo_paragrafos" (exemplo orientativo, adapte ao caso):
-- P1: Qualificação do consumidor (nome, CPF, endereço, referência à empresa e ao órgão de proteção ao crédito).
-- P2: Relato objetivo dos fatos (quando descobriu a negativação, número do registro/contrato, valor, data).
-- P3: Explicação do porquê a negativação é indevida (não reconhece a dívida, dívida já paga, prescrição, erro de cadastro etc.), usando o MOTIVO do usuário.
-- P4: Fundamentação jurídica resumida com CDC.
-- P5 (opcional): Pedido de retirada imediata da negativação, regularização dos cadastros e envio de comprovação ao consumidor.
-
-"check_list_anexos" deve sugerir anexar: comprovante de negativação (SPC/Serasa), comprovante de pagamento (se houver), contrato ou fatura, documento de identidade.
+"check_list_anexos" deve sugerir: comprovante de negativação (SPC/Serasa), comprovante de pagamento (se houver), contrato/fatura relacionada, cópia de RG e CPF.
 `;
 
-// NOVO: CONTESTAÇÃO CARTÃO DE CRÉDITO
+// NOVO: CONTESTAÇÃO CARTÃO
 const SYSTEM_CARTAO = `
 ${SYSTEM_BASE}
 ATUAÇÃO: Você é advogado especialista em Direito do Consumidor e relações bancárias.
@@ -169,14 +158,56 @@ REGRAS:
 5. Fundamente com o Código de Defesa do Consumidor (arts. 6º e 14) e com o dever do fornecedor de serviço financeiro de garantir segurança nas transações.
 6. Deixe claro que o consumidor não reconhece a cobrança ou que o serviço/produto não foi prestado/entregue conforme combinado.
 
-ESTRUTURA DO "corpo_paragrafos":
-- P1: Qualificação do titular do cartão (nome, CPF, endereço) e identificação básica do cartão e do banco emissor.
-- P2: Descrição da fatura e do(s) lançamento(s) contestado(s) (data, valor, estabelecimento, número da fatura).
-- P3: Explicação do motivo da contestação (não reconhecimento, fraude, produto/serviço não prestado, valor diferente etc.), usando o MOTIVO do usuário.
-- P4: Fundamentação jurídica com base no CDC e no dever de segurança e informação clara.
-- P5 (opcional): Pedido de abertura de processo de contestação, suspensão da cobrança até a apuração, estorno dos valores e envio de resposta formal ao consumidor.
+"check_list_anexos" deve sugerir: cópia da fatura, comprovantes de contato com o banco, boletim de ocorrência (se houver suspeita de fraude), comprovantes de que o serviço/produto não foi prestado.
+`;
 
-"check_list_anexos" deve sugerir anexar: cópia da fatura, comprovantes de contato com o banco, boletim de ocorrência (se houver suspeita de fraude), comprovantes de que o serviço/produto não foi prestado (e-mails, protocolos etc.).
+// NOVO: PLANO DE SAÚDE – NEGATIVA DE COBERTURA
+const SYSTEM_PLANO_SAUDE = `
+${SYSTEM_BASE}
+ATUAÇÃO: Você é advogado especialista em Direito do Consumidor e Saúde Suplementar.
+TAREFA: Redigir uma NOTIFICAÇÃO EXTRAJUDICIAL por NEGATIVA DE COBERTURA de exame, tratamento ou cirurgia por plano de saúde.
+
+REGRAS:
+1. O campo "titulo" deve ser "NOTIFICAÇÃO POR NEGATIVA DE COBERTURA DE PLANO DE SAÚDE".
+2. O campo "saudacao" deve ser "À [Nome da operadora de plano de saúde]" ou variação equivalente.
+3. Use linguagem formal e respeitosa, em 3 a 7 parágrafos.
+4. Utilize os dados fornecidos: operadora, número da carteirinha, procedimento negado, data da solicitação, protocolo (se houver) e MOTIVO (por que a negativa é abusiva).
+5. Fundamente com:
+   - Código de Defesa do Consumidor (arts. 6º, 14, 51),
+   - normas da ANS sobre cobertura mínima e continuidade de tratamento,
+   - princípios da boa-fé e da dignidade da pessoa humana.
+6. Deixe claro que a negativa pode acarretar riscos à saúde/vida do consumidor.
+
+ESTRUTURA SUGERIDA DE "corpo_paragrafos":
+- P1: Qualificação do beneficiário e referência ao plano (nº da carteirinha).
+- P2: Descrição da solicitação (procedimento, data, protocolo) e da negativa.
+- P3: Relato do paciente (urgência, indicação médica, continuidade de tratamento etc.), usando o MOTIVO do usuário.
+- P4: Fundamentação jurídica (CDC, ANS, boa-fé, jurisprudência de forma genérica).
+- P5: Pedido de revisão imediata da negativa, com autorização/cobertura ou alternativa equivalente, sob pena de medidas administrativas e judiciais.
+
+"check_list_anexos": relatório/solicitação do médico, negativa escrita do plano (se houver), carteirinha, exames e orçamentos.
+`;
+
+// NOVO: DIREITO DE ARREPENDIMENTO (COMPRA ONLINE)
+const SYSTEM_ARREPENDIMENTO = `
+${SYSTEM_BASE}
+ATUAÇÃO: Você é advogado especialista em Direito do Consumidor.
+TAREFA: Redigir uma NOTIFICAÇÃO DE EXERCÍCIO DE DIREITO DE ARREPENDIMENTO em compra realizada fora do estabelecimento comercial (internet, telefone, catálogo etc.), nos termos do art. 49 do CDC.
+
+REGRAS:
+1. O campo "titulo" deve ser "EXERCÍCIO DE DIREITO DE ARREPENDIMENTO (ART. 49 DO CDC)".
+2. O campo "saudacao" deve ser "À [Nome da loja/site]" ou variação equivalente.
+3. Use linguagem formal e objetiva, em 3 a 6 parágrafos.
+4. Utilize os dados fornecidos: loja, produto/serviço, datas de compra e entrega (se houver), valor pago, meio da compra e MOTIVO.
+5. Explique que o consumidor está dentro do prazo de 7 dias e, portanto, exerce o direito de arrependimento com devolução integral de valores pagos.
+
+ESTRUTURA SUGERIDA DE "corpo_paragrafos":
+- P1: Qualificação do consumidor (nome, CPF, endereço) e referência à loja/site e à compra.
+- P2: Descrição da compra (produto/serviço, data, valor, meio de contratação).
+- P3: Declaração de exercício do direito de arrependimento (art. 49 do CDC) dentro do prazo legal.
+- P4: Pedido de cancelamento da compra, estorno/reembolso integral e instruções para devolução do produto (se aplicável).
+
+"check_list_anexos": comprovante da compra/pagamento, prints do pedido, comprovante de entrega (se houver), prints de conversas ou protocolos com a loja.
 `;
 
 // --- FUNÇÃO DE CHAMADA SEGURA ---
@@ -227,35 +258,37 @@ exports.handler = async (event) => {
 
         if (!payload) return { statusCode: 400, body: 'Payload inválido' };
 
-        // ============ VERIFICAÇÃO ADMIN ============
+        // ADMIN
         const SENHA_ADMIN = process.env.ADMIN_KEY || null;
         const isAdmin = SENHA_ADMIN && payload.admin_key === SENHA_ADMIN;
-
         if (isAdmin && !payload.order_id) {
             payload.order_id = `ADMIN-${Date.now()}`;
         }
-        // ===========================================
 
         if (!payload.order_id) payload = sanitizePayload(payload);
 
         const orderId = payload.order_id || payload.orderId || null;
 
-        // --- 1. CHECK DE CACHE ---
+        // CACHE
         if (orderId && !preview) {
-            const { data: rows } = await supabase.from('generations').select('output_json').eq('order_id', orderId).limit(1);
+            const { data: rows } = await supabase
+                .from('generations')
+                .select('output_json')
+                .eq('order_id', orderId)
+                .limit(1);
             if (rows && rows.length) {
                 return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
             }
         }
 
-        // --- 2. VERIFICAÇÃO DE "SÓ RECUPERAÇÃO" ---
+        // SÓ RECUPERAÇÃO
         if (!isAdmin) {
             if (!payload.slug && !payload.menor_nome && !payload.nome) {
                 return { statusCode: 404, body: 'Documento ainda não gerado ou não encontrado.' };
             }
         }
 
-        // --- ROTEAMENTO ---
+        // ROTEAMENTO
         let tipo = 'indefinido';
         const payloadStr = JSON.stringify(payload).toLowerCase();
         const slug = String(payload.slug || '').toLowerCase();
@@ -268,6 +301,12 @@ exports.handler = async (event) => {
         }
         else if (slug.includes('reembolso')) {
             tipo = 'reembolso_passagem';
+        }
+        else if (slug.includes('plano-saude') || slug.includes('plano_saude') || slug.includes('negativa-plano-saude')) {
+            tipo = 'plano_saude';
+        }
+        else if (slug.includes('arrependimento')) {
+            tipo = 'arrependimento';
         }
         else if (slug.includes('negativacao')) {
             tipo = 'negativacao';
@@ -289,7 +328,7 @@ exports.handler = async (event) => {
             return { statusCode: 400, body: 'Erro: Tipo de documento não identificado.' };
         }
 
-        // --- MONTAGEM DO PROMPT ---
+        // MONTAGEM DO PROMPT
         let system = SYSTEM_BASE, up = '';
         const LINE = '__________________________';
 
@@ -329,12 +368,45 @@ exports.handler = async (event) => {
             OBJETIVO: Notificação Extrajudicial exigindo 95% de reembolso.`;
             system = SYSTEM_PASSAGEM;
 
+        } else if (tipo === 'plano_saude') {
+            up = `NEGATIVA DE COBERTURA PLANO DE SAÚDE:
+            Beneficiário: ${payload.nome}, CPF ${payload.cpf}, Endereço: ${payload.endereco || ''}, Cidade: ${payload.cidade_uf || ''}.
+            Operadora: ${payload.operadora || ''}. Nº da carteirinha: ${payload.numero_carteira || ''}.
+            Procedimento/Exame/Tratamento: ${payload.procedimento || ''}.
+            Data da solicitação ao plano: ${payload.data_solicitacao || ''}. Protocolo (se houver): ${payload.protocolo || 'Não informado'}.
+            Motivo alegado como abusivo: ${payload.motivo || ''}.`;
+            system = SYSTEM_PLANO_SAUDE;
+
+        } else if (tipo === 'arrependimento') {
+            up = `DIREITO DE ARREPENDIMENTO COMPRA ONLINE:
+            Consumidor: ${payload.nome}, CPF ${payload.cpf}, Endereço: ${payload.endereco || ''}, Cidade: ${payload.cidade_uf || ''}.
+            Loja/Site: ${payload.loja || ''}.
+            Produto/Serviço: ${payload.produto_servico || ''}.
+            Data da compra: ${payload.data_compra || ''}. Data da entrega (se houve): ${payload.data_entrega || 'N/A'}.
+            Valor pago: ${payload.valor || ''}.
+            Meio da compra: ${payload.meio_compra || ''}. Forma de pagamento: ${payload.forma_pagamento || ''}.
+            Contato prévio com a empresa (se houver): ${payload.data_contato || 'Não informado'}.
+            Situação/Motivo do arrependimento: ${payload.motivo || ''}.`;
+            system = SYSTEM_ARREPENDIMENTO;
+
         } else if (tipo === 'bagagem') {
-            up = `BAGAGEM: Passageiro: ${payload.nome}, CPF ${payload.cpf}. Voo: ${payload.cia} ${payload.voo}, Data Voo: ${payload.data_voo}. PIR: ${payload.pir || 'N/A'}. Ocorrência: ${payload.status}. Descrição: ${payload.descricao}. Pedido/Despesas: ${payload.despesas}. Cidade: ${payload.cidade_uf}.`;
+            up = `BAGAGEM:
+            Passageiro: ${payload.nome}, CPF ${payload.cpf}.
+            Voo: ${payload.cia} ${payload.voo}, Data Voo: ${payload.data_voo}.
+            PIR: ${payload.pir || 'N/A'}.
+            Ocorrência: ${payload.status}.
+            Descrição: ${payload.descricao}.
+            Pedido/Despesas: ${payload.despesas}.
+            Cidade: ${payload.cidade_uf}.`;
             system = SYSTEM_BAGAGEM;
 
         } else if (tipo === 'consumo') {
-            up = `CONSUMO: Consumidor: ${payload.nome}, CPF ${payload.cpf}. Loja: ${payload.loja} Pedido: ${payload.pedido} Data: ${payload.data_compra}. Problema: ${payload.motivo}. Detalhes: ${payload.itens}. Local: ${payload.cidade_uf}.`;
+            up = `CONSUMO:
+            Consumidor: ${payload.nome}, CPF ${payload.cpf}.
+            Loja: ${payload.loja} Pedido: ${payload.pedido} Data: ${payload.data_compra}.
+            Problema: ${payload.motivo}.
+            Detalhes: ${payload.itens}.
+            Local: ${payload.cidade_uf}.`;
             system = SYSTEM_CONSUMO;
 
         } else if (tipo === 'consumo_generico') {
@@ -390,7 +462,7 @@ exports.handler = async (event) => {
 
         output = sanitizeOutput(output);
 
-        // --- ASSINATURA / FECHAMENTO ---
+        // FECHAMENTO / ASSINATURA
         if (tipo === 'autorizacao_viagem') {
             const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
             const cidadeData = `${espacoForcado}${payload.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
@@ -409,7 +481,7 @@ exports.handler = async (event) => {
             output.fechamento = `${cidadeData}${assinatura}`;
         }
 
-        // --- SALVAR NO SUPABASE ---
+        // SALVAR NO SUPABASE
         if (orderId && (!preview || isAdmin)) {
             await supabase.from('generations').upsert({
                 order_id: orderId,
