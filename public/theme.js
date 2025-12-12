@@ -9,17 +9,15 @@ function toggleTheme() {
 
 // Load saved theme
 (function () {
-  // 1. Tenta pegar o tema salvo pelo usuário (se ele já clicou no 🌙)
+  // 1. Tenta pegar o tema salvo pelo usuário (se ele já clicou no 🌙 alguma vez)
   const savedTheme = localStorage.getItem('theme');
+
   if (savedTheme) {
+    // Se ele já escolheu um tema antes, respeitamos a escolha dele
     document.documentElement.setAttribute('data-theme', savedTheme);
-    return;
+  } else {
+    // 2. Se é a primeira vez (ou não tem nada salvo):
+    // FORÇAMOS O TEMA CLARO (LIGHT), ignorando se o celular está no modo escuro.
+    document.documentElement.setAttribute('data-theme', 'light');
   }
-
-  // 2. Se não tem nada salvo, detecta o sistema
-  //    (Verifica se o sistema prefere o modo CLARO)
-  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-
-  // 3. Aplica o tema: 'light' se o sistema preferir, senão 'dark'
-  document.documentElement.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
 })();
