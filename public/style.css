@@ -1,3 +1,54 @@
+/* =========================================
+   1. VARIÁVEIS DE COR (PADRÃO LIGHT / BRANCO)
+   ========================================= */
+:root {
+  /* Padrão agora é CLARO (Credibilidade Jurídica) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --card-bg: #ffffff;
+  --card-hover: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border: rgba(15, 23, 42, 0.08);
+  --border-hover: rgba(15, 23, 42, 0.12);
+
+  /* Cores de destaque mantidas */
+  --accent-primary: #3b82f6;
+  --accent-secondary: #06b6d4;
+  --accent-success: #10b981;
+  --accent-error: #ef4444;
+
+  /* Sombras Light */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   2. MODO ESCURO (ATIVADO APENAS SE TIVER O ATRIBUTO)
+   ========================================= */
+html[data-theme="dark"] {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #0f1420;
+  --card-bg: #151923;
+  --card-hover: #1a1f2e;
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: rgba(148, 163, 184, 0.1);
+  --border-hover: rgba(148, 163, 184, 0.2);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+}
+
+/* =========================================
+   3. ESTILOS GERAIS
+   ========================================= */
 .btn-theme,
 .nav-actions,
 .nav-links,
@@ -54,42 +105,6 @@ body {
   overflow: hidden
 }
 
-:root {
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #0f1420;
-  --card-bg: #151923;
-  --card-hover: #1a1f2e;
-  --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border: rgba(148, 163, 184, 0.1);
-  --border-hover: rgba(148, 163, 184, 0.2);
-  --accent-primary: #3b82f6;
-  --accent-secondary: #06b6d4;
-  --accent-success: #10b981;
-  --accent-error: #ef4444;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6)
-}
-
-html[data-theme=light] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --card-bg: #ffffff;
-  --card-hover: #f1f5f9;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-  --border: rgba(15, 23, 42, 0.08);
-  --border-hover: rgba(15, 23, 42, 0.12);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1)
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -110,23 +125,26 @@ body {
   padding: 0 24px
 }
 
+/* NAVBAR AGORA É BRANCA/CLARA POR PADRÃO */
 .navbar {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(10, 14, 26, .8);
+  background: rgba(255, 255, 255, .8);
+  /* Padrão Claro */
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border)
+}
+
+/* NAVBAR ESCURA APENAS SE TEMA FOR DARK */
+html[data-theme="dark"] .navbar {
+  background: rgba(10, 14, 26, .8);
 }
 
 .card,
 .hero,
 .hero-content {
   position: relative
-}
-
-html[data-theme=light] .navbar {
-  background: rgba(255, 255, 255, .8)
 }
 
 .navbar-content {
@@ -811,28 +829,20 @@ input[type=checkbox] {
 }
 
 /* =========================================
-   CORREÇÕES MOBILE (Adicionar no final do style.css)
+   CORREÇÕES MOBILE
    ========================================= */
-
 @media (max-width: 768px) {
-
-  /* 1. Arrumar a Prévia "Espremida" */
   #previewBox {
     padding: 20px 16px !important;
-    /* Reduz drasticamente a margem interna */
     font-size: 14px !important;
-    /* Ajusta a fonte para leitura móvel */
     width: 100% !important;
     box-sizing: border-box !important;
   }
 
   #previewWrap {
     padding: 20px 12px !important;
-    /* Reduz o espaçamento do container cinza */
   }
 
-  /* 2. Arrumar o Input de E-mail no Success */
-  /* Transforma a linha em coluna: Input em cima, Botão embaixo */
   #email-section>div {
     flex-direction: column !important;
   }
@@ -840,24 +850,19 @@ input[type=checkbox] {
   #email-input {
     width: 100% !important;
     margin-bottom: 10px;
-    /* Espaço entre o input e o botão */
     height: 48px;
-    /* Altura boa para o dedo */
   }
 
   #email-button {
     width: 100% !important;
-    /* Botão largura total */
     height: 48px;
     justify-content: center;
   }
 }
 
 /* =========================================
-   NOVO: WhatsApp Flutuante & Promoção
+   WHATSAPP & PROMO
    ========================================= */
-
-/* Botão WhatsApp */
 .whatsapp-float {
   position: fixed;
   bottom: 20px;
@@ -889,10 +894,8 @@ input[type=checkbox] {
   fill: white;
 }
 
-/* Badge de Preço (De 29 por 9) */
 .price-badge {
   background: #fef2f2;
-  /* Fundo vermelho bem claro */
   border: 1px solid #fecaca;
   color: #991b1b;
   padding: 12px;
@@ -915,7 +918,6 @@ input[type=checkbox] {
   font-weight: 800;
   font-size: 18px;
   color: #16a34a;
-  /* Verde sucesso */
   margin-left: 6px;
 }
 
@@ -926,8 +928,7 @@ input[type=checkbox] {
   display: block;
 }
 
-/* ====== Multi-step formulário viagem (passos) ====== */
-
+/* ====== Multi-step formulário viagem ====== */
 .step-indicator {
   display: flex;
   flex-wrap: wrap;
@@ -990,21 +991,23 @@ input[type=checkbox] {
   }
 }
 
-/* Bloco de segurança jurídica / legal note */
+/* =========================================
+   LEGAL NOTE (Invertida também)
+   ========================================= */
+/* Padrão CLARO */
 .legal-note {
   padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.5);
-  color: #e5e7eb;
+  background: #e0f2fe;
+  /* Azul claro */
+  border-color: #bae6fd;
+  color: #0f172a;
 }
 
-/* Ajuste específico para o tema claro (melhor contraste) */
-html[data-theme=light] .legal-note {
-  background: #e0f2fe;
-  /* azul bem claro */
-  border-color: #bae6fd;
-  /* borda azul clara */
-  color: #0f172a;
-  /* texto escuro */
+/* Dark Mode APENAS se ativado */
+html[data-theme="dark"] .legal-note {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: var(--border);
+  color: #e5e7eb;
 }
