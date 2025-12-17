@@ -98,6 +98,46 @@ const PRICE_MAP = {
     "carta-bagagem-danificada": 9.90
 };
 
+/**
+ * Grava log de aceite de termos/aviso no Supabase.
+ * Não bloqueia o fluxo de pagamento em caso de erro.
+ */
+async function logConsent(supabase, orderId, payload, event, slug) {
+    try {
+        if (!payload || !payload.accepted_terms) {
+            // Se o front não enviou aceite, não grava nada
+            return;
+        }
+
+        const headers = event.headers || {};
+
+        const ip =
+            headers['x-nf-client-connection-ip'] ||
+            (headers['x-forwarded-for'] || '').split(',')[0] ||
+            null;
+
+        const userAgent = headers['user-agent'] || null;
+
+        const { error } = await supabase.from('consent_logs').insert({
+            order_id: orderId,
+            slug: slug || (payload.slug || 'documento'),
+            accepted_terms: true,
+            terms_version: payload.terms_version || null,
+            accepted_at: payload.accepted_at || new Date().toISOString(),
+            ip,
+            user_agent: userAgent,
+            email: payload.email || null,
+            telefone: payload.telefone || null
+        });
+
+        if (error) {
+            console.error('Erro ao salvar consentimento:', error);
+        }
+    } catch (err) {
+        console.error('Exceção ao salvar consentimento:', err);
+    }
+}
+
 exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
@@ -127,6 +167,9 @@ exports.handler = async (event) => {
             console.error('Erro ao salvar intent no Supabase:', e);
             // Não bloqueia o fluxo se o log falhar, mas é ideal que funcione
         }
+
+        // NOVO: grava log de consentimento (se houver) – não bloqueia fluxo
+        await logConsent(supabase, orderId, payload || {}, event, slug);
 
         const pref = {
             items: [

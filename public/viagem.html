@@ -452,6 +452,7 @@
                                             reconhecimento
                                             de firma por autenticidade ou autorização judicial específica).</li>
                                     </ul>
+                                    <input type="hidden" id="terms_version" value="viagem-2025-02-v1">
                                     <label class="small"
                                         style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;">
                                         <input type="checkbox" id="aceite_termos"
@@ -686,6 +687,16 @@
                 email: document.getElementById('email').value.trim(),
                 telefone: document.getElementById('telefone').value.trim(),
                 observacoes: '',
+
+                // >>> campos novos de aceite <<<
+                accepted_terms: document.getElementById('aceite_termos')
+                    ? document.getElementById('aceite_termos').checked
+                    : false,
+                terms_version: document.getElementById('terms_version')
+                    ? document.getElementById('terms_version').value
+                    : null,
+                accepted_at: new Date().toISOString(),
+
                 utm: (window.LMUTM ? LMUTM.get() : {})
             };
         }
