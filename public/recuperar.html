@@ -83,7 +83,7 @@
       // Funções de copiar e zap
       btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar'; }, 1200); } catch (e) { } };
       btnZap.onclick = function () { var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText); window.open(url, '_blank'); };
-      btnSuporte.href = 'https://wa.me/5547991323024?text=' + encodeURIComponent('Oi! Preciso de ajuda com meu documento. Pedido: ' + (orderId || ''));
+      btnSuporte.href = 'https://wa.me/5547988616874?text=' + encodeURIComponent('Oi! Preciso de ajuda com meu documento. Pedido: ' + (orderId || ''));
     }
 
     // --- Função Principal para carregar o documento ---
