@@ -130,7 +130,6 @@
             <div style="max-width: 800px; margin: 0 auto;">
                 <div class="card">
 
-                    <!-- AVISO JURÍDICO PRINCIPAL -->
                     <div class="small"
                         style="margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: var(--card-hover); border: 1px solid var(--border);">
                         <strong>Aviso jurídico importante:</strong><br>
@@ -145,40 +144,6 @@
                         ou a Vara da Infância e Juventude.
                     </div>
 
-                    <!-- Info prática de documentos -->
-                    <div
-                        style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
-                        <p class="small" style="margin: 0; color: var(--text-secondary);">
-                            <strong>Documentos aceitos para embarque (em regra):</strong><br>
-                            • Criança (Nacional): Certidão de Nascimento ou RG.<br>
-                            • Criança (Internacional): Passaporte (ou RG para Mercosul).<br>
-                            • Adultos: RG, CNH, Passaporte ou Carteira de Trabalho.<br>
-                            <span style="opacity:.8;">As exigências podem variar conforme a companhia de transporte
-                                e as autoridades do país de destino.</span>
-                        </p>
-                    </div>
-
-                    <!-- Segurança jurídica / valor -->
-                    <div class="small legal-note" style="margin-bottom: 16px;">
-                        <p class="small" style="margin: 0;">
-                            • Texto elaborado com base na <strong>Resolução CNJ nº 295/2019</strong> e nas exigências da
-                            <strong>Polícia Federal</strong> (modelo de uso geral, que não substitui orientação jurídica
-                            individual).<br>
-                            • Serve para viagens <strong>nacionais e internacionais</strong>, com um dos pais, terceiros
-                            ou desacompanhado, desde que respeitadas as regras específicas de cada órgão.<br>
-                            • Documento em <strong>PDF e Word</strong>, pronto para imprimir, assinar e reconhecer firma
-                            em cartório.
-                        </p>
-                    </div>
-
-                    <div class="small"
-                        style="margin-bottom: 24px; padding: 12px 14px; border-radius: 10px; background: var(--card-hover); border: 1px solid var(--border);">
-                        <strong>Por R$ 9,90 (pagamento único)</strong>, você recebe:<br>
-                        • Autorização personalizada com os seus dados.<br>
-                        • Arquivos em PDF e Word para editar, imprimir e assinar.<br>
-                        • Suporte por WhatsApp em caso de dúvidas sobre o uso do modelo.
-                    </div>
-
                     <p class="small" style="margin-bottom:16px;color:var(--text-muted);">
                         Não precisa criar conta nem fazer login. Tenha em mãos apenas:
                         os dados do menor, de quem vai acompanhar na viagem, as datas de ida e volta e a
@@ -186,7 +151,6 @@
                     </p>
 
                     <div id="formArea">
-                        <!-- Indicador de passos -->
                         <div class="step-indicator">
                             <div class="step-item" data-step="1">1. Menor e viagem</div>
                             <div class="step-item" data-step="2">2. Acompanhante</div>
@@ -194,7 +158,6 @@
                             <div class="step-item" data-step="4">4. Local e contatos</div>
                         </div>
 
-                        <!-- PASSO 1 -->
                         <div class="form-step" data-step="1" id="step-1">
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Dados do menor</h2>
 
@@ -225,7 +188,6 @@
                                 <option value="internacional">Internacional</option>
                             </select>
                             <p id="viagem_tipo_aviso" class="small" style="margin-top:8px;color:var(--text-muted);">
-                                <!-- texto preenchido via JS conforme o tipo -->
                             </p>
 
                             <label class="label">Destino <span class="required-star">*</span></label>
@@ -259,7 +221,6 @@
                             </div>
                         </div>
 
-                        <!-- PASSO 2 -->
                         <div class="form-step" data-step="2" id="step-2">
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Acompanhante</h2>
                             <p class="small" style="margin-top:-8px;margin-bottom:12px;">
@@ -311,7 +272,6 @@
                             </div>
                         </div>
 
-                        <!-- PASSO 3 -->
                         <div class="form-step" data-step="3" id="step-3">
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">
                                 Responsável(veis) que AUTORIZAM (assinam)
@@ -392,7 +352,6 @@
                             </div>
                         </div>
 
-                        <!-- PASSO 4 -->
                         <div class="form-step" data-step="4" id="step-4">
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Local e contatos
                             </h2>
@@ -435,7 +394,6 @@
                             <div id="paySection"
                                 style="display:none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
 
-                                <!-- AVISO + CHECKBOX ANTES DO PAGAMENTO -->
                                 <div class="small"
                                     style="margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: var(--bg-secondary); border: 1px solid var(--border);">
                                     <p style="margin:0 0 8px;">
@@ -485,7 +443,6 @@
                         </div>
                     </div>
 
-                    <!-- PRÉVIA DO DOCUMENTO -->
                     <div id="previewWrap"
                         style="display:none; margin-top:32px; padding-top:32px; border-top:1px solid var(--border);">
                         <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">Prévia do documento
@@ -504,7 +461,44 @@
                         </p>
                     </div>
 
-                    <!-- Depoimentos + Mini FAQ -->
+                    <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
+                        <div
+                            style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                            <p class="small" style="margin: 0; color: var(--text-secondary);">
+                                <strong>Documentos aceitos para embarque (em regra):</strong><br>
+                                • Criança (Nacional): Certidão de Nascimento ou RG.<br>
+                                • Criança (Internacional): Passaporte (ou RG para Mercosul).<br>
+                                • Adultos: RG, CNH, Passaporte ou Carteira de Trabalho.<br>
+                                <span style="opacity:.8;">As exigências podem variar conforme a companhia de transporte
+                                    e as autoridades do país de destino.</span>
+                            </p>
+                        </div>
+
+                        <div class="small legal-note" style="margin-bottom: 16px;">
+                            <p class="small" style="margin: 0;">
+                                • Texto elaborado com base na <strong>Resolução CNJ nº 295/2019</strong> e nas
+                                exigências da
+                                <strong>Polícia Federal</strong> (modelo de uso geral, que não substitui orientação
+                                jurídica
+                                individual).<br>
+                                • Serve para viagens <strong>nacionais e internacionais</strong>, com um dos pais,
+                                terceiros
+                                ou desacompanhado, desde que respeitadas as regras específicas de cada órgão.<br>
+                                • Documento em <strong>PDF e Word</strong>, pronto para imprimir, assinar e reconhecer
+                                firma
+                                em cartório.
+                            </p>
+                        </div>
+
+                        <div class="small"
+                            style="margin-bottom: 24px; padding: 12px 14px; border-radius: 10px; background: var(--card-hover); border: 1px solid var(--border);">
+                            <strong>Por R$ 9,90 (pagamento único)</strong>, você recebe:<br>
+                            • Autorização personalizada com os seus dados.<br>
+                            • Arquivos em PDF e Word para editar, imprimir e assinar.<br>
+                            • Suporte por WhatsApp em caso de dúvidas sobre o uso do modelo.
+                        </div>
+                    </div>
+
                     <div style="margin-top:32px;border-top:1px solid var(--border);padding-top:24px;">
                         <h2 class="section-title" style="font-size: 22px; margin-bottom: 16px;">
                             O que outros pais dizem
