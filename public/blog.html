@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title>Central de Ajuda Jurídica e Modelos | CartasApp</title>
     <meta name="description"
-        content="Acesse nossa biblioteca de modelos jurídicos: recursos de multas (CTB), autorização de viagem para menores, cancelamento de contratos e direitos do consumidor." />
+        content="Acesse nossa biblioteca de modelos jurídicos e guias completos: recursos de multas (CTB), autorização de viagem para menores, cancelamento de contratos e direitos do consumidor." />
 
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script src="/theme.js"></script>
@@ -71,6 +71,20 @@
             display: none;
             color: var(--text-muted);
         }
+
+        /* Estilo para links de artigos */
+        .article-link {
+            text-decoration: none;
+            color: var(--accent-primary);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .article-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -105,15 +119,63 @@
 
     <div class="search-box">
         <input type="text" id="filterInput" class="search-input-blog"
-            placeholder="🔎 Digite para buscar (ex: multa, latam, smart fit)...">
+            placeholder="🔎 Digite para buscar (ex: multa, latam, smart fit, menor)...">
     </div>
 
     <div class="container" style="padding-bottom: 80px;">
 
+        <div class="category-group" data-category="guias">
+            <h2
+                style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--text-primary);">
+                📖 Guias e Artigos (Leitura)
+            </h2>
+            <div class="grid" style="margin-bottom: 60px;">
+
+                <article class="card searchable-card" data-tags="idade viajar sozinho 14 15 16 17 anos onibus aviao">
+                    <h3 class="card-title">Com quantos anos pode viajar sozinho?</h3>
+                    <p class="card-description">Guia completo 2025: regras para adolescentes de 12 a 17 anos em viagens
+                        nacionais e internacionais.</p>
+                    <div class="card-footer">
+                        <a href="/regras-idade-viagem.html" class="article-link">Ler Artigo →</a>
+                    </div>
+                </article>
+
+                <article class="card searchable-card"
+                    data-tags="viajar com avó tio irmão padrinho autorização parentesco">
+                    <h3 class="card-title">Viajar com Avós, Tios ou Padrinhos</h3>
+                    <p class="card-description">Entenda quando a autorização é obrigatória e quando apenas a certidão de
+                        nascimento basta.</p>
+                    <div class="card-footer">
+                        <a href="/viagem-avo-tio.html" class="article-link">Ler Artigo →</a>
+                    </div>
+                </article>
+
+                <article class="card searchable-card"
+                    data-tags="viagem internacional exterior passaporte policia federal">
+                    <h3 class="card-title">Viagem Internacional com Menor</h3>
+                    <p class="card-description">Vai para o exterior? Veja as exigências da Polícia Federal e o modelo de
+                        autorização bilíngue.</p>
+                    <div class="card-footer">
+                        <a href="/viagem-internacional.html" class="article-link">Ler Artigo →</a>
+                    </div>
+                </article>
+
+                <article class="card searchable-card" data-tags="faq perguntas duvidas cartorio firma reconhecida">
+                    <h3 class="card-title">Perguntas Frequentes (Viagem)</h3>
+                    <p class="card-description">Precisa reconhecer firma? Quantas vias imprimir? Tire suas dúvidas antes
+                        de ir ao cartório.</p>
+                    <div class="card-footer">
+                        <a href="/autorizacao-viagem-faq.html" class="article-link">Ver FAQ →</a>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+
         <div class="category-group" data-category="multa">
             <h2
                 style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--text-primary);">
-                🚗 Multas e Direito de Trânsito (CTB)
+                🚗 Geradores de Recurso de Multa
             </h2>
             <div class="grid" style="margin-bottom: 60px;">
                 <article class="card searchable-card" data-tags="multa transito recurso defesa ctb velocidade radar">
@@ -142,7 +204,7 @@
         <div class="category-group" data-category="viagem">
             <h2
                 style="font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--text-primary);">
-                ✈️ Viagem com Menores (Res. CNJ)
+                ✈️ Modelos de Autorização de Viagem
             </h2>
             <div class="grid" style="margin-bottom: 60px;">
                 <article class="card searchable-card"
@@ -224,23 +286,55 @@
             <p>Tente buscar por palavras como "multa", "viagem", "mala" ou "cancelar".</p>
         </div>
 
+        <div class="seo-content" style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border);">
+            <h2 style="font-size: 28px; margin-bottom: 24px;">Biblioteca de Direitos e Modelos Jurídicos</h2>
+
+            <div
+                style="column-count: 2; column-gap: 40px; font-size: 15px; line-height: 1.8; color: var(--text-secondary);">
+
+                <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 12px;">⚖️ Seus Direitos no
+                    Consumidor</h3>
+                <p>Muitos consumidores desconhecem que podem cancelar contratos de fidelidade de academias e telefonia
+                    sem pagar multas abusivas se houver falha na prestação do serviço ou mudança de endereço. O Código
+                    de Defesa do Consumidor (CDC) garante o direito à informação clara e à rescisão contratual. Nossos
+                    modelos de cartas utilizam a legislação vigente para formalizar seu pedido e servir de prova em caso
+                    de processo judicial ou reclamação no Procon.</p>
+
+                <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 12px; margin-top: 24px;">✈️
+                    Regras para Viajar com Crianças</h3>
+                <p>A Resolução nº 295/2019 do CNJ estabelece que menores de 16 anos não podem viajar para fora da
+                    comarca de residência desacompanhados sem autorização judicial ou extrajudicial. Para viagens aéreas
+                    ou terrestres, a autorização de viagem assinada pelos pais com firma reconhecida é o documento
+                    padrão aceito em todo o território nacional. Em viagens internacionais, a regra é ainda mais rígida,
+                    exigindo autorização de ambos os genitores para evitar subtração internacional de menores.</p>
+
+                <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 12px; margin-top: 24px;">🚗
+                    Recursos de Multas de Trânsito</h3>
+                <p>Recorrer de uma multa de trânsito é um direito de todo condutor. Seja por infração de velocidade,
+                    estacionamento ou Lei Seca, o processo administrativo permite a Defesa Prévia, Recurso à JARI (1ª
+                    instância) e ao CETRAN (2ª instância). Argumentos técnicos baseados no Código de Trânsito Brasileiro
+                    (CTB), como a aferição do radar pelo INMETRO ou a sinalização da via, são essenciais para o
+                    deferimento do recurso.</p>
+            </div>
+        </div>
+
     </div>
 
     <footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <p>
-                Este site não presta aconselhamento jurídico. Leia os
-                <a href="/termos.html" class="footer-link">Termos de Uso</a>,
-                <a href="/privacidade.html" class="footer-link">Política de Privacidade</a>,
-                conheça mais em
-                <a href="/sobre.html" class="footer-link">Sobre o CartasApp</a>
-                e visite nossa
-                <a href="/blog.html" class="footer-link">Central de Ajuda</a>.
-            </p>
+        <div class="container">
+            <div class="footer-content">
+                <p>
+                    Este site não presta aconselhamento jurídico. Leia os
+                    <a href="/termos.html" class="footer-link">Termos de Uso</a>,
+                    <a href="/privacidade.html" class="footer-link">Política de Privacidade</a>,
+                    conheça mais em
+                    <a href="/sobre.html" class="footer-link">Sobre o CartasApp</a>
+                    e visite nossa
+                    <a href="/blog.html" class="footer-link">Central de Ajuda</a>.
+                </p>
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
