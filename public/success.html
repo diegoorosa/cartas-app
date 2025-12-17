@@ -21,25 +21,41 @@
             y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
         })(window, document, "clarity", "script", "u4x90t35gk");
     </script>
-    <title>Documento pronto</title>
+    <title>Modelo de documento gerado | CartasApp</title>
 </head>
 
 <body>
     <div class="container">
         <div class="card">
-            <h1 style="margin-bottom: 8px;">Documento gerado (ou em processamento)</h1>
+            <h1 style="margin-bottom: 8px;">Modelo de documento gerado (ou em processamento)</h1>
 
             <p class="small" style="margin-bottom: 12px; color: var(--text-secondary);">
-                Use esta página para acompanhar a confirmação do pagamento e acessar o seu documento.
+                Use esta página para acompanhar a confirmação do pagamento e acessar o modelo do seu documento.
                 A mensagem logo abaixo será atualizada automaticamente pelo sistema.
             </p>
+
+            <!-- aviso geral sobre natureza do serviço -->
+            <div class="small" style="margin-bottom: 12px; padding: 10px 12px; border-radius: 8px;
+                        background: var(--bg-secondary); border: 1px solid var(--border);">
+                <strong>Aviso importante:</strong>
+                este é um <strong>modelo de documento</strong> gerado automaticamente a partir
+                das informações que você informou. O CartasApp não presta assessoria jurídica
+                individual, não analisa situações concretas de processos, guarda ou contratos
+                e <strong>não garante que o modelo será aceito</strong> por órgãos públicos, cartórios,
+                empresas ou autoridades. A responsabilidade pela conferência do conteúdo e pelo
+                uso do documento é exclusivamente do usuário.
+            </div>
+
+            <!-- aviso específico, preenchido via JS conforme o tipo de documento -->
+            <div id="slug-warning" class="small" style="display:none; margin-bottom: 12px; padding: 10px 12px; border-radius: 8px;
+                        background: var(--card-hover); border: 1px dashed var(--border);">
+            </div>
 
             <!-- mensagem dinâmica controlada pelo JS -->
             <p id="info" class="small" style="margin-bottom: 8px;"></p>
 
             <!-- bloco mostrado quando o pagamento não foi concluído -->
-            <div id="retry"
-                 style="display:none; margin:10px 0; gap:8px; flex-wrap:wrap">
+            <div id="retry" style="display:none; margin:10px 0; gap:8px; flex-wrap:wrap">
                 <button class="btn" id="btnBack">Voltar ao formulário</button>
                 <button class="btn btn-outline" id="btnPay">Pagar agora</button>
             </div>
@@ -48,8 +64,7 @@
             <div id="doc" class="preview" style="display:none" data-clarity-mask="true"></div>
 
             <!-- botões de ação sobre o documento -->
-            <div id="actions"
-                 style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap">
+            <div id="actions" style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap">
                 <button class="btn" id="btnCopiar">Copiar</button>
                 <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
                 <button class="btn btn-outline" id="btnPdf">Baixar .PDF</button>
@@ -60,27 +75,28 @@
             </div>
 
             <!-- próximos passos / instruções genéricas -->
-            <div class="small"
-                 style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
+            <div class="small" style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
                 <strong>O que fazer agora?</strong>
                 <ol style="margin:8px 0 0 18px; padding:0;">
-                    <li>Assim que o texto aparecer acima, revise se todos os dados estão corretos.</li>
+                    <li>Assim que o texto aparecer acima, revise com atenção se todos os dados estão corretos.</li>
                     <li>Use os botões para <strong>baixar em Word/PDF</strong> e salvar em um lugar seguro.</li>
                     <li>Envie o documento por <strong>e-mail ou WhatsApp</strong> e, se necessário, leve impresso
-                        (cartório, empresa, companhia aérea, órgão de trânsito etc.).</li>
+                        (cartório, empresa, companhia aérea, órgão de trânsito, órgão público etc.).</li>
+                    <li>Verifique sempre com a instituição/autoridade responsável (cartório, órgão público,
+                        empresa, Polícia Federal, companhia aérea, juiz etc.) se o modelo atende às
+                        <strong>exigências específicas</strong> do seu caso antes de utilizar.
+                    </li>
                 </ol>
             </div>
 
             <!-- envio por e-mail -->
             <div id="email-section"
-                 style="display:none; margin-top:24px; padding-top:24px; border-top: 1px solid var(--border);">
+                style="display:none; margin-top:24px; padding-top:24px; border-top: 1px solid var(--border);">
                 <label class="label" style="margin-top:0;">Enviar por e-mail</label>
                 <div style="display:flex; gap:8px;">
-                    <input class="input" id="email-input" type="email"
-                           placeholder="digite_seu_email@exemplo.com"
-                           style="flex:1;">
-                    <button class="btn btn-secondary" id="email-button"
-                            style="padding-left:16px; padding-right:16px;">
+                    <input class="input" id="email-input" type="email" placeholder="digite_seu_email@exemplo.com"
+                        style="flex:1;">
+                    <button class="btn btn-secondary" id="email-button" style="padding-left:16px; padding-right:16px;">
                         Enviar
                     </button>
                 </div>
@@ -88,8 +104,7 @@
             </div>
 
             <!-- navegação extra -->
-            <div id="nav-extra"
-                 style="display:none; gap:8px; margin-top:24px; padding-top:24px;
+            <div id="nav-extra" style="display:none; gap:8px; margin-top:24px; padding-top:24px;
                         border-top: 1px solid var(--border); flex-wrap:wrap">
                 <a class="btn btn-primary" id="btnNovoDoc">Gerar Novo Documento</a>
                 <a href="/" class="btn btn-outline">Voltar ao Início</a>
@@ -103,64 +118,56 @@
 
             <!-- mini disclaimer interno -->
             <div class="small" style="margin-top:16px; opacity:.9">
-                Este site não presta aconselhamento jurídico. Leia os
-                <a href="/termos.html" style="text-decoration:underline">Termos de Uso</a>.
+                Este site não presta aconselhamento jurídico individual, nem garante a aceitação
+                dos documentos gerados por órgãos públicos, cartórios, empresas ou autoridades.
+                Leia os <a href="/termos.html" style="text-decoration:underline">Termos de Uso</a>.
             </div>
 
             <!-- seção de outros documentos sugeridos (upsell genérico) -->
-            <div id="extra-docs"
-                 style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
-                <h2 class="section-title"
-                    style="font-size:20px; margin-bottom:12px;">
+            <div id="extra-docs" style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
+                <h2 class="section-title" style="font-size:20px; margin-bottom:12px;">
                     Outros documentos que podem te ajudar
                 </h2>
 
                 <div style="display:grid; gap:12px;">
-                    <a href="/viagem.html"
-                       data-doc="viagem"
-                       style="display:block; text-decoration:none; padding:12px 14px;
+                    <a href="/viagem.html" data-doc="viagem" style="display:block; text-decoration:none; padding:12px 14px;
                               border-radius:12px; border:1px solid var(--border);
                               background:var(--bg-secondary);">
                         <div class="small" style="font-weight:600; margin-bottom:4px;">
                             Autorização de Viagem para Menor
                         </div>
                         <div class="small" style="color:var(--text-secondary);">
-                            Modelo alinhado às exigências da Polícia Federal / CNJ, pronto para
-                            imprimir e reconhecer firma.
+                            Modelo de autorização baseado nas orientações da Polícia Federal e do CNJ,
+                            para imprimir, assinar e reconhecer firma. A aceitação do documento depende
+                            das autoridades responsáveis pela viagem.
                         </div>
                     </a>
 
-                    <a href="/multa.html"
-                       data-doc="multa"
-                       style="display:block; text-decoration:none; padding:12px 14px;
+                    <a href="/multa.html" data-doc="multa" style="display:block; text-decoration:none; padding:12px 14px;
                               border-radius:12px; border:1px solid var(--border);
                               background:var(--bg-secondary);">
                         <div class="small" style="font-weight:600; margin-bottom:4px;">
                             Recurso de Multa de Trânsito
                         </div>
                         <div class="small" style="color:var(--text-secondary);">
-                            Gere um recurso personalizado com base na sua situação para tentar
-                            evitar pontos e valores indevidos.
+                            Gere um modelo de recurso personalizado com base na sua situação
+                            para apresentar ao órgão de trânsito.
                         </div>
                     </a>
 
-                    <a href="/reembolso-cancelamento-passagem.html"
-                       data-doc="reembolso"
-                       style="display:block; text-decoration:none; padding:12px 14px;
+                    <a href="/reembolso-cancelamento-passagem.html" data-doc="reembolso" style="display:block; text-decoration:none; padding:12px 14px;
                               border-radius:12px; border:1px solid var(--border);
                               background:var(--bg-secondary);">
                         <div class="small" style="font-weight:600; margin-bottom:4px;">
                             Reembolso de Passagem Aérea
                         </div>
                         <div class="small" style="color:var(--text-secondary);">
-                            Carta para pedir reembolso quando a companhia desconta mais do que
-                            os 5% previstos em lei.
+                            Carta-modelo para pedir reembolso quando a companhia desconta mais
+                            do que o permitido, para você adaptar ao seu caso.
                         </div>
                     </a>
 
-                    <a href="/bagagem.html"
-                       data-doc="bagagem"
-                       style="display:block; text-decoration:none; padding:12px 14px;
+                    <a href="/bagagem.html" data-doc="bagagem" style="display:block; text-decoration:none; padding:12px 14px;
                               border-radius:12px; border:1px solid var(--border);
                               background:var(--bg-secondary);">
                         <div class="small" style="font-weight:600; margin-bottom:4px;">
@@ -177,20 +184,20 @@
     </div>
 
     <footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <p>
-                Este site não presta aconselhamento jurídico. Leia os
-                <a href="/termos.html" class="footer-link">Termos de Uso</a>,
-                <a href="/privacidade.html" class="footer-link">Política de Privacidade</a>,
-                conheça mais em
-                <a href="/sobre.html" class="footer-link">Sobre o CartasApp</a>
-                e visite nossa
-                <a href="/blog.html" class="footer-link">Central de Ajuda</a>.
-            </p>
+        <div class="container">
+            <div class="footer-content">
+                <p>
+                    Este site não presta aconselhamento jurídico. Leia os
+                    <a href="/termos.html" class="footer-link">Termos de Uso</a>,
+                    <a href="/privacidade.html" class="footer-link">Política de Privacidade</a>,
+                    conheça mais em
+                    <a href="/sobre.html" class="footer-link">Sobre o CartasApp</a>
+                    e visite nossa
+                    <a href="/blog.html" class="footer-link">Central de Ajuda</a>.
+                </p>
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
     <script src="/recovery.js"></script>
     <script>
@@ -199,6 +206,26 @@
         var orderId = qs('o');
         var slug = qs('slug');
         var s = qs('s');
+
+        // aviso específico por tipo de documento
+        (function () {
+            var box = document.getElementById('slug-warning');
+            if (!box) return;
+            var sl = (slug || '').toLowerCase();
+
+            if (sl.indexOf('viagem') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for uma autorização de viagem para menor:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se apenas de um <strong>modelo de autorização</strong>; revise todo o texto antes de assinar ou reconhecer firma;</li>' +
+                    '<li>para viagens nacionais, em regra é exigida autorização com firma reconhecida, mas companhias aéreas/rodoviárias podem impor regras adicionais;</li>' +
+                    '<li>para viagens internacionais, podem ser exigidos documentos complementares, como autorização em formulário próprio, tradução/bilíngue, passaporte válido e até <strong>autorização judicial específica</strong> — confirme sempre com a Polícia Federal, a companhia aérea e o consulado do país de destino;</li>' +
+                    '<li>em situações de guarda, disputa entre os pais ou dúvidas jurídicas, procure a Vara da Infância e Juventude ou um advogado.</li>' +
+                    '</ul>';
+            }
+        })();
+
         var info = document.getElementById('info');
         var retry = document.getElementById('retry');
         var btnBack = document.getElementById('btnBack');
@@ -360,7 +387,7 @@
                             });
 
                             if (rs2.ok) {
-                                var js2 = await rs.json();
+                                var js2 = await rs2.json();
                                 if (js2 && js2.output) {
                                     var fullTextS2 = renderDocText(js2.output, null);
                                     docBox.textContent = fullTextS2;
