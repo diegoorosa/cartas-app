@@ -936,9 +936,11 @@
                     btnPreview.style.display = 'none';
 
                     setTimeout(function () {
-                        var paySec = document.getElementById('paySection');
-                        if (paySec) {
-                            paySec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        var checkbox = document.getElementById('aceite_termos');
+                        if (checkbox) {
+                            // "block: 'center'" coloca o checkbox no MEIO da tela.
+                            // Isso garante que o botão de pagar e o topo da prévia apareçam logo abaixo.
+                            checkbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     }, 100);
 
