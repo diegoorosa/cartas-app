@@ -321,11 +321,9 @@
             LMRecovery.saveGeneratedDoc({ html: bodyHtml, payload: payload || null, meta: { type: (payload && payload.tipo) || slug || '', orderId: orderId || '', filename: 'documento' } });
             localStorage.removeItem('pendingPayload');
 
-            // --- CORREÇÃO DO BOTÃO "GERAR NOVO DOCUMENTO" ---
             if (btnNovoDoc) {
                 btnNovoDoc.href = getPageUrl(slug);
             }
-            // -----------------------------------------------
 
             if (navExtra) navExtra.style.display = 'flex';
 
@@ -382,6 +380,25 @@
             };
         }
 
+        // função auxiliar: mostra documento, ações e faz scroll
+        function showDocAndScroll(fullText, payload) {
+            if (docBox) {
+                docBox.innerHTML = htmlBodyFromText(fullText);
+            }
+            if (docWrapper) {
+                docWrapper.style.display = 'block';
+                // scroll suave até a prévia — ajuda muito no celular
+                setTimeout(function () {
+                    docWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 150);
+            }
+            if (actions) actions.style.display = 'flex';
+            if (info) {
+                info.textContent = 'Documento gerado! Role a página para baixo para revisar e baixar em PDF/Word.';
+            }
+            attachActions(fullText, payload || null);
+        }
+
         async function gerarFinalIdempotente() {
             try {
                 if (info) info.textContent = 'Gerando seu documento...';
@@ -399,11 +416,7 @@
                                 var js = await rs.json();
                                 if (js && js.output) {
                                     var fullTextS = renderDocText(js.output, null);
-                                    docBox.innerHTML = htmlBodyFromText(fullTextS);
-                                    if (docWrapper) docWrapper.style.display = 'block';
-                                    actions.style.display = 'flex';
-                                    if (info) info.textContent = '';
-                                    attachActions(fullTextS, null);
+                                    showDocAndScroll(fullTextS, null);
                                     return;
                                 }
                             }
@@ -427,11 +440,7 @@
                                 var js2 = await rs2.json();
                                 if (js2 && js2.output) {
                                     var fullTextS2 = renderDocText(js2.output, null);
-                                    docBox.innerHTML = htmlBodyFromText(fullTextS2);
-                                    if (docWrapper) docWrapper.style.display = 'block';
-                                    actions.style.display = 'flex';
-                                    if (info) info.textContent = '';
-                                    attachActions(fullTextS2, null);
+                                    showDocAndScroll(fullTextS2, null);
                                     return;
                                 }
                             }
@@ -454,18 +463,54 @@
                 var out = data.output || data;
 
                 var fullText = renderDocText(out, payload);
-                docBox.innerHTML = htmlBodyFromText(fullText);
-                if (docWrapper) docWrapper.style.display = 'block';
-                actions.style.display = 'flex';
-                if (info) info.textContent = '';
-                attachActions(fullText, payload);
+                showDocAndScroll(fullText, payload);
 
             } catch (e) {
                 if (info) info.textContent = 'Falha ao preparar o documento. Tente novamente em instantes.';
                 if (retry) retry.style.display = 'flex';
             }
         }
-        async function sendConversionEC() { var ec = await buildECData(); gtag('event', 'conversion', { send_to: SEND_TO_CONVERSAO, value: 9.9, currency: 'BRL', transaction_id: orderId, user_data: ec }); } async function flow() { if (s === 'failure') { info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.'; retry.style.display = 'flex'; return; } info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...'; if (!orderId) { info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.'; retry.style.display = 'flex'; return; } var start = Date.now(); while (Date.now() - start < 60000) { var st = await getOrderStatus().catch(function () { return null; }); if (st && st.status === 'paid') { if (onceConv(orderId)) { await sendConversionEC(); } info.textContent = 'Pagamento confirmado. Gerando seu documento...'; await gerarFinalIdempotente(); return; } await new Promise(function (r) { setTimeout(r, 2000); }); } info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.'; retry.style.display = 'flex'; } flow();
+
+        async function sendConversionEC() {
+            var ec = await buildECData();
+            gtag('event', 'conversion', {
+                send_to: SEND_TO_CONVERSAO,
+                value: 9.9,
+                currency: 'BRL',
+                transaction_id: orderId,
+                user_data: ec
+            });
+        }
+
+        async function flow() {
+            if (s === 'failure') {
+                info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.';
+                retry.style.display = 'flex';
+                return;
+            }
+            info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
+            if (!orderId) {
+                info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.';
+                retry.style.display = 'flex';
+                return;
+            }
+            var start = Date.now();
+            while (Date.now() - start < 60000) {
+                var st = await getOrderStatus().catch(function () { return null; });
+                if (st && st.status === 'paid') {
+                    if (onceConv(orderId)) {
+                        await sendConversionEC();
+                    }
+                    info.textContent = 'Pagamento confirmado. Gerando seu documento...';
+                    await gerarFinalIdempotente();
+                    return;
+                }
+                await new Promise(function (r) { setTimeout(r, 2000); });
+            }
+            info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.';
+            retry.style.display = 'flex';
+        }
+        flow();
     </script>
 
     <!-- Script de upsell inteligente baseado no slug -->
