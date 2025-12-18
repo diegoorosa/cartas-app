@@ -445,21 +445,36 @@
                     </div>
 
                     <div id="previewWrap"
-                        style="display:none; margin-top:32px; padding-top:32px; border-top:1px solid var(--border);">
-                        <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">Prévia do documento
-                        </h2>
+                        style="display:none; margin-top:32px; padding-top:32px; border-top:1px dashed var(--border);">
+
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom: 16px;">
+                            <span style="font-size: 24px;">👀</span>
+                            <h2 class="section-title" style="margin:0; font-size: 22px; color: var(--text-primary);">
+                                Confira abaixo como ficou:
+                            </h2>
+                        </div>
+
                         <div
-                            style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;">
+                            style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:12px; padding:24px; position:relative;">
+                            <div
+                                style="position:absolute; top:10px; right:10px; background:#e2e8f0; color:#64748b; padding:4px 8px; font-size:10px; border-radius:4px; font-weight:bold; text-transform:uppercase;">
+                                Prévia
+                            </div>
+
                             <div id="previewBox"
-                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
+                                style="white-space:pre-wrap; font-family:'Courier New', Courier, monospace; font-size:14px; line-height:1.6; color:#334155;">
                             </div>
                         </div>
-                        <p class="small" style="margin-top:12px;color:var(--text-muted);">
-                            Prévia gratuita e parcial. O documento completo (edição, PDF e Word) é liberado após o
-                            pagamento único de <strong>R$ 9,90</strong>. Trata-se de um
-                            <strong>modelo de autorização</strong>; a aceitação final depende das autoridades
-                            responsáveis pelo embarque e pelos registros.
-                        </p>
+
+                        <div
+                            style="background-color: #fffbeb; color: #92400e; padding: 16px; border-radius: 8px; margin-top: 16px; font-size: 14px; border: 1px solid #fcd34d; display:flex; gap:12px; align-items:start;">
+                            <span style="font-size: 18px;">🔒</span>
+                            <div>
+                                <strong>Esta é uma visualização parcial.</strong><br>
+                                O documento final (completo, sem cortes e pronto para imprimir em PDF/Word) será
+                                liberado imediatamente após a confirmação do pagamento acima.
+                            </div>
+                        </div>
                     </div>
 
                     <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
@@ -921,7 +936,10 @@
                     btnPreview.style.display = 'none';
 
                     setTimeout(function () {
-                        previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        var paySec = document.getElementById('paySection');
+                        if (paySec) {
+                            paySec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
                     }, 100);
 
                     if (typeof gtag === 'function') {
