@@ -753,6 +753,13 @@
                 it.classList.toggle('active', n === step);
                 it.classList.toggle('completed', n < step);
             });
+            var formArea = document.getElementById('formArea');
+            if (formArea) {
+                // Um pequeno delay ajuda o celular a processar a troca de altura antes de rolar
+                setTimeout(function () {
+                    formArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 50);
+            }
         }
 
         function validateStep(step) {
@@ -912,6 +919,10 @@
 
                     // Esconde apenas o botão de prévia (mantém "Voltar")
                     btnPreview.style.display = 'none';
+
+                    setTimeout(function () {
+                        previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
 
                     if (typeof gtag === 'function') {
                         gtag('event', 'generate_lead', { 'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD', 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' });
