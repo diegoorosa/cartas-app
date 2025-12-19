@@ -30,8 +30,7 @@
     <div class="container" style="padding-top: 40px; padding-bottom: 40px;">
         <div class="card" style="max-width: 800px; margin: 0 auto;">
             <div style="margin-bottom: 24px;">
-                <a href="/" class="small"
-                   style="text-decoration:none; color:var(--accent-primary)">
+                <a href="/" class="small" style="text-decoration:none; color:var(--accent-primary)">
                     ← Voltar ao início
                 </a>
             </div>
@@ -47,68 +46,103 @@
 
             <p>
                 O responsável pelo tratamento dos dados pessoais é o <strong>CartasApp</strong>, projeto individual
-                mantido por <strong>[Seu Nome]</strong>, em <strong>[Cidade/UF]</strong>, Brasil.
+                mantido por <strong>Diego Rosa</strong>, pessoa física, em <strong>Blumenau/SC</strong>, Brasil.
+                Contato principal: <strong>contato@cartasapp.com.br</strong>.
             </p>
 
-            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">1. Quais Dados Coletamos</h2>
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">1. Quais dados coletamos</h2>
             <p>Para gerar seus documentos, coletamos as informações que você insere voluntariamente nos formulários.
                 Isso pode incluir, mas não se limita a:</p>
             <ul>
-                <li><strong>Dados Pessoais:</strong> Nome completo, CPF, e-mail, telefone, endereço (Cidade/UF).</li>
-                <li><strong>Dados Sensíveis (no formulário de viagem):</strong> Nome completo de menores de idade, data
-                    de nascimento e números de documentos (RG, Certidão ou Passaporte).</li>
-                <li><strong>Dados de Pagamento:</strong> Não armazenamos dados do seu cartão de crédito. O pagamento é
-                    processado inteiramente pelo Mercado Pago, que possui sua própria política de privacidade.</li>
-                <li><strong>Dados de Navegação:</strong> Coletamos dados anônimos sobre como você usa o site, através do
-                    Google Analytics e Microsoft Clarity, para melhorar sua experiência.</li>
+                <li><strong>Dados pessoais:</strong> nome completo, CPF, e-mail, telefone, cidade/UF.</li>
+                <li><strong>Dados relacionados ao documento:</strong> informações de empresas, contratos, serviços,
+                    viagens, multas, bagagens etc., conforme o tipo de carta selecionado.</li>
+                <li><strong>Dados de menores (no formulário de viagem):</strong> nome completo de menores de idade,
+                    data de nascimento e números de documentos (RG, Certidão ou Passaporte) informados por você.</li>
+                <li><strong>Dados de pagamento:</strong> não armazenamos dados do seu cartão de crédito. O pagamento é
+                    processado inteiramente pelo <strong>Mercado Pago</strong>, que possui sua própria política de
+                    privacidade.</li>
+                <li><strong>Dados de navegação:</strong> coletamos dados anônimos/agrupados sobre como você usa o site,
+                    através de ferramentas como Google Analytics (via Google Tag) e Microsoft Clarity, para melhorar
+                    sua experiência.</li>
+                <li><strong>Dados técnicos de segurança e consentimento:</strong> podemos registrar IP, tipo de
+                    navegador, data/hora e um identificador de pedido para fins de segurança, prevenção de fraude e
+                    comprovação de consentimento ao uso do serviço.</li>
             </ul>
 
-            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">2. Como Usamos Seus Dados</h2>
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">2. Como usamos seus dados</h2>
             <p>Usamos seus dados estritamente para os seguintes fins:</p>
             <ul>
-                <li><strong>Geração do Documento:</strong> As informações que você preenche são enviadas à API do Google
-                    Gemini (IA) com o único propósito de gerar o texto do documento solicitado.</li>
-                <li><strong>Processamento do Pagamento:</strong> Usamos um ID de pedido para criar sua transação de
-                    pagamento junto ao Mercado Pago.</li>
-                <li><strong>Armazenamento e Recuperação:</strong> Armazenamos o documento gerado e o ID do seu pedido em
+                <li><strong>Geração do documento:</strong> as informações que você preenche são enviadas às nossas
+                    funções de backend, que utilizam modelos próprios e tecnologia de inteligência artificial
+                    (atualmente, provedores como o Google Gemini) com o único propósito de gerar o texto do documento
+                    solicitado.</li>
+                <li><strong>Processamento do pagamento:</strong> usamos um ID de pedido para criar sua transação de
+                    pagamento junto ao Mercado Pago e associar o pagamento ao documento gerado.</li>
+                <li><strong>Armazenamento e recuperação:</strong> armazenamos o documento gerado e o ID do seu pedido em
                     nosso banco de dados (Supabase) para que você possa recuperá-lo após o pagamento (pelo site ou pelo
                     link de e-mail).</li>
-                <li><strong>Comunicação:</strong> Usamos seu e-mail (caso você o forneça) para enviar o link de
-                    recuperação do seu documento.</li>
-                <li><strong>Segurança:</strong> Usamos o Google reCAPTCHA para proteger nossos formulários contra abuso
-                    e spam.</li>
-            </ul>
-
-            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">3. Compartilhamento de Dados</h2>
-            <p>Nós <strong>não vendemos</strong> seus dados pessoais. Seus dados são compartilhados apenas com os parceiros
-                tecnológicos essenciais para o funcionamento do serviço:</p>
-            <ul>
-                <li><strong>Google (Gemini e reCAPTCHA):</strong> Para gerar o documento e proteger o site.</li>
-                <li><strong>Supabase (Banco de Dados):</strong> Para armazenar seu documento gerado de forma segura.
+                <li><strong>Comunicação:</strong> usamos seu e-mail (caso você o forneça) para enviar o link de
+                    recuperação do seu documento e, eventualmente, mensagens relacionadas ao próprio serviço contratado.
                 </li>
-                <li><strong>Mercado Pago (Pagamentos):</strong> Para processar a transação financeira.</li>
-                <li><strong>Zoho Mail (E-mail):</strong> Para enviar o link de recuperação do seu documento.</li>
-                <li><strong>Netlify (Hospedagem):</strong> Onde nosso site e funções de backend operam.</li>
+                <li><strong>Segurança e logs:</strong> usamos dados técnicos (IP, navegador, data/hora, versão de
+                    termos)
+                    para proteger o serviço, evitar abusos e comprovar, quando necessário, que houve aceite dos Termos
+                    de Uso antes da contratação.</li>
             </ul>
 
-            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">4. Seus Direitos (LGPD)</h2>
-            <p>Você, como titular dos dados, tem o direito de:</p>
-            <ul>
-                <li><strong>Acessar</strong> seus dados.</li>
-                <li><strong>Corrigir</strong> dados incompletos ou incorretos.</li>
-                <li><strong>Solicitar a exclusão</strong> dos seus dados de nosso banco de dados.</li>
-            </ul>
-            <p>Para exercer seus direitos, por favor, entre em contato conosco. Os dados de documentos gerados são
-                mantidos em nosso sistema por um período razoável para fins de recuperação e, após esse período, são
-                excluídos.</p>
-
-            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">5. Contato</h2>
-            <p>Se você tiver qualquer dúvida sobre esta Política de Privacidade ou quiser solicitar a exclusão dos seus
-                dados, entre em contato conosco através do e-mail
-                <strong>contato@cartasapp.com.br</strong> ou pelo nosso
-                <a href="https://wa.me/5547988616874" target="_blank" rel="noopener">WhatsApp</a>.
+            <p>
+                Não utilizamos os dados de menores de idade para fins de marketing. Eles são tratados apenas para
+                gerar o documento de autorização de viagem solicitado pelo responsável.
             </p>
 
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">3. Compartilhamento de dados</h2>
+            <p>Nós <strong>não vendemos</strong> seus dados pessoais. Seus dados são compartilhados apenas com os
+                parceiros
+                tecnológicos essenciais para o funcionamento do serviço:</p>
+            <ul>
+                <li><strong>Google (IA e reCAPTCHA):</strong> para geração do documento (modelos de IA) e proteção do
+                    site contra abusos e spam.</li>
+                <li><strong>Supabase (banco de dados):</strong> para armazenar seu documento gerado e informações
+                    técnicas de forma segura.</li>
+                <li><strong>Mercado Pago (pagamentos):</strong> para processar a transação financeira.</li>
+                <li><strong>Zoho Mail ou serviço similar (e-mail):</strong> para enviar o link de recuperação do
+                    documento.</li>
+                <li><strong>Netlify (hospedagem):</strong> onde nosso site e funções de backend operam.</li>
+            </ul>
+
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">4. Retenção e exclusão de dados</h2>
+            <p>
+                Os dados dos documentos gerados são mantidos em nosso sistema por um período razoável para permitir
+                que você recupere o arquivo após o pagamento (por exemplo, em caso de perda do link).
+                Após esse período, os dados podem ser removidos ou anonimizados.
+            </p>
+            <p>
+                Você pode solicitar a exclusão antecipada dos seus dados, lembrando que isso impossibilita a
+                recuperação futura do documento pelo sistema.
+            </p>
+
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">5. Seus direitos (LGPD)</h2>
+            <p>Você, como titular dos dados, tem o direito de:</p>
+            <ul>
+                <li><strong>acessar</strong> os dados pessoais que mantemos sobre você;</li>
+                <li><strong>corrigir</strong> dados incompletos, inexatos ou desatualizados;</li>
+                <li><strong>solicitar a exclusão</strong> dos seus dados de nosso banco de dados, quando aplicável.</li>
+            </ul>
+            <p>
+                Para exercer seus direitos, entre em contato conosco pelos canais abaixo. Para sua segurança, podemos
+                solicitar comprovação de identidade antes de atender à solicitação.
+            </p>
+
+            <h2 style="font-size: 20px; margin-top: 24px; margin-bottom: 12px;">6. Contato</h2>
+            <p>
+                Se você tiver qualquer dúvida sobre esta Política de Privacidade ou quiser solicitar acesso, correção
+                ou exclusão dos seus dados, entre em contato:
+            </p>
+            <ul>
+                <li>E-mail: <strong>contato@cartasapp.com.br</strong></li>
+                <li>WhatsApp: <a href="https://wa.me/5547988616874" target="_blank" rel="noopener">clique aqui</a></li>
+            </ul>
         </div>
     </div>
 
