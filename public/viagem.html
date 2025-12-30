@@ -5,7 +5,8 @@
     <meta charset="utf-8" />
     <title>Gerador de Autorização de Viagem para Menor | CartasApp</title>
     <meta name="description"
-        content="Crie sua autorização de viagem para menor (nacional ou internacional) em minutos. Preencha os dados, pague R$ 19,90 e baixe o PDF/DOC pronto para assinar." />
+        content="Crie sua autorização de viagem para menor (nacional ou internacional) em minutos. Preencha os dados, pague R$ 1
+        9,90 e baixe o PDF/DOC pronto para assinar." />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script src="/theme.js"></script>
     <link rel="stylesheet" href="/style.css" />
@@ -36,7 +37,7 @@
         "@type": "Offer",
         "url": "https://www.cartasapp.com.br/viagem.html",
         "priceCurrency": "BRL",
-        "price": "19.90",
+        "price": "9.90",
         "priceValidUntil": "2026-12-31",
         "availability": "https://schema.org/InStock",
         "category": "LegalService"
@@ -73,7 +74,7 @@
                     Autorização de viagem para menor em até 3 minutos
                 </h1>
                 <p class="hero-subtitle" style="font-size: 18px; margin-top: 16px;">
-                    Preencha os dados, pague <strong>apenas R$ 19,90</strong> e baixe um
+                    Preencha os dados, pague <strong>apenas R$ 9,90</strong> e baixe um
                     <strong>modelo de autorização</strong> alinhado às orientações da Polícia Federal e à
                     <strong>Resolução CNJ nº 295/2019</strong> (PDF e Word), pronto para
                     assinar e reconhecer firma em cartório.
@@ -399,12 +400,12 @@
 
                                 <div class="price-badge" style="margin-bottom: 20px;">
                                     Oferta hoje: <span class="price-old">de R$ 49,90</span> <span class="price-new">por
-                                        R$ 19,90</span>
+                                        R$ 9,90</span>
                                     <span class="timer-text">⚡ O preço pode voltar ao normal em breve</span>
                                 </div>
 
                                 <button class="btn btn-primary" id="btnPagar" style="width: 100%;">
-                                    Gerar documento completo (R$ 19,90)
+                                    Gerar documento completo (R$ 9,90)
                                 </button>
 
                                 <div class="guarantee-badge">
@@ -483,7 +484,7 @@
 
                     <div class="small"
                         style="margin-bottom: 24px; padding: 12px 14px; border-radius: 10px; background: var(--card-hover); border: 1px solid var(--border);">
-                        <strong>Por R$ 19,90 (pagamento único)</strong>, você recebe:<br>
+                        <strong>Por R$ 9,90 (pagamento único)</strong>, você recebe:<br>
                         • Autorização personalizada com os seus dados.<br>
                         • Arquivos em PDF e Word para editar, imprimir e assinar.<br>
                         • Suporte por WhatsApp em caso de dúvidas sobre o uso do modelo.
@@ -544,7 +545,7 @@
 
                     <p class="small" style="margin-top:12px;">
                         <strong>É pagamento único ou assinatura?</strong><br>
-                        É pagamento único de <strong>R$ 19,90 por documento</strong>, sem mensalidade.
+                        É pagamento único de <strong>R$ 9,90 por documento</strong>, sem mensalidade.
                     </p>
 
                     <p class="small" style="margin-top:12px;">
@@ -1035,7 +1036,7 @@
                 localStorage.setItem('lastOrderId', data.order_id || '');
 
                 if (typeof gtag === 'function') {
-                    gtag('event', 'begin_checkout', { value: 19.9, currency: 'BRL', items: [{ item_id: slugStr }] });
+                    gtag('event', 'begin_checkout', { value: 9.9, currency: 'BRL', items: [{ item_id: slugStr }] });
                 }
 
                 showPaymentModal(data.init_point, data.order_id, slugStr);
@@ -1082,7 +1083,7 @@
                 var btnPagar = document.getElementById('btnPagar');
                 if (btnPagar) {
                     btnPagar.disabled = false;
-                    btnPagar.textContent = 'Gerar documento completo (R$ 19,90)';
+                    btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
                 }
             };
 
