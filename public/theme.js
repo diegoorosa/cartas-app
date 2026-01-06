@@ -9,49 +9,113 @@ function toggleTheme() {
 
 // Load saved theme
 (function () {
-  // 1. Tenta pegar o tema salvo pelo usuário (se ele já clicou no 🌙 alguma vez)
   const savedTheme = localStorage.getItem('theme');
-
   if (savedTheme) {
-    // Se ele já escolheu um tema antes, respeitamos a escolha dele
     document.documentElement.setAttribute('data-theme', savedTheme);
   } else {
-    // 2. Se é a primeira vez (ou não tem nada salvo):
-    // FORÇAMOS O TEMA CLARO (LIGHT), ignorando se o celular está no modo escuro.
+    // Força tema claro se não houver preferência salva
     document.documentElement.setAttribute('data-theme', 'light');
   }
 })();
 
-// --- Início do Banner de Cookies (LGPD) ---
+// --- Início do Banner de Cookies Minimalista (All-in-One) ---
 document.addEventListener('DOMContentLoaded', function () {
   // Verifica se já aceitou antes
   if (!localStorage.getItem('cookies_accepted')) {
 
-    // Cria o HTML do banner dinamicamente
-    var bannerHTML = `
-            <div id="cookie-banner" style="position:fixed; bottom:0; left:0; right:0; background:#0f172a; color:#fff; padding:16px; z-index:99999; border-top:1px solid #334155; box-shadow:0 -4px 20px rgba(0,0,0,0.3); font-family: sans-serif;">
-                <div style="max-width: 1200px; margin: 0 auto; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; padding: 0 20px;">
-                    <p style="margin:0; color:#cbd5e1; flex:1; font-size: 14px; line-height: 1.5;">
-                        Utilizamos cookies para melhorar a experiência e analisar o tráfego. 
-                        Ao continuar, você concorda com nossa 
-                        <a href="/privacidade.html" style="color:#60a5fa; text-decoration:underline;">Política de Privacidade</a>.
-                    </p>
-                    <button id="btn-accept-cookies" style="background-color: #3b82f6; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.2s;">
-                        Entendi
-                    </button>
-                </div>
-            </div>
-        `;
+    // 1. Injeta o CSS (Estilo) diretamente pelo JS
+    // Isso cria a barrinha flutuante "pílula" sem precisar mexer no style.css
+    const style = document.createElement('style');
+    style.innerHTML = `
+      #cookie-banner {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(17, 24, 39, 0.95);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 50px;
+        display: none; /* Começa invisível */
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 99999;
+        font-size: 12px;
+        width: 90%;
+        max-width: 400px;
+        border: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(5px);
+        font-family: sans-serif;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      #cookie-banner.visible {
+        display: flex;
+        opacity: 1;
+      }
+      #cookie-banner p {
+        margin: 0;
+        line-height: 1.3;
+        flex: 1;
+      }
+      #cookie-banner a {
+        color: #60a5fa;
+        text-decoration: underline;
+      }
+      #cookie-banner button {
+        background: white;
+        color: #0f172a;
+        border: none;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 12px;
+        white-space: nowrap;
+        transition: transform 0.2s;
+      }
+      #cookie-banner button:active {
+        transform: scale(0.95);
+      }
+      @media (max-width: 480px) {
+        #cookie-banner {
+          bottom: 15px;
+          width: 94%;
+          border-radius: 16px; /* Mais quadrado no celular para aproveitar espaço */
+          padding: 12px 16px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
 
-    // Insere o banner no final da página (sem apagar o resto)
+    // 2. Cria o HTML do banner
+    var bannerHTML = `
+      <div id="cookie-banner">
+        <p>
+          Usamos cookies para melhorar sua experiência. 
+          Ao continuar, você concorda com nossa 
+          <a href="/privacidade.html">Política de Privacidade</a>.
+        </p>
+        <button id="btn-accept-cookies">Entendi</button>
+      </div>
+    `;
+
+    // 3. Insere na página
     document.body.insertAdjacentHTML('beforeend', bannerHTML);
 
-    // Adiciona a função de clique no botão
+    // 4. Lógica de aparecer suavemente (Timer de 1.5s)
+    setTimeout(function() {
+        const banner = document.getElementById('cookie-banner');
+        if(banner) banner.classList.add('visible');
+    }, 1500);
+
+    // 5. Ação do Botão
     document.getElementById('btn-accept-cookies').addEventListener('click', function () {
-      // Salva a decisão no navegador da pessoa
       localStorage.setItem('cookies_accepted', 'true');
-      // Remove o banner da tela
-      document.getElementById('cookie-banner').style.display = 'none';
+      const banner = document.getElementById('cookie-banner');
+      banner.style.opacity = '0'; // Some suavemente
+      setTimeout(() => banner.remove(), 500); // Remove do HTML depois de sumir
     });
   }
 });
