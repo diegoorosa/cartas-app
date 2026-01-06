@@ -424,6 +424,13 @@
         }
 
         async function gerarFinalIdempotente() {
+            // TENTA RECUPERAR O PAYLOAD LOCAL PARA GARANTIR O NOME CORRETO
+            var localPayload = null;
+            try {
+                var saved = localStorage.getItem('pendingPayload');
+                if (saved) localPayload = JSON.parse(saved);
+            } catch (e) { }
+
             try {
                 if (info) info.textContent = 'Gerando seu documento...';
 
@@ -440,7 +447,8 @@
                                 var js = await rs.json();
                                 if (js && js.output) {
                                     var fullTextS = renderDocText(js.output, null);
-                                    showDocAndScroll(fullTextS, null);
+                                    // AQUI ESTAVA O ERRO: passava null, agora passa localPayload
+                                    showDocAndScroll(fullTextS, localPayload);
                                     return;
                                 }
                             }
@@ -449,8 +457,15 @@
                     }
                 }
 
-                var payloadStr = localStorage.getItem('pendingPayload');
-                if (!payloadStr) {
+                // Se não achou pelo OrderID ou não tinha OrderID, segue fluxo normal
+                if (!localPayload) {
+                    // Caso extremo: não achou nem local nem remoto
+                    // Tenta carregar do storage de novo
+                    var payloadStr = localStorage.getItem('pendingPayload');
+                    if (payloadStr) localPayload = JSON.parse(payloadStr);
+                }
+
+                if (!localPayload) {
                     if (info) info.textContent = 'Pagamento confirmado. Ainda estamos preparando seu documento. Aguarde alguns instantes e não feche esta página.';
                     for (var j = 0; j < 5; j++) {
                         try {
@@ -475,7 +490,7 @@
                     return;
                 }
 
-                var payload = JSON.parse(payloadStr);
+                var payload = localPayload;
                 payload.order_id = orderId || null;
 
                 var r = await fetch('/.netlify/functions/generate-doc', {
