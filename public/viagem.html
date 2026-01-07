@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Autorização de Viagem para Menor | Evite ser barrado no embarque</title>
-    
+
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="apple-touch-icon" href="/logo.png" />
@@ -46,7 +46,7 @@
     <meta name="description"
         content="Gere a autorização de viagem oficial (CNJ) para menor desacompanhado. Documento pronto para imprimir e reconhecer firma. Evite problemas no embarque." />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    
+
     <script src="/theme.js"></script>
     <link rel="stylesheet" href="/style.css" />
 
@@ -68,14 +68,17 @@
 <body>
     <nav class="navbar" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
         <div class="container">
-            <div class="navbar-content" style="display: flex; justify-content: space-between; align-items: center; height: 60px;">
-                
+            <div class="navbar-content"
+                style="display: flex; justify-content: space-between; align-items: center; height: 60px;">
+
                 <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-                    <img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <span style="font-weight: 800; font-size: 20px; color: var(--text-primary); letter-spacing: -0.5px;">CartasApp</span>
+                    <img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <span
+                        style="font-weight: 800; font-size: 20px; color: var(--text-primary); letter-spacing: -0.5px;">CartasApp</span>
                 </a>
                 <div class="nav-actions">
-                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema" 
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema"
                         style="background: transparent; border: 1px solid var(--border); color: var(--text-primary); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
                         🌙
                     </button>
@@ -109,7 +112,9 @@
                     </a>
                 </div>
                 <p class="small" style="margin-top: 8px; color: var(--text-muted); font-size: 14px;">
-                    ⚡ Documento pronto em 2 minutos • Apenas R$ 9,90
+                    ⚡ Documento pronto em 2 minutos • <span
+                        style="text-decoration: line-through; opacity: 0.7;">Advogado: R$ 300</span> •
+                    <strong>CartasApp: R$ 9,90</strong>
                 </p>
 
                 <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
@@ -146,6 +151,21 @@
                     </div>
 
                     <div id="formArea">
+                        <div
+                            style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
+                            <div
+                                style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #059669; background: #d1fae5; padding: 6px 12px; border-radius: 20px;">
+                                🔒 Dados Criptografados
+                            </div>
+                            <div
+                                style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #2563eb; background: #dbeafe; padding: 6px 12px; border-radius: 20px;">
+                                ✅ Aceito em todo Brasil
+                            </div>
+                            <div
+                                style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #7c3aed; background: #ede9fe; padding: 6px 12px; border-radius: 20px;">
+                                🔄 Garantia de Correção
+                            </div>
+                        </div>
                         <div class="step-indicator">
                             <div class="step-item" data-step="1">1. Menor e viagem</div>
                             <div class="step-item" data-step="2">2. Acompanhante</div>
@@ -155,6 +175,14 @@
 
                         <div class="form-step" data-step="1" id="step-1">
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Dados do menor</h2>
+                            <div
+                                style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; align-items: start; gap: 10px;">
+                                <span style="font-size: 18px; margin-top: 2px;">👁️</span>
+                                <p style="margin: 0; font-size: 14px; color: #0284c7; line-height: 1.4;">
+                                    <strong>Pode confiar:</strong> Você poderá ver uma <strong>prévia gratuita</strong>
+                                    do documento com seus dados no final, antes de decidir pelo pagamento.
+                                </p>
+                            </div>
 
                             <label class="label">Nome completo do menor <span class="required-star">*</span></label>
                             <input class="input" id="menor_nome" placeholder="Ex.: Ana Souza" />
