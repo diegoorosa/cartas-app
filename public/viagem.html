@@ -122,7 +122,7 @@
                 grid-template-columns: 1fr;
             }
 
-            /* Aqui está a mágica: No celular, força 1 coluna para não espremer */
+            /* No celular, força 1 coluna para não espremer os campos */
             .input-row {
                 grid-template-columns: 1fr !important;
                 gap: 12px;
@@ -550,15 +550,36 @@
     <div id="modalTermos"
         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(4px);">
         <div
-            style="background:var(--bg-primary); border:1px solid var(--border); border-radius:16px; max-width:500px; width:100%; padding:24px;">
+            style="background:var(--bg-primary); border:1px solid var(--border); border-radius:16px; max-width:500px; width:100%; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
             <h3 style="margin-top:0; font-size:20px; color:var(--text-primary);">⚠️ Aviso Importante</h3>
-            <div style="max-height:300px; overflow-y:auto; margin:16px 0; font-size:14px;">
-                <p>O CartasApp fornece modelo de autorização. A aceitação depende dos órgãos competentes.</p>
+            <div
+                style="max-height:300px; overflow-y:auto; margin:16px 0; font-size:14px; color:var(--text-secondary); line-height:1.5; padding-right:8px;">
+                <p style="margin-bottom:10px;">Para prosseguir e gerar o documento, você precisa estar ciente de que:
+                </p>
+                <ul style="padding-left:18px; margin:0;">
+                    <li style="margin-bottom:8px;">o CartasApp fornece apenas um <strong>modelo de autorização de
+                            viagem</strong>, preenchido com os dados informados por você. Não fazemos análise jurídica
+                        do seu caso;</li>
+                    <li style="margin-bottom:8px;">a <strong>aceitação do documento</strong> e a autorização de embarque
+                        <strong>dependem exclusivamente</strong> da Polícia Federal, das empresas de transporte, dos
+                        cartórios e, em viagens internacionais, também de consulados e autoridades do país de destino;
+                    </li>
+                    <li style="margin-bottom:8px;">para viagens internacionais podem ser exigidos documentos adicionais
+                        (passaporte válido, autorização de ambos os pais, tradução, autorização judicial etc.), conforme
+                        o caso;</li>
+                    <li>o serviço não inclui reconhecimento de firma em cartório (que deve ser feito presencialmente
+                        pelos responsáveis).</li>
+                </ul>
             </div>
             <label class="small"
-                style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; background:var(--bg-secondary); padding:12px; border-radius:8px;">
-                <input type="checkbox" id="aceite_termos" style="margin-top:2px;" />
-                <span>Li, compreendi e concordo com os Termos de Uso.</span>
+                style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; background:var(--bg-secondary); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                <input type="checkbox" id="aceite_termos"
+                    style="margin-top:2px; min-width:20px; min-height:20px; cursor:pointer;" />
+                <span style="font-weight:600; color:var(--text-primary); line-height: 1.4;">
+                    Li, compreendi e concordo com as informações acima e com os
+                    <a href="/termos.html" target="_blank" style="color:#3b82f6; text-decoration:underline;">Termos de
+                        Uso</a>.
+                </span>
             </label>
             <div style="display:flex; gap:10px; margin-top:20px;">
                 <button id="btnCancelarTermos" class="btn btn-secondary" style="flex:1;">Cancelar</button>
@@ -571,8 +592,7 @@
     <script src="/recovery.js"></script>
 
     <script>
-        // --- FUNÇÕES DE CONTROLE VISUAL (O QUE ABRE E FECHA AS CAIXAS) ---
-
+        // --- FUNÇÕES DE CONTROLE VISUAL ---
         function updateViagem(val) {
             var sel = document.getElementById('viagem_tipo');
             if (sel) {
@@ -585,13 +605,10 @@
             }
         }
 
-        // CORREÇÃO: Função direta e simples para abrir o acompanhante
+        // CORREÇÃO DO BOTÃO ACOMPANHANTE (Abre a caixa corretamente)
         function updateAcompVisibility(val) {
-            // Sincroniza o select oculto
             var sel = document.getElementById('acompanhante_tipo');
             if (sel) sel.value = val;
-
-            // Mostra/Esconde a caixa
             var box = document.getElementById('acompanhanteBox');
             if (box) {
                 if (val === 'terceiro' || val === 'outro_responsavel') {
@@ -699,7 +716,7 @@
                     if (aTipo === 'outro_responsavel') document.getElementById('opt_resp').checked = true;
                     if (aTipo === 'terceiro') document.getElementById('opt_terceiro').checked = true;
                     if (aTipo === 'desacompanhado') document.getElementById('opt_sozinho').checked = true;
-                    updateAcompVisibility(aTipo); // Força visualização
+                    updateAcompVisibility(aTipo);
 
                     if (document.getElementById('dois_resps').checked) {
                         document.getElementById('dois_resps_visual').checked = true;
@@ -804,6 +821,8 @@
         var btnPreview = document.getElementById('btnPreview');
         var btnPagar = document.getElementById('btnPagar');
         var previewWrap = document.getElementById('previewWrap');
+        var previewBox = document.getElementById('previewBox');
+        var paySection = document.getElementById('paySection');
 
         function checkCooldown() {
             var last = localStorage.getItem('last_preview_ts');
@@ -839,6 +858,7 @@
             });
         }
 
+        // LÓGICA DE PAGAMENTO (RESTAURADA DO SEU BACKUP)
         if (btnPagar) btnPagar.addEventListener('click', function () { document.getElementById('modalTermos').style.display = 'flex'; });
         document.getElementById('btnCancelarTermos').onclick = function () { document.getElementById('modalTermos').style.display = 'none'; };
 
@@ -848,24 +868,88 @@
                 var payload = getPayload();
                 saveForm();
                 localStorage.setItem('pendingPayload', JSON.stringify(payload));
-                var r = await fetch('/.netlify/functions/mp-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: 'autorizacao-viagem-menor', payload: payload, utm: (window.LMUTM ? LMUTM.get() : {}) }) });
+
+                // Chamada original ao checkout
+                var r = await fetch('/.netlify/functions/mp-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug: 'autorizacao-viagem-menor', payload: payload, utm: (window.LMUTM ? LMUTM.get() : {}) })
+                });
+
                 var data = await r.json();
                 if (!r.ok) throw new Error(data.error);
+
                 document.getElementById('modalTermos').style.display = 'none';
                 localStorage.setItem('lastOrderId', data.order_id || '');
-                if (data.init_point) showPaymentModal(data.init_point, data.order_id, 'autorizacao-viagem-menor');
+
+                // Exibe o modal de pagamento ORIGINAL que você tinha
+                if (data.init_point) {
+                    showPaymentModal(data.init_point, data.order_id, 'autorizacao-viagem-menor');
+                } else {
+                    alert('Erro no pagamento');
+                }
             } catch (e) { alert('Erro: ' + e.message); } finally { btn.disabled = false; btn.textContent = 'Confirmar e Pagar'; }
         };
 
+        // MODAL DE PAGAMENTO (CÓDIGO ORIGINAL RESTAURADO)
         function showPaymentModal(initPoint, orderId, slug) {
+            var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
+            var cardBG = isLight ? '#ffffff' : '#111827';
+            var cardText = isLight ? '#0f172a' : '#e6eefb';
             var overlay = document.createElement('div');
-            overlay.style = 'position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center';
-            overlay.innerHTML = '<div style="background:#fff;padding:20px;border-radius:8px;text-align:center;max-width:400px;"><h3>Pagamento</h3><button id="lm-goPay" class="btn btn-primary">Ir para Pagamento</button><br><br><button id="lm-close" class="btn btn-secondary">Fechar</button></div>';
+            overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
+            overlay.innerHTML =
+                '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:16px;max-width:400px;width:90%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;">' +
+                '<div style="font-size:40px;margin-bottom:16px;">💸</div>' +
+                '<h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3>' +
+                '<p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique no botão abaixo para finalizar o pagamento com segurança no Mercado Pago.</p>' +
+                '<div style="display:flex;flex-direction:column;gap:12px;">' +
+                '<button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix ou Cartão)</button>' +
+                '<button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir dados</button>' +
+                '</div>' +
+                '<p id="lm-statusPay" class="small" style="margin-top:16px;font-size:12px;opacity:0.8;"></p>' +
+                '</div>';
             document.body.appendChild(overlay);
-            document.getElementById('lm-close').onclick = function () { overlay.remove(); };
+            document.getElementById('lm-close').onclick = function () {
+                overlay.remove();
+                try { grecaptcha.reset(); } catch (e) { }
+                var btnPagar = document.getElementById('btnPagar');
+                if (btnPagar) {
+                    btnPagar.disabled = false;
+                    btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
+                }
+            };
+            async function docReady() {
+                try {
+                    var r = await fetch('/.netlify/functions/generate-doc', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
+                    });
+                    if (!r.ok) return false;
+                    var j = await r.json();
+                    return !!(j && j.output);
+                } catch (e) { return false; }
+            }
             document.getElementById('lm-goPay').onclick = function () {
-                window.open(initPoint, '_blank');
-                location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&s=pending';
+                window.open(initPoint, '_blank', 'noopener');
+                var btn = this;
+                btn.textContent = 'Verificando pagamento...';
+                document.getElementById('lm-statusPay').textContent = 'Aguarde, estamos confirmando seu pagamento...';
+                var iv = setInterval(async function () {
+                    try {
+                        if (await docReady()) {
+                            clearInterval(iv);
+                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success';
+                            return;
+                        }
+                        var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
+                        var jj = rr.ok ? await rr.json() : null;
+                        if (jj && jj.status === 'paid') {
+                            clearInterval(iv);
+                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success';
+                        }
+                    } catch (e) { }
+                }, 3000);
             };
         }
 
