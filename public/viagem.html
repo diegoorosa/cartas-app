@@ -174,47 +174,70 @@
                         </div>
 
                         <div class="form-step" data-step="1" id="step-1">
-                            <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Dados do menor</h2>
+
                             <div
-                                style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: flex; align-items: start; gap: 10px;">
+                                style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; margin-bottom: 24px; display: flex; align-items: start; gap: 10px;">
                                 <span style="font-size: 18px; margin-top: 2px;">👁️</span>
                                 <p style="margin: 0; font-size: 14px; color: #0284c7; line-height: 1.4;">
-                                    <strong>Pode confiar:</strong> Você poderá ver uma <strong>prévia gratuita</strong>
-                                    do documento com seus dados no final, antes de decidir pelo pagamento.
+                                    <strong>Segurança:</strong> Preencha para ver a <strong>prévia gratuita</strong>
+                                    antes de pagar. Seus dados estão seguros.
                                 </p>
                             </div>
 
-                            <label class="label">Nome completo do menor <span class="required-star">*</span></label>
-                            <input class="input" id="menor_nome" placeholder="Ex.: Ana Souza" />
+                            <h2 class="section-title" style="font-size: 20px; margin-bottom: 12px;">Para onde é a
+                                viagem?</h2>
 
-                            <label class="label">Data de nascimento <span class="required-star">*</span></label>
-                            <input class="input" id="menor_nascimento" placeholder="DD/MM/AAAA" inputmode="numeric"
-                                maxlength="10" />
-                            <div id="err_menor_nascimento" class="small"
-                                style="display:none;color:#fca5a5;margin-top:4px;">
-                                Data inválida.</div>
-
-                            <label class="label">Documento do menor (Opcional)</label>
-                            <input class="input" id="menor_doc"
-                                placeholder="Ex.: Certidão, RG, Passaporte ou CPF (se CIN)" />
-                            <p class="small" style="margin-top: 4px;">
-                                Informe o documento que a criança usará para embarcar.
-                                Se deixar em branco, o campo sairá sublinhado no documento para você preencher
-                                à caneta antes de reconhecer firma.
-                            </p>
-
-                            <h2 class="section-title" style="font-size: 24px; margin: 24px 0 16px;">Viagem</h2>
-
-                            <label class="label">Tipo da viagem <span class="required-star">*</span></label>
-                            <select class="input" id="viagem_tipo">
-                                <option value="nacional">Nacional</option>
+                            <select id="viagem_tipo" style="display:none">
+                                <option value="nacional" selected>Nacional</option>
                                 <option value="internacional">Internacional</option>
                             </select>
-                            <p id="viagem_tipo_aviso" class="small" style="margin-top:8px;color:var(--text-muted);">
-                            </p>
 
-                            <label class="label">Destino <span class="required-star">*</span></label>
-                            <input class="input" id="destino" placeholder="Ex.: Curitiba/PR ou Lisboa/Portugal" />
+                            <div class="radio-group">
+                                <div class="radio-card">
+                                    <input type="radio" name="viagem_visual" id="v_nacional" value="nacional" checked
+                                        onchange="document.getElementById('viagem_tipo').value = this.value; document.getElementById('viagem_tipo').dispatchEvent(new Event('change'));">
+                                    <label for="v_nacional" class="radio-label">
+                                        <span class="radio-icon">🇧🇷</span>
+                                        Viagem Nacional
+                                    </label>
+                                </div>
+                                <div class="radio-card">
+                                    <input type="radio" name="viagem_visual" id="v_internacional" value="internacional"
+                                        onchange="document.getElementById('viagem_tipo').value = this.value; document.getElementById('viagem_tipo').dispatchEvent(new Event('change'));">
+                                    <label for="v_internacional" class="radio-label">
+                                        <span class="radio-icon">✈️</span>
+                                        Internacional
+                                    </label>
+                                </div>
+                            </div>
+                            <p id="viagem_tipo_aviso" class="small"
+                                style="margin-top:-10px; margin-bottom: 24px; color:var(--text-muted);"></p>
+
+                            <h2 class="section-title" style="font-size: 20px; margin-bottom: 16px;">Quem vai viajar?
+                                (Criança/Adolescente)</h2>
+
+                            <label class="label">Nome completo <span class="required-star">*</span></label>
+                            <input class="input" id="menor_nome" placeholder="Ex.: Ana Souza" />
+
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div>
+                                    <label class="label">Nascimento <span class="required-star">*</span></label>
+                                    <input class="input" id="menor_nascimento" placeholder="DD/MM/AAAA"
+                                        inputmode="numeric" maxlength="10" />
+                                    <div id="err_menor_nascimento" class="small"
+                                        style="display:none;color:#fca5a5;margin-top:4px;">Data inválida.</div>
+                                </div>
+                                <div>
+                                    <label class="label">Documento (Opcional)</label>
+                                    <input class="input" id="menor_doc" placeholder="RG ou Certidão" />
+                                </div>
+                            </div>
+
+                            <h2 class="section-title" style="font-size: 20px; margin: 24px 0 16px;">Detalhes do Destino
+                            </h2>
+
+                            <label class="label">Cidade de Destino <span class="required-star">*</span></label>
+                            <input class="input" id="destino" placeholder="Ex.: São Paulo/SP ou Orlando/EUA" />
 
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
                                 <div>
@@ -222,8 +245,7 @@
                                     <input class="input" id="data_ida" placeholder="DD/MM/AAAA" inputmode="numeric"
                                         maxlength="10" />
                                     <div id="err_data_ida" class="small"
-                                        style="display:none;color:#fca5a5;margin-top:4px;">
-                                        Data inválida.</div>
+                                        style="display:none;color:#fca5a5;margin-top:4px;">Data inválida.</div>
                                 </div>
                                 <div>
                                     <label class="label">Data de volta <span class="required-star">*</span></label>
@@ -235,63 +257,72 @@
                             </div>
 
                             <div class="form-navigation">
-                                <span class="small" style="align-self:center;color:var(--text-muted);">
-                                    Campos marcados com <span class="required-star">*</span> são obrigatórios.
-                                </span>
-                                <button type="button" class="btn btn-primary" id="nextStep1">
-                                    Próximo passo
+                                <button type="button" class="btn btn-primary" id="nextStep1" style="width:100%;">
+                                    Continuar para o Acompanhante →
                                 </button>
                             </div>
                         </div>
 
                         <div class="form-step" data-step="2" id="step-2">
-                            <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Acompanhante</h2>
-                            <p class="small" style="margin-top:-8px;margin-bottom:12px;">
-                                Se a criança viajar desacompanhada, escolha essa opção e não será necessário preencher
-                                os
-                                dados do acompanhante.
-                            </p>
+                            <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Com quem a criança
+                                vai viajar?</h2>
 
-                            <label class="label">Quem viajará com o menor? <span class="required-star">*</span></label>
-                            <select class="input" id="acompanhante_tipo">
-                                <option value="outro_responsavel">A Mãe / O Pai (outro responsável)</option>
-                                <option value="terceiro">Um Parente / Terceiro (Tio, Avó, etc.)</option>
-                                <option value="desacompanhado">Desacompanhado</option>
+                            <select id="acompanhante_tipo" style="display:none">
+                                <option value="outro_responsavel">A Mãe / O Pai</option>
+                                <option value="terceiro">Parente / Terceiro</option>
+                                <option value="desacompanhado">Sozinho (Desacompanhado)</option>
                             </select>
 
-                            <div id="acompanhanteBox"
-                                style="margin-top:20px; background: var(--bg-secondary); padding: 16px; border-radius: 12px;">
-                                <label class="label" style="margin-top: 0;">Nome completo do Acompanhante
-                                    <span class="required-star">*</span>
-                                </label>
-                                <input class="input" id="acomp_nome" placeholder="Ex.: Maria Souza (Mãe)" />
+                            <div class="radio-group full-mobile">
+                                <div class="radio-card">
+                                    <input type="radio" name="acomp_visual" id="opt_resp" value="outro_responsavel"
+                                        onchange="syncAcomp(this.value)">
+                                    <label for="opt_resp" class="radio-label">
+                                        <span class="radio-icon">👨‍👩‍👧</span>
+                                        Com o Pai ou Mãe<br><span style="font-size:12px; font-weight:normal;">(O outro
+                                            assina)</span>
+                                    </label>
+                                </div>
+                                <div class="radio-card">
+                                    <input type="radio" name="acomp_visual" id="opt_terceiro" value="terceiro"
+                                        onchange="syncAcomp(this.value)">
+                                    <label for="opt_terceiro" class="radio-label">
+                                        <span class="radio-icon">👵</span>
+                                        Avós / Tios / Outros<br><span style="font-size:12px; font-weight:normal;">(Pai e
+                                            Mãe assinam)</span>
+                                    </label>
+                                </div>
+                                <div class="radio-card" style="grid-column: span 2;">
+                                    <input type="radio" name="acomp_visual" id="opt_sozinho" value="desacompanhado"
+                                        onchange="syncAcomp(this.value)">
+                                    <label for="opt_sozinho" class="radio-label">
+                                        <span class="radio-icon">🙋‍♂️</span>
+                                        Viajar Sozinho / Desacompanhado
+                                    </label>
+                                </div>
+                            </div>
 
-                                <label class="label">CPF do Acompanhante (Opcional)</label>
+                            <div id="acompanhanteBox"
+                                style="margin-top:20px; background: var(--bg-secondary); padding: 16px; border-radius: 12px; display:none;">
+                                <h3 style="font-size: 16px; margin-bottom: 12px;">Dados do Acompanhante</h3>
+
+                                <label class="label">Nome completo <span class="required-star">*</span></label>
+                                <input class="input" id="acomp_nome" placeholder="Ex.: Maria Souza" />
+
+                                <label class="label">Parentesco <span class="required-star">*</span></label>
+                                <input class="input" id="acomp_parentesco" placeholder="Ex.: Avó, Tia, Irmão" />
+
+                                <label class="label">CPF (Opcional)</label>
                                 <input class="input" id="acomp_cpf" placeholder="000.000.000-00" inputmode="numeric"
                                     maxlength="14" />
-                                <div id="err_acomp_cpf" class="small"
-                                    style="display:none;color:#fca5a5;margin-top:4px;">CPF inválido.</div>
-                                <p class="small" style="margin-top:4px;">
-                                    Se não souber o CPF agora, deixe em branco e preencha no próprio documento impresso.
-                                </p>
 
-                                <label class="label">Documento do Acompanhante (Opcional)</label>
-                                <input class="input" id="acomp_doc"
-                                    placeholder="Ex.: RG, CNH, Passaporte ou deixe em branco" />
-
-                                <label class="label">Parentesco com o menor
-                                    <span class="required-star">*</span>
-                                </label>
-                                <input class="input" id="acomp_parentesco" placeholder="Ex.: Mãe, Tia, Avó" />
+                                <label class="label">RG/Documento (Opcional)</label>
+                                <input class="input" id="acomp_doc" placeholder="RG do acompanhante" />
                             </div>
 
                             <div class="form-navigation">
-                                <button type="button" class="btn btn-secondary" id="prevStep2">
-                                    Voltar
-                                </button>
-                                <button type="button" class="btn btn-primary" id="nextStep2">
-                                    Próximo passo
-                                </button>
+                                <button type="button" class="btn btn-secondary" id="prevStep2">Voltar</button>
+                                <button type="button" class="btn btn-primary" id="nextStep2">Próximo Passo →</button>
                             </div>
                         </div>
 
@@ -609,7 +640,23 @@
 
     <script src="/utm.js"></script>
     <script src="/recovery.js"></script>
+    <script>
+        function syncAcomp(val) {
+            var sel = document.getElementById('acompanhante_tipo');
+            sel.value = val;
+            sel.dispatchEvent(new Event('change'));
+        }
+        // Sincroniza ao carregar (caso tenha dados salvos)
+        setTimeout(function () {
+            var tipoViagem = document.getElementById('viagem_tipo').value;
+            if (tipoViagem === 'internacional') document.getElementById('v_internacional').checked = true;
 
+            var tipoAcomp = document.getElementById('acompanhante_tipo').value;
+            if (tipoAcomp === 'outro_responsavel') document.getElementById('opt_resp').checked = true;
+            if (tipoAcomp === 'terceiro') document.getElementById('opt_terceiro').checked = true;
+            if (tipoAcomp === 'desacompanhado') document.getElementById('opt_sozinho').checked = true;
+        }, 500);
+    </script>
     <script>
         // Função de scroll suave para o botão do topo
         function scrollToForm(e) {
