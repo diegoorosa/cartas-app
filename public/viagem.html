@@ -127,6 +127,23 @@
                 margin-top: 12px;
             }
         }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(252, 211, 77, 0.7);
+            }
+
+            70% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 6px rgba(252, 211, 77, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(252, 211, 77, 0);
+            }
+        }
     </style>
 </head>
 
@@ -215,7 +232,7 @@
                         <div style="margin-bottom: 24px; text-align: center;">
 
                             <div
-                                style="background: #fffbeb; color: #b45309; border: 1px solid #fcd34d; padding: 10px 20px; border-radius: 50px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(245, 158, 11, 0.1);">
+                                style="background: #fffbeb; color: #b45309; border: 1px solid #fcd34d; padding: 10px 20px; border-radius: 50px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(245, 158, 11, 0.1); animation: pulse 2s infinite;">
                                 <span style="font-size: 16px;">🏆</span>
                                 <span>Modelo 100% Aceito (Padrão CNJ e Polícia Federal)</span>
                             </div>
