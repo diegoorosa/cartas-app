@@ -748,40 +748,52 @@
     <div id="modalTermos"
         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(4px);">
         <div
-            style="background:var(--bg-primary); border:1px solid var(--border); border-radius:16px; max-width:500px; width:100%; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
-            <h3 style="margin-top:0; font-size:20px; color:var(--text-primary);">⚠️ Aviso Importante</h3>
+            style="background:var(--bg-primary); border:1px solid var(--border); border-radius:16px; max-width:500px; width:100%; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; max-height: 90vh;">
+
+            <h3 style="margin-top:0; font-size:20px; color:var(--text-primary); flex-shrink: 0;">⚠️ Aviso Importante
+            </h3>
+
             <div
-                style="max-height:300px; overflow-y:auto; margin:16px 0; font-size:14px; color:var(--text-secondary); line-height:1.5; padding-right:8px;">
-                <p style="margin-bottom:10px;">Para prosseguir e gerar o documento, você precisa estar ciente de que:
-                </p>
-                <ul style="padding-left:18px; margin:0;">
-                    <li style="margin-bottom:8px;">o CartasApp fornece apenas um <strong>modelo de autorização de
-                            viagem</strong>, preenchido com os dados informados por você. Não fazemos análise jurídica
-                        do seu caso;</li>
-                    <li style="margin-bottom:8px;">a <strong>aceitação do documento</strong> e a autorização de embarque
-                        <strong>dependem exclusivamente</strong> da Polícia Federal, das empresas de transporte, dos
-                        cartórios e, em viagens internacionais, também de consulados e autoridades do país de destino;
-                    </li>
-                    <li style="margin-bottom:8px;">para viagens internacionais podem ser exigidos documentos adicionais
-                        (passaporte válido, autorização de ambos os pais, tradução, autorização judicial etc.), conforme
-                        o caso;</li>
-                    <li>o serviço não inclui reconhecimento de firma em cartório (que deve ser feito presencialmente
-                        pelos responsáveis).</li>
-                </ul>
+                style="flex: 1; min-height: 0; margin: 16px 0; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; overflow-y: auto; -webkit-overflow-scrolling: touch; box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.05);">
+                <div style="font-size:14px; color:var(--text-secondary); line-height:1.5;">
+                    <p style="margin-bottom:10px; margin-top:0;">Para prosseguir e gerar o documento, você precisa estar
+                        ciente de que:</p>
+                    <ul style="padding-left:18px; margin:0;">
+                        <li style="margin-bottom:8px;">o CartasApp fornece apenas um <strong>modelo de autorização de
+                                viagem</strong>, preenchido com os dados informados por você. Não fazemos análise
+                            jurídica do seu caso;</li>
+                        <li style="margin-bottom:8px;">a <strong>aceitação do documento</strong> e a autorização de
+                            embarque <strong>dependem exclusivamente</strong> da Polícia Federal, das empresas de
+                            transporte, dos cartórios e, em viagens internacionais, também de consulados e autoridades
+                            do país de destino;</li>
+                        <li style="margin-bottom:8px;">para viagens internacionais podem ser exigidos documentos
+                            adicionais (passaporte válido, autorização de ambos os pais, tradução, autorização judicial
+                            etc.), conforme o caso;</li>
+                        <li>o serviço não inclui reconhecimento de firma em cartório (que deve ser feito presencialmente
+                            pelos responsáveis).</li>
+                    </ul>
+                </div>
             </div>
-            <label class="small"
-                style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; background:var(--bg-secondary); padding:12px; border-radius:8px; border:1px solid var(--border);">
-                <input type="checkbox" id="aceite_termos"
-                    style="margin-top:2px; min-width:20px; min-height:20px; cursor:pointer;" />
-                <span style="font-weight:600; color:var(--text-primary); line-height: 1.4;">
-                    Li, compreendi e concordo com as informações acima e com os
-                    <a href="/termos.html" target="_blank" style="color:#3b82f6; text-decoration:underline;">Termos de
-                        Uso</a>.
-                </span>
-            </label>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button id="btnCancelarTermos" class="btn btn-secondary" style="flex:1;">Cancelar</button>
-                <button id="btnConfirmarTermos" class="btn btn-primary" style="flex:1;">Confirmar e Pagar</button>
+
+            <div
+                style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: -12px; margin-bottom: 12px; opacity: 0.8;">
+                (Role o texto acima para ler tudo)
+            </div>
+
+            <div style="flex-shrink: 0;">
+                <label class="small"
+                    style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; background:var(--bg-secondary); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                    <input type="checkbox" id="aceite_termos"
+                        style="margin-top:2px; min-width:20px; min-height:20px; cursor:pointer;" />
+                    <span style="font-weight:600; color:var(--text-primary); line-height: 1.4;">
+                        Li, compreendi e concordo com as informações acima e com os <a href="/termos.html"
+                            target="_blank" style="color:#3b82f6; text-decoration:underline;">Termos de Uso</a>.
+                    </span>
+                </label>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button id="btnCancelarTermos" class="btn btn-secondary" style="flex:1;">Cancelar</button>
+                    <button id="btnConfirmarTermos" class="btn btn-primary" style="flex:1;">Confirmar e Pagar</button>
+                </div>
             </div>
         </div>
     </div>
