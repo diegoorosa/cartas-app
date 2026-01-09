@@ -204,7 +204,6 @@
     <section class="section" style="padding-top: 0;">
         <div class="container">
             <div style="max-width: 800px; margin: 0 auto;">
-
                 <div class="card">
                     <div
                         style="background: #fffbeb; border: 1px solid #fcd34d; padding: 16px; border-radius: 12px; margin-bottom: 24px;">
@@ -217,17 +216,33 @@
                     </div>
 
                     <div id="formArea">
-                        <div style="margin-bottom: 24px; text-align: center;">
+                        <div
+                            style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
                             <div
-                                style="background: #ecfdf5; color: #065f46; border: 1px solid #10b981; padding: 10px 20px; border-radius: 50px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1); animation: pulse 2s infinite;">
+                                style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #059669; background: #d1fae5; padding: 6px 12px; border-radius: 20px;">
+                                🔒 Dados Criptografados</div>
+                            <div
+                                style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #2563eb; background: #dbeafe; padding: 6px 12px; border-radius: 20px;">
+                                ✅ Aceito em todo Brasil</div>
+                            <div
+                                style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #7c3aed; background: #ede9fe; padding: 6px 12px; border-radius: 20px;">
+                                🔄 Garantia de Correção</div>
+                        </div>
+
+                        <div style="margin-bottom: 24px; text-align: center;">
+
+                            <div
+                                style="background: #fffbeb; color: #b45309; border: 1px solid #fcd34d; padding: 10px 20px; border-radius: 50px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(245, 158, 11, 0.1); animation: pulse 2s infinite;">
                                 <span style="font-size: 16px;">🏆</span>
                                 <span>Modelo 100% Aceito (Padrão CNJ e Polícia Federal)</span>
                             </div>
+
                             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; margin-top: 0;">
                                 Utilizado com sucesso por centenas de famílias em viagens nacionais e internacionais.
                                 <br><span style="font-size: 11px; opacity: 0.8;">(Nenhuma recusa de embarque registrada
                                     até hoje)</span>
                             </p>
+
                             <div
                                 style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; opacity: 0.9;">
                                 <div
@@ -236,7 +251,7 @@
                                 </div>
                                 <div
                                     style="font-size: 12px; display: flex; align-items: center; gap: 4px; color: var(--text-secondary); background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px;">
-                                    ✅ Válido em todo Brasil
+                                    ✨ Formatação Automática
                                 </div>
                                 <div
                                     style="font-size: 12px; display: flex; align-items: center; gap: 4px; color: var(--text-secondary); background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px;">
@@ -264,24 +279,24 @@
 
                             <h2 class="section-title" style="font-size: 20px; margin-bottom: 12px;">Para onde é a
                                 viagem?</h2>
+
                             <select id="viagem_tipo" style="display:none">
                                 <option value="nacional" selected>Nacional</option>
                                 <option value="internacional">Internacional</option>
                             </select>
+
                             <div class="radio-group">
                                 <div class="radio-card">
                                     <input type="radio" name="viagem_visual" id="v_nacional" value="nacional" checked
                                         onchange="updateViagem(this.value)">
-                                    <label for="v_nacional" class="radio-label">
-                                        <span class="radio-icon">🇧🇷</span>Viagem Nacional
-                                    </label>
+                                    <label for="v_nacional" class="radio-label"><span
+                                            class="radio-icon">🇧🇷</span>Viagem Nacional</label>
                                 </div>
                                 <div class="radio-card">
                                     <input type="radio" name="viagem_visual" id="v_internacional" value="internacional"
                                         onchange="updateViagem(this.value)">
-                                    <label for="v_internacional" class="radio-label">
-                                        <span class="radio-icon">✈️</span>Internacional
-                                    </label>
+                                    <label for="v_internacional" class="radio-label"><span
+                                            class="radio-icon">✈️</span>Internacional</label>
                                 </div>
                             </div>
                             <p id="viagem_tipo_aviso" class="small"
@@ -327,15 +342,15 @@
                             </div>
 
                             <div class="form-navigation">
-                                <button type="button" class="btn btn-primary" id="nextStep1" style="width:100%;">
-                                    Continuar para o Acompanhante →
-                                </button>
+                                <button type="button" class="btn btn-primary" id="nextStep1"
+                                    style="width:100%;">Continuar para o Acompanhante →</button>
                             </div>
                         </div>
 
                         <div class="form-step" data-step="2" id="step-2">
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Com quem a criança
                                 vai viajar?</h2>
+
                             <select id="acompanhante_tipo" style="display:none">
                                 <option value="outro_responsavel">A Mãe / O Pai</option>
                                 <option value="terceiro">Parente / Terceiro</option>
@@ -382,6 +397,8 @@
                                 <label class="label">CPF (Opcional)</label>
                                 <input class="input" id="acomp_cpf" placeholder="000.000.000-00" inputmode="numeric"
                                     maxlength="14" />
+                                <div id="err_acomp_cpf" class="small"
+                                    style="display:none;color:#fca5a5;margin-top:4px;">CPF inválido.</div>
                                 <label class="label">RG/Documento (Opcional)</label>
                                 <input class="input" id="acomp_doc" placeholder="RG do acompanhante" />
                             </div>
@@ -395,6 +412,7 @@
                         <div class="form-step" data-step="3" id="step-3">
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Quem está
                                 autorizando?</h2>
+
                             <div class="radio-group full-mobile">
                                 <div class="radio-card">
                                     <input type="radio" name="resps_visual" id="um_resp" value="1" checked
@@ -423,6 +441,7 @@
                                     Responsável 1</h3>
                                 <label class="label">Nome completo <span class="required-star">*</span></label>
                                 <input class="input" id="resp1_nome" placeholder="Ex.: João Souza" />
+
                                 <div class="input-row">
                                     <div>
                                         <label class="label">Parentesco <span class="required-star">*</span></label>
@@ -437,6 +456,8 @@
                                         <label class="label">CPF (Opcional)</label>
                                         <input class="input" id="resp1_cpf" placeholder="000.000.000-00"
                                             inputmode="numeric" maxlength="14" />
+                                        <div id="err_resp1_cpf" class="small"
+                                            style="display:none;color:#fca5a5;margin-top:4px;">CPF inválido.</div>
                                     </div>
                                 </div>
                                 <label class="label">RG/Documento (Opcional)</label>
@@ -449,6 +470,7 @@
                                     Responsável 2</h3>
                                 <label class="label">Nome completo <span class="required-star">*</span></label>
                                 <input class="input" id="resp2_nome" placeholder="Ex.: Maria Souza" />
+
                                 <div class="input-row">
                                     <div>
                                         <label class="label">Parentesco</label>
@@ -462,6 +484,8 @@
                                         <label class="label">CPF (Opcional)</label>
                                         <input class="input" id="resp2_cpf" placeholder="000.000.000-00"
                                             inputmode="numeric" maxlength="14" />
+                                        <div id="err_resp2_cpf" class="small"
+                                            style="display:none;color:#fca5a5;margin-top:4px;">CPF inválido.</div>
                                     </div>
                                 </div>
                                 <label class="label">RG/Documento (Opcional)</label>
@@ -500,9 +524,8 @@
                                 <button type="button" class="btn btn-secondary" id="prevStep4">Voltar</button>
                                 <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;">
                                     <button class="btn btn-primary" id="btnPreview"
-                                        style="background-color: #28a745; border-color: #28a745; font-size: 1.1em; padding: 12px 24px;">
-                                        📄 Ver Prévia do Documento
-                                    </button>
+                                        style="background-color: #28a745; border-color: #28a745; font-size: 1.1em; padding: 12px 24px;">📄
+                                        Ver Prévia do Documento</button>
                                 </div>
                             </div>
 
@@ -529,16 +552,15 @@
                 <div id="previewWrap"
                     style="display:none; margin-top:32px; padding-top:32px; border-top:1px dashed var(--border);">
                     <div style="display:flex; align-items:center; gap:10px; margin-bottom: 16px;">
-                        <h2 class="section-title" style="margin:0; font-size: 22px; color: var(--text-primary);">
-                            Confira abaixo como ficou:
-                        </h2>
+                        <span style="font-size: 24px;">👀</span>
+                        <h2 class="section-title" style="margin:0; font-size: 22px; color: var(--text-primary);">Confira
+                            abaixo como ficou:</h2>
                     </div>
                     <div
                         style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:12px; padding:24px; position:relative;">
                         <div
                             style="position:absolute; top:10px; right:10px; background:#e2e8f0; color:#64748b; padding:4px 8px; font-size:10px; border-radius:4px; font-weight:bold; text-transform:uppercase;">
-                            Prévia
-                        </div>
+                            Prévia</div>
                         <div id="previewBox"
                             style="white-space:pre-wrap; font-family:'Courier New', Courier, monospace; font-size:14px; line-height:1.6; color:#334155;">
                         </div>
@@ -546,66 +568,13 @@
                     <div
                         style="background-color: #fffbeb; color: #92400e; padding: 16px; border-radius: 8px; margin-top: 16px; font-size: 14px; border: 1px solid #fcd34d; display:flex; gap:12px; align-items:start;">
                         <span style="font-size: 18px;">🔒</span>
-                        <div>
-                            <strong>Esta é uma visualização parcial.</strong><br>
-                            O documento final (completo, sem cortes e pronto para imprimir em PDF/Word) será liberado
-                            imediatamente após a confirmação do pagamento acima.
-                        </div>
+                        <div><strong>Esta é uma visualização parcial.</strong><br>O documento final (completo, sem
+                            cortes e pronto para imprimir em PDF/Word) será liberado imediatamente após a confirmação do
+                            pagamento acima.</div>
                     </div>
                 </div>
 
-                <div id="social-proof" style="margin-top: 40px; margin-bottom: 40px;">
-                    <h2 class="section-title"
-                        style="text-align: center; font-size: 22px; margin-bottom: 20px; color: var(--text-primary);">
-                        Quem usou, viajou tranquilo ✈️
-                    </h2>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-
-                        <div
-                            style="background: white; padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="color: #fbbf24; margin-bottom: 8px;">★★★★★</div>
-                            <p
-                                style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
-                                "Estava preocupada com a imigração na Argentina, mas o documento gerado pelo site segue
-                                exatamente o padrão que a Polícia Federal exige. Passamos sem problemas."
-                            </p>
-                            <div style="font-size: 12px; font-weight: bold; color: var(--text-primary);">
-                                Sueli <span style="font-weight: normal; color: var(--text-muted);">• Viajou para
-                                    Argentina 🇦🇷</span>
-                            </div>
-                        </div>
-
-                        <div
-                            style="background: white; padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="color: #fbbf24; margin-bottom: 8px;">★★★★★</div>
-                            <p
-                                style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
-                                "Muito prático. Em vez de pagar caro num despachante ou advogado, fiz tudo pelo celular
-                                em 5 minutos. Levei no cartório e pronto."
-                            </p>
-                            <div style="font-size: 12px; font-weight: bold; color: var(--text-primary);">
-                                Erika A. <span style="font-weight: normal; color: var(--text-muted);">• Viajou para Rio
-                                    de Janeiro/RJ</span>
-                            </div>
-                        </div>
-
-                        <div
-                            style="background: white; padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="color: #fbbf24; margin-bottom: 8px;">★★★★★</div>
-                            <p
-                                style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
-                                "Precisava autorizar a viagem da minha filha e não sabia como redigir o documento. O
-                                sistema já preencheu tudo certo com a lei."
-                            </p>
-                            <div style="font-size: 12px; font-weight: bold; color: var(--text-primary);">
-                                João P. <span style="font-weight: normal; color: var(--text-muted);">• Viajou para
-                                    Imperatriz/MA</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--border);">
+                <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
                     <div
                         style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
                         <p class="small" style="margin: 0; color: var(--text-secondary);">
@@ -613,19 +582,23 @@
                             • Criança (Nacional): Certidão de Nascimento ou RG.<br>
                             • Criança (Internacional): Passaporte (ou RG para Mercosul).<br>
                             • Adultos: RG, CNH, Passaporte ou Carteira de Trabalho.<br>
-                            <span style="opacity:.8;">As exigências podem variar conforme a companhia de transporte e as
-                                autoridades do país de destino.</span>
+                            <span style="opacity:.8;">As exigências podem variar conforme a companhia de transporte
+                                e as autoridades do país de destino.</span>
                         </p>
                     </div>
 
                     <div class="small legal-note" style="margin-bottom: 16px;">
                         <p class="small" style="margin: 0;">
-                            • Texto elaborado com base na <strong>Resolução CNJ nº 295/2019</strong> e nas exigências da
-                            <strong>Polícia Federal</strong> (modelo de uso geral, que não substitui orientação jurídica
+                            • Texto elaborado com base na <strong>Resolução CNJ nº 295/2019</strong> e nas
+                            exigências da
+                            <strong>Polícia Federal</strong> (modelo de uso geral, que não substitui orientação
+                            jurídica
                             individual).<br>
-                            • Serve para viagens <strong>nacionais e internacionais</strong>, com um dos pais, terceiros
+                            • Serve para viagens <strong>nacionais e internacionais</strong>, com um dos pais,
+                            terceiros
                             ou desacompanhado, desde que respeitadas as regras específicas de cada órgão.<br>
-                            • Documento em <strong>PDF e Word</strong>, pronto para imprimir, assinar e reconhecer firma
+                            • Documento em <strong>PDF e Word</strong>, pronto para imprimir, assinar e reconhecer
+                            firma
                             em cartório.
                         </p>
                     </div>
@@ -637,34 +610,38 @@
                         • Arquivos em PDF e Word para editar, imprimir e assinar.<br>
                         • Suporte por WhatsApp em caso de dúvidas sobre o uso do modelo.
                     </div>
-
-                    <div style="border-top:1px solid var(--border); padding-top:24px;">
-                        <h2 class="section-title" style="font-size: 22px; margin-bottom: 12px;">Perguntas rápidas</h2>
-                        <p class="small">
-                            <strong>Preciso ir ao cartório depois de gerar?</strong><br>
-                            Sim. O CartasApp entrega o documento pronto (redigido e formatado). Você deve imprimir e
-                            levar ao cartório apenas para <strong>reconhecer a firma</strong> da sua assinatura. Esse
-                            "selo" do cartório é o que garante a validade legal para o embarque em viagens
-                            interestaduais ou internacionais.
-                        </p>
-                        <p class="small" style="margin-top:12px;">
-                            <strong>Quantas vias (cópias) devo imprimir?</strong><br>
-                            Na prática, recomenda-se ter <strong>2 vias originais</strong>.
-                            <br>• <strong>1ª Via:</strong> Fica retida com a companhia de transporte no momento do
-                            embarque (arquivo deles).
-                            <br>• <strong>2ª Via:</strong> Segue viagem com a criança/acompanhante para servir de
-                            documento de porte obrigatório (para fiscalização policial ou retorno).
-                        </p>
-                        <p class="small" style="margin-top:12px;">
-                            <strong>Este modelo é aceito pela Polícia Federal?</strong><br>
-                            O texto é elaborado com base na <strong>Resolução CNJ nº 295/2019</strong> e nas orientações
-                            divulgadas pela Polícia Federal. Na prática, costuma ser aceito quando apresentado
-                            <strong>impresso, em duas vias e com firmas reconhecidas</strong>. Porém, a aceitação final
-                            cabe sempre à autoridade do embarque.
-                        </p>
-                    </div>
                 </div>
 
+                <div style="margin-top:32px;border-top:1px solid var(--border);padding-top:24px;">
+                    <h2 class="section-title" style="font-size: 22px; margin-bottom: 12px;">
+                        Perguntas rápidas
+                    </h2>
+
+                    <p class="small">
+                        <strong>Preciso ir ao cartório depois de gerar?</strong><br>
+                        Sim. O CartasApp entrega o documento pronto (redigido e formatado). Você deve imprimir e
+                        levar ao cartório apenas para <strong>reconhecer a firma</strong> da sua assinatura. Esse
+                        "selo" do cartório é o que garante a validade legal para o embarque em viagens
+                        interestaduais ou internacionais.
+                    </p>
+
+                    <p class="small" style="margin-top:12px;">
+                        <strong>Quantas vias (cópias) devo imprimir?</strong><br>
+                        Na prática, recomenda-se ter <strong>2 vias originais</strong>.
+                        <br>• <strong>1ª Via:</strong> Fica retida com a companhia de transporte no momento do
+                        embarque (arquivo deles).
+                        <br>• <strong>2ª Via:</strong> Segue viagem com a criança/acompanhante para servir de
+                        documento de porte obrigatório (para fiscalização policial ou retorno).
+                    </p>
+
+                    <p class="small" style="margin-top:12px;">
+                        <strong>Este modelo é aceito pela Polícia Federal?</strong><br>
+                        O texto é elaborado com base na <strong>Resolução CNJ nº 295/2019</strong> e nas orientações
+                        divulgadas pela Polícia Federal. Na prática, costuma ser aceito quando apresentado
+                        <strong>impresso, em duas vias e com firmas reconhecidas</strong>. Porém, a aceitação final
+                        cabe sempre à autoridade do embarque.
+                    </p>
+                </div>
             </div>
         </div>
     </section>
@@ -748,52 +725,40 @@
     <div id="modalTermos"
         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(4px);">
         <div
-            style="background:var(--bg-primary); border:1px solid var(--border); border-radius:16px; max-width:500px; width:100%; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; max-height: 90vh;">
-
-            <h3 style="margin-top:0; font-size:20px; color:var(--text-primary); flex-shrink: 0;">⚠️ Aviso Importante
-            </h3>
-
+            style="background:var(--bg-primary); border:1px solid var(--border); border-radius:16px; max-width:500px; width:100%; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+            <h3 style="margin-top:0; font-size:20px; color:var(--text-primary);">⚠️ Aviso Importante</h3>
             <div
-                style="flex: 1; min-height: 0; margin: 16px 0; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; overflow-y: auto; -webkit-overflow-scrolling: touch; box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.05);">
-                <div style="font-size:14px; color:var(--text-secondary); line-height:1.5;">
-                    <p style="margin-bottom:10px; margin-top:0;">Para prosseguir e gerar o documento, você precisa estar
-                        ciente de que:</p>
-                    <ul style="padding-left:18px; margin:0;">
-                        <li style="margin-bottom:8px;">o CartasApp fornece apenas um <strong>modelo de autorização de
-                                viagem</strong>, preenchido com os dados informados por você. Não fazemos análise
-                            jurídica do seu caso;</li>
-                        <li style="margin-bottom:8px;">a <strong>aceitação do documento</strong> e a autorização de
-                            embarque <strong>dependem exclusivamente</strong> da Polícia Federal, das empresas de
-                            transporte, dos cartórios e, em viagens internacionais, também de consulados e autoridades
-                            do país de destino;</li>
-                        <li style="margin-bottom:8px;">para viagens internacionais podem ser exigidos documentos
-                            adicionais (passaporte válido, autorização de ambos os pais, tradução, autorização judicial
-                            etc.), conforme o caso;</li>
-                        <li>o serviço não inclui reconhecimento de firma em cartório (que deve ser feito presencialmente
-                            pelos responsáveis).</li>
-                    </ul>
-                </div>
+                style="max-height:300px; overflow-y:auto; margin:16px 0; font-size:14px; color:var(--text-secondary); line-height:1.5; padding-right:8px;">
+                <p style="margin-bottom:10px;">Para prosseguir e gerar o documento, você precisa estar ciente de que:
+                </p>
+                <ul style="padding-left:18px; margin:0;">
+                    <li style="margin-bottom:8px;">o CartasApp fornece apenas um <strong>modelo de autorização de
+                            viagem</strong>, preenchido com os dados informados por você. Não fazemos análise jurídica
+                        do seu caso;</li>
+                    <li style="margin-bottom:8px;">a <strong>aceitação do documento</strong> e a autorização de embarque
+                        <strong>dependem exclusivamente</strong> da Polícia Federal, das empresas de transporte, dos
+                        cartórios e, em viagens internacionais, também de consulados e autoridades do país de destino;
+                    </li>
+                    <li style="margin-bottom:8px;">para viagens internacionais podem ser exigidos documentos adicionais
+                        (passaporte válido, autorização de ambos os pais, tradução, autorização judicial etc.), conforme
+                        o caso;</li>
+                    <li>o serviço não inclui reconhecimento de firma em cartório (que deve ser feito presencialmente
+                        pelos responsáveis).</li>
+                </ul>
             </div>
-
-            <div
-                style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: -12px; margin-bottom: 12px; opacity: 0.8;">
-                (Role o texto acima para ler tudo)
-            </div>
-
-            <div style="flex-shrink: 0;">
-                <label class="small"
-                    style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; background:var(--bg-secondary); padding:12px; border-radius:8px; border:1px solid var(--border);">
-                    <input type="checkbox" id="aceite_termos"
-                        style="margin-top:2px; min-width:20px; min-height:20px; cursor:pointer;" />
-                    <span style="font-weight:600; color:var(--text-primary); line-height: 1.4;">
-                        Li, compreendi e concordo com as informações acima e com os <a href="/termos.html"
-                            target="_blank" style="color:#3b82f6; text-decoration:underline;">Termos de Uso</a>.
-                    </span>
-                </label>
-                <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button id="btnCancelarTermos" class="btn btn-secondary" style="flex:1;">Cancelar</button>
-                    <button id="btnConfirmarTermos" class="btn btn-primary" style="flex:1;">Confirmar e Pagar</button>
-                </div>
+            <label class="small"
+                style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; background:var(--bg-secondary); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                <input type="checkbox" id="aceite_termos"
+                    style="margin-top:2px; min-width:20px; min-height:20px; cursor:pointer;" />
+                <span style="font-weight:600; color:var(--text-primary); line-height: 1.4;">
+                    Li, compreendi e concordo com as informações acima e com os
+                    <a href="/termos.html" target="_blank" style="color:#3b82f6; text-decoration:underline;">Termos de
+                        Uso</a>.
+                </span>
+            </label>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button id="btnCancelarTermos" class="btn btn-secondary" style="flex:1;">Cancelar</button>
+                <button id="btnConfirmarTermos" class="btn btn-primary" style="flex:1;">Confirmar e Pagar</button>
             </div>
         </div>
     </div>
