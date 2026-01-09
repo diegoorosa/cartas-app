@@ -116,8 +116,6 @@
 
     // --- LÓGICA DE AVISOS INTELIGENTE ---
     function checkAndShowWarnings(fullText) {
-      // Se o texto contém "VIAGEM" e "MENOR", mostramos o aviso específico
-      // Isso evita depender da URL ter o slug
       if (fullText.toUpperCase().includes('VIAGEM') && (fullText.toUpperCase().includes('MENOR') || fullText.toUpperCase().includes('CRIANÇA'))) {
         warningBox.style.display = 'block';
         warningBox.innerHTML =
@@ -162,15 +160,11 @@
           if (rs.ok) {
             var js = await rs.json();
             if (js && js.output) {
+
+              // 1. Pega o texto completo
               var fullText = renderDocText(js.output);
 
-              // 1. Esconde o loader
-              info.style.display = 'none';
-
-              // 2. Renderiza o documento
-              var fullText = renderDocText(js.output);
-
-              // 1. Esconde o loader
+              // 2. Esconde o loader
               info.style.display = 'none';
 
               // --- INICIO BLOCO VISUAL PREMIUM ---
@@ -211,16 +205,6 @@
               docBox.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
               // --- FIM BLOCO VISUAL PREMIUM ---
 
-              docWrapper.style.display = 'block';
-              actions.style.display = 'flex';
-
-              // 3. Ativa os botões
-              attachActions(fullText);
-
-              // 4. Verifica se precisa mostrar o aviso amarelo
-              checkAndShowWarnings(fullText);
-
-              return;
               docWrapper.style.display = 'block';
               actions.style.display = 'flex';
 
