@@ -27,8 +27,14 @@
 
       <div class="small"
         style="margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg-secondary); border: 1px solid var(--border);">
-        <strong>Aviso:</strong> O CartasApp fornece um <strong>modelo</strong> baseado nas informações que você
-        preencheu. Revise o conteúdo antes de usar.
+        <strong>Aviso importante:</strong> este é um <strong>modelo de documento</strong> gerado automaticamente a
+        partir das informações que você informou. O CartasApp não presta assessoria jurídica individual, não analisa
+        situações concretas e <strong>não garante que o modelo será aceito</strong> por órgãos públicos ou autoridades.
+        A responsabilidade pelo uso é exclusivamente do usuário.
+      </div>
+
+      <div id="slug-warning" class="small"
+        style="display:none; margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; background: var(--card-hover); border: 1px dashed var(--border);">
       </div>
 
       <p id="info" class="small" style="margin-bottom: 8px; font-weight:600;">Carregando...</p>
@@ -53,9 +59,7 @@
       </div>
 
       <div id="actions" style="display:none; gap:8px; margin-top:16px; flex-wrap:wrap; align-items:center;">
-        <span class="small" style="color:var(--text-secondary); margin-right:8px;">
-          Baixar agora:
-        </span>
+        <span class="small" style="color:var(--text-secondary); margin-right:8px;">Baixar agora:</span>
         <button class="btn" id="btnCopiar">Copiar texto</button>
         <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
         <button class="btn btn-outline" id="btnPdf">Baixar .PDF</button>
@@ -72,10 +76,8 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
-        <p>
-          Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html" class="footer-link">Termos de
-            Uso</a>.
-        </p>
+        <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html" class="footer-link">Termos de
+            Uso</a>.</p>
       </div>
     </div>
   </footer>
@@ -83,14 +85,15 @@
   <script src="/recovery.js"></script>
 
   <script>
-    // --- FUNÇÕES HELPER (EVITANDO DUPLICAÇÃO DE CÓDIGO) ---
+    // --- FUNÇÕES HELPER ---
     function qs(n) { var u = new URL(location.href); return u.searchParams.get(n); }
-    var orderId = qs('o'); // ID do pedido na URL
+    var orderId = qs('o');
 
     var info = document.getElementById('info');
     var docBox = document.getElementById('doc');
     var docWrapper = document.getElementById('doc-wrapper');
     var actions = document.getElementById('actions');
+    var warningBox = document.getElementById('slug-warning');
 
     var btnCopiar = document.getElementById('btnCopiar');
     var btnDoc = document.getElementById('btnDoc');
@@ -111,50 +114,42 @@
       return t.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join('');
     }
 
-    // --- LÓGICA DE NOMES DE ARQUIVO INTELIGENTES ---
-    function sanitizeName(str) {
-      if (!str) return '';
-      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").trim().replace(/\s+/g, "_");
+    // --- LÓGICA DE AVISOS INTELIGENTE ---
+    function checkAndShowWarnings(fullText) {
+      // Se o texto contém "VIAGEM" e "MENOR", mostramos o aviso específico
+      // Isso evita depender da URL ter o slug
+      if (fullText.toUpperCase().includes('VIAGEM') && (fullText.toUpperCase().includes('MENOR') || fullText.toUpperCase().includes('CRIANÇA'))) {
+        warningBox.style.display = 'block';
+        warningBox.innerHTML =
+          '<strong>Se este documento for uma autorização de viagem para menor:</strong>' +
+          '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+          '<li>trata-se apenas de um <strong>modelo de autorização</strong>; revise todo o texto antes de assinar ou reconhecer firma;</li>' +
+          '<li>para viagens nacionais, em regra é exigida autorização com firma reconhecida, mas companhias aéreas/rodoviárias podem impor regras adicionais;</li>' +
+          '<li>para viagens internacionais, podem ser exigidos documentos complementares, como autorização em formulário próprio, tradução/bilíngue, passaporte válido e até <strong>autorização judicial específica</strong> — confirme sempre com a Polícia Federal, a companhia aérea e o consulado do país de destino;</li>' +
+          '<li>em situações de guarda, disputa entre os pais ou dúvidas jurídicas, procure a Vara da Infância e Juventude ou um advogado.</li>' +
+          '</ul>';
+      }
     }
 
-    // --- ATIVAR BOTÕES ---
-    function attachActions(fullText, jsResponse) {
+    function attachActions(fullText) {
       var bodyHtml = htmlBodyFromText(fullText);
-
-      // Tenta adivinhar um nome bom para o arquivo baseado no JSON retornado
-      // O backend 'generate-doc' retorna o JSON que gerou o texto.
-      // Se não tiver, usamos um padrão.
       var filename = 'Documento_CartasApp';
-
-      // Aqui tentamos extrair o nome do payload se o backend retornar. 
-      // *Nota: O endpoint 'generate-doc' padrão retorna { output: {...} }. 
-      // Se ele não retornar os dados originais (input), ficamos com o nome genérico.
-      // Mas podemos tentar inferir pelo texto ou manter genérico.
-      // Para simplificar e garantir, vou usar "Documento_CartasApp" + OrderID curto
       if (orderId) filename += '_' + orderId.substring(0, 5);
 
-      btnCopiar.onclick = async function () {
-        try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar texto'; }, 1200); } catch (e) { }
-      };
-
+      btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar texto'; }, 1200); } catch (e) { } };
       btnDoc.onclick = function () { LMRecovery.doc(bodyHtml, filename); };
       btnPdf.onclick = function () { LMRecovery.pdf(bodyHtml, filename); };
-
       btnZap.onclick = function () { var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText); window.open(url, '_blank'); };
-
-      // Link de suporte direto com o ID
-      btnSuporte.href = 'https://wa.me/5547988616874?text=' + encodeURIComponent('Oi! Preciso de ajuda com o documento. Pedido: ' + (orderId || ''));
+      btnSuporte.href = 'https://wa.me/5547988616874?text=' + encodeURIComponent('Oi! Preciso de ajuda. Pedido: ' + (orderId || ''));
     }
 
-    // --- CARREGAR DOCUMENTO ---
     async function loadDocument() {
       if (!orderId) {
-        info.textContent = 'Link inválido. Verifique se copiou o endereço corretamente.';
+        info.textContent = 'Link inválido. Verifique o endereço.';
         info.style.color = 'var(--accent-error)';
         return;
       }
 
-      // Tenta buscar por 10 segundos (caso o usuário clique no email MUITO rápido após pagar)
       var attempts = 0;
       while (attempts < 10) {
         try {
@@ -169,27 +164,28 @@
             if (js && js.output) {
               var fullText = renderDocText(js.output);
 
-              // Sucesso!
-              info.style.display = 'none'; // Esconde "Carregando"
+              // 1. Esconde o loader
+              info.style.display = 'none';
+
+              // 2. Renderiza o documento
               docBox.innerHTML = htmlBodyFromText(fullText);
               docWrapper.style.display = 'block';
               actions.style.display = 'flex';
 
-              attachActions(fullText, js);
+              // 3. Ativa os botões
+              attachActions(fullText);
+
+              // 4. Verifica se precisa mostrar o aviso amarelo
+              checkAndShowWarnings(fullText);
+
               return;
             }
-          } else if (rs.status === 404) {
-            // Se der 404, pode ser que ainda não salvou no banco
-            // Continua tentando
           }
-        } catch (e) { console.log(e); }
-
+        } catch (e) { }
         attempts++;
-        await new Promise(r => setTimeout(r, 1500)); // Espera 1.5s
+        await new Promise(r => setTimeout(r, 1500));
       }
-
-      // Se falhar tudo
-      info.textContent = 'Não encontramos este documento. Se você pagou agora, aguarde 1 minuto e recarregue a página.';
+      info.textContent = 'Não encontramos este documento. Aguarde 1 minuto e atualize a página.';
       info.style.color = 'var(--accent-error)';
     }
 
