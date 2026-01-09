@@ -1205,103 +1205,126 @@
             }).catch(err => console.log('Lead capture bg error', err));
         }
 
-        // --- FUNÇÃO DO BOTÃO PRÉVIA ATUALIZADA (VISUAL PREMIUM) ---
+        // --- BOTÃO PRÉVIA (VERSÃO "PAYWALL" - BLOQUEIA O RESTO) ---
         if (btnPreview) {
-            btnPreview.addEventListener('click', async function () {
+            btnPreview.addEventListener('click', function () {
                 if (!checkCooldown()) return;
 
                 var payload = getPayload();
                 if (!validateAll(payload)) {
-                    alert('Por favor, preencha todos os campos obrigatórios (destacados em vermelho) para ver a prévia.');
+                    alert('Verifique os campos obrigatórios (destacados em vermelho).');
                     return;
                 }
 
                 btnPreview.disabled = true;
                 btnPreview.textContent = '⏳ Gerando...';
 
-                try {
-                    // Salva rascunho
-                    saveForm();
+                // Função interna para lidar com retentativas
+                async function tentarGerar(tentativa) {
+                    var vaiTentarDeNovo = false;
+                    try {
+                        saveForm();
 
-                    // Captura lead (silencioso)
-                    if (payload.email || payload.telefone) {
-                        captureLead(payload);
+                        if (tentativa === 1 && (payload.email || payload.telefone)) {
+                            captureLead(payload);
+                        }
+
+                        var r = await fetch('/.netlify/functions/generate-doc', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ payload: payload, preview: true })
+                        });
+
+                        if (r.status === 503 && tentativa === 1) {
+                            console.log('Servidor ocupado (503), tentando novamente...');
+                            btnPreview.textContent = '↻ Reconectando...';
+                            vaiTentarDeNovo = true;
+                            await new Promise(res => setTimeout(res, 2000));
+                            return tentarGerar(2);
+                        }
+
+                        if (!r.ok) {
+                            var errText = 'Falha ao gerar';
+                            try { var errData = await r.json(); if (errData.body) errText = errData.body; } catch (e) { }
+                            throw new Error(errText);
+                        }
+
+                        var data = await r.json();
+                        var out = data.output || data;
+
+                        // --- DESIGN DA PRÉVIA COM "CADEADO" ---
+
+                        // 1. Pega SÓ os 2 primeiros parágrafos (Esconde o resto)
+                        var paragraphs = (out.corpo_paragrafos || []).slice(0, 2);
+                        var textContent = paragraphs.join('\n\n');
+
+                        // 2. HTML da Folha A4 com o Bloqueio no final
+                        var htmlBonito = `
+                            <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;">
+                                <div style="font-size:32px; margin-bottom:5px;">⚖️</div>
+                                <h2 style="font-family:'Times New Roman',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">Autorização de Viagem</h2>
+                                <p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">
+                                    Conforme Resolução CNJ nº 295/2019 e Estatuto da Criança e do Adolescente
+                                </p>
+                            </div>
+
+                            <div style="font-family:'Times New Roman',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;">
+                                ${textContent.replace(/\n/g, '<br>')}
+                            </div>
+
+                            <div style="margin-top: 25px; background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 8px; padding: 15px; text-align: center; position: relative;">
+                                <div style="font-size: 24px; margin-bottom: 5px;">🔒</div>
+                                <div style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #475569; text-transform: uppercase; margin-bottom: 6px;">
+                                    Restante do documento oculto
+                                </div>
+                                <div style="font-family: Arial, sans-serif; font-size: 11px; color: #64748b; line-height: 1.5;">
+                                    A identificação do acompanhante, a fundamentação legal completa e o <br><strong>checklist de documentos obrigatórios</strong> estarão disponíveis no arquivo final.
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top:20px; text-align: center; font-family:Arial,sans-serif; font-size:10px; color:#999;">
+                                Pré-visualização parcial gerada por CartasApp.com.br
+                            </div>
+                        `;
+
+                        // 3. Aplica
+                        var pBox = document.getElementById('previewBox');
+                        pBox.innerHTML = htmlBonito;
+
+                        pBox.style.backgroundColor = "#fff";
+                        pBox.style.padding = "30px";
+                        pBox.style.border = "1px solid #ccc";
+                        pBox.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
+                        pBox.style.whiteSpace = "normal";
+
+                        // -------------------------------------
+
+                        previewWrap.style.display = 'block';
+                        paySection.style.display = 'block';
+                        btnPreview.style.display = 'none';
+
+                        setTimeout(function () {
+                            if (previewWrap) previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 100);
+
+                        if (typeof gtag === 'function') {
+                            gtag('event', 'generate_lead', { 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' });
+                        }
+
+                        localStorage.setItem('pendingPayload', JSON.stringify(payload));
+                        localStorage.setItem('last_preview_ts', Date.now());
+                        btnPagar.disabled = false;
+
+                    } catch (e) {
+                        if (!vaiTentarDeNovo) {
+                            if (e.message !== 'Campos inválidos') { alert('Erro ao gerar: ' + e.message); }
+                            btnPreview.disabled = false;
+                            btnPreview.textContent = '📄 Ver Prévia do Documento';
+                        }
                     }
-
-                    // Chama API
-                    var r = await fetch('/.netlify/functions/generate-doc', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payload: payload, preview: true })
-                    });
-
-                    if (!r.ok) throw new Error('Erro servidor');
-
-                    var data = await r.json();
-                    var out = data.output || data;
-
-                    // --- AQUI COMEÇA A MÁGICA DO DESIGN ---
-
-                    // 1. Prepara o texto (pega 3 parágrafos)
-                    var paragraphs = (out.corpo_paragrafos || []).slice(0, 3);
-                    var textContent = paragraphs.join('\n\n') + '\n\n[...] (O documento completo será liberado após a confirmação)';
-
-                    // 2. Monta o HTML com visual de "Documento Oficial"
-                    var htmlBonito = `
-                        <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;">
-                            <div style="font-size:32px; margin-bottom:5px;">⚖️</div>
-                            <h2 style="font-family:'Times New Roman',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">Autorização de Viagem</h2>
-                            <p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">
-                                Conforme Resolução CNJ nº 295/2019 e Estatuto da Criança e do Adolescente
-                            </p>
-                        </div>
-
-                        <div style="font-family:'Times New Roman',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;">
-                            ${textContent.replace(/\n/g, '<br>')}
-                        </div>
-
-                        <div style="margin-top:40px; border-top:1px dashed #999; padding-top:10px; text-align:center; font-family:Arial,sans-serif; font-size:10px; color:#777;">
-                            Documento gerado digitalmente em <strong>CartasApp.com.br</strong><br>
-                            Válido somente com reconhecimento de firma em cartório.
-                        </div>
-                    `;
-
-                    // 3. Aplica o HTML e o estilo de "Folha A4" na caixa
-                    var pBox = document.getElementById('previewBox');
-                    pBox.innerHTML = htmlBonito;
-
-                    // Força estilo de papel no container da prévia
-                    pBox.style.backgroundColor = "#fff";
-                    pBox.style.padding = "30px"; // Margem interna do papel
-                    pBox.style.border = "1px solid #ccc";
-                    pBox.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
-                    pBox.style.whiteSpace = "normal"; // Importante para o texto justificado funcionar
-
-                    // -----------------------------------------
-
-                    previewWrap.style.display = 'block';
-                    paySection.style.display = 'block';
-                    btnPreview.style.display = 'none';
-
-                    // Scroll suave até a prévia
-                    setTimeout(function () {
-                        previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-
-                    // Analytics
-                    if (typeof gtag === 'function') {
-                        gtag('event', 'generate_lead', { 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' });
-                    }
-
-                    localStorage.setItem('pendingPayload', JSON.stringify(payload));
-                    localStorage.setItem('last_preview_ts', Date.now());
-                    btnPagar.disabled = false;
-
-                } catch (e) {
-                    alert('Erro ao gerar: ' + e.message);
-                    btnPreview.disabled = false;
-                    btnPreview.textContent = '📄 Ver Prévia do Documento';
                 }
+
+                tentarGerar(1);
             });
         }
 
