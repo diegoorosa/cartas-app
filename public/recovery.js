@@ -8,29 +8,73 @@
     function ensureHtml2pdf() { return new Promise(function (res) { if (window.html2pdf) { res(); return; } if (document.getElementById('lm-html2pdf')) { var i = setInterval(function () { if (window.html2pdf) { clearInterval(i); res(); } }, 50); return; } var sc = document.createElement('script'); sc.id = 'lm-html2pdf'; sc.src = 'https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js'; sc.onload = function () { res(); }; document.head.appendChild(sc); }); }
     function downloadDocFromHtml(html, filename) { var full = '<html><head><meta charset="utf-8"><style>body{background:#fff;color:#000;font:12pt "Times New Roman",Times,Georgia,serif;line-height:1.6;margin:0;padding:18mm;box-sizing:border-box}p{margin:0 0 12pt 0;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere}</style></head><body>' + html + '</body></html>'; var blob = new Blob(['\ufeff', full], { type: 'application/msword' }); var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = (filename || 'documento') + '.doc'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
     function downloadPdfFromHtml(html, filename) {
-        // CORREÇÃO: Primeiro garante que html2pdf está carregado
         ensureHtml2pdf().then(function () {
             var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+
+            // Cria container invisível
             var host = document.createElement('div');
             host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px';
 
-            // Usa mesmas dimensões para todos, mas com ajustes
-            var pageStyle = 'width:210mm;padding:20mm 18mm;box-sizing:border-box;background:#fff;color:#000;font:12pt Times,serif;line-height:1.6;word-break:break-word;overflow-wrap:anywhere';
+            // ESTILO DA PÁGINA (A4) COM BORDA DE CARTÓRIO
+            // Padding interno maior para caber a borda e o texto não colar nela
+            var pageStyle = `
+                width: 210mm;
+                min-height: 297mm;
+                padding: 25mm; 
+                box-sizing: border-box;
+                background: #fff;
+                color: #000;
+                font-family: 'Times New Roman', Times, serif;
+                font-size: 12pt;
+                line-height: 1.5;
+                position: relative;
+            `;
 
-            host.innerHTML = '<div id="p" style="' + pageStyle + '">' + html + '</div>';
+            // HTML INJETADO (CABEÇALHO + TEXTO + RODAPÉ)
+            var content = `
+                <div id="p" style="${pageStyle}">
+                    
+                    <div style="position: absolute; top: 10mm; left: 10mm; right: 10mm; bottom: 10mm; border: 2px solid #000; pointer-events: none; z-index: 0;"></div>
+                    <div style="position: absolute; top: 11mm; left: 11mm; right: 11mm; bottom: 11mm; border: 1px solid #000; pointer-events: none; z-index: 0;"></div>
+
+                    <div style="position: relative; z-index: 1;">
+                        
+                        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 25px;">
+                            <div style="font-size: 36px; line-height: 1; margin-bottom: 5px;">⚖️</div>
+                            <h1 style="font-size: 18pt; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Autorização de Viagem</h1>
+                            <p style="font-size: 10pt; margin: 5px 0 0 0; font-style: italic;">
+                                Conforme Resolução CNJ nº 295/2019
+                            </p>
+                        </div>
+
+                        <div style="text-align: justify;">
+                            ${html}
+                        </div>
+
+                        <div style="margin-top: 40px; border-top: 1px dashed #666; padding-top: 10px; text-align: center; font-size: 9pt; color: #444;">
+                            Este documento foi gerado digitalmente através da plataforma <strong>CartasApp.com.br</strong>.<br>
+                            Para validade legal, é necessário o reconhecimento de firma em cartório presencial.
+                        </div>
+
+                    </div>
+                </div>
+            `;
+
+            host.innerHTML = content;
             document.body.appendChild(host);
             var node = host.querySelector('#p');
 
+            // CONFIGURAÇÕES DO HTML2PDF
             var opt = {
-                margin: [5, 0, 5, 0],
+                margin: 0, // Margem zero porque nós desenhamos a margem no CSS acima (padding 25mm)
                 filename: (filename || 'documento') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: {
-                    scale: 2,
+                    scale: 2, // Alta resolução
                     useCORS: true,
                     backgroundColor: '#ffffff',
                     scrollY: 0,
-                    windowHeight: node.scrollHeight + 100
+                    windowHeight: node.scrollHeight // Garante que pegue tudo
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
@@ -53,7 +97,7 @@
                 } else {
                     saveBlob();
                 }
-            }).catch(function () { host.remove(); });
+            }).catch(function (err) { console.error(err); host.remove(); });
         });
     }
     function injectStyles() { if (document.getElementById('lm-rec-css')) return; var s = document.createElement('style'); s.id = 'lm-rec-css'; s.textContent = '.lm-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999}.lm-card{background:#111;color:#fff;border:1px solid #333;border-radius:10px;max-width:520px;width:92%;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.4);font:14px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Arial}.lm-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{padding:10px 14px;border-radius:8px;border:1px solid #444;background:#1e1e1e;color:#fff;cursor:pointer}.btn-primary{background:#2563eb;border-color:#1d4ed8}.btn-green{background:#22c55e;border-color:#16a34a}.btn-outline{background:transparent}'; document.head.appendChild(s); }
