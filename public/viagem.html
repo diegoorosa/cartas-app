@@ -1205,24 +1205,30 @@
             }).catch(err => console.log('Lead capture bg error', err));
         }
 
+        // --- BOTÃO PRÉVIA (VERSÃO "PAYWALL" - BLOQUEIA O RESTO) ---
         if (btnPreview) {
-            btnPreview.addEventListener('click', async function () {
+            btnPreview.addEventListener('click', function () {
                 if (!checkCooldown()) return;
+
                 var payload = getPayload();
                 if (!validateAll(payload)) {
                     alert('Verifique os campos obrigatórios (destacados em vermelho).');
                     return;
                 }
+
                 btnPreview.disabled = true;
                 btnPreview.textContent = '⏳ Gerando...';
 
+                // Função interna para lidar com retentativas
                 async function tentarGerar(tentativa) {
                     var vaiTentarDeNovo = false;
                     try {
                         saveForm();
+
                         if (tentativa === 1 && (payload.email || payload.telefone)) {
                             captureLead(payload);
                         }
+
                         var r = await fetch('/.netlify/functions/generate-doc', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -1245,35 +1251,64 @@
 
                         var data = await r.json();
                         var out = data.output || data;
-                        var pars = out.corpo_paragrafos || [];
-                        var keep = Math.max(1, Math.min(2, pars.length));
-                        var parcialText = pars.slice(0, keep).join('\n\n') + '\n\n[...]';
-                        var saud = out.saudacao || '';
-                        var checklist = out.check_list_anexos || [];
-                        var chkShow = checklist.slice(0, 2);
-                        if (checklist.length > 2) chkShow.push('...');
-                        var finalPreview = (saud ? saud + '\n\n' : '') + parcialText + '\n\nChecklist de anexos (parcial): ' + chkShow.join('; ');
 
-                        previewBox.textContent = finalPreview;
+                        // --- DESIGN DA PRÉVIA COM "CADEADO" ---
+
+                        // 1. Pega SÓ os 2 primeiros parágrafos (Esconde o resto)
+                        var paragraphs = (out.corpo_paragrafos || []).slice(0, 2);
+                        var textContent = paragraphs.join('\n\n');
+
+                        // 2. HTML da Folha A4 com o Bloqueio no final
+                        var htmlBonito = `
+                            <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;">
+                                <div style="font-size:32px; margin-bottom:5px;">⚖️</div>
+                                <h2 style="font-family:'Times New Roman',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">Autorização de Viagem</h2>
+                                <p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">
+                                    Conforme Resolução CNJ nº 295/2019 e Estatuto da Criança e do Adolescente
+                                </p>
+                            </div>
+
+                            <div style="font-family:'Times New Roman',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;">
+                                ${textContent.replace(/\n/g, '<br>')}
+                            </div>
+
+                            <div style="margin-top: 25px; background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 8px; padding: 15px; text-align: center; position: relative;">
+                                <div style="font-size: 24px; margin-bottom: 5px;">🔒</div>
+                                <div style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #475569; text-transform: uppercase; margin-bottom: 6px;">
+                                    Restante do documento oculto
+                                </div>
+                                <div style="font-family: Arial, sans-serif; font-size: 11px; color: #64748b; line-height: 1.5;">
+                                    A identificação do acompanhante, a fundamentação legal completa e o <br><strong>checklist de documentos obrigatórios</strong> estarão disponíveis no arquivo final.
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top:20px; text-align: center; font-family:Arial,sans-serif; font-size:10px; color:#999;">
+                                Pré-visualização parcial gerada por CartasApp.com.br
+                            </div>
+                        `;
+
+                        // 3. Aplica
+                        var pBox = document.getElementById('previewBox');
+                        pBox.innerHTML = htmlBonito;
+
+                        pBox.style.backgroundColor = "#fff";
+                        pBox.style.padding = "30px";
+                        pBox.style.border = "1px solid #ccc";
+                        pBox.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
+                        pBox.style.whiteSpace = "normal";
+
+                        // -------------------------------------
+
                         previewWrap.style.display = 'block';
                         paySection.style.display = 'block';
                         btnPreview.style.display = 'none';
 
                         setTimeout(function () {
-                            var paySec = document.getElementById('paySection');
-                            if (paySec) {
-                                paySec.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }
+                            if (previewWrap) previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 100);
 
                         if (typeof gtag === 'function') {
-                            gtag('event', 'generate_lead', {
-                                'send_to': 'AW-1021062139/Ri4bCICS88IbEPvX8OYD',
-                                'event_category': 'engagement',
-                                'event_label': 'viagem_nacional',
-                                'value': 2.00,
-                                'currency': 'BRL'
-                            });
+                            gtag('event', 'generate_lead', { 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' });
                         }
 
                         localStorage.setItem('pendingPayload', JSON.stringify(payload));
@@ -1284,12 +1319,11 @@
                         if (!vaiTentarDeNovo) {
                             if (e.message !== 'Campos inválidos') { alert('Erro ao gerar: ' + e.message); }
                             btnPreview.disabled = false;
-                            btnPreview.style.opacity = '1';
-                            btnPreview.style.cursor = 'pointer';
                             btnPreview.textContent = '📄 Ver Prévia do Documento';
                         }
                     }
                 }
+
                 tentarGerar(1);
             });
         }
