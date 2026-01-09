@@ -168,7 +168,59 @@
               info.style.display = 'none';
 
               // 2. Renderiza o documento
-              docBox.innerHTML = htmlBodyFromText(fullText);
+              var fullText = renderDocText(js.output);
+
+              // 1. Esconde o loader
+              info.style.display = 'none';
+
+              // --- INICIO BLOCO VISUAL PREMIUM ---
+              // Tenta detectar o título dinamicamente
+              var tituloDoc = "AUTORIZAÇÃO DE VIAGEM";
+              var textoLower = fullText.toLowerCase();
+              if (textoLower.includes("viagem internacional")) tituloDoc += " INTERNACIONAL";
+              else if (textoLower.includes("viagem nacional")) tituloDoc += " NACIONAL";
+              else if (textoLower.includes("multa") || textoLower.includes("recurso")) tituloDoc = "RECURSO DE MULTA";
+              else if (textoLower.includes("reembolso")) tituloDoc = "SOLICITAÇÃO DE REEMBOLSO";
+
+              var htmlBonito = `
+                  <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;">
+                      <div style="font-size:32px; margin-bottom:5px;">⚖️</div>
+                      <h2 style="font-family:'Times New Roman',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">${tituloDoc}</h2>
+                      <p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">
+                          Documento Oficial
+                      </p>
+                  </div>
+
+                  <div style="font-family:'Times New Roman',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;">
+                      ${fullText.replace(/\n/g, '<br>')}
+                  </div>
+
+                  <div style="margin-top:40px; border-top:1px dashed #999; padding-top:10px; text-align:center; font-family:Arial,sans-serif; font-size:10px; color:#777;">
+                      Documento gerado via <strong>CartasApp.com.br</strong><br>
+                      Válido mediante assinatura e reconhecimento de firma.
+                  </div>
+              `;
+
+              // Renderiza
+              docBox.innerHTML = htmlBonito;
+
+              // Estiliza a caixa (caso o CSS não pegue)
+              docBox.style.backgroundColor = "#fff";
+              docBox.style.padding = "40px";
+              docBox.style.border = "1px solid #ccc";
+              docBox.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
+              // --- FIM BLOCO VISUAL PREMIUM ---
+
+              docWrapper.style.display = 'block';
+              actions.style.display = 'flex';
+
+              // 3. Ativa os botões
+              attachActions(fullText);
+
+              // 4. Verifica se precisa mostrar o aviso amarelo
+              checkAndShowWarnings(fullText);
+
+              return;
               docWrapper.style.display = 'block';
               actions.style.display = 'flex';
 

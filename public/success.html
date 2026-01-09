@@ -404,11 +404,50 @@
             };
         }
 
-        // função auxiliar: mostra documento, ações e faz scroll
+        // --- FUNÇÃO DE EXIBIÇÃO PREMIUM (SUBSTITUA A ANTIGA showDocAndScroll) ---
         function showDocAndScroll(fullText, payload) {
+            // Se tiver o elemento docBox, injetamos o HTML bonito
             if (docBox) {
-                docBox.innerHTML = htmlBodyFromText(fullText);
+                // Tenta detectar o título dinamicamente (Nacional vs Internacional)
+                var tituloDoc = "AUTORIZAÇÃO DE VIAGEM";
+                var textoLower = fullText.toLowerCase();
+
+                if (textoLower.includes("viagem internacional")) tituloDoc += " INTERNACIONAL";
+                else if (textoLower.includes("viagem nacional")) tituloDoc += " NACIONAL";
+                // Se não for viagem (ex: outros tipos), tenta inferir ou usa genérico
+                else if (textoLower.includes("multa") || textoLower.includes("recurso")) tituloDoc = "RECURSO DE MULTA";
+                else if (textoLower.includes("reembolso")) tituloDoc = "SOLICITAÇÃO DE REEMBOLSO";
+                else if (textoLower.includes("bagagem")) tituloDoc = "RECLAMAÇÃO DE BAGAGEM";
+
+                var htmlBonito = `
+                    <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;">
+                        <div style="font-size:32px; margin-bottom:5px;">⚖️</div>
+                        <h2 style="font-family:'Times New Roman',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">${tituloDoc}</h2>
+                        <p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">
+                            Conforme legislação vigente e resoluções aplicáveis
+                        </p>
+                    </div>
+
+                    <div style="font-family:'Times New Roman',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;">
+                        ${fullText.replace(/\n/g, '<br>')}
+                    </div>
+
+                    <div style="margin-top:40px; border-top:1px dashed #999; padding-top:10px; text-align:center; font-family:Arial,sans-serif; font-size:10px; color:#777;">
+                        Documento gerado oficialmente via <strong>CartasApp.com.br</strong><br>
+                        Válido mediante assinatura e reconhecimento de firma (se aplicável).
+                    </div>
+                `;
+
+                docBox.innerHTML = htmlBonito;
+
+                // Estiliza a caixa para parecer uma folha de papel
+                docBox.style.backgroundColor = "#fff";
+                docBox.style.padding = "40px"; // Margem interna generosa
+                docBox.style.border = "1px solid #ccc";
+                docBox.style.borderRadius = "2px";
+                docBox.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
             }
+
             if (docWrapper) {
                 docWrapper.style.display = 'block';
                 // scroll suave até a prévia — ajuda muito no celular
@@ -416,10 +455,13 @@
                     docWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 150);
             }
+
             if (actions) actions.style.display = 'flex';
+
             if (info) {
-                info.textContent = 'Documento gerado! Role a página para baixo para revisar e baixar em PDF/Word.';
+                info.textContent = 'Documento gerado com sucesso! Baixe seu PDF abaixo.';
             }
+
             attachActions(fullText, payload || null);
         }
 
