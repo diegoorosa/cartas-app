@@ -15,43 +15,44 @@
             var host = document.createElement('div');
             host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px';
 
-            // ESTILO DA PÁGINA (A4) COM BORDA DE CARTÓRIO
-            // Padding interno maior para caber a borda e o texto não colar nela
+            // ESTILO DA PÁGINA (A4) - AJUSTADO PARA EVITAR QUEBRA
+            // padding reduzido para 20mm (antes era 25mm)
+            // font-size reduzido para 11pt (antes 12pt) para garantir espaço
             var pageStyle = `
                 width: 210mm;
-                min-height: 297mm;
-                padding: 25mm; 
+                min-height: 295mm; 
+                padding: 20mm; 
                 box-sizing: border-box;
                 background: #fff;
                 color: #000;
                 font-family: 'Times New Roman', Times, serif;
-                font-size: 12pt;
-                line-height: 1.5;
+                font-size: 11pt; 
+                line-height: 1.4;
                 position: relative;
             `;
 
-            // HTML INJETADO (CABEÇALHO + TEXTO + RODAPÉ)
+            // HTML INJETADO
             var content = `
                 <div id="p" style="${pageStyle}">
                     
-                    <div style="position: absolute; top: 10mm; left: 10mm; right: 10mm; bottom: 10mm; border: 2px solid #000; pointer-events: none; z-index: 0;"></div>
-                    <div style="position: absolute; top: 11mm; left: 11mm; right: 11mm; bottom: 11mm; border: 1px solid #000; pointer-events: none; z-index: 0;"></div>
+                    <div style="position: absolute; top: 8mm; left: 8mm; right: 8mm; bottom: 8mm; border: 2px solid #000; pointer-events: none; z-index: 0;"></div>
+                    <div style="position: absolute; top: 9mm; left: 9mm; right: 9mm; bottom: 9mm; border: 1px solid #000; pointer-events: none; z-index: 0;"></div>
 
                     <div style="position: relative; z-index: 1;">
                         
-                        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 25px;">
-                            <div style="font-size: 36px; line-height: 1; margin-bottom: 5px;">⚖️</div>
-                            <h1 style="font-size: 18pt; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Autorização de Viagem</h1>
-                            <p style="font-size: 10pt; margin: 5px 0 0 0; font-style: italic;">
+                        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 15px;">
+                            <div style="font-size: 32px; line-height: 1; margin-bottom: 4px;">⚖️</div>
+                            <h1 style="font-size: 16pt; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Autorização de Viagem</h1>
+                            <p style="font-size: 9pt; margin: 4px 0 0 0; font-style: italic;">
                                 Conforme Resolução CNJ nº 295/2019
                             </p>
                         </div>
 
-                        <div style="text-align: justify;">
+                        <div style="text-align: justify; min-height: 400px;">
                             ${html}
                         </div>
 
-                        <div style="margin-top: 40px; border-top: 1px dashed #666; padding-top: 10px; text-align: center; font-size: 9pt; color: #444;">
+                        <div style="margin-top: 20px; border-top: 1px dashed #666; padding-top: 8px; text-align: center; font-size: 8pt; color: #444;">
                             Este documento foi gerado digitalmente através da plataforma <strong>CartasApp.com.br</strong>.<br>
                             Para validade legal, é necessário o reconhecimento de firma em cartório presencial.
                         </div>
@@ -64,20 +65,20 @@
             document.body.appendChild(host);
             var node = host.querySelector('#p');
 
-            // CONFIGURAÇÕES DO HTML2PDF
             var opt = {
-                margin: 0, // Margem zero porque nós desenhamos a margem no CSS acima (padding 25mm)
+                margin: 0,
                 filename: (filename || 'documento') + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: {
-                    scale: 2, // Alta resolução
+                    scale: 2,
                     useCORS: true,
                     backgroundColor: '#ffffff',
                     scrollY: 0,
-                    windowHeight: node.scrollHeight // Garante que pegue tudo
+                    windowHeight: node.scrollHeight
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                // Configuração para evitar quebra de página agressiva
+                pagebreak: { mode: ['css', 'legacy'] }
             };
 
             html2pdf().set(opt).from(node).toPdf().get('pdf').then(function (pdf) {
