@@ -5,102 +5,158 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="/theme.js"></script>
-  <script src="/utm.js"></script>
   <link rel="stylesheet" href="/style.css" />
-  <title>Recuperar Documento</title>
+  <title>Seu Documento | CartasApp</title>
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="apple-touch-icon" href="/logo.png" />
+
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");
+  </script>
 </head>
 
 <body>
   <div class="container">
     <div class="card">
-      <h1>Seu Documento</h1>
-      <p id="info" class="small">Carregando documento...</p>
+      <h1 style="margin-bottom: 8px;">Seu documento está pronto</h1>
 
-      <div id="doc" class="preview" style="display:none" data-clarity-mask="true"></div>
+      <p class="small" style="margin-bottom: 12px; color: var(--text-secondary);">
+        Este é o link permanente para acessar seu documento. Você pode baixar quantas vezes precisar.
+      </p>
 
-      <div id="actions" style="display:none; gap:8px; margin-top:12px; flex-wrap:wrap">
-        <button class="btn" id="btnCopiar">Copiar</button>
+      <div class="small"
+        style="margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg-secondary); border: 1px solid var(--border);">
+        <strong>Aviso:</strong> O CartasApp fornece um <strong>modelo</strong> baseado nas informações que você
+        preencheu. Revise o conteúdo antes de usar.
+      </div>
+
+      <p id="info" class="small" style="margin-bottom: 8px; font-weight:600;">Carregando...</p>
+
+      <div id="doc-wrapper" style="display:none; margin-top:16px;">
+        <div
+          style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+          <div class="small"
+            style="font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+            <span>📄 Pré-visualização</span>
+          </div>
+          <div class="small" style="color:var(--text-muted);">
+            Revise os dados. O PDF final terá a mesma redação.
+          </div>
+        </div>
+
+        <div style="border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); padding:14px;">
+          <div id="doc" class="preview" data-clarity-mask="true"
+            style="background:#ffffff; border-radius:10px; padding:32px 40px; max-height:520px; overflow:auto; box-shadow:0 10px 25px rgba(15,23,42,0.15); font-family: 'Times New Roman', Georgia, 'serif'; font-size:14px; line-height:1.7; color:#111827;">
+          </div>
+        </div>
+      </div>
+
+      <div id="actions" style="display:none; gap:8px; margin-top:16px; flex-wrap:wrap; align-items:center;">
+        <span class="small" style="color:var(--text-secondary); margin-right:8px;">
+          Baixar agora:
+        </span>
+        <button class="btn" id="btnCopiar">Copiar texto</button>
         <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
         <button class="btn btn-outline" id="btnPdf">Baixar .PDF</button>
         <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
-        <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener">Falar no WhatsApp</a>
+        <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener">Falar no Suporte</a>
       </div>
 
       <div id="nav-extra" style="margin-top:24px; padding-top:24px; border-top: 1px solid var(--border);">
         <a href="/" class="btn btn-primary">Voltar ao Início</a>
-      </div>
-
-      <div class="small" style="margin-top:16px;opacity:.9">Este site não presta aconselhamento jurídico. Leia os
-        <a href="/termos.html" style="text-decoration:underline">Termos de Uso</a>.
       </div>
     </div>
   </div>
 
   <footer class="footer">
     <div class="container">
-        <div class="footer-content">
-            <p>
-                Este site não presta aconselhamento jurídico. Leia os
-                <a href="/termos.html" class="footer-link">Termos de Uso</a>,
-                <a href="/privacidade.html" class="footer-link">Política de Privacidade</a>,
-                conheça mais em
-                <a href="/sobre.html" class="footer-link">Sobre o CartasApp</a>
-                e visite nossa
-                <a href="/blog.html" class="footer-link">Central de Ajuda</a>.
-            </p>
-        </div>
+      <div class="footer-content">
+        <p>
+          Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html" class="footer-link">Termos de
+            Uso</a>.
+        </p>
+      </div>
     </div>
-</footer>
+  </footer>
 
   <script src="/recovery.js"></script>
 
   <script>
-    // --- Funções Helper (copiadas do success.html) ---
-
+    // --- FUNÇÕES HELPER (EVITANDO DUPLICAÇÃO DE CÓDIGO) ---
     function qs(n) { var u = new URL(location.href); return u.searchParams.get(n); }
-    var orderId = qs('o'); // Pega o Order ID da URL
+    var orderId = qs('o'); // ID do pedido na URL
 
     var info = document.getElementById('info');
     var docBox = document.getElementById('doc');
+    var docWrapper = document.getElementById('doc-wrapper');
     var actions = document.getElementById('actions');
+
     var btnCopiar = document.getElementById('btnCopiar');
     var btnDoc = document.getElementById('btnDoc');
     var btnPdf = document.getElementById('btnPdf');
     var btnZap = document.getElementById('btnZap');
     var btnSuporte = document.getElementById('btnSuporte');
 
-    function renderDocText(out) { var partes = []; if (out.saudacao) partes.push(out.saudacao); var body = out.corpo_paragrafos || []; for (var i = 0; i < body.length; i++)partes.push(body[i]); if (out.fechamento) partes.push(out.fechamento); return partes.join('\n\n'); }
-    function htmlBodyFromText(t) { return t.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join(''); }
-
-    // --- attachActions (simplificada: só download/cópia) ---
-    function attachActions(fullText, slug) {
-      var bodyHtml = htmlBodyFromText(fullText);
-
-      // Funções do recovery.js para baixar PDF e DOC
-      btnDoc.onclick = function () { LMRecovery.doc(bodyHtml, slug || 'documento'); };
-      btnPdf.onclick = function () { LMRecovery.pdf(bodyHtml, slug || 'documento'); };
-
-      // Funções de copiar e zap
-      btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar'; }, 1200); } catch (e) { } };
-      btnZap.onclick = function () { var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText); window.open(url, '_blank'); };
-      btnSuporte.href = 'https://wa.me/5547988616874?text=' + encodeURIComponent('Oi! Preciso de ajuda com meu documento. Pedido: ' + (orderId || ''));
+    function renderDocText(out) {
+      var partes = [];
+      if (out.saudacao) partes.push(out.saudacao);
+      var body = out.corpo_paragrafos || [];
+      for (var i = 0; i < body.length; i++) partes.push(body[i]);
+      if (out.fechamento) partes.push(out.fechamento);
+      return partes.join('\n\n');
     }
 
-    // --- Função Principal para carregar o documento ---
-    async function carregarDocumento() {
+    function htmlBodyFromText(t) {
+      return t.split('\n\n').map(function (p) { return '<p>' + p.replace(/\n/g, '<br/>') + '</p>'; }).join('');
+    }
+
+    // --- LÓGICA DE NOMES DE ARQUIVO INTELIGENTES ---
+    function sanitizeName(str) {
+      if (!str) return '';
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").trim().replace(/\s+/g, "_");
+    }
+
+    // --- ATIVAR BOTÕES ---
+    function attachActions(fullText, jsResponse) {
+      var bodyHtml = htmlBodyFromText(fullText);
+
+      // Tenta adivinhar um nome bom para o arquivo baseado no JSON retornado
+      // O backend 'generate-doc' retorna o JSON que gerou o texto.
+      // Se não tiver, usamos um padrão.
+      var filename = 'Documento_CartasApp';
+
+      // Aqui tentamos extrair o nome do payload se o backend retornar. 
+      // *Nota: O endpoint 'generate-doc' padrão retorna { output: {...} }. 
+      // Se ele não retornar os dados originais (input), ficamos com o nome genérico.
+      // Mas podemos tentar inferir pelo texto ou manter genérico.
+      // Para simplificar e garantir, vou usar "Documento_CartasApp" + OrderID curto
+      if (orderId) filename += '_' + orderId.substring(0, 5);
+
+      btnCopiar.onclick = async function () {
+        try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar texto'; }, 1200); } catch (e) { }
+      };
+
+      btnDoc.onclick = function () { LMRecovery.doc(bodyHtml, filename); };
+      btnPdf.onclick = function () { LMRecovery.pdf(bodyHtml, filename); };
+
+      btnZap.onclick = function () { var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText); window.open(url, '_blank'); };
+
+      // Link de suporte direto com o ID
+      btnSuporte.href = 'https://wa.me/5547988616874?text=' + encodeURIComponent('Oi! Preciso de ajuda com o documento. Pedido: ' + (orderId || ''));
+    }
+
+    // --- CARREGAR DOCUMENTO ---
+    async function loadDocument() {
       if (!orderId) {
-        info.textContent = 'Link inválido. Não foi possível encontrar um ID de pedido na URL.';
+        info.textContent = 'Link inválido. Verifique se copiou o endereço corretamente.';
         info.style.color = 'var(--accent-error)';
         return;
       }
 
-      info.textContent = 'Buscando seu documento...';
-
-      // Tenta buscar o documento no servidor 10 vezes
-      for (var i = 0; i < 10; i++) {
+      // Tenta buscar por 10 segundos (caso o usuário clique no email MUITO rápido após pagar)
+      var attempts = 0;
+      while (attempts < 10) {
         try {
           var rs = await fetch('/.netlify/functions/generate-doc', {
             method: 'POST',
@@ -111,32 +167,33 @@
           if (rs.ok) {
             var js = await rs.json();
             if (js && js.output) {
-              var fullText = renderDocText(js.output, null);
-              docBox.textContent = fullText;
-              docBox.style.display = 'block';
+              var fullText = renderDocText(js.output);
+
+              // Sucesso!
+              info.style.display = 'none'; // Esconde "Carregando"
+              docBox.innerHTML = htmlBodyFromText(fullText);
+              docWrapper.style.display = 'block';
               actions.style.display = 'flex';
-              info.textContent = '';
 
-              // Chama o attachActions. Precisamos do slug para o nome do arquivo.
-              // Vamos buscar o slug do banco (generate-doc não retorna)
-              // Por enquanto, vamos usar um nome genérico
-              attachActions(fullText, 'documento_cartasapp');
-              return; // Sucesso!
+              attachActions(fullText, js);
+              return;
             }
+          } else if (rs.status === 404) {
+            // Se der 404, pode ser que ainda não salvou no banco
+            // Continua tentando
           }
-        } catch (e) { /* Falha de rede, tenta de novo */ }
+        } catch (e) { console.log(e); }
 
-        // Se falhou, espera um pouco antes de tentar de novo
-        await new Promise(function (r) { setTimeout(r, 1500); });
+        attempts++;
+        await new Promise(r => setTimeout(r, 1500)); // Espera 1.5s
       }
 
-      // Se o loop terminar sem sucesso
-      info.textContent = 'Documento não encontrado ou ainda não foi gerado. Se você acabou de pagar, aguarde 1 minuto e atualize a página.';
+      // Se falhar tudo
+      info.textContent = 'Não encontramos este documento. Se você pagou agora, aguarde 1 minuto e recarregue a página.';
       info.style.color = 'var(--accent-error)';
     }
 
-    // Inicia o processo
-    carregarDocumento();
+    loadDocument();
   </script>
 </body>
 
