@@ -11,13 +11,22 @@
         ensureHtml2pdf().then(function () {
             var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
 
+            // DETECTA O TIPO DE VIAGEM PELO TEXTO
+            var tituloViagem = "AUTORIZAÇÃO DE VIAGEM"; // Padrão
+
+            // Procura a palavra "internacional" (ignorando maiúsculas/minúsculas)
+            if (html.toLowerCase().includes("viagem internacional")) {
+                tituloViagem = "AUTORIZAÇÃO DE VIAGEM INTERNACIONAL";
+            }
+            // Procura "nacional" (mas cuida para não pegar "internacional" sem querer, embora a lógica acima já proteja)
+            else if (html.toLowerCase().includes("viagem nacional")) {
+                tituloViagem = "AUTORIZAÇÃO DE VIAGEM NACIONAL";
+            }
+
             // Cria container invisível
             var host = document.createElement('div');
             host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px';
 
-            // ESTILO DA PÁGINA (A4) - AJUSTADO PARA EVITAR QUEBRA
-            // padding reduzido para 20mm (antes era 25mm)
-            // font-size reduzido para 11pt (antes 12pt) para garantir espaço
             var pageStyle = `
                 width: 210mm;
                 min-height: 295mm; 
@@ -31,7 +40,6 @@
                 position: relative;
             `;
 
-            // HTML INJETADO
             var content = `
                 <div id="p" style="${pageStyle}">
                     
@@ -42,7 +50,9 @@
                         
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 15px;">
                             <div style="font-size: 32px; line-height: 1; margin-bottom: 4px;">⚖️</div>
-                            <h1 style="font-size: 16pt; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Autorização de Viagem</h1>
+                            
+                            <h1 style="font-size: 16pt; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">${tituloViagem}</h1>
+                            
                             <p style="font-size: 9pt; margin: 4px 0 0 0; font-style: italic;">
                                 Conforme Resolução CNJ nº 295/2019
                             </p>
@@ -77,7 +87,6 @@
                     windowHeight: node.scrollHeight
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                // Configuração para evitar quebra de página agressiva
                 pagebreak: { mode: ['css', 'legacy'] }
             };
 
