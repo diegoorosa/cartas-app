@@ -158,6 +158,56 @@
                 /* Sobe o botão */
             }
         }
+
+        /* ESTILO DA PRÉVIA "PREMIUM" */
+        #doc {
+            background: #fff;
+            padding: 40px 50px !important;
+            /* Margens de papel */
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+            font-family: 'Times New Roman', Times, serif !important;
+            font-size: 16px !important;
+            /* Letra maior = mais legível */
+            line-height: 1.6 !important;
+            color: #000 !important;
+            text-align: justify;
+            position: relative;
+        }
+
+        /* Borda decorativa interna (Estilo Cartório) */
+        #doc::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid #000;
+            /* Borda preta interna */
+            pointer-events: none;
+        }
+
+        /* Cabeçalho Falso na Prévia */
+        .doc-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 15px;
+        }
+
+        .doc-title {
+            font-weight: bold;
+            font-size: 18px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .doc-subtitle {
+            font-size: 12px;
+            margin-top: 5px;
+            font-style: italic;
+        }
     </style>
 </head>
 
