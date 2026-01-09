@@ -144,6 +144,20 @@
                 box-shadow: 0 0 0 0 rgba(252, 211, 77, 0);
             }
         }
+
+        /* --- CORREÇÃO DO WHATSAPP VS COOKIES --- */
+        .whatsapp-float {
+            z-index: 2147483647 !important;
+            /* Garante que fique NA FRENTE de tudo */
+        }
+
+        /* Só no celular, a gente sobe o botão para não bater no banner */
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                bottom: 90px !important;
+                /* Sobe o botão */
+            }
+        }
     </style>
 </head>
 
