@@ -15,7 +15,6 @@
         ensureHtml2pdf().then(function () {
             var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
             
-            // DETECTA O TIPO DE VIAGEM PELO TEXTO
             var tituloViagem = "AUTORIZAÇÃO DE VIAGEM"; 
             if (html.toLowerCase().includes("viagem internacional")) {
                 tituloViagem = "AUTORIZAÇÃO DE VIAGEM INTERNACIONAL";
@@ -26,18 +25,18 @@
             var host = document.createElement('div');
             host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px';
 
-            // AJUSTE CRÍTICO PARA MOBILE:
-            // 1. Padding reduzido para 15mm (ganha espaço vertical)
-            // 2. Line-height reduzido para 1.3 (compacta o texto)
+            // VERSÃO ULTRA COMPACTA
+            // Font-size 10pt (ainda legível, mas economiza muito espaço)
+            // Padding 12mm
             var pageStyle = `
                 width: 210mm;
                 min-height: 296mm; 
-                padding: 15mm 20mm; 
+                padding: 12mm 15mm; 
                 box-sizing: border-box;
                 background: #fff;
                 color: #000;
                 font-family: 'Times New Roman', Times, serif;
-                font-size: 11pt; 
+                font-size: 10pt; 
                 line-height: 1.3; 
                 position: relative;
             `;
@@ -45,24 +44,24 @@
             var content = `
                 <div id="p" style="${pageStyle}">
                     
-                    <div style="position: absolute; top: 8mm; left: 8mm; right: 8mm; bottom: 8mm; border: 2px solid #000; pointer-events: none; z-index: 0;"></div>
-                    <div style="position: absolute; top: 9mm; left: 9mm; right: 9mm; bottom: 9mm; border: 1px solid #000; pointer-events: none; z-index: 0;"></div>
+                    <div style="position: absolute; top: 5mm; left: 5mm; right: 5mm; bottom: 5mm; border: 2px solid #000; pointer-events: none; z-index: 0;"></div>
+                    <div style="position: absolute; top: 6mm; left: 6mm; right: 6mm; bottom: 6mm; border: 1px solid #000; pointer-events: none; z-index: 0;"></div>
 
                     <div style="position: relative; z-index: 1;">
                         
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 15px;">
-                            <div style="font-size: 30px; line-height: 1; margin-bottom: 2px;">⚖️</div>
-                            <h1 style="font-size: 16pt; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">${tituloViagem}</h1>
-                            <p style="font-size: 9pt; margin: 2px 0 0 0; font-style: italic;">
+                            <div style="font-size: 28px; line-height: 1; margin-bottom: 2px;">⚖️</div>
+                            <h1 style="font-size: 14pt; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">${tituloViagem}</h1>
+                            <p style="font-size: 8pt; margin: 2px 0 0 0; font-style: italic;">
                                 Conforme Resolução CNJ nº 295/2019
                             </p>
                         </div>
 
-                        <div style="text-align: justify; min-height: 400px;">
+                        <div style="text-align: justify; min-height: 350px;">
                             ${html}
                         </div>
 
-                        <div style="margin-top: 15px; border-top: 1px dashed #666; padding-top: 5px; text-align: center; font-size: 8pt; color: #444;">
+                        <div style="margin-top: 20px; border-top: 1px dashed #666; padding-top: 5px; text-align: center; font-size: 7pt; color: #444;">
                             Este documento foi gerado digitalmente através da plataforma <strong>CartasApp.com.br</strong>.<br>
                             Para validade legal, é necessário o reconhecimento de firma em cartório presencial.
                         </div>
@@ -87,7 +86,7 @@
                     windowHeight: node.scrollHeight
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['css', 'legacy'] }
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
             html2pdf().set(opt).from(node).toPdf().get('pdf').then(function (pdf) {
