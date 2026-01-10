@@ -13,8 +13,11 @@
 
     function downloadPdfFromHtml(html, filename) {
         ensureHtml2pdf().then(function () {
+            // DETECTA SE É CELULAR (Android, iOS ou tela pequena)
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
             var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
             
+            // DETECTA TÍTULO
             var tituloViagem = "AUTORIZAÇÃO DE VIAGEM"; 
             if (html.toLowerCase().includes("viagem internacional")) {
                 tituloViagem = "AUTORIZAÇÃO DE VIAGEM INTERNACIONAL";
@@ -25,10 +28,24 @@
             var host = document.createElement('div');
             host.style.position = 'fixed'; host.style.left = '-10000px'; host.style.top = '-10000px';
 
-            // VERSÃO ULTRA COMPACTA
-            // Font-size 10pt (ainda legível, mas economiza muito espaço)
-            // Padding 12mm
-            var pageStyle = `
+            // --- CONFIGURAÇÕES HÍBRIDAS ---
+            
+            // CONFIGURAÇÃO PC (PREMIUM) - Mais espaçada e elegante
+            var stylePC = `
+                width: 210mm;
+                min-height: 296mm; 
+                padding: 20mm; 
+                box-sizing: border-box;
+                background: #fff;
+                color: #000;
+                font-family: 'Times New Roman', Times, serif;
+                font-size: 11pt; 
+                line-height: 1.4;
+                position: relative;
+            `;
+
+            // CONFIGURAÇÃO MOBILE (COMPACTA) - Para evitar quebra de página
+            var styleMobile = `
                 width: 210mm;
                 min-height: 296mm; 
                 padding: 12mm 15mm; 
@@ -41,17 +58,26 @@
                 position: relative;
             `;
 
+            // Escolhe o estilo baseado no dispositivo
+            var finalPageStyle = isMobile ? styleMobile : stylePC;
+            
+            // Ajusta tamanho da fonte do título também
+            var h1Size = isMobile ? '14pt' : '16pt';
+            var iconSize = isMobile ? '28px' : '32px';
+            var borderMargin = isMobile ? '5mm' : '8mm'; // Borda mais perto da extremidade no mobile
+            var borderMargin2 = isMobile ? '6mm' : '9mm';
+
             var content = `
-                <div id="p" style="${pageStyle}">
+                <div id="p" style="${finalPageStyle}">
                     
-                    <div style="position: absolute; top: 5mm; left: 5mm; right: 5mm; bottom: 5mm; border: 2px solid #000; pointer-events: none; z-index: 0;"></div>
-                    <div style="position: absolute; top: 6mm; left: 6mm; right: 6mm; bottom: 6mm; border: 1px solid #000; pointer-events: none; z-index: 0;"></div>
+                    <div style="position: absolute; top: ${borderMargin}; left: ${borderMargin}; right: ${borderMargin}; bottom: ${borderMargin}; border: 2px solid #000; pointer-events: none; z-index: 0;"></div>
+                    <div style="position: absolute; top: ${borderMargin2}; left: ${borderMargin2}; right: ${borderMargin2}; bottom: ${borderMargin2}; border: 1px solid #000; pointer-events: none; z-index: 0;"></div>
 
                     <div style="position: relative; z-index: 1;">
                         
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 15px;">
-                            <div style="font-size: 28px; line-height: 1; margin-bottom: 2px;">⚖️</div>
-                            <h1 style="font-size: 14pt; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">${tituloViagem}</h1>
+                            <div style="font-size: ${iconSize}; line-height: 1; margin-bottom: 2px;">⚖️</div>
+                            <h1 style="font-size: ${h1Size}; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">${tituloViagem}</h1>
                             <p style="font-size: 8pt; margin: 2px 0 0 0; font-style: italic;">
                                 Conforme Resolução CNJ nº 295/2019
                             </p>
@@ -61,7 +87,7 @@
                             ${html}
                         </div>
 
-                        <div style="margin-top: 20px; border-top: 1px dashed #666; padding-top: 5px; text-align: center; font-size: 7pt; color: #444;">
+                        <div style="margin-top: 15px; border-top: 1px dashed #666; padding-top: 5px; text-align: center; font-size: 8pt; color: #444;">
                             Este documento foi gerado digitalmente através da plataforma <strong>CartasApp.com.br</strong>.<br>
                             Para validade legal, é necessário o reconhecimento de firma em cartório presencial.
                         </div>
