@@ -1071,3 +1071,30 @@ html[data-theme="dark"] .legal-note {
     /* Um embaixo do outro no celular se precisar */
   }
 }
+
+/* --- AJUSTES PARA CELULAR (MOBILE) --- */
+@media (max-width: 768px) {
+    
+    /* Esconde a barra de passos no celular */
+    .step-indicator {
+        display: none !important;
+    }
+
+    /* Diminui o tamanho do título principal para ocupar menos espaço */
+    h1 {
+        font-size: 22px !important;
+        margin-bottom: 10px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Diminui o texto de apoio (subtítulo) */
+    .hero-text {
+        font-size: 14px !important;
+        margin-bottom: 15px !important;
+    }
+
+    /* Reduz o espaçamento do topo para o formulário subir mais */
+    .container {
+        padding-top: 15px !important;
+    }
+}
