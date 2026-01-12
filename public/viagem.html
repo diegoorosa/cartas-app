@@ -208,6 +208,92 @@
             margin-top: 5px;
             font-style: italic;
         }
+
+        /* --- NOVO CSS PARA ÁREA DE PAGAMENTO MATADORA --- */
+        .pay-box {
+            background: #f0fdf4;
+            /* Fundo verde bem clarinho */
+            border: 2px solid #22c55e;
+            /* Borda verde */
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px -10px rgba(34, 197, 94, 0.3);
+        }
+
+        .discount-tag {
+            background: #ef4444;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 5px;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .price-big {
+            font-size: 38px;
+            font-weight: 900;
+            color: #15803d;
+            line-height: 1;
+        }
+
+        .price-cents {
+            font-size: 18px;
+            vertical-align: top;
+        }
+
+        .secure-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #bbf7d0;
+        }
+
+        .secure-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .secure-icon {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            font-size: 16px;
+        }
     </style>
 </head>
 
@@ -239,7 +325,7 @@
                 </div>
                 <h1 style="font-size: 36px; line-height: 1.2; font-weight: 800; color: var(--text-primary);">
                     Vai viajar com criança ou adolescente?
- <br> <span style="color: #ef4444;">Evite problemas </span> no embarque.
+                    <br> <span style="color: #ef4444;">Evite problemas </span> no embarque.
                 </h1>
                 <p class="hero-subtitle" style="font-size: 18px; margin-top: 16px; line-height: 1.5;">
                     Gere agora a <strong>Autorização de Viagem Oficial</strong> (100% alinhada à Resolução CNJ nº
@@ -571,20 +657,53 @@
                                 </div>
                             </div>
 
-                            <div id="paySection"
-                                style="display:none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+                            <div id="paySection" style="display:none;">
                                 <input type="hidden" id="terms_version" value="viagem-2025-02-v1">
-                                <div class="price-badge" style="margin-bottom: 20px;">
-                                    Oferta hoje: <span class="price-old">de R$ 29,90</span> <span class="price-new">por
-                                        R$ 9,90</span>
-                                    <span class="timer-text">⚡ O preço pode voltar ao normal em breve</span>
-                                </div>
-                                <button class="btn btn-primary" id="btnPagar" style="width: 100%;">Gerar documento
-                                    completo (R$ 9,90)</button>
-                                <div class="guarantee-badge">
-                                    <span class="guarantee-icon">🔒</span>
-                                    <div><strong>Garantia de entrega:</strong> Se o documento não for gerado ou enviado
-                                        corretamente, devolvemos seu dinheiro.</div>
+
+                                <div class="pay-box">
+                                    <div class="discount-tag">Economize 66% Hoje</div>
+
+                                    <div class="price-wrapper">
+                                        <div style="text-align: right;">
+                                            <div style="font-size: 12px; color: #6b7280;">De R$ 29,90</div>
+                                            <div class="price-old">R$ 29,90</div>
+                                        </div>
+                                        <div class="price-big">
+                                            R$ 9<span class="price-cents">,90</span>
+                                        </div>
+                                    </div>
+
+                                    <p style="font-size: 12px; color: #166534; margin-bottom: 20px; margin-top: 0;">
+                                        ⚡ Taxa única de emissão. Sem mensalidades.
+                                    </p>
+
+                                    <button class="btn btn-primary" id="btnPagar"
+                                        style="width: 100%; font-size: 18px; padding: 16px; box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);">
+                                        BAIXAR DOCUMENTO AGORA
+                                    </button>
+
+                                    <div style="font-size: 11px; color: #6b7280; margin-top: 8px;">
+                                        🔒 Pagamento processado pelo Mercado Pago
+                                    </div>
+
+                                    <div class="secure-row">
+                                        <div class="secure-item">
+                                            <div class="secure-icon" style="color: #22c55e;">🛡️</div>
+                                            <span>Compra<br>Segura</span>
+                                        </div>
+                                        <div class="secure-item">
+                                            <div class="secure-icon" style="color: #3b82f6;">🔒</div>
+                                            <span>Dados<br>Protegidos</span>
+                                        </div>
+                                        <div class="secure-item">
+                                            <div class="secure-icon" style="color: #fbbf24;">🏆</div>
+                                            <span>Garantia<br>7 Dias</span>
+                                        </div>
+                                        <div class="secure-item">
+                                            <div class="secure-icon" style="color: #64748b;">⚖️</div>
+                                            <span>Lei<br>LGPD</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
