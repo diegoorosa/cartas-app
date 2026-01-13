@@ -802,7 +802,7 @@
 
                     <div class="small"
                         style="margin-bottom: 24px; padding: 12px 14px; border-radius: 10px; background: var(--card-hover); border: 1px solid var(--border);">
-                        <strong>Por R$ 9,90 (pagamento único)</strong>, você recebe:<br>
+                        <strong>Por R$ 29,90 (pagamento único)</strong>, você recebe:<br>
                         • Autorização personalizada com os seus dados.<br>
                         • Arquivos em PDF e Word para editar, imprimir e assinar.<br>
                         • Suporte por WhatsApp em caso de dúvidas sobre o uso do modelo.
@@ -1472,7 +1472,7 @@
                 localStorage.setItem('lastOrderId', data.order_id || '');
                 if (typeof gtag === 'function') {
                     gtag('event', 'begin_checkout', {
-                        value: 9.9,
+                        value: 29.9,
                         currency: 'BRL',
                         items: [{ item_id: slugStr }]
                     });
@@ -1511,7 +1511,7 @@
                 var btnPagar = document.getElementById('btnPagar');
                 if (btnPagar) {
                     btnPagar.disabled = false;
-                    btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
+                    btnPagar.textContent = 'Gerar documento completo (R$ 29,90)';
                 }
             };
 
