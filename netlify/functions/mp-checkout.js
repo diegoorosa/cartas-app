@@ -4,8 +4,8 @@ const { createClient } = require('@supabase/supabase-js');
 
 // Mapeamento de preços completo (mantido original)
 const PRICE_MAP = {
-    'default': 9.90,
-    'autorizacao-viagem-menor': 9.90,
+    'default': 29.90,
+    'autorizacao-viagem-menor': 29.90,
     "recurso-multa-transito": 9.90,
     'carta-bagagem': 9.90,
     'carta-ecommerce': 9.90,
@@ -185,7 +185,7 @@ exports.handler = async (event) => {
                 excluded_payment_types: [
                     { id: "ticket" } // Isso remove Boleto, Lotérica e PEC (pagamentos demorados)
                 ],
-                installments: 1 // (Opcional) Como é R$ 9,90, força à vista para não parcelarem
+                installments: 1 // (Opcional) Como é R$ 29,90, força à vista para não parcelarem
             },
             back_urls: {
                 success: `${BASE_URL}/success.html?o=${encodeURIComponent(orderId)}&slug=${encodeURIComponent(slug)}&s=success`,
