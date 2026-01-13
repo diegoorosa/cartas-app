@@ -209,101 +209,72 @@
             font-style: italic;
         }
 
-        /* --- NOVO CSS PARA ÁREA DE PAGAMENTO MATADORA --- */
+        /* --- CSS INSTITUCIONAL (SÉRIO) --- */
         .pay-box {
-            background: #f0fdf4;
-            /* Fundo verde bem clarinho */
-            border: 2px solid #22c55e;
-            /* Borda verde */
-            border-radius: 16px;
-            padding: 24px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            /* Borda cinza suave */
+            border-radius: 12px;
+            padding: 30px;
             text-align: center;
             position: relative;
-            overflow: hidden;
             margin-top: 30px;
-            box-shadow: 0 10px 30px -10px rgba(34, 197, 94, 0.3);
-        }
-
-        .discount-tag {
-            background: #ef4444;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 4px 12px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
         .price-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 5px;
+            margin: 20px 0;
+            padding: 15px 0;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .price-old {
-            text-decoration: line-through;
-            color: #9ca3af;
-            font-size: 16px;
+        .price-label {
+            font-size: 14px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            font-weight: 600;
         }
 
         .price-big {
-            font-size: 38px;
-            font-weight: 900;
-            color: #15803d;
+            font-size: 36px;
+            font-weight: 800;
+            color: #0f172a;
+            /* Azul muito escuro (Sóbrio) */
             line-height: 1;
         }
 
         .price-cents {
             font-size: 18px;
             vertical-align: top;
+            font-weight: 600;
         }
 
         .secure-row {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px dashed #bbf7d0;
+            gap: 20px;
+            margin-top: 25px;
         }
 
         .secure-item {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 4px;
-            font-size: 10px;
+            gap: 6px;
+            font-size: 11px;
             color: #64748b;
-            font-weight: 600;
-        }
-
-        .secure-icon {
-            width: 32px;
-            height: 32px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+            background: #f8fafc;
+            padding: 6px 10px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
-            font-size: 16px;
         }
     </style>
 </head>
 
 <body>
-    <div
-        style="background: #ef4444; color: white; text-align: center; padding: 8px; font-size: 14px; font-weight: bold; width: 100%;">
-        🔥 OFERTA DE VERÃO: Autorização Oficial de <s>R$ 49,90</s> por <span
-            style="background: white; color: #ef4444; padding: 0 6px; border-radius: 4px; margin-left: 4px;">R$
-            9,90</span>
-    </div>
     <nav class="navbar" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
         <div class="container">
             <div class="navbar-content"
@@ -326,40 +297,43 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-badge"
-                    style="background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; font-weight: bold; display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 15px;">
-                    🛑 Evite problemas no embarque
+                    style="background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; font-weight: 600; display: inline-block; padding: 5px 14px; border-radius: 6px; font-size: 12px; margin-bottom: 20px;">
+                    ⚖️ Conforme Resolução CNJ nº 295/2019
                 </div>
 
-                <h1
-                    style="font-size: 32px; line-height: 1.2; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">
-                    Vai viajar com criança ou adolescente?
+                <h1 style="font-size: 34px; line-height: 1.2; font-weight: 800; color: #0f172a; margin-bottom: 12px;">
+                    Autorização de Viagem para Menores
                 </h1>
 
                 <p class="hero-subtitle"
-                    style="font-size: 16px; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
-                    Gere a <strong>Autorização de Viagem Oficial</strong> (CNJ) pronta para imprimir em 2 minutos.
+                    style="font-size: 16px; margin-bottom: 25px; line-height: 1.6; color: #475569; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Sistema seguro para emissão de documento oficial de viagem (Nacional e Internacional).
+                    Gere o arquivo PDF/Word pronto para reconhecimento de firma.
                 </p>
 
                 <div
-                    style="background: #fff7ed; border: 2px solid #fdba74; border-radius: 12px; padding: 15px; margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">
-                    <div style="font-size: 13px; color: #9a3412; margin-bottom: 4px;">⚡ <strong>Promoção por tempo
-                            limitado:</strong></div>
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                        <span style="text-decoration: line-through; color: #9ca3af; font-size: 16px;">R$ 49,90</span>
-                        <span style="font-size: 28px; font-weight: 900; color: #ea580c;">R$ 9,90</span>
+                    style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 20px; margin-bottom: 24px; display: inline-flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                    <div style="text-align: left;">
+                        <div style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: bold;">Taxa
+                            de Emissão</div>
+                        <div style="font-size: 20px; font-weight: 700; color: #0f172a;">R$ 29,90</div>
                     </div>
-                    <div style="font-size: 11px; color: #ea580c;">(Taxa única • Sem mensalidade)</div>
+                    <div style="height: 30px; width: 1px; background: #e2e8f0;"></div>
+                    <div
+                        style="font-size: 12px; color: #059669; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                        ✅ Documento Validado
+                    </div>
                 </div>
 
                 <div class="hero-actions">
                     <a href="#formArea" class="btn btn-primary" onclick="scrollToForm(event)"
-                        style="width: 100%; max-width: 350px; font-size: 18px; padding: 14px;">
-                        COMEÇAR AGORA ➔
+                        style="width: 100%; max-width: 320px; margin: 0 auto; display: block; font-size: 16px; padding: 14px; background-color: #0f172a; border-color: #0f172a;">
+                        INICIAR PREENCHIMENTO
                     </a>
                 </div>
 
-                <p class="small" style="margin-top: 12px; color: var(--text-muted); font-size: 13px;">
-                    ✅ Mais de 5.000 documentos gerados
+                <p class="small" style="margin-top: 16px; color: #94a3b8; font-size: 12px;">
+                    Plataforma segura e criptografada (SSL).
                 </p>
             </div>
         </div>
@@ -674,48 +648,35 @@
                                 <input type="hidden" id="terms_version" value="viagem-2025-02-v1">
 
                                 <div class="pay-box">
-                                    <div class="discount-tag">Economize 66% Hoje</div>
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Resumo do Pedido
+                                    </h3>
+                                    <p style="margin: 0; font-size: 14px; color: #64748b;">Emissão de Autorização de
+                                        Viagem (Minuta)</p>
 
                                     <div class="price-wrapper">
-                                        <div style="text-align: right;">
-                                            <div style="font-size: 12px; color: #6b7280;">De R$ 49,90</div>
-                                            <div class="price-old">R$ 49,90</div>
-                                        </div>
+                                        <div class="price-label">Valor do Serviço</div>
                                         <div class="price-big">
-                                            R$ 9<span class="price-cents">,90</span>
+                                            R$ 29<span class="price-cents">,90</span>
+                                        </div>
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">
+                                            Pagamento único • Acesso vitalício aos arquivos
                                         </div>
                                     </div>
 
-                                    <p style="font-size: 12px; color: #166534; margin-bottom: 20px; margin-top: 0;">
-                                        ⚡ Taxa única de emissão. Sem mensalidades.
-                                    </p>
-
                                     <button class="btn btn-primary" id="btnPagar"
-                                        style="width: 100%; font-size: 18px; padding: 16px; box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);">
-                                        BAIXAR DOCUMENTO AGORA
+                                        style="width: 100%; font-size: 16px; padding: 16px; background-color: #2563eb; border-color: #2563eb; font-weight: 600;">
+                                        IR PARA PAGAMENTO SEGURO
                                     </button>
 
-                                    <div style="font-size: 11px; color: #6b7280; margin-top: 8px;">
-                                        🔒 Pagamento processado pelo Mercado Pago
+                                    <div
+                                        style="font-size: 11px; color: #94a3b8; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                        🔒 Ambiente Seguro processado pelo Mercado Pago
                                     </div>
 
                                     <div class="secure-row">
-                                        <div class="secure-item">
-                                            <div class="secure-icon" style="color: #22c55e;">🛡️</div>
-                                            <span>Compra<br>Segura</span>
-                                        </div>
-                                        <div class="secure-item">
-                                            <div class="secure-icon" style="color: #3b82f6;">🔒</div>
-                                            <span>Dados<br>Protegidos</span>
-                                        </div>
-                                        <div class="secure-item">
-                                            <div class="secure-icon" style="color: #fbbf24;">🏆</div>
-                                            <span>Garantia<br>7 Dias</span>
-                                        </div>
-                                        <div class="secure-item">
-                                            <div class="secure-icon" style="color: #64748b;">⚖️</div>
-                                            <span>Lei<br>LGPD</span>
-                                        </div>
+                                        <div class="secure-item">🛡️ Garantia Legal</div>
+                                        <div class="secure-item">⚖️ Padrão CNJ</div>
+                                        <div class="secure-item">🔒 Dados Protegidos</div>
                                     </div>
                                 </div>
                             </div>
@@ -756,9 +717,9 @@
                     <button
                         onclick="document.getElementById('paySection').scrollIntoView({behavior: 'smooth', block: 'center'});"
                         class="btn btn-primary"
-                        style="width:100%; margin-top: 16px; background: #16a34a; border-color: #15803d; font-size: 16px; padding: 12px 16px; white-space: normal; height: auto; line-height: 1.3; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center;">
-                        <span style="font-size: 22px;">⬆️</span>
-                        <span style="flex: 1;">LIBERAR DOCUMENTO COMPLETO (R$ 9,90)</span>
+                        style="width:100%; margin-top: 16px; background: #0f172a; border-color: #0f172a; font-size: 15px; padding: 14px; white-space: normal; height: auto; line-height: 1.3; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; font-weight: 600;">
+                        <span style="font-size: 20px;">📄</span>
+                        <span style="flex: 1;">FINALIZAR E BAIXAR DOCUMENTO (R$ 29,90)</span>
                     </button>
 
                 </div>
