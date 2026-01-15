@@ -338,30 +338,43 @@
             border-radius: 4px;
         }
 
-        /* --- CORREÇÃO MOBILE DO PAPEL (Evita o texto espremido) --- */
+        /* --- CORREÇÃO MOBILE V2 (ESTILO PDF REALISTA) --- */
         @media (max-width: 768px) {
+
+            /* 1. Removemos o padding do container cinza para o papel crescer */
+            #previewWrap {
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
+
             #previewBox {
-                /* Reduz margens drásticas no celular para o texto caber */
-                padding: 25px 20px !important;
+                /* 2. O papel ocupa 96% da largura da tela (ganha espaço lateral) */
+                width: 96% !important;
+                margin: 0 auto !important;
 
-                /* Diminui levemente a fonte para caber mais palavras por linha */
+                /* 3. Margens internas menores, mas suficientes para parecer A4 */
+                padding: 25px 15px !important;
+
+                /* 4. Fonte levemente menor e MAIS ESPAÇADA verticalmente (respiro) */
                 font-size: 13px !important;
+                line-height: 1.6 !important;
+                /* Aumentei o respiro entre linhas */
 
-                /* Garante que o texto fique "quadradinho" (Jurídico) */
+                /* 5. Truque para justificar sem criar "buracos" enormes */
                 text-align: justify !important;
-
-                /* Ajuste de hifenização para o texto fluir melhor */
-                hyphens: auto;
+                letter-spacing: -0.2px !important;
+                /* Aproxima levemente as letras para caber mais */
+                hyphens: auto !important;
+                /* Garante quebra de palavras (hifenização) */
+                word-spacing: -0.5px;
+                /* Ajuste fino para evitar buracos brancos */
             }
 
-            /* Ajusta o título para não quebrar feio */
+            /* Título mais imponente no mobile */
             #previewBox h2 {
-                font-size: 16px !important;
-            }
-
-            /* Ajuste do ícone da balança */
-            #previewBox .doc-header div {
-                font-size: 24px !important;
+                font-size: 17px !important;
+                margin-bottom: 15px !important;
+                letter-spacing: 0.5px !important;
             }
         }
     </style>
