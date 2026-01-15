@@ -337,6 +337,33 @@
             padding: 6px;
             border-radius: 4px;
         }
+
+        /* --- CORREÇÃO MOBILE DO PAPEL (Evita o texto espremido) --- */
+        @media (max-width: 768px) {
+            #previewBox {
+                /* Reduz margens drásticas no celular para o texto caber */
+                padding: 25px 20px !important;
+
+                /* Diminui levemente a fonte para caber mais palavras por linha */
+                font-size: 13px !important;
+
+                /* Garante que o texto fique "quadradinho" (Jurídico) */
+                text-align: justify !important;
+
+                /* Ajuste de hifenização para o texto fluir melhor */
+                hyphens: auto;
+            }
+
+            /* Ajusta o título para não quebrar feio */
+            #previewBox h2 {
+                font-size: 16px !important;
+            }
+
+            /* Ajuste do ícone da balança */
+            #previewBox .doc-header div {
+                font-size: 24px !important;
+            }
+        }
     </style>
 </head>
 
