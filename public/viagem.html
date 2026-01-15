@@ -76,18 +76,29 @@
 
         .radio-label {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            /* Mudado para row para ficar icone ao lado do texto */
             align-items: center;
             justify-content: center;
-            padding: 16px;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 12px;
+            gap: 10px;
+            /* Espaço entre icone e texto */
+            padding: 10px 15px;
+            /* Menor padding */
+            background: #ffffff;
+            /* Fundo branco puro fica mais clean */
+            border: 1px solid #cbd5e1;
+            /* Borda mais fina e elegante */
+            border-radius: 8px;
+            /* Cantos menos arredondados (mais sério) */
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
-            height: 100%;
-            min-height: 80px;
+            width: 100%;
+            min-height: 50px;
+            /* Altura reduzida */
+            font-weight: 600;
+            color: #334155;
+            font-size: 14px;
         }
 
         .radio-label:hover {
@@ -104,9 +115,10 @@
         }
 
         .radio-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-            display: block;
+            font-size: 20px;
+            margin-bottom: 0;
+            /* Remove margem de baixo */
+            display: inline-block;
         }
 
         .input-row {
@@ -125,23 +137,6 @@
                 grid-template-columns: 1fr !important;
                 gap: 12px;
                 margin-top: 12px;
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(252, 211, 77, 0.7);
-            }
-
-            70% {
-                transform: scale(1.02);
-                box-shadow: 0 0 0 6px rgba(252, 211, 77, 0);
-            }
-
-            100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(252, 211, 77, 0);
             }
         }
 
@@ -451,40 +446,32 @@
 
                 <div class="card">
                     <div
-                        style="background: #fffbeb; border: 1px solid #fcd34d; padding: 16px; border-radius: 12px; margin-bottom: 24px;">
-                        <p style="margin: 0; font-size: 14px; color: #92400e; line-height: 1.5;">
-                            <strong>⚠️ POR QUE FAZER AQUI E NÃO NO CARTÓRIO?</strong><br>
-                            O Cartório <strong>NÃO redige</strong> o documento, apenas reconhece a assinatura. Se você
-                            chegar lá sem nada, terá que pagar caro por uma escritura pública. Leve este documento
-                            pronto e economize!
+                        style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 16px; margin-bottom: 24px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                        <p style="margin: 0; font-size: 13px; color: #334155; line-height: 1.5;">
+                            <strong style="color: #0f172a; display:block; margin-bottom:4px;">ℹ️ Informação
+                                Importante</strong>
+                            O Cartório não redige o documento, apenas reconhece a firma. Ao levar este modelo já
+                            preenchido, você economiza tempo e evita custos com escritura pública.
                         </p>
                     </div>
 
                     <div id="formArea">
-                        <div style="margin-bottom: 24px; text-align: center;">
+                        <div style="margin-bottom: 30px; text-align: center;">
                             <div
-                                style="background: #ecfdf5; color: #065f46; border: 1px solid #10b981; padding: 10px 20px; border-radius: 50px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1); animation: pulse 2s infinite;">
-                                <span style="font-size: 16px;">🏆</span>
-                                <span>Modelo 100% Aceito (Padrão CNJ e Polícia Federal)</span>
+                                style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #475569; font-size: 13px; font-weight: 500; background: #f1f5f9; padding: 6px 12px; border-radius: 6px;">
+                                <span>✅</span>
+                                <span>Em conformidade com a Resolução CNJ nº 295/2019</span>
                             </div>
-                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; margin-top: 0;">
-                                Utilizado com sucesso por centenas de famílias em viagens nacionais e internacionais.
-                                <br><span style="font-size: 11px; opacity: 0.8;">(Nenhuma recusa de embarque registrada
-                                    até hoje)</span>
-                            </p>
+
                             <div
-                                style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; opacity: 0.9;">
+                                style="display: flex; gap: 15px; justify-content: center; opacity: 0.8; margin-top: 5px;">
                                 <div
-                                    style="font-size: 12px; display: flex; align-items: center; gap: 4px; color: var(--text-secondary); background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px;">
-                                    🔒 Dados Criptografados
+                                    style="font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 4px;">
+                                    🔒 Criptografia SSL
                                 </div>
                                 <div
-                                    style="font-size: 12px; display: flex; align-items: center; gap: 4px; color: var(--text-secondary); background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px;">
-                                    ✅ Válido em todo Brasil
-                                </div>
-                                <div
-                                    style="font-size: 12px; display: flex; align-items: center; gap: 4px; color: var(--text-secondary); background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px;">
-                                    ✈️ Nacional & Internacional
+                                    style="font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 4px;">
+                                    👮 Padrão Polícia Federal
                                 </div>
                             </div>
                         </div>
@@ -498,11 +485,11 @@
 
                         <div class="form-step" data-step="1" id="step-1">
                             <div
-                                style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; margin-bottom: 24px; display: flex; align-items: start; gap: 10px;">
-                                <span style="font-size: 18px; margin-top: 2px;">👁️</span>
-                                <p style="margin: 0; font-size: 14px; color: #0284c7; line-height: 1.4;">
-                                    <strong>Segurança:</strong> Preencha para ver a <strong>prévia gratuita</strong>
-                                    antes de pagar.
+                                style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 16px;">🔒</span>
+                                <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.4;">
+                                    <strong>Ambiente Seguro.</strong> Preencha os dados abaixo para gerar a minuta
+                                    oficial do documento. Você poderá conferir a prévia antes do pagamento.
                                 </p>
                             </div>
 
