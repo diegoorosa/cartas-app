@@ -151,11 +151,28 @@
             /* Garante que fique NA FRENTE de tudo */
         }
 
+        .whatsapp-float {
+            width: 52px;
+            height: 52px;
+        }
+
+        .whatsapp-icon {
+            width: 28px;
+            height: 28px;
+        }
+
         /* Só no celular, a gente sobe o botão para não bater no banner */
         @media (max-width: 768px) {
             .whatsapp-float {
                 bottom: 90px !important;
                 /* Sobe o botão */
+                width: 48px;
+                height: 48px;
+            }
+
+            .whatsapp-icon {
+                width: 26px;
+                height: 26px;
             }
         }
 
@@ -319,6 +336,8 @@
                         <div style="font-size: 20px; font-weight: 700; color: #0f172a;">R$ 29,90</div>
                         <div style="font-size: 11px; color: #64748b; margin-top: 4px;">PDF + Word prontos para cartório.
                         </div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Pagamento seguro via Mercado
+                            Pago.</div>
                     </div>
                     <div style="height: 30px; width: 1px; background: #e2e8f0;"></div>
                     <div
@@ -725,6 +744,9 @@
                             imediatamente após a confirmação do pagamento.
                         </div>
                     </div>
+                    <p style="margin: 10px 0 0; font-size: 12px; color: #64748b; text-align: center;">
+                        Você só paga depois de ver a prévia.
+                    </p>
 
                     <button
                         onclick="document.getElementById('paySection').scrollIntoView({behavior: 'smooth', block: 'center'});"
