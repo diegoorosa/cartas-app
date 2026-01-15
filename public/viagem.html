@@ -271,6 +271,72 @@
             border-radius: 6px;
             border: 1px solid #e2e8f0;
         }
+
+        /* --- NOVO CSS PARA O PASSO 2 (AUTORIDADE) --- */
+        .authority-banner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .auth-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .auth-text {
+            font-size: 11px;
+            color: #334155;
+            line-height: 1.3;
+        }
+
+        .auth-text strong {
+            display: block;
+            color: #0f172a;
+            font-size: 12px;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Melhoria no Botão para parecer "Sistema" e não "E-commerce" */
+        .btn-official {
+            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+            border: 1px solid #1e40af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-official:hover {
+            background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-1px);
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .sec-item {
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8fafc;
+            padding: 6px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 
@@ -654,43 +720,57 @@
                             <div id="paySection" style="display:none;">
                                 <input type="hidden" id="terms_version" value="viagem-2025-02-v1">
 
-                                <div class="pay-box">
-                                    <h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Resumo do Pedido
+                                <div class="pay-box" style="border-top: 4px solid #0f172a;">
+                                    <h3
+                                        style="margin: 0 0 5px 0; font-size: 16px; color: #0f172a; text-transform:uppercase; letter-spacing:0.5px;">
+                                        Emissão de Documento
                                     </h3>
-                                    <p style="margin: 0; font-size: 14px; color: #64748b;">Emissão de Autorização de
-                                        Viagem (Minuta)</p>
+                                    <p style="margin: 0 0 20px 0; font-size: 12px; color: #64748b;">Protocolo de
+                                        autorização de viagem</p>
 
-                                    <div class="price-wrapper">
-                                        <div class="price-label">Valor do Serviço</div>
-                                        <div class="price-big">
+                                    <div class="authority-banner">
+                                        <div class="auth-icon">⚖️</div>
+                                        <div class="auth-text">
+                                            <strong>Conformidade Legal</strong>
+                                            Modelo atualizado segundo Resolução <b>CNJ nº 295/2019</b> e padrões da
+                                            Polícia Federal.
+                                        </div>
+                                    </div>
+
+                                    <div class="price-wrapper"
+                                        style="border:none; background:#f1f9fe; border-radius:8px; padding:15px;">
+                                        <div class="price-label" style="color:#0284c7;">Taxa Única de Emissão</div>
+                                        <div class="price-big" style="color:#0f172a;">
                                             R$ 29<span class="price-cents">,90</span>
                                         </div>
-                                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">
-                                            Pagamento único • Acesso vitalício aos arquivos
-                                        </div>
                                     </div>
 
-                                    <button class="btn btn-primary" id="btnPagar"
-                                        style="width: 100%; font-size: 16px; padding: 16px; background-color: #2563eb; border-color: #2563eb; font-weight: 600;">
-                                        IR PARA PAGAMENTO SEGURO
+                                    <button class="btn btn-primary btn-official" id="btnPagar"
+                                        style="width: 100%; font-size: 15px; padding: 16px; font-weight: 700; display:flex; align-items:center; justify-content:center; gap:10px;">
+                                        <span>🖨️</span> EMITIR DOCUMENTO OFICIAL
                                     </button>
 
-                                    <div
-                                        style="font-size: 11px; color: #94a3b8; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                        🔒 Ambiente Seguro processado pelo Mercado Pago
+                                    <div style="font-size: 11px; color: #94a3b8; margin-top: 10px; text-align:center;">
+                                        Liberado imediatamente após a confirmação
                                     </div>
 
-                                    <div class="secure-row">
-                                        <div class="secure-item">🛡️ Garantia Legal</div>
-                                        <div class="secure-item">⚖️ Padrão CNJ</div>
-                                        <div class="secure-item">🔒 Dados Protegidos</div>
+                                    <div class="security-grid">
+                                        <div class="sec-item">🔒 Criptografia SSL 256-bit</div>
+                                        <div class="sec-item">🛡️ Proteção LGPD</div>
+                                        <div class="sec-item">✅ Compra Segura</div>
+                                        <div class="sec-item">📄 Acesso Vitalício</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                <div
+                    style="background: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px; margin: 20px 0; font-size: 13px; color: #166534;">
+                    <em>"Estava com medo da imigração, mas esse documento passou direto na Polícia Federal.
+                        Recomendo!"</em>
+                    <br><strong>— Sueli, viajou para Argentina 🇦🇷</strong>
+                </div>
                 <div id="previewWrap"
                     style="display:none; margin-top:32px; padding-top:32px; border-top:1px dashed var(--border);">
 

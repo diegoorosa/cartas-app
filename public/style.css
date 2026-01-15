@@ -797,17 +797,24 @@ input[type=checkbox] {
 }
 
 #previewBox {
-  background-color: #fff;
-  color: #000 !important;
-  font-family: 'Times New Roman', Times, serif !important;
-  font-size: 12pt !important;
-  padding: 2cm !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, .3);
-  white-space: pre-wrap;
+  background: #fff;
+  width: 100%;
   max-width: 210mm;
-  margin: 0 auto;
-  min-height: 200px
+  /* Largura A4 */
+  min-height: 297mm;
+  /* Altura A4 */
+  padding: 25mm 20mm;
+  /* Margens ABNT/Cartório */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  /* Sombra realista (Depth) */
+  font-family: 'Times New Roman', serif;
+  /* Fonte de autoridade */
+  color: #1a1a1a;
+  margin: 20px auto;
+  position: relative;
 }
+
+/* Adicionar uma "marca d'água" sutil de "RASCUNHO" ou "PRÉVIA" via CSS background */
 
 .guarantee-badge {
   margin-top: 16px;
@@ -1074,27 +1081,27 @@ html[data-theme="dark"] .legal-note {
 
 /* --- AJUSTES PARA CELULAR (MOBILE) --- */
 @media (max-width: 768px) {
-    
-    /* Esconde a barra de passos no celular */
-    .step-indicator {
-        display: none !important;
-    }
 
-    /* Diminui o tamanho do título principal para ocupar menos espaço */
-    h1 {
-        font-size: 22px !important;
-        margin-bottom: 10px !important;
-        line-height: 1.2 !important;
-    }
+  /* Esconde a barra de passos no celular */
+  .step-indicator {
+    display: none !important;
+  }
 
-    /* Diminui o texto de apoio (subtítulo) */
-    .hero-text {
-        font-size: 14px !important;
-        margin-bottom: 15px !important;
-    }
+  /* Diminui o tamanho do título principal para ocupar menos espaço */
+  h1 {
+    font-size: 22px !important;
+    margin-bottom: 10px !important;
+    line-height: 1.2 !important;
+  }
 
-    /* Reduz o espaçamento do topo para o formulário subir mais */
-    .container {
-        padding-top: 15px !important;
-    }
+  /* Diminui o texto de apoio (subtítulo) */
+  .hero-text {
+    font-size: 14px !important;
+    margin-bottom: 15px !important;
+  }
+
+  /* Reduz o espaçamento do topo para o formulário subir mais */
+  .container {
+    padding-top: 15px !important;
+  }
 }
