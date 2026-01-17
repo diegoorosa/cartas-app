@@ -1132,27 +1132,46 @@
 
     <script>
         (function () {
+            var formSeen = false;
+
             function setWA(show) {
                 var wa = document.querySelector('.whatsapp-float');
                 if (!wa) return;
                 wa.style.display = show ? '' : 'none';
             }
 
-            // some no topo
+            // Esconde no topo
             setWA(false);
 
-            // mostra ao chegar no formArea
             document.addEventListener('DOMContentLoaded', function () {
                 var target = document.getElementById('formArea');
                 if (!target) { setWA(true); return; }
 
+                // Mostra quando o form entrar na tela
                 var io = new IntersectionObserver(function (entries) {
                     entries.forEach(function (e) {
-                        if (e.isIntersecting) setWA(true);
+                        if (e.isIntersecting) {
+                            formSeen = true;
+                            setWA(true);
+                        }
                     });
                 }, { root: null, threshold: 0.05 });
-
                 io.observe(target);
+            });
+
+            // Esconde enquanto digita, mas só volta se o usuário já chegou no form
+            document.addEventListener('focusin', function (e) {
+                if (e.target && e.target.matches && e.target.matches('input,select,textarea')) {
+                    setWA(false);
+                }
+            });
+
+            document.addEventListener('focusout', function (e) {
+                if (e.target && e.target.matches && e.target.matches('input,select,textarea')) {
+                    setTimeout(function () {
+                        if (formSeen) setWA(true);
+                    }, 250);
+                }
             });
         })();
 
@@ -1264,26 +1283,6 @@
                 if (box) box.style.display = 'none';
             }
         }
-
-        // ========== OCULTAR WHATSAPP AO DIGITAR (MOBILE FRIENDLY) ==========
-        (function () {
-            function hideWA() {
-                var wa = document.querySelector('.whatsapp-float');
-                if (wa) wa.style.display = 'none';
-            }
-            function showWA() {
-                var wa = document.querySelector('.whatsapp-float');
-                if (wa) wa.style.display = '';
-            }
-            document.addEventListener('focusin', function (e) {
-                if (e.target && e.target.matches && e.target.matches('input,select,textarea')) hideWA();
-            });
-            document.addEventListener('focusout', function (e) {
-                if (e.target && e.target.matches && e.target.matches('input,select,textarea')) {
-                    setTimeout(showWA, 250);
-                }
-            });
-        })();
 
         // ========== AUTOSAVE E RESTORE ==========
         var ids = ['menor_nome', 'menor_nascimento', 'menor_doc', 'viagem_tipo', 'destino', 'data_ida', 'data_volta', 'acompanhante_tipo', 'acomp_nome', 'acomp_cpf', 'acomp_doc', 'acomp_parentesco', 'resp1_nome', 'resp1_cpf', 'resp1_doc', 'resp1_parentesco', 'dois_resps', 'resp2_nome', 'resp2_cpf', 'resp2_doc', 'resp2_parentesco', 'cidade_uf_emissao', 'email', 'telefone'];
