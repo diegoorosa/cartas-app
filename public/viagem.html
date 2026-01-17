@@ -120,17 +120,42 @@
             margin-top: 20px;
         }
 
-        @media (max-width: 480px) {
-            .radio-group.full-mobile {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 768px) {
+  .radio-group.full-mobile {
+    grid-template-columns: 1fr !important;
+  }
 
-            .input-row {
-                grid-template-columns: 1fr !important;
-                gap: 12px;
-                margin-top: 12px;
-            }
-        }
+  /* o card "Viajar Sozinho" hoje tem grid-column: span 2; no 1-col precisa voltar ao normal */
+  .radio-card[style*="grid-column"] {
+    grid-column: auto !important;
+  }
+
+  .input-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+    margin-top: 12px;
+  }
+}
+
+/* Step 2: cards de acompanhante */
+#step-2 .radio-label {
+  justify-content: flex-start;
+  text-align: left;
+  padding: 12px 14px;
+}
+
+#step-2 .radio-label .radio-icon {
+  font-size: 22px;
+}
+
+#step-2 .radio-label .radio-sub {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  margin-top: 2px;
+  line-height: 1.2;
+}
 
         /* --- CORRECAO DO WHATSAPP VS CAMPOS/CTAs --- */
         .whatsapp-float {
@@ -676,28 +701,34 @@
                                     <input type="radio" name="acomp_visual" id="opt_resp" value="outro_responsavel"
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_resp" class="radio-label">
-                                        <span class="radio-icon">👨‍👩‍👧</span>
-                                        Com o Pai ou Mãe<br><span style="font-size:12px; font-weight:normal;">(O outro
-                                            assina)</span>
-                                    </label>
+  <span class="radio-icon">👨‍👩‍👧</span>
+  <span>
+    Com o Pai ou Mãe
+    <span class="radio-sub">(O outro assina)</span>
+  </span>
+</label>
                                 </div>
                                 <div class="radio-card">
                                     <input type="radio" name="acomp_visual" id="opt_terceiro" value="terceiro"
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_terceiro" class="radio-label">
-                                        <span class="radio-icon">👵</span>
-                                        Avós / Tios / Outros<br><span style="font-size:12px; font-weight:normal;">(Pai e
-                                            Mãe assinam)</span>
-                                    </label>
+  <span class="radio-icon">👵</span>
+  <span>
+    Avós / Tios / Outros
+    <span class="radio-sub">(Pai e Mãe assinam)</span>
+  </span>
+</label>
                                 </div>
                                 <div class="radio-card" style="grid-column: span 2;">
                                     <input type="radio" name="acomp_visual" id="opt_sozinho" value="desacompanhado"
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_sozinho" class="radio-label">
-                                        <span class="radio-icon">🙋‍♂️</span>
-                                        Viajar Sozinho<br><span
-                                            style="font-size:12px; font-weight:normal;">(Desacompanhado)</span>
-                                    </label>
+  <span class="radio-icon">🙋‍♂️</span>
+  <span>
+    Viajar Sozinho
+    <span class="radio-sub">(Desacompanhado)</span>
+  </span>
+</label>
                                 </div>
                             </div>
 
