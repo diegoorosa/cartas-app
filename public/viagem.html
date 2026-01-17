@@ -203,6 +203,44 @@
             }
         }
 
+        /* --- CENÁRIOS (SEGMENTAÇÃO RÁPIDA) --- */
+        .case-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .case-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 999px;
+            background: #ffffff;
+            font-size: 12px;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .case-chip small {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .case-note {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        .case-note a {
+            color: #1e40af;
+            text-decoration: underline;
+        }
+
         /* ESTILO DA PRÉVIA "PREMIUM" */
         #doc {
             background: #fff;
@@ -430,14 +468,15 @@
                 </div>
 
                 <h1 style="font-size: 34px; line-height: 1.2; font-weight: 800; color: #0f172a; margin-bottom: 12px;">
-                    Autorização de Viagem para Menores
+                    Autorização de Viagem para Menor (CNJ 295/2019)
                 </h1>
 
                 <p class="hero-subtitle"
                     style="font-size: 16px; margin-bottom: 18px; line-height: 1.6; color: #475569; max-width: 600px; margin-left: auto; margin-right: auto;">
-                    Sistema seguro para emissão de documento oficial de viagem (Nacional e Internacional).
-                    Gere o arquivo PDF/Word pronto para reconhecimento de firma.
+                    Gere em minutos e leve ao cartório para reconhecer firma. Evite problemas no embarque (nacional ou
+                    internacional).
                 </p>
+
 
                 <!-- NOVO: COMO FUNCIONA (3 PASSOS) -->
                 <div class="how-it-works">
@@ -456,6 +495,16 @@
                             Mercado Pago (Pix ou Cartão). PDF e Word liberados.
                         </div>
                     </div>
+                    <div class="case-chips">
+                        <div class="case-chip">Com apenas um dos pais</div>
+                        <div class="case-chip">Com avós / tios / terceiros</div>
+                        <div class="case-chip">Menor desacompanhado</div>
+                    </div>
+                    <div class="case-note">
+                        Pagamento é processado pelo <strong>Mercado Pago</strong>. O recebedor pode aparecer como
+                        <strong>Diego Rosa (pessoa física)</strong> no seu banco.
+                        <a href="/sobre.html" target="_blank" rel="noopener">Saiba mais</a>.
+                    </div>
                     <div class="h-meta">
                         Tempo médio: 2 minutos. Documento pronto para imprimir e reconhecer firma.
                         <div style="margin-top:6px;color:#64748b;font-size:12px;">
@@ -471,7 +520,6 @@
                             de Emissão</div>
                         <div style="font-size: 20px; font-weight: 700; color: #0f172a; white-space:nowrap;">
                             R$&nbsp;29,90</div>
-
                     </div>
                     <div style="height: 30px; width: 1px; background: #e2e8f0;"></div>
                     <!-- ALTERADO: "Documento Validado" -> verificável + pagamento -->
@@ -1006,11 +1054,19 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
-                        class="footer-link">Termos de Uso</a>.</p>
+                <p>
+                    Este site não presta aconselhamento jurídico. Leia os
+                    <a href="/termos.html" class="footer-link">Termos de Uso</a>,
+                    <a href="/privacidade.html" class="footer-link">Política de Privacidade</a>,
+                    conheça mais em
+                    <a href="/sobre.html" class="footer-link">Sobre o CartasApp</a>
+                    e fale com o
+                    <a href="/contato.html" class="footer-link">Suporte</a>.
+                </p>
             </div>
         </div>
     </footer>
+
 
     <a href="https://wa.me/5547988616874" class="whatsapp-float" target="_blank"><svg viewBox="0 0 24 24"
             class="whatsapp-icon">
