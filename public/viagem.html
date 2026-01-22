@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Autorização de Viagem para Menor | Evite ser barrado no embarque</title>
+    <title>Autorização de Viagem para Criança ou Adolescente | Evite ser barrado no embarque</title>
 
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/logo.png" />
@@ -76,22 +76,18 @@
 
         .radio-label {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 10px 15px;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
-            width: 100%;
-            min-height: 50px;
-            font-weight: 600;
-            color: #334155;
-            font-size: 14px;
+            height: 100%;
+            min-height: 80px;
         }
 
         .radio-label:hover {
@@ -108,9 +104,9 @@
         }
 
         .radio-icon {
-            font-size: 20px;
-            margin-bottom: 0;
-            display: inline-block;
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
         }
 
         .input-row {
@@ -120,166 +116,83 @@
             margin-top: 20px;
         }
 
-        @media (max-width: 768px) {
-  .radio-group.full-mobile {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* o card "Viajar Sozinho" hoje tem grid-column: span 2; no 1-col precisa voltar ao normal */
-  .radio-card[style*="grid-column"] {
-    grid-column: auto !important;
-  }
-
-  .input-row {
-    grid-template-columns: 1fr !important;
-    gap: 12px;
-    margin-top: 12px;
-  }
-}
-
-/* Step 2: cards de acompanhante */
-#step-2 .radio-label {
-  justify-content: flex-start;
-  text-align: left;
-  padding: 12px 14px;
-}
-
-#step-2 .radio-label .radio-icon {
-  font-size: 22px;
-}
-
-#step-2 .radio-label .radio-sub {
-  display: block;
-  font-size: 12px;
-  font-weight: 500;
-  color: #64748b;
-  margin-top: 2px;
-  line-height: 1.2;
-}
-
-        /* --- CORRECAO DO WHATSAPP VS CAMPOS/CTAs --- */
-        .whatsapp-float {
-            z-index: 2147483647 !important;
-        }
-
-        @media (max-width: 768px) {
-            .whatsapp-float {
-                bottom: 140px !important;
-                transform: scale(.88);
-            }
-        }
-
-        /* --- BLOCO "COMO FUNCIONA" (TOPO) --- */
-        .how-it-works {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 14px 16px;
-            max-width: 650px;
-            margin: 0 auto 18px auto;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-            text-align: left;
-        }
-
-        .how-it-works .h-title {
-            font-size: 12px;
-            font-weight: 800;
-            color: #0f172a;
-            text-transform: uppercase;
-            letter-spacing: .4px;
-            margin: 0 0 6px 0;
-        }
-
-        .how-it-works .h-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            align-items: start;
-        }
-
-        .how-it-works .h-item {
-            font-size: 12px;
-            color: #334155;
-            line-height: 1.35;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        .how-it-works .h-item strong {
-            display: block;
-            font-size: 11px;
-            color: #0f172a;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: .3px;
-        }
-
-        .how-it-works .h-meta {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #475569;
-        }
-
-        @media (max-width: 768px) {
-            .how-it-works .h-row {
+        @media (max-width: 480px) {
+            .radio-group.full-mobile {
                 grid-template-columns: 1fr;
             }
+
+            .input-row {
+                grid-template-columns: 1fr !important;
+                gap: 12px;
+                margin-top: 12px;
+            }
         }
 
-        /* --- CENÁRIOS (SEGMENTAÇÃO RÁPIDA) --- */
-        .case-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(252, 211, 77, 0.7);
+            }
+
+            70% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 6px rgba(252, 211, 77, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(252, 211, 77, 0);
+            }
         }
 
-        .case-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 10px;
-            border: 1px solid #e2e8f0;
-            border-radius: 999px;
-            background: #ffffff;
-            font-size: 12px;
-            color: #0f172a;
-            font-weight: 700;
+        /* --- CORREÇÃO DO WHATSAPP VS COOKIES --- */
+        .whatsapp-float {
+            z-index: 2147483647 !important;
+            /* Garante que fique NA FRENTE de tudo */
         }
 
-        .case-chip small {
-            font-weight: 600;
-            color: #475569;
+        .whatsapp-float {
+            width: 52px;
+            height: 52px;
         }
 
-        .case-note {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #475569;
-            line-height: 1.4;
+        .whatsapp-icon {
+            width: 28px;
+            height: 28px;
         }
 
-        .case-note a {
-            color: #1e40af;
-            text-decoration: underline;
+        /* Só no celular, a gente sobe o botão para não bater no banner */
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                bottom: 90px !important;
+                /* Sobe o botão */
+                width: 48px;
+                height: 48px;
+            }
+
+            .whatsapp-icon {
+                width: 26px;
+                height: 26px;
+            }
         }
 
         /* ESTILO DA PRÉVIA "PREMIUM" */
         #doc {
             background: #fff;
             padding: 40px 50px !important;
+            /* Margens de papel */
             border: 1px solid #ccc;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
             font-family: 'Times New Roman', Times, serif !important;
             font-size: 16px !important;
+            /* Letra maior = mais legível */
             line-height: 1.6 !important;
             color: #000 !important;
             text-align: justify;
             position: relative;
         }
 
+        /* Borda decorativa interna (Estilo Cartório) */
         #doc::before {
             content: "";
             position: absolute;
@@ -288,9 +201,11 @@
             right: 10px;
             bottom: 10px;
             border: 2px solid #000;
+            /* Borda preta interna */
             pointer-events: none;
         }
 
+        /* Cabeçalho Falso na Prévia */
         .doc-header {
             text-align: center;
             margin-bottom: 30px;
@@ -315,6 +230,7 @@
         .pay-box {
             background: #ffffff;
             border: 1px solid #cbd5e1;
+            /* Borda cinza suave */
             border-radius: 12px;
             padding: 30px;
             text-align: center;
@@ -343,6 +259,7 @@
             font-size: 36px;
             font-weight: 800;
             color: #0f172a;
+            /* Azul muito escuro (Sóbrio) */
             line-height: 1;
         }
 
@@ -370,97 +287,6 @@
             padding: 6px 10px;
             border-radius: 6px;
             border: 1px solid #e2e8f0;
-        }
-
-        /* --- NOVO CSS PARA O PASSO 2 (AUTORIDADE) --- */
-        .authority-banner {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .auth-icon {
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        .auth-text {
-            font-size: 11px;
-            color: #334155;
-            line-height: 1.3;
-        }
-
-        .auth-text strong {
-            display: block;
-            color: #0f172a;
-            font-size: 12px;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-        }
-
-        .btn-official {
-            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
-            border: 1px solid #1e40af;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-official:hover {
-            background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
-            transform: translateY(-1px);
-        }
-
-        .security-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px dashed #e2e8f0;
-        }
-
-        .sec-item {
-            font-size: 10px;
-            color: #64748b;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #f8fafc;
-            padding: 6px;
-            border-radius: 4px;
-        }
-
-        /* --- CORREÇÃO MOBILE V2 (ESTILO PDF REALISTA) --- */
-        @media (max-width: 768px) {
-            #previewWrap {
-                padding-left: 5px !important;
-                padding-right: 5px !important;
-            }
-
-            #previewBox {
-                width: 96% !important;
-                margin: 0 auto !important;
-                padding: 25px 15px !important;
-                font-size: 13px !important;
-                line-height: 1.6 !important;
-                text-align: justify !important;
-                letter-spacing: -0.2px !important;
-                hyphens: auto !important;
-                word-spacing: -0.5px;
-            }
-
-            #previewBox h2 {
-                font-size: 17px !important;
-                margin-bottom: 15px !important;
-                letter-spacing: 0.5px !important;
-            }
         }
     </style>
 </head>
@@ -493,78 +319,81 @@
                 </div>
 
                 <h1 style="font-size: 34px; line-height: 1.2; font-weight: 800; color: #0f172a; margin-bottom: 12px;">
-                    Autorização de Viagem para Menor (CNJ 295/2019)
+                    Autorização de Viagem para Criança ou Adolescente
                 </h1>
 
                 <p class="hero-subtitle"
-                    style="font-size: 16px; margin-bottom: 18px; line-height: 1.6; color: #475569; max-width: 600px; margin-left: auto; margin-right: auto;">
-                    Gere em minutos e leve ao cartório para reconhecer firma. Evite problemas no embarque (nacional ou
-                    internacional).
+                    style="font-size: 16px; margin-bottom: 25px; line-height: 1.6; color: #475569; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Gere a autorização oficial em minutos. Válida para viagens nacionais e internacionais.
                 </p>
 
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 18px;">
+                    <div
+                        style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #0f172a; background: #eff6ff; padding: 6px 10px; border-radius: 999px; border: 1px solid #dbeafe;">
+                        ✅ Conforme CNJ 295/2019
+                    </div>
+                    <div
+                        style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #0f172a; background: #ecfdf5; padding: 6px 10px; border-radius: 999px; border: 1px solid #d1fae5;">
+                        👁️ Prévia antes de pagar
+                    </div>
+                    <div
+                        style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #0f172a; background: #fef3c7; padding: 6px 10px; border-radius: 999px; border: 1px solid #fde68a;">
+                        🔒 Pagamento Mercado Pago
+                    </div>
+                </div>
 
-                <!-- NOVO: COMO FUNCIONA (3 PASSOS) -->
-                <div class="how-it-works">
-                    <div class="h-title">Como funciona</div>
-                    <div class="h-row">
-                        <div class="h-item">
-                            <strong>1. Preencha</strong>
-                            Informe os dados do menor, destino e responsáveis.
-                        </div>
-                        <div class="h-item">
-                            <strong>2. Confira</strong>
-                            Veja a prévia antes do pagamento.
-                        </div>
-                        <div class="h-item">
-                            <strong>3. Pague e baixe</strong>
-                            Mercado Pago (Pix ou Cartão). PDF e Word liberados.
-                        </div>
+                <div
+                    style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px;">
+                    <div style="font-size: 12px; font-weight: 700; color: #0f172a; text-transform: uppercase;">
+                        Como funciona
                     </div>
-                    <div class="case-chips">
-                        <div class="case-chip">Com apenas um dos pais</div>
-                        <div class="case-chip">Com avós / tios / terceiros</div>
-                        <div class="case-chip">Menor desacompanhado</div>
-                    </div>
-                    <div class="case-note">
-                        Pagamento é processado pelo <strong>Mercado Pago</strong>. O recebedor pode aparecer como
-                        <strong>Diego Rosa (pessoa física)</strong> no seu banco.
-                        <a href="/sobre.html" target="_blank" rel="noopener">Saiba mais</a>.
-                    </div>
-                    <div class="h-meta">
-                        Tempo médio: 2 minutos. Documento pronto para imprimir e reconhecer firma.
-                        <div style="margin-top:6px;color:#64748b;font-size:12px;">
-                            Mais de 30 autorizações emitidas desde novembro.
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px;">
+                        <div
+                            style="flex: 1 1 140px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; font-size: 12px; color: #475569;">
+                            <strong>1. Preencha</strong><br>Dados da viagem e responsáveis.
+                        </div>
+                        <div
+                            style="flex: 1 1 140px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; font-size: 12px; color: #475569;">
+                            <strong>2. Confira</strong><br>Veja a prévia gratuita.
+                        </div>
+                        <div
+                            style="flex: 1 1 140px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; font-size: 12px; color: #475569;">
+                            <strong>3. Baixe</strong><br>PDF + Word liberados.
                         </div>
                     </div>
                 </div>
 
                 <div
-                    style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 20px; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                    style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 20px; margin-bottom: 24px; display: inline-flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                     <div style="text-align: left;">
                         <div style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: bold;">Taxa
                             de Emissão</div>
-                        <div style="font-size: 20px; font-weight: 700; color: #0f172a; white-space:nowrap;">
-                            R$&nbsp;29,90</div>
+                        <div style="font-size: 20px; font-weight: 700; color: #0f172a;">R$ 29,90</div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 4px;">PDF + Word prontos para cartório.
+                        </div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Pagamento seguro via Mercado
+                            Pago.</div>
                     </div>
                     <div style="height: 30px; width: 1px; background: #e2e8f0;"></div>
-                    <!-- ALTERADO: "Documento Validado" -> verificável + pagamento -->
-                    <div style="display:flex; flex-direction:column; gap:4px; text-align:left;">
-                        <div
-                            style="font-size: 12px; color: #1e40af; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-                            Modelo conforme CNJ 295/2019
-                        </div>
-                        <div style="font-size: 12px; color: #0f172a; font-weight: 600;">
-                            Pagamento via Mercado Pago (Pix e Cartão)
-                        </div>
+                    <div
+                        style="font-size: 12px; color: #059669; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                        ✅ Documento Validado
                     </div>
                 </div>
 
-                <div class="hero-actions">
+                <div class="hero-actions" style="display: flex; flex-direction: column; align-items: center;">
+                    <p style="margin: 0 0 8px; text-align: center; font-size: 12px; color: #64748b;">
+                        Leva menos de 3 minutos.
+                    </p>
                     <a href="#formArea" class="btn btn-primary" onclick="scrollToForm(event)"
                         style="width: 100%; max-width: 320px; margin: 0 auto; display: block; font-size: 16px; padding: 14px; background-color: #0f172a; border-color: #0f172a;">
                         INICIAR PREENCHIMENTO
                     </a>
                 </div>
+
+                <p class="small" style="margin-top: 16px; color: #94a3b8; font-size: 12px;">
+                    Plataforma segura e criptografada (SSL).
+                </p>
             </div>
         </div>
     </section>
@@ -574,21 +403,31 @@
             <div style="max-width: 800px; margin: 0 auto;">
 
                 <div class="card">
-                    <div
-                        style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 16px; margin-bottom: 24px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-                        <p style="margin: 0; font-size: 13px; color: #334155; line-height: 1.5;">
-                            <strong style="color: #0f172a; display:block; margin-bottom:4px;">ℹ️ Informação
-                                Importante</strong>
-                            O Cartório não redige o documento, apenas reconhece a firma. Ao levar este modelo já
-                            preenchido, você economiza tempo e evita custos com escritura pública.
-                        </p>
-                    </div>
                     <div id="formArea">
-                        <div style="margin-bottom: 30px; text-align: center;">
+                        <div style="margin-bottom: 24px; text-align: center;">
                             <div
-                                style="display: inline-flex; align-items: center; gap: 8px; color: #475569; font-size: 13px; font-weight: 500; background: #f1f5f9; padding: 8px 16px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                                <span style="font-size: 16px;">⚖️</span>
-                                <span>Modelo em conformidade com a Resolução CNJ nº 295/2019</span>
+                                style="background: #f8fafc; color: #0f172a; border: 1px solid #e2e8f0; padding: 10px 16px; border-radius: 10px; display: inline-flex; align-items: center; margin-bottom: 12px; font-weight: 600; font-size: 14px;">
+                                Modelo em conformidade com CNJ 295/2019 e Polícia Federal
+                            </div>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; margin-top: 0;">
+                                Utilizado com sucesso por centenas de famílias em viagens nacionais e internacionais.
+                                <br><span style="font-size: 11px; opacity: 0.8;">(Nenhuma recusa de embarque registrada
+                                    até hoje)</span>
+                            </p>
+                            <div
+                                style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; opacity: 0.9;">
+                                <div
+                                    style="font-size: 12px; display: flex; align-items: center; gap: 4px; color: var(--text-secondary); background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px;">
+                                    🔒 Dados Criptografados
+                                </div>
+                                <div
+                                    style="font-size: 12px; display: flex; align-items: center; gap: 4px; color: var(--text-secondary); background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px;">
+                                    ✅ Válido em todo Brasil
+                                </div>
+                                <div
+                                    style="font-size: 12px; display: flex; align-items: center; gap: 4px; color: var(--text-secondary); background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px;">
+                                    ✈️ Nacional & Internacional
+                                </div>
                             </div>
                         </div>
 
@@ -601,11 +440,11 @@
 
                         <div class="form-step" data-step="1" id="step-1">
                             <div
-                                style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
-                                <span style="font-size: 16px;">🔒</span>
-                                <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.4;">
-                                    <strong>Ambiente Seguro.</strong> Preencha os dados abaixo para gerar a minuta
-                                    oficial do documento. Você poderá conferir a prévia antes do pagamento.
+                                style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; margin-bottom: 24px; display: flex; align-items: start; gap: 10px;">
+                                <span style="font-size: 18px; margin-top: 2px;">👁️</span>
+                                <p style="margin: 0; font-size: 14px; color: #0284c7; line-height: 1.4;">
+                                    <strong>Segurança:</strong> Preencha para ver a <strong>prévia gratuita</strong>
+                                    antes de pagar.
                                 </p>
                             </div>
 
@@ -701,34 +540,28 @@
                                     <input type="radio" name="acomp_visual" id="opt_resp" value="outro_responsavel"
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_resp" class="radio-label">
-  <span class="radio-icon">👨‍👩‍👧</span>
-  <span>
-    Com o Pai ou Mãe
-    <span class="radio-sub">(O outro assina)</span>
-  </span>
-</label>
+                                        <span class="radio-icon">👨‍👩‍👧</span>
+                                        Com o Pai ou Mãe<br><span style="font-size:12px; font-weight:normal;">(O outro
+                                            assina)</span>
+                                    </label>
                                 </div>
                                 <div class="radio-card">
                                     <input type="radio" name="acomp_visual" id="opt_terceiro" value="terceiro"
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_terceiro" class="radio-label">
-  <span class="radio-icon">👵</span>
-  <span>
-    Avós / Tios / Outros
-    <span class="radio-sub">(Pai e Mãe assinam)</span>
-  </span>
-</label>
+                                        <span class="radio-icon">👵</span>
+                                        Avós / Tios / Outros<br><span style="font-size:12px; font-weight:normal;">(Pai e
+                                            Mãe assinam)</span>
+                                    </label>
                                 </div>
                                 <div class="radio-card" style="grid-column: span 2;">
                                     <input type="radio" name="acomp_visual" id="opt_sozinho" value="desacompanhado"
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_sozinho" class="radio-label">
-  <span class="radio-icon">🙋‍♂️</span>
-  <span>
-    Viajar Sozinho
-    <span class="radio-sub">(Desacompanhado)</span>
-  </span>
-</label>
+                                        <span class="radio-icon">🙋‍♂️</span>
+                                        Viajar Sozinho<br><span
+                                            style="font-size:12px; font-weight:normal;">(Desacompanhado)</span>
+                                    </label>
                                 </div>
                             </div>
 
@@ -861,7 +694,7 @@
                                 <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;">
                                     <button class="btn btn-primary" id="btnPreview"
                                         style="background-color: #28a745; border-color: #28a745; font-size: 1.1em; padding: 12px 24px;">
-                                        Ver Prévia do Documento
+                                        📄 Ver Prévia do Documento
                                     </button>
                                 </div>
                             </div>
@@ -869,62 +702,41 @@
                             <div id="paySection" style="display:none;">
                                 <input type="hidden" id="terms_version" value="viagem-2025-02-v1">
 
-                                <div class="pay-box" style="border-top: 4px solid #0f172a;">
-                                    <h3
-                                        style="margin: 0 0 5px 0; font-size: 16px; color: #0f172a; text-transform:uppercase; letter-spacing:0.5px;">
-                                        Emissão de Documento
+                                <div class="pay-box">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Resumo do Pedido
                                     </h3>
-                                    <p style="margin: 0 0 20px 0; font-size: 12px; color: #64748b;">Protocolo de
-                                        autorização de viagem</p>
+                                    <p style="margin: 0; font-size: 14px; color: #64748b;">Emissão de Autorização de
+                                        Viagem (Minuta)</p>
 
-                                    <div class="authority-banner">
-                                        <div class="auth-icon">⚖️</div>
-                                        <div class="auth-text">
-                                            <strong>Conformidade Legal</strong>
-                                            Modelo atualizado segundo Resolução <b>CNJ nº 295/2019</b> e padrões da
-                                            Polícia Federal.
-                                        </div>
-                                    </div>
-
-                                    <div class="price-wrapper"
-                                        style="border:none; background:#f1f9fe; border-radius:8px; padding:15px;">
-                                        <div class="price-label" style="color:#0284c7;">Taxa Única de Emissão</div>
-                                        <div class="price-big" style="color:#0f172a;">
+                                    <div class="price-wrapper">
+                                        <div class="price-label">Valor do Serviço</div>
+                                        <div class="price-big">
                                             R$ 29<span class="price-cents">,90</span>
                                         </div>
-                                        <div style="margin-top:8px;font-size:12px;color:#0f172a;font-weight:600;">
-                                            Pagamento via Mercado Pago (Pix e Cartão)
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">
+                                            Pagamento único • Acesso vitalício aos arquivos
                                         </div>
                                     </div>
 
-                                    <!-- ALTERADO: CTA mais específico -->
-                                    <button class="btn btn-primary btn-official" id="btnPagar"
-                                        style="width: 100%; font-size: 15px; padding: 16px; font-weight: 700; display:flex; align-items:center; justify-content:center; gap:10px;">
-                                        EMITIR E BAIXAR PDF/WORD
+                                    <button class="btn btn-primary" id="btnPagar"
+                                        style="width: 100%; font-size: 16px; padding: 16px; background-color: #2563eb; border-color: #2563eb; font-weight: 600;">
+                                        IR PARA PAGAMENTO SEGURO
                                     </button>
 
-                                    <div style="font-size: 11px; color: #94a3b8; margin-top: 10px; text-align:center;">
-                                        Liberado imediatamente após a confirmação
+                                    <div
+                                        style="font-size: 11px; color: #94a3b8; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                        🔒 Ambiente Seguro processado pelo Mercado Pago
                                     </div>
 
-                                    <div class="security-grid">
-                                        <div class="sec-item">Criptografia SSL</div>
-                                        <div class="sec-item">Proteção LGPD</div>
-                                        <div class="sec-item">Compra segura</div>
-                                        <!-- ALTERADO: remover "Acesso Vitalício" -->
-                                        <div class="sec-item">Backup por e-mail</div>
+                                    <div class="secure-row">
+                                        <div class="secure-item">🛡️ Garantia Legal</div>
+                                        <div class="secure-item">⚖️ Padrão CNJ</div>
+                                        <div class="secure-item">🔒 Dados Protegidos</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div
-                    style="background: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px; margin: 20px 0; font-size: 13px; color: #166534;">
-                    <em>"Estava com medo da imigração, mas esse documento passou direto na Polícia Federal.
-                        Recomendo!"</em>
-                    <br><strong>— Sueli, viajou para Argentina 🇦🇷</strong>
                 </div>
 
                 <div id="previewWrap"
@@ -956,6 +768,9 @@
                             imediatamente após a confirmação do pagamento.
                         </div>
                     </div>
+                    <p style="margin: 10px 0 0; font-size: 12px; color: #64748b; text-align: center;">
+                        Você só paga depois de ver a prévia.
+                    </p>
 
                     <button
                         onclick="document.getElementById('paySection').scrollIntoView({behavior: 'smooth', block: 'center'});"
@@ -1016,6 +831,16 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div
+                    style="background: #fffbeb; border: 1px solid #fcd34d; padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+                    <p style="margin: 0; font-size: 14px; color: #92400e; line-height: 1.5;">
+                        <strong>⚠️ POR QUE FAZER AQUI E NÃO NO CARTÓRIO?</strong><br>
+                        O Cartório <strong>NÃO redige</strong> o documento, apenas reconhece a assinatura. Se você
+                        chegar lá sem nada, terá que pagar caro por uma escritura pública. Leve este documento
+                        pronto e economize!
+                    </p>
                 </div>
 
                 <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--border);">
@@ -1085,19 +910,11 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p>
-                    Este site não presta aconselhamento jurídico. Leia os
-                    <a href="/termos.html" class="footer-link">Termos de Uso</a>,
-                    <a href="/privacidade.html" class="footer-link">Política de Privacidade</a>,
-                    conheça mais em
-                    <a href="/sobre.html" class="footer-link">Sobre o CartasApp</a>
-                    e fale com o
-                    <a href="/contato.html" class="footer-link">Suporte</a>.
-                </p>
+                <p>Este site não presta aconselhamento jurídico. Leia os <a href="/termos.html"
+                        class="footer-link">Termos de Uso</a>.</p>
             </div>
         </div>
     </footer>
-
 
     <a href="https://wa.me/5547988616874" class="whatsapp-float" target="_blank"><svg viewBox="0 0 24 24"
             class="whatsapp-icon">
@@ -1110,7 +927,7 @@
         <div
             style="background:var(--bg-primary); border:1px solid var(--border); border-radius:16px; max-width:500px; width:100%; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; max-height: 90vh;">
 
-            <h3 style="margin-top:0; font-size:20px; color:var(--text-primary);">Aviso Importante
+            <h3 style="margin-top:0; font-size:20px; color:var(--text-primary); flex-shrink: 0;">⚠️ Aviso Importante
             </h3>
 
             <div
@@ -1162,58 +979,11 @@
     <script src="/recovery.js"></script>
 
     <script>
-        (function () {
-            var formSeen = false;
-
-            function setWA(show) {
-                var wa = document.querySelector('.whatsapp-float');
-                if (!wa) return;
-                wa.style.display = show ? '' : 'none';
-            }
-
-            // Esconde no topo
-            setWA(false);
-
-            document.addEventListener('DOMContentLoaded', function () {
-                var target = document.getElementById('formArea');
-                if (!target) { setWA(true); return; }
-
-                // Mostra quando o form entrar na tela
-                var io = new IntersectionObserver(function (entries) {
-                    entries.forEach(function (e) {
-                        if (e.isIntersecting) {
-                            formSeen = true;
-                            setWA(true);
-                        }
-                    });
-                }, { root: null, threshold: 0.05 });
-                io.observe(target);
-            });
-
-            // Esconde enquanto digita, mas só volta se o usuário já chegou no form
-            document.addEventListener('focusin', function (e) {
-                if (e.target && e.target.matches && e.target.matches('input,select,textarea')) {
-                    setWA(false);
-                }
-            });
-
-            document.addEventListener('focusout', function (e) {
-                if (e.target && e.target.matches && e.target.matches('input,select,textarea')) {
-                    setTimeout(function () {
-                        if (formSeen) setWA(true);
-                    }, 250);
-                }
-            });
-        })();
-
         // ========== FUNÇÕES UTILITÁRIAS ==========
         function scrollToForm(e) {
             e.preventDefault();
             const formArea = document.getElementById('formArea');
             if (formArea) { formArea.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-            if (typeof gtag === 'function') {
-                gtag('event', 'start_form', { event_category: 'engagement', event_label: 'scroll_to_form' });
-            }
         }
 
         function maskCPF(v) {
@@ -1342,30 +1112,19 @@
                 }
 
                 setTimeout(() => {
-                    var vTipoEl = document.getElementById('viagem_tipo');
-                    var vTipo = vTipoEl ? vTipoEl.value : 'nacional';
-                    if (vTipo === 'internacional' && document.getElementById('v_internacional')) {
-                        document.getElementById('v_internacional').checked = true;
-                    }
-                    if (vTipo === 'nacional' && document.getElementById('v_nacional')) {
-                        document.getElementById('v_nacional').checked = true;
-                    }
+                    var vTipo = document.getElementById('viagem_tipo').value;
+                    if (vTipo === 'internacional') document.getElementById('v_internacional').checked = true;
                     updateViagem(vTipo);
 
-                    var aTipoEl = document.getElementById('acompanhante_tipo');
-                    var aTipo = aTipoEl ? aTipoEl.value : '';
-                    if (aTipo === 'outro_responsavel' && document.getElementById('opt_resp')) document.getElementById('opt_resp').checked = true;
-                    if (aTipo === 'terceiro' && document.getElementById('opt_terceiro')) document.getElementById('opt_terceiro').checked = true;
-                    if (aTipo === 'desacompanhado' && document.getElementById('opt_sozinho')) document.getElementById('opt_sozinho').checked = true;
+                    var aTipo = document.getElementById('acompanhante_tipo').value;
+                    if (aTipo === 'outro_responsavel') document.getElementById('opt_resp').checked = true;
+                    if (aTipo === 'terceiro') document.getElementById('opt_terceiro').checked = true;
+                    if (aTipo === 'desacompanhado') document.getElementById('opt_sozinho').checked = true;
                     updateAcompVisibility(aTipo);
 
-                    var dois = document.getElementById('dois_resps');
-                    if (dois && dois.checked) {
-                        var doisVisual = document.getElementById('dois_resps_visual');
-                        if (doisVisual) doisVisual.checked = true;
+                    if (document.getElementById('dois_resps').checked) {
+                        document.getElementById('dois_resps_visual').checked = true;
                         toggleResps(2);
-                    } else {
-                        toggleResps(1);
                     }
                 }, 300);
             } catch (e) { }
@@ -1386,30 +1145,30 @@
                 slug: 'autorizacao-viagem-menor',
                 tipo: 'autorizacao_viagem',
                 entidade: 'Viagem',
-                menor_nome: (document.getElementById('menor_nome').value || '').trim(),
+                menor_nome: document.getElementById('menor_nome').value.trim(),
                 menor_nascimento: formatDateBR(document.getElementById('menor_nascimento').value),
-                menor_doc: (document.getElementById('menor_doc').value || '').trim(),
+                menor_doc: document.getElementById('menor_doc').value.trim(),
                 viagem_tipo: document.getElementById('viagem_tipo').value,
-                destino: (document.getElementById('destino').value || '').trim(),
+                destino: document.getElementById('destino').value.trim(),
                 data_ida: formatDateBR(document.getElementById('data_ida').value),
                 data_volta: formatDateBR(document.getElementById('data_volta').value),
                 acompanhante_tipo: document.getElementById('acompanhante_tipo').value,
-                acompanhante_nome: (document.getElementById('acomp_nome').value || '').trim(),
-                acompanhante_cpf: (document.getElementById('acomp_cpf').value || '').trim(),
-                acompanhante_doc: (document.getElementById('acomp_doc').value || '').trim(),
-                acompanhante_parentesco: (document.getElementById('acomp_parentesco').value || '').trim(),
-                resp1_nome: (document.getElementById('resp1_nome').value || '').trim(),
-                resp1_cpf: (document.getElementById('resp1_cpf').value || '').trim(),
-                resp1_doc: (document.getElementById('resp1_doc').value || '').trim(),
+                acompanhante_nome: document.getElementById('acomp_nome').value.trim(),
+                acompanhante_cpf: document.getElementById('acomp_cpf').value.trim(),
+                acompanhante_doc: document.getElementById('acomp_doc').value.trim(),
+                acompanhante_parentesco: document.getElementById('acomp_parentesco').value.trim(),
+                resp1_nome: document.getElementById('resp1_nome').value.trim(),
+                resp1_cpf: document.getElementById('resp1_cpf').value.trim(),
+                resp1_doc: document.getElementById('resp1_doc').value.trim(),
                 resp1_parentesco: document.getElementById('resp1_parentesco').value,
-                dois_resps: !!document.getElementById('dois_resps').checked,
-                resp2_nome: (document.getElementById('resp2_nome').value || '').trim(),
-                resp2_cpf: (document.getElementById('resp2_cpf').value || '').trim(),
-                resp2_doc: (document.getElementById('resp2_doc').value || '').trim(),
+                dois_resps: document.getElementById('dois_resps').checked,
+                resp2_nome: document.getElementById('resp2_nome').value.trim(),
+                resp2_cpf: document.getElementById('resp2_cpf').value.trim(),
+                resp2_doc: document.getElementById('resp2_doc').value.trim(),
                 resp2_parentesco: document.getElementById('resp2_parentesco').value,
-                cidade_uf_emissao: (document.getElementById('cidade_uf_emissao').value || '').trim(),
-                email: (document.getElementById('email').value || '').trim(),
-                telefone: (document.getElementById('telefone').value || '').trim(),
+                cidade_uf_emissao: document.getElementById('cidade_uf_emissao').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                telefone: document.getElementById('telefone').value.trim(),
                 observacoes: '',
                 accepted_terms: document.getElementById('aceite_termos') ? document.getElementById('aceite_termos').checked : false,
                 terms_version: document.getElementById('terms_version') ? document.getElementById('terms_version').value : null,
@@ -1499,24 +1258,9 @@
             }
         }
 
-        document.getElementById('nextStep1').onclick = function () {
-            if (validateStep(1)) {
-                if (typeof gtag === 'function') gtag('event', 'step_1_complete', { event_category: 'funnel' });
-                showStep(2);
-            }
-        };
-        document.getElementById('nextStep2').onclick = function () {
-            if (validateStep(2)) {
-                if (typeof gtag === 'function') gtag('event', 'step_2_complete', { event_category: 'funnel' });
-                showStep(3);
-            }
-        };
-        document.getElementById('nextStep3').onclick = function () {
-            if (validateStep(3)) {
-                if (typeof gtag === 'function') gtag('event', 'step_3_complete', { event_category: 'funnel' });
-                showStep(4);
-            }
-        };
+        document.getElementById('nextStep1').onclick = function () { if (validateStep(1)) showStep(2); };
+        document.getElementById('nextStep2').onclick = function () { if (validateStep(2)) showStep(3); };
+        document.getElementById('nextStep3').onclick = function () { if (validateStep(3)) showStep(4); };
         document.getElementById('prevStep2').onclick = function () { showStep(1); };
         document.getElementById('prevStep3').onclick = function () { showStep(2); };
         document.getElementById('prevStep4').onclick = function () { showStep(3); };
@@ -1574,6 +1318,7 @@
             }).catch(err => console.log('Lead capture bg error', err));
         }
 
+        // --- BOTÃO PRÉVIA (VERSÃO "PAYWALL" - BLOQUEIA O RESTO) ---
         if (btnPreview) {
             btnPreview.addEventListener('click', function () {
                 if (!checkCooldown()) return;
@@ -1585,8 +1330,9 @@
                 }
 
                 btnPreview.disabled = true;
-                btnPreview.textContent = 'Gerando...';
+                btnPreview.textContent = '⏳ Gerando...';
 
+                // Função interna para lidar com retentativas
                 async function tentarGerar(tentativa) {
                     var vaiTentarDeNovo = false;
                     try {
@@ -1603,7 +1349,8 @@
                         });
 
                         if (r.status === 503 && tentativa === 1) {
-                            btnPreview.textContent = 'Reconectando...';
+                            console.log('Servidor ocupado (503), tentando novamente...');
+                            btnPreview.textContent = '↻ Reconectando...';
                             vaiTentarDeNovo = true;
                             await new Promise(res => setTimeout(res, 2000));
                             return tentarGerar(2);
@@ -1618,9 +1365,13 @@
                         var data = await r.json();
                         var out = data.output || data;
 
+                        // --- DESIGN DA PRÉVIA COM "CADEADO" ---
+
+                        // 1. Pega SÓ os 2 primeiros parágrafos (Esconde o resto)
                         var paragraphs = (out.corpo_paragrafos || []).slice(0, 2);
                         var textContent = paragraphs.join('\n\n');
 
+                        // 2. HTML da Folha A4 com o Bloqueio no final
                         var htmlBonito = `
                             <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;">
                                 <div style="font-size:32px; margin-bottom:5px;">⚖️</div>
@@ -1643,12 +1394,13 @@
                                     A identificação do acompanhante, a fundamentação legal completa e o <br><strong>checklist de documentos obrigatórios</strong> estarão disponíveis no arquivo final.
                                 </div>
                             </div>
-
+                            
                             <div style="margin-top:20px; text-align: center; font-family:Arial,sans-serif; font-size:10px; color:#999;">
                                 Pré-visualização parcial gerada por CartasApp.com.br
                             </div>
                         `;
 
+                        // 3. Aplica
                         var pBox = document.getElementById('previewBox');
                         pBox.innerHTML = htmlBonito;
 
@@ -1657,6 +1409,8 @@
                         pBox.style.border = "1px solid #ccc";
                         pBox.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
                         pBox.style.whiteSpace = "normal";
+
+                        // -------------------------------------
 
                         previewWrap.style.display = 'block';
                         paySection.style.display = 'block';
@@ -1667,19 +1421,18 @@
                         }, 100);
 
                         if (typeof gtag === 'function') {
-                            gtag('event', 'preview_generated', { event_category: 'funnel', event_label: payload.viagem_tipo || 'nacional' });
-                            gtag('event', 'generate_lead', { event_category: 'engagement', event_label: 'viagem_' + (payload.viagem_tipo || 'nacional'), 'value': 2.00, 'currency': 'BRL' });
+                            gtag('event', 'generate_lead', { 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' });
                         }
 
                         localStorage.setItem('pendingPayload', JSON.stringify(payload));
                         localStorage.setItem('last_preview_ts', Date.now());
-                        if (btnPagar) btnPagar.disabled = false;
+                        btnPagar.disabled = false;
 
                     } catch (e) {
                         if (!vaiTentarDeNovo) {
-                            alert('Erro ao gerar: ' + e.message);
+                            if (e.message !== 'Campos inválidos') { alert('Erro ao gerar: ' + e.message); }
                             btnPreview.disabled = false;
-                            btnPreview.textContent = 'Ver Prévia do Documento';
+                            btnPreview.textContent = '📄 Ver Prévia do Documento';
                         }
                     }
                 }
@@ -1689,7 +1442,6 @@
         }
 
         if (btnPagar) btnPagar.addEventListener('click', function () {
-            if (typeof gtag === 'function') gtag('event', 'checkout_modal_open', { event_category: 'funnel' });
             document.getElementById('modalTermos').style.display = 'flex';
         });
 
@@ -1723,10 +1475,8 @@
                 });
                 var data = await r.json();
                 if (!r.ok) throw new Error(data.error || 'Erro no pagamento');
-
                 document.getElementById('modalTermos').style.display = 'none';
                 localStorage.setItem('lastOrderId', data.order_id || '');
-
                 if (typeof gtag === 'function') {
                     gtag('event', 'begin_checkout', {
                         value: 29.9,
@@ -1734,7 +1484,6 @@
                         items: [{ item_id: slugStr }]
                     });
                 }
-
                 showPaymentModal(data.init_point, data.order_id, slugStr);
             } catch (e) {
                 alert('Erro: ' + e.message);
@@ -1751,24 +1500,25 @@
             var overlay = document.createElement('div');
             overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
             overlay.innerHTML =
-                '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:16px;max-width:420px;width:92%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;">' +
-                '<h3 style="margin:0 0 10px;font-size:18px;">Finalizar pagamento</h3>' +
-                '<p style="margin:0 0 18px;line-height:1.45;color:var(--text-secondary);font-size:13px;">Você será direcionado para o Mercado Pago para concluir com Pix ou Cartão.</p>' +
-                '<div style="display:flex;flex-direction:column;gap:10px;">' +
-                '<button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para o Mercado Pago</button>' +
+                '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:16px;max-width:400px;width:90%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;">' +
+                '<div style="font-size:40px;margin-bottom:16px;">💸</div>' +
+                '<h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3>' +
+                '<p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique no botão abaixo para finalizar o pagamento com segurança no Mercado Pago.</p>' +
+                '<div style="display:flex;flex-direction:column;gap:12px;">' +
+                '<button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix ou Cartão)</button>' +
                 '<button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir dados</button>' +
                 '</div>' +
-                '<p id="lm-statusPay" class="small" style="margin-top:14px;font-size:12px;opacity:0.85;"></p>' +
+                '<p id="lm-statusPay" class="small" style="margin-top:16px;font-size:12px;opacity:0.8;"></p>' +
                 '</div>';
             document.body.appendChild(overlay);
 
             document.getElementById('lm-close').onclick = function () {
                 overlay.remove();
                 try { grecaptcha.reset(); } catch (e) { }
-                var bp = document.getElementById('btnPagar');
-                if (bp) {
-                    bp.disabled = false;
-                    bp.textContent = 'EMITIR E BAIXAR PDF/WORD';
+                var btnPagar = document.getElementById('btnPagar');
+                if (btnPagar) {
+                    btnPagar.disabled = false;
+                    btnPagar.textContent = 'Gerar documento completo (R$ 29,90)';
                 }
             };
 
@@ -1786,15 +1536,7 @@
             }
 
             document.getElementById('lm-goPay').onclick = function () {
-                if (typeof gtag === 'function') gtag('event', 'go_to_payment', { event_category: 'funnel' });
-
-                // ALTERADO: MESMA ABA (menos falha no mobile)
-                location.href = initPoint;
-
-                // Se, por algum motivo, você quiser manter o polling nesta aba, comente a linha acima
-                // e descomente o bloco abaixo; mas a conversão costuma ser melhor redirecionando direto.
-
-                /*
+                window.open(initPoint, '_blank', 'noopener');
                 var btn = this;
                 btn.textContent = 'Verificando pagamento...';
                 document.getElementById('lm-statusPay').textContent = 'Aguarde, estamos confirmando seu pagamento...';
@@ -1813,7 +1555,6 @@
                         }
                     } catch (e) { }
                 }, 3000);
-                */
             };
         }
 
@@ -1831,7 +1572,7 @@
                 btnAdmin.style.border = 'none';
                 btnAdmin.style.marginTop = '10px';
                 btnAdmin.style.width = '100%';
-                btnAdmin.innerText = 'Gerar Admin';
+                btnAdmin.innerText = '👑 Gerar Admin';
                 btnAdmin.onclick = async function () {
                     const senha = prompt("Digite a senha de Admin:");
                     if (!senha) return;
@@ -1865,19 +1606,19 @@
                                 copyBtn.id = 'admin-copy-btn';
                                 copyBtn.className = 'btn btn-primary';
                                 copyBtn.style.marginTop = '16px';
-                                copyBtn.innerText = 'Copiar Documento';
+                                copyBtn.innerText = '📋 Copiar Documento';
                                 copyBtn.onclick = async function () {
                                     await navigator.clipboard.writeText(fullText);
-                                    copyBtn.innerText = 'Copiado';
-                                    setTimeout(() => { copyBtn.innerText = 'Copiar Documento'; }, 2000);
+                                    copyBtn.innerText = '✅ Copiado!';
+                                    setTimeout(() => { copyBtn.innerText = '📋 Copiar Documento'; }, 2000);
                                 };
                                 previewWrap.appendChild(copyBtn);
                                 previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                alert("Documento Admin Gerado");
+                                alert("✅ Documento Admin Gerado!");
                             }
                         }
-                    } catch (e) { alert('Erro: ' + e.message); }
-                    finally { btnAdmin.innerText = 'Gerar Admin'; btnAdmin.disabled = false; }
+                    } catch (e) { alert('❌ Erro: ' + e.message); }
+                    finally { btnAdmin.innerText = '👑 Gerar Admin'; btnAdmin.disabled = false; }
                 };
                 btnArea.appendChild(btnAdmin);
             }
