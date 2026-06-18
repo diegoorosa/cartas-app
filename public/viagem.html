@@ -379,20 +379,20 @@
                     </div>
                 </div>
 
-                <div
-                    style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 20px; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                <div class="hero-price-card"
+                    style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 20px; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 15px; box-shadow: var(--shadow-sm);">
                     <div style="text-align: left;">
-                        <div style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: bold;">Taxa
+                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold;">Taxa
                             de Emissão</div>
-                        <div style="font-size: 20px; font-weight: 700; color: #0f172a;">R$ 29,90</div>
-                        <div style="font-size: 11px; color: #64748b; margin-top: 4px;">PDF + Word prontos para cartório.
+                        <div style="font-size: 20px; font-weight: 700; color: var(--text-primary);">R$ 29,90</div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">PDF + Word prontos para cartório.
                         </div>
-                        <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Pagamento seguro via Mercado
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Pagamento seguro via Mercado
                             Pago.</div>
                     </div>
-                    <div style="height: 30px; width: 1px; background: #e2e8f0;"></div>
+                    <div style="height: 30px; width: 1px; background: var(--border);"></div>
                     <div
-                        style="font-size: 12px; color: #059669; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                        style="font-size: 12px; color: var(--accent-success); font-weight: 600; display: flex; align-items: center; gap: 4px;">
                         ✅ Documento Validado
                     </div>
                 </div>
@@ -780,6 +780,17 @@
                                         🔒 Ambiente Seguro processado pelo Mercado Pago
                                     </div>
 
+                                    <div class="mp-protected-badge" style="margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; color: #0f172a; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2ZM12 20C7.589 20 4 16.411 4 12C4 7.589 7.589 4 12 4C16.411 4 20 7.589 20 12C20 16.411 16.411 20 12 20Z" fill="#009EE3"/>
+                                            <path d="M7.5 11.5H10.5V14.5H7.5V11.5Z" fill="white"/>
+                                            <path d="M13.5 11.5H16.5V14.5H13.5V11.5Z" fill="white"/>
+                                            <path d="M7.5 7.5H16.5V10.5H7.5V7.5Z" fill="white"/>
+                                        </svg>
+                                        <span style="font-weight: 600;">Compra Protegida</span>
+                                        <span style="color: var(--text-muted); font-size: 11px;">Mercado Pago</span>
+                                    </div>
+
                                     <div class="secure-row">
                                         <div class="secure-item">🛡️ Garantia Legal</div>
                                         <div class="secure-item">⚖️ Padrão CNJ</div>
@@ -953,28 +964,38 @@
 
                     <div style="border-top:1px solid var(--border); padding-top:24px;">
                         <h2 class="section-title" style="font-size: 22px; margin-bottom: 12px;">Perguntas rápidas</h2>
-                        <p class="small">
-                            <strong>Preciso ir ao cartório depois de gerar?</strong><br>
-                            Sim. O CartasApp entrega o documento pronto (redigido e formatado). Você deve imprimir e
-                            levar ao cartório apenas para <strong>reconhecer a firma</strong> da sua assinatura. Esse
-                            "selo" do cartório é o que garante a validade legal para o embarque em viagens
-                            interestaduais ou internacionais.
-                        </p>
-                        <p class="small" style="margin-top:12px;">
-                            <strong>Quantas vias (cópias) devo imprimir?</strong><br>
-                            Na prática, recomenda-se ter <strong>2 vias originais</strong>.
-                            <br>• <strong>1ª Via:</strong> Fica retida com a companhia de transporte no momento do
-                            embarque (arquivo deles).
-                            <br>• <strong>2ª Via:</strong> Segue viagem com a criança/acompanhante para servir de
-                            documento de porte obrigatório (para fiscalização policial ou retorno).
-                        </p>
-                        <p class="small" style="margin-top:12px;">
-                            <strong>Este modelo é aceito pela Polícia Federal?</strong><br>
-                            O texto é elaborado com base na <strong>Resolução CNJ nº 295/2019</strong> e nas orientações
-                            divulgadas pela Polícia Federal. Na prática, costuma ser aceito quando apresentado
-                            <strong>impresso, em duas vias e com firmas reconhecidas</strong>. Porém, a aceitação final
-                            cabe sempre à autoridade do embarque.
-                        </p>
+
+                        <details class="faq-accordion" style="margin-top: 12px;">
+                            <summary style="cursor: pointer; font-weight: 600; color: var(--text-primary); padding: 12px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                <span>Preciso ir ao cartório depois de gerar?</span>
+                                <span style="font-size: 18px; color: var(--text-muted); transition: transform 0.2s;">▼</span>
+                            </summary>
+                            <div class="small" style="padding: 12px 16px; color: var(--text-secondary); line-height: 1.6; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; background: var(--card-bg);">
+                                Sim. O CartasApp entrega o documento pronto (redigido e formatado). Você deve imprimir e levar ao cartório apenas para <strong>reconhecer a firma</strong> da sua assinatura. Esse "selo" do cartório é o que garante a validade legal para o embarque em viagens interestaduais ou internacionais.
+                            </div>
+                        </details>
+
+                        <details class="faq-accordion" style="margin-top: 12px;">
+                            <summary style="cursor: pointer; font-weight: 600; color: var(--text-primary); padding: 12px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                <span>Quantas vias (cópias) devo imprimir?</span>
+                                <span style="font-size: 18px; color: var(--text-muted); transition: transform 0.2s;">▼</span>
+                            </summary>
+                            <div class="small" style="padding: 12px 16px; color: var(--text-secondary); line-height: 1.6; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; background: var(--card-bg);">
+                                Na prática, recomenda-se ter <strong>2 vias originais</strong>.
+                                <br>• <strong>1ª Via:</strong> Fica retida com a companhia de transporte no momento do embarque (arquivo deles).
+                                <br>• <strong>2ª Via:</strong> Segue viagem com a criança/acompanhante para servir de documento de porte obrigatório (para fiscalização policial ou retorno).
+                            </div>
+                        </details>
+
+                        <details class="faq-accordion" style="margin-top: 12px;">
+                            <summary style="cursor: pointer; font-weight: 600; color: var(--text-primary); padding: 12px 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                <span>Este modelo é aceito pela Polícia Federal?</span>
+                                <span style="font-size: 18px; color: var(--text-muted); transition: transform 0.2s;">▼</span>
+                            </summary>
+                            <div class="small" style="padding: 12px 16px; color: var(--text-secondary); line-height: 1.6; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; background: var(--card-bg);">
+                                O texto é elaborado com base na <strong>Resolução CNJ nº 295/2019</strong> e nas orientações divulgadas pela Polícia Federal. Na prática, costuma ser aceito quando apresentado <strong>impresso, em duas vias e com firmas reconhecidas</strong>. Porém, a aceitação final cabe sempre à autoridade do embarque.
+                            </div>
+                        </details>
                     </div>
                 </div>
 
@@ -1381,6 +1402,26 @@
                 var el = document.getElementById(id);
                 if (el) el.addEventListener('input', function () { this.value = maskCPF(this.value); });
             });
+
+            // P4 — Keyboard friendly: foco no primeiro input + Enter para avançar
+            var firstInput = document.getElementById('menor_nome');
+            if (firstInput) {
+                setTimeout(function () { firstInput.focus(); }, 300);
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    var target = e.target;
+                    var isInput = target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA';
+                    var isBtn = target.tagName === 'BUTTON';
+                    if (isInput && !isBtn && target.type !== 'textarea') {
+                        e.preventDefault();
+                        var step = currentStep;
+                        var nextBtn = document.getElementById('nextStep' + step);
+                        if (nextBtn && !nextBtn.disabled) nextBtn.click();
+                    }
+                }
+            });
         });
 
         loadForm();
@@ -1430,7 +1471,8 @@
                 }
 
                 btnPreview.disabled = true;
-                btnPreview.textContent = '⏳ Gerando...';
+                btnPreview.classList.add('loading');
+                btnPreview.textContent = 'Gerando...';
 
                 // Função interna para lidar com retentativas
                 async function tentarGerar(tentativa) {
@@ -1512,8 +1554,8 @@
                         btnPreview.style.display = 'none';
 
                         setTimeout(function () {
-                            if (previewWrap) previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 100);
+                            if (paySection) paySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
 
                         if (typeof gtag === 'function') {
                             gtag('event', 'generate_lead', { 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' });
@@ -1527,6 +1569,7 @@
                         if (!vaiTentarDeNovo) {
                             if (e.message !== 'Campos inválidos') { alert('Erro ao gerar: ' + e.message); }
                             btnPreview.disabled = false;
+                            btnPreview.classList.remove('loading');
                             btnPreview.textContent = '📄 Ver Prévia do Documento';
                         }
                     }
@@ -1552,6 +1595,7 @@
                 return;
             }
             btnConfirm.disabled = true;
+            btnConfirm.classList.add('loading');
             btnConfirm.textContent = 'Processando...';
 
             try {
@@ -1584,6 +1628,7 @@
                 alert('Erro: ' + e.message);
             } finally {
                 btnConfirm.disabled = false;
+                btnConfirm.classList.remove('loading');
                 btnConfirm.textContent = 'Confirmar e Pagar';
             }
         };
