@@ -406,7 +406,7 @@
 
         // --- FUNÇÃO DE EXIBIÇÃO PREMIUM (SUBSTITUA A ANTIGA showDocAndScroll) ---
         function showDocAndScroll(fullText, payload) {
-            // Se tiver o elemento docBox, injetamos o HTML bonito
+            // Se tiver o elemento docBox, construímos DOM de forma segura
             if (docBox) {
                 // Tenta detectar o título dinamicamente (Nacional vs Internacional)
                 var tituloDoc = "AUTORIZAÇÃO DE VIAGEM";
@@ -414,35 +414,40 @@
 
                 if (textoLower.includes("viagem internacional")) tituloDoc += " INTERNACIONAL";
                 else if (textoLower.includes("viagem nacional")) tituloDoc += " NACIONAL";
-                // Se não for viagem (ex: outros tipos), tenta inferir ou usa genérico
                 else if (textoLower.includes("multa") || textoLower.includes("recurso")) tituloDoc = "RECURSO DE MULTA";
                 else if (textoLower.includes("reembolso")) tituloDoc = "SOLICITAÇÃO DE REEMBOLSO";
                 else if (textoLower.includes("bagagem")) tituloDoc = "RECLAMAÇÃO DE BAGAGEM";
 
-                var htmlBonito = `
-                    <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;">
-                        <div style="font-size:32px; margin-bottom:5px;">⚖️</div>
-                        <h2 style="font-family:'Times New Roman',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">${tituloDoc}</h2>
-                        <p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">
-                            Conforme legislação vigente e resoluções aplicáveis
-                        </p>
-                    </div>
+                // Limpa e constrói DOM seguro
+                docBox.innerHTML = '';
 
-                    <div style="font-family:'Times New Roman',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;">
-                        ${fullText.replace(/\n/g, '<br>')}
-                    </div>
+                // Header
+                var header = document.createElement('div');
+                header.style.cssText = 'text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;';
+                header.innerHTML = '<div style="font-size:32px; margin-bottom:5px;">⚖️</div>' +
+                    '<h2 style="font-family:\'Times New Roman\',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">' + tituloDoc + '</h2>' +
+                    '<p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">Conforme legislação vigente e resoluções aplicáveis</p>';
+                docBox.appendChild(header);
 
-                    <div style="margin-top:40px; border-top:1px dashed #999; padding-top:10px; text-align:center; font-family:Arial,sans-serif; font-size:10px; color:#777;">
-                        Documento gerado oficialmente via <strong>CartasApp.com.br</strong><br>
-                        Válido mediante assinatura e reconhecimento de firma (se aplicável).
-                    </div>
-                `;
+                // Body - texto seguro via textContent
+                var body = document.createElement('div');
+                body.style.cssText = 'font-family:\'Times New Roman\',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;';
+                fullText.split('\n\n').forEach(function(para) {
+                    var p = document.createElement('p');
+                    p.textContent = para;
+                    body.appendChild(p);
+                });
+                docBox.appendChild(body);
 
-                docBox.innerHTML = htmlBonito;
+                // Footer
+                var footer = document.createElement('div');
+                footer.style.cssText = 'margin-top:40px; border-top:1px dashed #999; padding-top:10px; text-align:center; font-family:Arial,sans-serif; font-size:10px; color:#777;';
+                footer.innerHTML = 'Documento gerado oficialmente via <strong>CartasApp.com.br</strong><br>Válido mediante assinatura e reconhecimento de firma (se aplicável).';
+                docBox.appendChild(footer);
 
                 // Estiliza a caixa para parecer uma folha de papel
                 docBox.style.backgroundColor = "#fff";
-                docBox.style.padding = "40px"; // Margem interna generosa
+                docBox.style.padding = "40px";
                 docBox.style.border = "1px solid #ccc";
                 docBox.style.borderRadius = "2px";
                 docBox.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
@@ -515,7 +520,7 @@
             var ec = await buildECData();
             gtag('event', 'conversion', {
                 send_to: SEND_TO_CONVERSAO,
-                value: 9.9,
+                value: 29.9,
                 currency: 'BRL',
                 transaction_id: orderId,
                 user_data: ec

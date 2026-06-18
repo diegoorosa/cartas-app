@@ -1,4 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
+const { JSDOM } = require('jsdom');
+const DOMPurify = require('dompurify')(new JSDOM('').window);
 
 // --- CONFIGURAÇÕES ---
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
@@ -11,7 +13,8 @@ function getTodaySimple() {
 
 function sanitize(str) {
     if (!str || typeof str !== 'string') return str;
-    return str.replace(/<[^>]*>/g, '').trim();
+    // DOMPurify com allowlist vazia = remove tudo que não é texto puro
+    return DOMPurify.sanitize(str, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
 }
 
 function sanitizePayload(obj) {
@@ -144,7 +147,7 @@ exports.handler = async (event) => {
 
         // Validação de chamada interna (webhook -> generate-doc)
         const internalSecret = event.headers?.['x-internal-secret'] || event.headers?.['X-Internal-Secret'];
-        const expectedSecret = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const expectedSecret = process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
         const isInternalCall = expectedSecret && internalSecret === expectedSecret;
 
         const body = JSON.parse(event.body || '{}');

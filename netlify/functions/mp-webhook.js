@@ -1,6 +1,7 @@
 // ARQUIVO: netlify/functions/mp-webhook.js
 
 const { createClient } = require('@supabase/supabase-js');
+const crypto = require('crypto');
 
 exports.handler = async (event) => {
   // Cronômetro global para monitorar timeout do Netlify
@@ -9,6 +10,17 @@ exports.handler = async (event) => {
   try {
     // 1. Apenas aceita POST
     if (event.httpMethod !== 'POST') return { statusCode: 200, body: 'ok' };
+
+    // Verificação de assinatura do Mercado Pago (HMAC-SHA256)
+    const mpSignature = event.headers['x-signature'] || event.headers['X-Signature'];
+    const webhookSecret = process.env.MP_WEBHOOK_SECRET;
+    if (webhookSecret && mpSignature) {
+      const expectedSig = crypto.createHmac('sha256', webhookSecret).update(event.body || '').digest('hex');
+      if (!crypto.timingSafeEqual(Buffer.from(mpSignature), Buffer.from(expectedSig))) {
+        console.warn('MP Webhook: assinatura inválida');
+        return { statusCode: 401, body: 'Invalid signature' };
+      }
+    }
 
     const MP_TOKEN = process.env.MP_ACCESS_TOKEN;
     const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br';
@@ -38,10 +50,26 @@ exports.handler = async (event) => {
     // INICIALIZA SUPABASE (Movido para cima para usar tanto no Rejected quanto no Approved)
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
+    // Idempotência: verifica se já processamos este payment_id
+    const { data: processed } = await supabase
+      .from('webhook_processed')
+      .select('id')
+      .eq('payment_id', paymentId)
+      .maybeSingle();
+    if (processed) {
+      console.log(`Webhook duplicado ignorado: payment_id ${paymentId}`);
+      return { statusCode: 200, body: 'already processed' };
+    }
+
     // Salva payment_id no checkout_intents para consultas diretas futuras (order-status)
     try {
         await supabase.from('checkout_intents').update({ payment_id: paymentId }).eq('order_id', orderId);
     } catch (e) { console.warn('Falha ao salvar payment_id:', e); }
+
+    // Registra processamento para idempotência
+    try {
+      await supabase.from('webhook_processed').insert({ payment_id: paymentId, order_id: orderId, status });
+    } catch (e) { console.warn('Falha ao registrar webhook_processed:', e); }
 
     // =================================================================
     // NOVO BLOCO: TRATAMENTO DE PAGAMENTO RECUSADO (ALERTA PARA O DIEGO)
@@ -117,7 +145,7 @@ exports.handler = async (event) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-internal-secret': process.env.SUPABASE_SERVICE_ROLE_KEY
+            'x-internal-secret': process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY
           },
           body: JSON.stringify({ payload, preview: false })
         });

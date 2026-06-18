@@ -8,6 +8,8 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="preload" as="image" href="/logo.webp" type="image/webp">
+    <link rel="preload" as="image" href="/logo.avif" type="image/avif">
 
     <script type="application/ld+json">
     {
@@ -295,7 +297,7 @@
             <div class="navbar-content"
                 style="display: flex; justify-content: space-between; align-items: center; height: 60px;">
                 <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-                    <img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;"
+                    <img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;" width="42" height="42"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <span
                         style="font-weight: 800; font-size: 20px; color: var(--text-primary); letter-spacing: -0.5px;">CartasApp</span>
@@ -1513,39 +1515,43 @@
                         var paragraphs = (out.corpo_paragrafos || []).slice(0, 2);
                         var textContent = paragraphs.join('\n\n');
 
-                        // 2. HTML da Folha A4 com o Bloqueio no final
-                        var htmlBonito = `
-                            <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;">
-                                <div style="font-size:32px; margin-bottom:5px;">⚖️</div>
-                                <h2 style="font-family:'Times New Roman',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">Autorização de Viagem</h2>
-                                <p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">
-                                    Conforme Resolução CNJ nº 295/2019 e Estatuto da Criança e do Adolescente
-                                </p>
-                            </div>
-
-                            <div style="font-family:'Times New Roman',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;">
-                                ${textContent.replace(/\n/g, '<br>')}
-                            </div>
-
-                            <div style="margin-top: 25px; background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 8px; padding: 15px; text-align: center; position: relative;">
-                                <div style="font-size: 24px; margin-bottom: 5px;">🔒</div>
-                                <div style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; color: #475569; text-transform: uppercase; margin-bottom: 6px;">
-                                    Restante do documento oculto
-                                </div>
-                                <div style="font-family: Arial, sans-serif; font-size: 11px; color: #64748b; line-height: 1.5;">
-                                    A identificação do acompanhante, a fundamentação legal completa e o <br><strong>checklist de documentos obrigatórios</strong> estarão disponíveis no arquivo final.
-                                </div>
-                            </div>
-                            
-                            <div style="margin-top:20px; text-align: center; font-family:Arial,sans-serif; font-size:10px; color:#999;">
-                                Pré-visualização parcial gerada por CartasApp.com.br
-                            </div>
-                        `;
-
-                        // 3. Aplica
+                        // 2. Constrói DOM de forma segura (sem innerHTML)
                         var pBox = document.getElementById('previewBox');
-                        pBox.innerHTML = htmlBonito;
-                        pBox.style.whiteSpace = "normal";
+                        pBox.innerHTML = '';
+
+                        // Header
+                        var header = document.createElement('div');
+                        header.style.cssText = 'text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;';
+                        header.innerHTML = '<div style="font-size:32px; margin-bottom:5px;">⚖️</div>' +
+                            '<h2 style="font-family:\'Times New Roman\',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">Autorização de Viagem</h2>' +
+                            '<p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">Conforme Resolução CNJ nº 295/2019 e Estatuto da Criança e do Adolescente</p>';
+                        pBox.appendChild(header);
+
+                        // Body - texto seguro via textContent
+                        var body = document.createElement('div');
+                        body.style.cssText = 'font-family:\'Times New Roman\',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;';
+                        textContent.split('\n\n').forEach(function(para) {
+                            var p = document.createElement('p');
+                            p.textContent = para;
+                            body.appendChild(p);
+                        });
+                        pBox.appendChild(body);
+
+                        // Lock box
+                        var lockBox = document.createElement('div');
+                        lockBox.style.cssText = 'margin-top:25px; background:#f8fafc; border:1px dashed #94a3b8; border-radius:8px; padding:15px; text-align:center; position:relative;';
+                        lockBox.innerHTML = '<div style="font-size:24px; margin-bottom:5px;">🔒</div>' +
+                            '<div style="font-family:Arial,sans-serif; font-size:12px; font-weight:bold; color:#475569; text-transform:uppercase; margin-bottom:6px;">Restante do documento oculto</div>' +
+                            '<div style="font-family:Arial,sans-serif; font-size:11px; color:#64748b; line-height:1.5;">A identificação do acompanhante, a fundamentação legal completa e o <br><strong>checklist de documentos obrigatórios</strong> estarão disponíveis no arquivo final.</div>';
+                        pBox.appendChild(lockBox);
+
+                        // Footer
+                        var footer = document.createElement('div');
+                        footer.style.cssText = 'margin-top:20px; text-align:center; font-family:Arial,sans-serif; font-size:10px; color:#999;';
+                        footer.textContent = 'Pré-visualização parcial gerada por CartasApp.com.br';
+                        pBox.appendChild(footer);
+
+                        pBox.style.whiteSpace = 'normal';
 
                         // -------------------------------------
 
@@ -1698,72 +1704,9 @@
             };
         }
 
-        // ========== MODO ADMIN ==========
-        (function () {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('modo') === 'admin') {
-                const btnPagar = document.querySelector('[id*="Pagar"], [id*="pagar"]') || document.getElementById('btnPagar');
-                if (!btnPagar) return;
-                const btnArea = btnPagar.parentElement;
-                const btnAdmin = document.createElement('button');
-                btnAdmin.className = 'btn';
-                btnAdmin.style.backgroundColor = '#8b5cf6';
-                btnAdmin.style.color = 'white';
-                btnAdmin.style.border = 'none';
-                btnAdmin.style.marginTop = '10px';
-                btnAdmin.style.width = '100%';
-                btnAdmin.innerText = '👑 Gerar Admin';
-                btnAdmin.onclick = async function () {
-                    const senha = prompt("Digite a senha de Admin:");
-                    if (!senha) return;
-                    btnAdmin.innerText = 'Gerando...';
-                    btnAdmin.disabled = true;
-                    try {
-                        var p = getPayload();
-                        p.admin_key = senha;
-                        var r = await fetch('/.netlify/functions/generate-doc', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ payload: p, preview: false })
-                        });
-                        if (!r.ok) throw new Error('Senha errada');
-                        var data = await r.json();
-                        if (data.output) {
-                            let fullText = '';
-                            if (data.output.saudacao) fullText += data.output.saudacao + '\n\n';
-                            if (Array.isArray(data.output.corpo_paragrafos)) fullText += data.output.corpo_paragrafos.join('\n\n');
-                            else fullText += String(data.output.corpo_paragrafos);
-                            if (data.output.fechamento) fullText += '\n\n' + data.output.fechamento;
-                            const previewBox = document.getElementById('previewBox');
-                            const previewWrap = document.getElementById('previewWrap');
-                            if (previewBox && previewWrap) {
-                                previewBox.textContent = fullText;
-                                previewBox.style.whiteSpace = 'pre-wrap';
-                                previewWrap.style.display = 'block';
-                                const oldCopyBtn = document.getElementById('admin-copy-btn');
-                                if (oldCopyBtn) oldCopyBtn.remove();
-                                const copyBtn = document.createElement('button');
-                                copyBtn.id = 'admin-copy-btn';
-                                copyBtn.className = 'btn btn-primary';
-                                copyBtn.style.marginTop = '16px';
-                                copyBtn.innerText = '📋 Copiar Documento';
-                                copyBtn.onclick = async function () {
-                                    await navigator.clipboard.writeText(fullText);
-                                    copyBtn.innerText = '✅ Copiado!';
-                                    setTimeout(() => { copyBtn.innerText = '📋 Copiar Documento'; }, 2000);
-                                };
-                                previewWrap.appendChild(copyBtn);
-                                previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                alert("✅ Documento Admin Gerado!");
-                            }
-                        }
-                    } catch (e) { alert('❌ Erro: ' + e.message); }
-                    finally { btnAdmin.innerText = '👑 Gerar Admin'; btnAdmin.disabled = false; }
-                };
-                btnArea.appendChild(btnAdmin);
-            }
-        })();
+
+        // Admin mode removed - moved to protected Netlify Function with proper auth
+    }
     </script>
 </body>
-
 </html>

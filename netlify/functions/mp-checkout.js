@@ -2,6 +2,21 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
+// Simple in-memory rate limiter (10 req/min/IP)
+const rateLimitStore = new Map();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 min
+const RATE_LIMIT_MAX = 10;
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT_WINDOW;
+  const requests = (rateLimitStore.get(ip) || []).filter(t => t > windowStart);
+  if (requests.length >= RATE_LIMIT_MAX) return false;
+  requests.push(now);
+  rateLimitStore.set(ip, requests);
+  return true;
+}
+
 // Mapeamento de preços completo (mantido original)
 const PRICE_MAP = {
     'default': 29.90,
@@ -141,6 +156,12 @@ async function logConsent(supabase, orderId, payload, event, slug) {
 exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
+
+        // Rate limiting: 10 req/min/IP
+        const clientIp = event.headers['x-nf-client-connection-ip'] || 'unknown';
+        if (!checkRateLimit(clientIp)) {
+          return { statusCode: 429, body: 'Too many requests' };
+        }
 
         // CORREÇÃO: Removido captchaToken da extração e da validação
         const { slug, payload, utm } = JSON.parse(event.body || '{}');

@@ -1,0 +1,22 @@
+# Security Headers for Netlify
+# https://docs.netlify.com/configure-builds/file-based-configuration/#headers
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.clarity.ms https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.mercadopago.com https://www.google-analytics.com https://region1.google-analytics.com https://*.clarity.ms https://www.googletagmanager.com; frame-src https://www.mercadopago.com https://www.mercadopago.com.br https://www.mercadopago.com.mx; form-action 'self' https://www.mercadopago.com https://www.mercadopago.com.br; base-uri 'self'; object-src 'none'; frame-ancestors 'none';
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
+/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Netlify Functions
+/.netlify/functions/*
+  Access-Control-Allow-Origin: https://www.cartasapp.com.br
+  Access-Control-Allow-Methods: POST, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, X-CSRF-Token, X-Internal-Secret
+  Access-Control-Max-Age: 86400
