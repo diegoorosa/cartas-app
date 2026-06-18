@@ -318,7 +318,7 @@
                     ⚖️ Conforme Resolução CNJ nº 295/2019
                 </div>
 
-                <h1 style="font-size: 34px; line-height: 1.2; font-weight: 800; color: #0f172a; margin-bottom: 12px;">
+                <h1 style="line-height: 1.15; margin-bottom: 14px;">
                     Autorização de Viagem para Criança ou Adolescente
                 </h1>
 
@@ -342,23 +342,33 @@
                     </div>
                 </div>
 
-                <div
-                    style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px;">
-                    <div style="font-size: 12px; font-weight: 700; color: #0f172a; text-transform: uppercase;">
-                        Como funciona
+                <div class="como-funciona"
+                    style="margin-bottom: 24px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 20px;">
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;
+                        letter-spacing: 1px; margin-bottom: 16px; text-align: center;">
+                        ⚡ Como funciona
                     </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px;">
-                        <div
-                            style="flex: 1 1 140px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; font-size: 12px; color: #475569;">
-                            <strong>1. Preencha</strong><br>Dados da viagem e responsáveis.
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+                        <div class="cf-card"
+                            style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
+                            <div style="font-size: 36px; font-weight: 800; color: rgba(59, 130, 246, 0.12); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">01</div>
+                            <div style="font-size: 32px; margin-bottom: 10px; position: relative;">📝</div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">Preencha</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Dados da viagem e dos responsáveis em menos de 3 minutos.</div>
                         </div>
-                        <div
-                            style="flex: 1 1 140px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; font-size: 12px; color: #475569;">
-                            <strong>2. Confira</strong><br>Veja a prévia gratuita.
+                        <div class="cf-card"
+                            style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
+                            <div style="font-size: 36px; font-weight: 800; color: rgba(59, 130, 246, 0.12); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">02</div>
+                            <div style="font-size: 32px; margin-bottom: 10px; position: relative;">👁️</div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">Confira</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Veja a prévia gratuita antes de decidir pagar.</div>
                         </div>
-                        <div
-                            style="flex: 1 1 140px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; font-size: 12px; color: #475569;">
-                            <strong>3. Baixe</strong><br>PDF + Word liberados.
+                        <div class="cf-card"
+                            style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
+                            <div style="font-size: 36px; font-weight: 800; color: rgba(59, 130, 246, 0.12); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">03</div>
+                            <div style="font-size: 32px; margin-bottom: 10px; position: relative;">📄</div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">Baixe</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">PDF + Word prontos para imprimir e reconhecer firma.</div>
                         </div>
                     </div>
                 </div>
@@ -431,11 +441,17 @@
                             </div>
                         </div>
 
+                        <div id="stepError"
+                            style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:14px; color:#991b1b; line-height:1.5; align-items:flex-start; gap:10px; transition: all 0.3s ease;">
+                            <span style="font-size:18px; flex-shrink:0;">⚠️</span>
+                            <span id="stepErrorMsg"></span>
+                        </div>
+
                         <div class="step-indicator">
-                            <div class="step-item" data-step="1">1. Menor e viagem</div>
-                            <div class="step-item" data-step="2">2. Acompanhante</div>
-                            <div class="step-item" data-step="3">3. Responsáveis</div>
-                            <div class="step-item" data-step="4">4. Local e contatos</div>
+                            <div class="step-item" data-step="1"><span class="step-label">1. Menor e viagem</span></div>
+                            <div class="step-item" data-step="2"><span class="step-label">2. Acompanhante</span></div>
+                            <div class="step-item" data-step="3"><span class="step-label">3. Responsáveis</span></div>
+                            <div class="step-item" data-step="4"><span class="step-label">4. Local e contatos</span></div>
                         </div>
 
                         <div class="form-step" data-step="1" id="step-1">
@@ -476,31 +492,31 @@
                             <h2 class="section-title" style="font-size: 20px; margin-bottom: 16px;">Quem vai viajar?
                                 (Criança/Adolescente)</h2>
                             <label class="label">Nome completo <span class="required-star">*</span></label>
-                            <input class="input" id="menor_nome" placeholder="Ex.: Ana Souza" />
+                            <input class="input input-icon input-icon-user" id="menor_nome" placeholder="Ex.: Ana Souza" />
 
                             <div class="input-row">
                                 <div>
                                     <label class="label">Nascimento <span class="required-star">*</span></label>
-                                    <input class="input" type="date" id="menor_nascimento" required />
+                                    <input class="input input-icon input-icon-calendar" type="date" id="menor_nascimento" required />
                                     <div id="err_menor_nascimento" class="small"
                                         style="display:none;color:#fca5a5;margin-top:4px;">Data inválida.</div>
                                 </div>
                                 <div>
                                     <label class="label">Documento (Opcional)</label>
-                                    <input class="input" id="menor_doc" placeholder="RG ou Certidão" />
+                                    <input class="input input-icon input-icon-doc" id="menor_doc" placeholder="RG ou Certidão" />
                                 </div>
                             </div>
 
                             <h2 class="section-title" style="font-size: 20px; margin: 24px 0 16px;">Detalhes do Destino
                             </h2>
                             <label class="label">Cidade de Destino <span class="required-star">*</span></label>
-                            <input class="input" id="destino" list="lista_cidades"
+                            <input class="input input-icon input-icon-location" id="destino" list="lista_cidades"
                                 placeholder="Ex.: São Paulo/SP ou Orlando/EUA" autocomplete="off" />
 
                             <div class="input-row">
                                 <div>
                                     <label class="label">Data de ida <span class="required-star">*</span></label>
-                                    <input class="input" type="date" id="data_ida" required />
+                                    <input class="input input-icon input-icon-calendar" type="date" id="data_ida" required />
                                     <div id="err_data_ida" class="small"
                                         style="display:none;color:#fca5a5;margin-top:4px;">Data inválida.</div>
                                 </div>
@@ -508,7 +524,7 @@
                                 <div>
                                     <label class="label">Data de volta <span class="required-star">*</span></label>
 
-                                    <input class="input" type="date" id="data_volta" required />
+                                    <input class="input input-icon input-icon-calendar" type="date" id="data_volta" required />
 
                                     <small
                                         style="display:block; font-size: 0.75rem; color: #9ca3af; margin-top: 4px; line-height: 1.2;">
@@ -569,14 +585,14 @@
                                 style="margin-top:20px; background: var(--bg-secondary); padding: 16px; border-radius: 12px; display:none;">
                                 <h3 style="font-size: 16px; margin-bottom: 12px;">Dados do Acompanhante</h3>
                                 <label class="label">Nome completo <span class="required-star">*</span></label>
-                                <input class="input" id="acomp_nome" placeholder="Ex.: Maria Souza" />
+                                <input class="input input-icon input-icon-user" id="acomp_nome" placeholder="Ex.: Maria Souza" />
                                 <label class="label">Parentesco <span class="required-star">*</span></label>
-                                <input class="input" id="acomp_parentesco" placeholder="Ex.: Avó, Tia, Irmão" />
+                                <input class="input input-icon input-icon-family" id="acomp_parentesco" placeholder="Ex.: Avó, Tia, Irmão" />
                                 <label class="label">CPF (Opcional)</label>
-                                <input class="input" id="acomp_cpf" placeholder="000.000.000-00" inputmode="numeric"
+                                <input class="input input-icon input-icon-cpf" id="acomp_cpf" placeholder="000.000.000-00" inputmode="numeric"
                                     maxlength="14" />
                                 <label class="label">RG/Documento (Opcional)</label>
-                                <input class="input" id="acomp_doc" placeholder="RG do acompanhante" />
+                                <input class="input input-icon input-icon-doc" id="acomp_doc" placeholder="RG do acompanhante" />
                             </div>
 
                             <div class="form-navigation">
@@ -615,11 +631,11 @@
                                 <h3 style="font-size: 18px; margin-bottom: 12px; color: var(--accent-primary);">
                                     Responsável 1</h3>
                                 <label class="label">Nome completo <span class="required-star">*</span></label>
-                                <input class="input" id="resp1_nome" placeholder="Ex.: João Souza" />
+                                <input class="input input-icon input-icon-user" id="resp1_nome" placeholder="Ex.: João Souza" />
                                 <div class="input-row">
                                     <div>
                                         <label class="label">Parentesco <span class="required-star">*</span></label>
-                                        <select class="input" id="resp1_parentesco">
+                                        <select class="input input-icon input-icon-family" id="resp1_parentesco">
                                             <option>Pai</option>
                                             <option>Mãe</option>
                                             <option>Responsável legal</option>
@@ -628,12 +644,12 @@
                                     </div>
                                     <div>
                                         <label class="label">CPF (Opcional)</label>
-                                        <input class="input" id="resp1_cpf" placeholder="000.000.000-00"
+                                        <input class="input input-icon input-icon-cpf" id="resp1_cpf" placeholder="000.000.000-00"
                                             inputmode="numeric" maxlength="14" />
                                     </div>
                                 </div>
                                 <label class="label">RG/Documento (Opcional)</label>
-                                <input class="input" id="resp1_doc" placeholder="RG ou CNH (Só números)" />
+                                <input class="input input-icon input-icon-doc" id="resp1_doc" placeholder="RG ou CNH (Só números)" />
                             </div>
 
                             <div id="resp2Box"
@@ -641,11 +657,11 @@
                                 <h3 style="font-size: 18px; margin-bottom: 12px; color: var(--accent-primary);">
                                     Responsável 2</h3>
                                 <label class="label">Nome completo <span class="required-star">*</span></label>
-                                <input class="input" id="resp2_nome" placeholder="Ex.: Maria Souza" />
+                                <input class="input input-icon input-icon-user" id="resp2_nome" placeholder="Ex.: Maria Souza" />
                                 <div class="input-row">
                                     <div>
                                         <label class="label">Parentesco</label>
-                                        <select class="input" id="resp2_parentesco">
+                                        <select class="input input-icon input-icon-family" id="resp2_parentesco">
                                             <option>Mãe</option>
                                             <option>Pai</option>
                                             <option>Responsável legal</option>
@@ -653,12 +669,12 @@
                                     </div>
                                     <div>
                                         <label class="label">CPF (Opcional)</label>
-                                        <input class="input" id="resp2_cpf" placeholder="000.000.000-00"
+                                        <input class="input input-icon input-icon-cpf" id="resp2_cpf" placeholder="000.000.000-00"
                                             inputmode="numeric" maxlength="14" />
                                     </div>
                                 </div>
                                 <label class="label">RG/Documento (Opcional)</label>
-                                <input class="input" id="resp2_doc" placeholder="RG ou CNH" />
+                                <input class="input input-icon input-icon-doc" id="resp2_doc" placeholder="RG ou CNH" />
                             </div>
 
                             <div class="form-navigation">
@@ -671,19 +687,19 @@
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Local e Contato</h2>
                             <label class="label">Onde você vai assinar? (Cidade/Estado) <span
                                     class="required-star">*</span></label>
-                            <input class="input" id="cidade_uf_emissao" list="lista_cidades"
+                            <input class="input input-icon input-icon-location" id="cidade_uf_emissao" list="lista_cidades"
                                 placeholder="Digite sua cidade..." autocomplete="off">
                             <datalist id="lista_cidades"></datalist>
 
                             <div class="input-row">
                                 <div>
                                     <label class="label">Seu WhatsApp (Opcional)</label>
-                                    <input class="input" id="telefone" placeholder="(DD) 99999-9999" type="tel"
+                                    <input class="input input-icon input-icon-phone" id="telefone" placeholder="(DD) 99999-9999" type="tel"
                                         inputmode="numeric" maxlength="15" onkeyup="mascaraTelefone(this)" />
                                 </div>
                                 <div>
                                     <label class="label">Seu E-mail (Opcional)</label>
-                                    <input class="input" id="email" placeholder="Para receber o PDF" type="email" />
+                                    <input class="input input-icon input-icon-email" id="email" placeholder="Para receber o PDF" type="email" />
                                 </div>
                             </div>
                             <p class="small" style="margin-top:12px;">Seus dados de contato são usados apenas para
@@ -693,7 +709,7 @@
                                 <button type="button" class="btn btn-secondary" id="prevStep4">Voltar</button>
                                 <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;">
                                     <button class="btn btn-primary" id="btnPreview"
-                                        style="background-color: #28a745; border-color: #28a745; font-size: 1.1em; padding: 12px 24px;">
+                                        style="font-size: 1.1em; padding: 14px 24px;">
                                         📄 Ver Prévia do Documento
                                     </button>
                                 </div>
@@ -1221,24 +1237,44 @@
             return ok;
         }
 
+        function showStepError(msg) {
+            var container = document.getElementById('stepError');
+            var msgEl = document.getElementById('stepErrorMsg');
+            if (!container || !msgEl) return;
+            msgEl.textContent = msg;
+            container.style.display = 'flex';
+            container.style.animation = 'none';
+            void container.offsetHeight;
+            container.style.animation = 'fadeSlideDown 0.35s ease forwards';
+        }
+
+        function clearStepError() {
+            var container = document.getElementById('stepError');
+            if (container) container.style.display = 'none';
+        }
+
         function validateStep(step) {
+            clearStepError();
             var p = getPayload();
             var msg = '';
             if (step === 1) {
-                if (!p.menor_nome || !p.menor_nascimento || !p.destino || !p.data_ida || !p.data_volta) {
-                    msg = 'Preencha os dados da criança e da viagem.';
-                }
+                if (!p.menor_nome) msg = 'Digite o nome da criança ou adolescente.';
+                else if (!p.menor_nascimento) msg = 'Informe a data de nascimento do menor.';
+                else if (!p.destino) msg = 'Informe o destino da viagem.';
+                else if (!p.data_ida) msg = 'Selecione a data de ida.';
+                else if (!p.data_volta) msg = 'Selecione a data de volta.';
             } else if (step === 2) {
                 if (p.acompanhante_tipo !== 'desacompanhado') {
-                    if (!p.acompanhante_nome || !p.acompanhante_parentesco) msg = 'Informe os dados do acompanhante.';
+                    if (!p.acompanhante_nome) msg = 'Informe o nome do acompanhante.';
+                    else if (!p.acompanhante_parentesco) msg = 'Informe o parentesco do acompanhante.';
                 }
             } else if (step === 3) {
                 if (!p.resp1_nome) msg = 'Informe o nome do responsável.';
-                if (p.dois_resps && !p.resp2_nome) msg = 'Informe o nome do segundo responsável.';
+                else if (p.dois_resps && !p.resp2_nome) msg = 'Informe o nome do segundo responsável.';
             } else if (step === 4) {
-                if (!p.cidade_uf_emissao) msg = 'Informe sua cidade.';
+                if (!p.cidade_uf_emissao) msg = 'Informe sua cidade para assinatura.';
             }
-            if (msg) { alert(msg); return false; }
+            if (msg) { showStepError(msg); return false; }
             return true;
         }
 
@@ -1247,7 +1283,8 @@
         function showStep(step, autoScroll = true) {
             currentStep = step;
             document.querySelectorAll('.form-step').forEach(s => {
-                s.style.display = (parseInt(s.getAttribute('data-step')) === step) ? 'block' : 'none';
+                var n = parseInt(s.getAttribute('data-step'));
+                s.classList.toggle('step-active', n === step);
             });
             document.querySelectorAll('.step-item').forEach(it => {
                 var n = parseInt(it.getAttribute('data-step'));
@@ -1262,12 +1299,12 @@
             }
         }
 
-        document.getElementById('nextStep1').onclick = function () { if (validateStep(1)) showStep(2); };
-        document.getElementById('nextStep2').onclick = function () { if (validateStep(2)) showStep(3); };
-        document.getElementById('nextStep3').onclick = function () { if (validateStep(3)) showStep(4); };
-        document.getElementById('prevStep2').onclick = function () { showStep(1); };
-        document.getElementById('prevStep3').onclick = function () { showStep(2); };
-        document.getElementById('prevStep4').onclick = function () { showStep(3); };
+        document.getElementById('nextStep1').onclick = function () { clearStepError(); if (validateStep(1)) showStep(2, false); };
+        document.getElementById('nextStep2').onclick = function () { clearStepError(); if (validateStep(2)) showStep(3, false); };
+        document.getElementById('nextStep3').onclick = function () { clearStepError(); if (validateStep(3)) showStep(4, false); };
+        document.getElementById('prevStep2').onclick = function () { clearStepError(); showStep(1); };
+        document.getElementById('prevStep3').onclick = function () { clearStepError(); showStep(2); };
+        document.getElementById('prevStep4').onclick = function () { clearStepError(); showStep(3); };
 
         // ========== INICIALIZAÇÃO ==========
         document.addEventListener('DOMContentLoaded', function () {
@@ -1407,11 +1444,6 @@
                         // 3. Aplica
                         var pBox = document.getElementById('previewBox');
                         pBox.innerHTML = htmlBonito;
-
-                        pBox.style.backgroundColor = "#fff";
-                        pBox.style.padding = "30px";
-                        pBox.style.border = "1px solid #ccc";
-                        pBox.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
                         pBox.style.whiteSpace = "normal";
 
                         // -------------------------------------
