@@ -37,7 +37,7 @@ exports.handler = async (event) => {
 
     const docTitle = doc.slug || 'Seu Documento';
     const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br';
-    const recoveryLink = `${BASE_URL}/recuperar.html?o=${order_id}`;
+    const recoveryLink = `${BASE_URL}/success.html?o=${order_id}`;
 
     console.log(`Documento encontrado: ${docTitle}. Preparando envio...`);
 

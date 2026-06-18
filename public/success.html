@@ -465,8 +465,8 @@
             attachActions(fullText, payload || null);
         }
 
+        // Fallback simplificado: só usado se flow() não conseguir mostrar o doc
         async function gerarFinalIdempotente() {
-            // TENTA RECUPERAR O PAYLOAD LOCAL PARA GARANTIR O NOME CORRETO
             var localPayload = null;
             try {
                 var saved = localStorage.getItem('pendingPayload');
@@ -474,80 +474,39 @@
             } catch (e) { }
 
             try {
-                if (info) info.textContent = 'Gerando seu documento...';
+                if (info) info.textContent = 'Carregando documento...';
 
-                if (orderId) {
-                    for (var i = 0; i < 5; i++) {
-                        try {
-                            var rs = await fetch('/.netlify/functions/generate-doc', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
-                            });
-
-                            if (rs.ok) {
-                                var js = await rs.json();
-                                if (js && js.output) {
-                                    var fullTextS = renderDocText(js.output, null);
-                                    // AQUI ESTAVA O ERRO: passava null, agora passa localPayload
-                                    showDocAndScroll(fullTextS, localPayload);
-                                    return;
-                                }
+                for (var i = 0; i < 3; i++) {
+                    try {
+                        var rs = await fetch('/.netlify/functions/generate-doc', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
+                        });
+                        if (rs.ok) {
+                            var js = await rs.json();
+                            if (js && js.output) {
+                                var fullText = renderDocText(js.output, localPayload);
+                                showDocAndScroll(fullText, localPayload);
+                                return;
                             }
-                        } catch (e) { }
-                        await new Promise(function (r) { setTimeout(r, 1500); });
-                    }
+                        }
+                    } catch (e) { }
+                    await new Promise(function (r) { setTimeout(r, 1000); });
                 }
 
-                // Se não achou pelo OrderID ou não tinha OrderID, segue fluxo normal
-                if (!localPayload) {
-                    // Caso extremo: não achou nem local nem remoto
-                    // Tenta carregar do storage de novo
-                    var payloadStr = localStorage.getItem('pendingPayload');
-                    if (payloadStr) localPayload = JSON.parse(payloadStr);
+                // Último recurso: mostra cache local se tiver
+                if (localPayload && info) {
+                    var previewText = renderDocText({
+                        saudacao: '',
+                        corpo_paragrafos: ['Documento processado. Recarregue se não aparecer completo.'],
+                        fechamento: ''
+                    }, localPayload);
+                    showDocAndScroll(previewText, localPayload);
+                } else if (retry) {
+                    retry.style.display = 'flex';
                 }
-
-                if (!localPayload) {
-                    if (info) info.textContent = 'Pagamento confirmado. Ainda estamos preparando seu documento. Aguarde alguns instantes e não feche esta página.';
-                    for (var j = 0; j < 5; j++) {
-                        try {
-                            var rs2 = await fetch('/.netlify/functions/generate-doc', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
-                            });
-
-                            if (rs2.ok) {
-                                var js2 = await rs2.json();
-                                if (js2 && js2.output) {
-                                    var fullTextS2 = renderDocText(js2.output, null);
-                                    showDocAndScroll(fullTextS2, null);
-                                    return;
-                                }
-                            }
-                        } catch (e) { }
-                        await new Promise(function (r) { setTimeout(r, 1500); });
-                    }
-                    if (retry) retry.style.display = 'flex';
-                    return;
-                }
-
-                var payload = localPayload;
-                payload.order_id = orderId || null;
-
-                var r = await fetch('/.netlify/functions/generate-doc', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ payload: payload, preview: false })
-                });
-                var data = await r.json();
-                var out = data.output || data;
-
-                var fullText = renderDocText(out, payload);
-                showDocAndScroll(fullText, payload);
-
             } catch (e) {
-                if (info) info.textContent = 'Falha ao preparar o documento. Tente novamente em instantes.';
                 if (retry) retry.style.display = 'flex';
             }
         }
@@ -569,27 +528,84 @@
                 retry.style.display = 'flex';
                 return;
             }
-            info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
+
             if (!orderId) {
                 info.textContent = 'Não conseguimos identificar o pedido. Clique em Voltar.';
                 retry.style.display = 'flex';
                 return;
             }
+
+            // --- MOSTRA CACHE LOCAL IMEDIATAMENTE (pendingPayload) ---
+            var localPayload = null;
+            try {
+                var saved = localStorage.getItem('pendingPayload');
+                if (saved) localPayload = JSON.parse(saved);
+            } catch (e) { }
+
+            if (localPayload) {
+                // Gera preview local instantâneo enquanto confirma pagamento
+                info.textContent = 'Pagamento confirmado. Carregando seu documento...';
+                var previewText = renderDocText({
+                    saudacao: '',
+                    corpo_paragrafos: ['Processando pagamento... Seu documento será exibido em instantes.'],
+                    fechamento: ''
+                }, localPayload);
+                showDocAndScroll(previewText, localPayload);
+            } else {
+                info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
+            }
+
+            // --- POLLING CURTO: apenas confirma status, não gera doc ---
             var start = Date.now();
-            while (Date.now() - start < 60000) {
+            var confirmed = false;
+
+            while (Date.now() - start < 15000) { // Max 15s polling (era 60s)
                 var st = await getOrderStatus().catch(function () { return null; });
                 if (st && st.status === 'paid') {
+                    confirmed = true;
                     if (onceConv(orderId)) {
                         await sendConversionEC();
                     }
-                    info.textContent = 'Pagamento confirmado. Gerando seu documento...';
-                    await gerarFinalIdempotente();
-                    return;
+                    break;
                 }
-                await new Promise(function (r) { setTimeout(r, 2000); });
+                await new Promise(function (r) { setTimeout(r, 1500); });
             }
-            info.textContent = 'Ainda não conseguimos confirmar. Se você já pagou, aguarde alguns instantes; ou tente pagar novamente.';
-            retry.style.display = 'flex';
+
+            if (!confirmed) {
+                info.textContent = 'Ainda não conseguimos confirmar automaticamente. Se você já pagou, o documento já pode estar pronto acima. Caso contrário, clique em "Pagar agora" abaixo.';
+                if (retry) retry.style.display = 'flex';
+                return;
+            }
+
+            // Pagamento confirmado - busca doc definitivo no Supabase (cache hit)
+            info.textContent = 'Pagamento confirmado. Carregando documento final...';
+
+            for (var i = 0; i < 3; i++) {
+                try {
+                    var rs = await fetch('/.netlify/functions/generate-doc', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
+                    });
+
+                    if (rs.ok) {
+                        var js = await rs.json();
+                        if (js && js.output) {
+                            var fullText = renderDocText(js.output, localPayload);
+                            showDocAndScroll(fullText, localPayload);
+                            return;
+                        }
+                    }
+                } catch (e) { }
+                await new Promise(function (r) { setTimeout(r, 1000); });
+            }
+
+            // Fallback: se não achou no Supabase, mantém o que já mostrou do cache local
+            if (info && !docWrapper.style.display) {
+                info.textContent = 'Documento carregado (versão local). Se houver diferenças, recarregue a página em alguns instantes.';
+            } else if (retry) {
+                retry.style.display = 'flex';
+            }
         }
         flow();
     </script>

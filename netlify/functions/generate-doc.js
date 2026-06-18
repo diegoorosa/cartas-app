@@ -142,6 +142,11 @@ exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
 
+        // Validação de chamada interna (webhook -> generate-doc)
+        const internalSecret = event.headers?.['x-internal-secret'] || event.headers?.['X-Internal-Secret'];
+        const expectedSecret = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const isInternalCall = expectedSecret && internalSecret === expectedSecret;
+
         const body = JSON.parse(event.body || '{}');
         let payload = body.payload || null;
         const preview = !!body.preview;
@@ -151,7 +156,9 @@ exports.handler = async (event) => {
         // ADMIN CONFIG
         const SENHA_ADMIN = process.env.ADMIN_KEY || null;
         const isAdmin = SENHA_ADMIN && payload.admin_key === SENHA_ADMIN;
-        if (isAdmin && !payload.order_id) {
+        // Chamadas internas (webhook) têm permissão total via x-internal-secret
+        const isTrusted = isAdmin || isInternalCall;
+        if (isTrusted && !payload.order_id) {
             payload.order_id = `ADMIN-${Date.now()}`;
         }
 
@@ -171,7 +178,7 @@ exports.handler = async (event) => {
             }
         }
 
-        if (!isAdmin) {
+        if (!isTrusted) {
             if (!payload.slug && !payload.menor_nome && !payload.nome) {
                 return { statusCode: 404, body: 'Documento ainda não gerado ou não encontrado.' };
             }
@@ -230,8 +237,8 @@ exports.handler = async (event) => {
             output.fechamento = `${cidadeData}${assinatura}`;
         }
 
-        // --- SALVAR NO SUPABASE (Apenas se não for prévia, ou se for Admin) ---
-        if (orderId && (!preview || isAdmin)) {
+        // --- SALVAR NO SUPABASE (Apenas se não for prévia, ou se for Admin/Internal) ---
+        if (orderId && (!preview || isTrusted)) {
             await supabase.from('generations').upsert({
                 order_id: orderId,
                 slug: payload.slug || '',

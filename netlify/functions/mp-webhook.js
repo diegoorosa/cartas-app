@@ -31,11 +31,17 @@ exports.handler = async (event) => {
 
     const status = payment.status;
     const orderId = payment.external_reference || (payment.metadata && payment.metadata.order_id);
+    const paymentId = payment.id; // MP payment ID para consultas diretas
 
     if (!orderId) return { statusCode: 200, body: 'no order_id' };
 
     // INICIALIZA SUPABASE (Movido para cima para usar tanto no Rejected quanto no Approved)
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+    // Salva payment_id no checkout_intents para consultas diretas futuras (order-status)
+    try {
+        await supabase.from('checkout_intents').update({ payment_id: paymentId }).eq('order_id', orderId);
+    } catch (e) { console.warn('Falha ao salvar payment_id:', e); }
 
     // =================================================================
     // NOVO BLOCO: TRATAMENTO DE PAGAMENTO RECUSADO (ALERTA PARA O DIEGO)
@@ -84,12 +90,8 @@ exports.handler = async (event) => {
 
 
     // =================================================================
-    // BLOCO ORIGINAL: PAGAMENTO APROVADO (GERAÇÃO DE DOCUMENTO)
+    // BLOCO OTIMIZADO: PAGAMENTO APROVADO (GERAÇÃO DE DOCUMENTO)
     // =================================================================
-
-    // Verifica se JÁ foi gerado antes (Idempotência)
-    const g = await supabase.from('generations').select('id').eq('order_id', orderId).maybeSingle();
-    if (g.data) return { statusCode: 200, body: 'already generated' };
 
     // Recupera payload para geração
     const ci = await supabase.from('checkout_intents').select('payload, slug').eq('order_id', orderId).maybeSingle();
@@ -100,12 +102,14 @@ exports.handler = async (event) => {
     payload.order_id = orderId;
 
     // --- TENTATIVA DE GERAÇÃO (LOOP INTELIGENTE) ---
+    // Idempotência é tratada DENTRO do generate-doc (cache hit retorna cached: true)
     let gerouSucesso = false;
+    let docOutput = null;
 
     for (let i = 1; i <= 3; i++) {
       const elapsed = Date.now() - startTime;
-      // Se já passou de 8s, PARE de tentar gerar doc para sobrar tempo pro retorno
-      if (elapsed > 8000) break;
+      // Timeout reduzido para 6s total (deixa 4s de margem pro retorno 10s Netlify)
+      if (elapsed > 6000) break;
 
       try {
         console.log(`Tentativa ${i} de gerar documento...`);
@@ -119,8 +123,12 @@ exports.handler = async (event) => {
         });
 
         if (rGen.ok) {
-          gerouSucesso = true;
-          break; // Sucesso! Sai do loop
+          const result = await rGen.json();
+          if (result.output) {
+            gerouSucesso = true;
+            docOutput = result.output;
+            break;
+          }
         } else {
           await new Promise(res => setTimeout(res, 1000));
         }
@@ -134,29 +142,17 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: 'Failed to generate doc. Retry later.' };
     }
 
-    // --- ENVIO DE E-MAIL PARA O CLIENTE (Sucesso) ---
-    // Só envia se sobrou tempo no cronômetro
-    const tempoGasto = Date.now() - startTime;
-
+    // --- ENVIO DE E-MAIL PARA O CLIENTE (Fire-and-forget, NÃO await) ---
+    // Dispara em background, não bloqueia retorno 200 pro Mercado Pago
     if (payload.email && payload.email.includes('@')) {
-      if (tempoGasto < 9000) { // Se gastou menos de 9s, tenta enviar o e-mail
-        try {
-          console.log('Enviando e-mail de entrega (com await)...');
-          await fetch(`${BASE_URL}/.netlify/functions/send-email`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ order_id: orderId, email_to: payload.email })
-          });
-        } catch (e) {
-          console.error('Erro ao enviar e-mail:', e);
-          // Não faz nada, pois o principal (gerar doc) já foi feito.
-        }
-      } else {
-        console.warn('Sem tempo para enviar e-mail automático. Webhook encerrando.');
-      }
+      fetch(`${BASE_URL}/.netlify/functions/send-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: orderId, email_to: payload.email })
+      }).catch(e => console.error('Erro async ao enviar e-mail:', e));
     }
 
-    return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+    return { statusCode: 200, body: JSON.stringify({ ok: true, cached: false }) };
 
   } catch (e) {
     console.error('Webhook Fatal:', e);
