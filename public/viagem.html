@@ -228,27 +228,26 @@
 
         /* --- CSS INSTITUCIONAL (SÉRIO) --- */
         .pay-box {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            /* Borda cinza suave */
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 30px;
+            padding: clamp(20px, 4vw, 30px);
             text-align: center;
             position: relative;
             margin-top: 30px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow-sm);
         }
 
         .price-wrapper {
             margin: 20px 0;
             padding: 15px 0;
-            border-top: 1px solid #f1f5f9;
-            border-bottom: 1px solid #f1f5f9;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
 
         .price-label {
             font-size: 14px;
-            color: #64748b;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 5px;
@@ -258,8 +257,7 @@
         .price-big {
             font-size: 36px;
             font-weight: 800;
-            color: #0f172a;
-            /* Azul muito escuro (Sóbrio) */
+            color: var(--text-primary);
             line-height: 1;
         }
 
@@ -281,12 +279,12 @@
             align-items: center;
             gap: 6px;
             font-size: 11px;
-            color: #64748b;
+            color: var(--text-muted);
             font-weight: 500;
-            background: #f8fafc;
+            background: var(--bg-secondary);
             padding: 6px 10px;
             border-radius: 6px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
         }
     </style>
 </head>
@@ -314,8 +312,16 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-badge"
-                    style="background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; font-weight: 600; display: inline-block; padding: 5px 14px; border-radius: 6px; font-size: 12px; margin-bottom: 20px;">
-                    ⚖️ Conforme Resolução CNJ nº 295/2019
+                    style="background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 6px; font-size: 12px; margin-bottom: 20px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    <span>Conforme Resolução CNJ nº 295/2019</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    <span style="font-size:11px;">Polícia Federal</span>
                 </div>
 
                 <h1 style="line-height: 1.15; margin-bottom: 14px;">
@@ -327,7 +333,7 @@
                     Gere o seu modelo de autorização em minutos. Pronto para viagens nacionais e internacionais.
                 </p>
 
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 18px;">
+                <div class="hero-badges-wrap" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 18px;">
                     <div
                         style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #0f172a; background: #eff6ff; padding: 6px 10px; border-radius: 999px; border: 1px solid #dbeafe;">
                         ✅ Conforme CNJ 295/2019
@@ -374,7 +380,7 @@
                 </div>
 
                 <div
-                    style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 20px; margin-bottom: 24px; display: inline-flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                    style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 20px; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                     <div style="text-align: left;">
                         <div style="font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: bold;">Taxa
                             de Emissão</div>
@@ -390,6 +396,9 @@
                         ✅ Documento Validado
                     </div>
                 </div>
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: #fef3c7; border: 1px solid #fde68a; border-radius: 999px; padding: 4px 12px; font-size: 12px; color: #92400e; font-weight: 600;">
+                    🍕 Menos que uma pizza
+                </div>
 
                 <div class="hero-actions" style="display: flex; flex-direction: column; align-items: center;">
                     <p style="margin: 0 0 8px; text-align: center; font-size: 12px; color: #64748b;">
@@ -397,8 +406,11 @@
                     </p>
                     <a href="#formArea" class="btn btn-primary" onclick="scrollToForm(event)"
                         style="width: 100%; max-width: 320px; margin: 0 auto; display: block; font-size: 16px; padding: 14px; background-color: #0f172a; border-color: #0f172a;">
-                        INICIAR PREENCHIMENTO
+                        GERAR AUTORIZAÇÃO AGORA →
                     </a>
+                    <p style="margin: 6px 0 0; text-align: center; font-size: 12px; color: #64748b;">
+                        Prévia gratuita • 3 minutos
+                    </p>
                 </div>
 
                 <p class="small" style="margin-top: 16px; color: #94a3b8; font-size: 12px;">
@@ -416,8 +428,16 @@
                     <div id="formArea">
                         <div style="margin-bottom: 24px; text-align: center;">
                             <div
-                                style="background: #f8fafc; color: #0f172a; border: 1px solid #e2e8f0; padding: 10px 16px; border-radius: 10px; display: inline-flex; align-items: center; margin-bottom: 12px; font-weight: 600; font-size: 14px;">
-                                Modelo em conformidade com CNJ 295/2019 e Polícia Federal
+                                style="background: #f8fafc; color: #0f172a; border: 1px solid #e2e8f0; padding: 10px 16px; border-radius: 10px; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: 600; font-size: 13px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;color:#3b82f6;">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                    <path d="M9 12l2 2 4-4"/>
+                                </svg>
+                                <span>CNJ 295/2019</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;color:#3b82f6;">
+                                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                </svg>
+                                <span>Polícia Federal</span>
                             </div>
                             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; margin-top: 0;">
                                 Utilizado com sucesso por centenas de famílias em viagens nacionais e internacionais.
@@ -445,6 +465,16 @@
                             style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:14px; color:#991b1b; line-height:1.5; align-items:flex-start; gap:10px; transition: all 0.3s ease;">
                             <span style="font-size:18px; flex-shrink:0;">⚠️</span>
                             <span id="stepErrorMsg"></span>
+                        </div>
+
+                        <div class="credibility-counter">
+                            <div class="credibility-counter-number"><span id="counterDisplay">0</span><span>+</span></div>
+                            <div class="credibility-counter-text">famílias já geraram sua autorização de viagem</div>
+                        </div>
+
+                        <div class="rolling-feed" id="rollingFeed">
+                            <div class="rolling-feed-header">📋 Últimos documentos emitidos</div>
+                            <ul class="rolling-feed-list" id="rollingFeedList"></ul>
                         </div>
 
                         <div class="step-indicator">
@@ -719,28 +749,37 @@
                                 <input type="hidden" id="terms_version" value="viagem-2025-02-v1">
 
                                 <div class="pay-box">
-                                    <h3 style="margin: 0 0 5px 0; font-size: 18px; color: #0f172a;">Resumo do Pedido
+                                    <div class="urgency-badge">📌 Últimos 12 documentos emitidos hoje</div>
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px; color: var(--text-primary);">Resumo do Pedido
                                     </h3>
-                                    <p style="margin: 0; font-size: 14px; color: #64748b;">Emissão de Autorização de
+                                    <p style="margin: 0; font-size: 14px; color: var(--text-muted);">Emissão de Autorização de
                                         Viagem (Minuta)</p>
 
                                     <div class="price-wrapper">
                                         <div class="price-label">Valor do Serviço</div>
-                                        <div class="price-big">
+                                        <div class="price-big" style="color: var(--text-primary);">
                                             R$ 29<span class="price-cents">,90</span>
                                         </div>
-                                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">
+                                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">
                                             Pagamento único • Acesso vitalício aos arquivos
                                         </div>
                                     </div>
 
                                     <button class="btn btn-primary" id="btnPagar"
-                                        style="width: 100%; font-size: 16px; padding: 16px; background-color: #2563eb; border-color: #2563eb; font-weight: 600;">
+                                        style="width: 100%; font-size: 16px; padding: 16px; font-weight: 600;">
                                         IR PARA PAGAMENTO SEGURO
                                     </button>
 
+                                    <div class="guarantee-badge" style="margin-top: 12px;">
+                                        <svg class="guarantee-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                            <path d="M9 12l2 2 4-4"/>
+                                        </svg>
+                                        <span style="font-weight: 600;">Garantia Legal</span> — 7 dias para desistir (Código de Defesa do Consumidor)
+                                    </div>
+
                                     <div
-                                        style="font-size: 11px; color: #94a3b8; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                        style="font-size: 11px; color: var(--text-muted); margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
                                         🔒 Ambiente Seguro processado pelo Mercado Pago
                                     </div>
 
@@ -805,58 +844,81 @@
                     </h2>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
 
-                        <div
-                            style="background: white; padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="color: #fbbf24; margin-bottom: 8px;">★★★★★</div>
-                            <p
-                                style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                        <div class="testimonial-card">
+                            <div class="testimonial-header">
+                                <div class="testimonial-avatar" style="background:linear-gradient(135deg,#6366f1,#818cf8);">S</div>
+                                <div>
+                                    <div style="font-size: 12px; font-weight: bold; color: var(--text-primary); display:flex; align-items:center; gap:2px;">
+                                        Sueli <span class="verified-badge">✓ Verificado</span>
+                                    </div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">Viajou para Argentina 🇦🇷</div>
+                                </div>
+                            </div>
+                            <div style="color: #fbbf24; margin-bottom: 6px; font-size:12px;">★★★★★</div>
+                            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">
                                 "Estava preocupada com a imigração na Argentina, mas o documento gerado pelo site segue
                                 exatamente o padrão que a Polícia Federal exige. Passamos sem problemas."
                             </p>
-                            <div style="font-size: 12px; font-weight: bold; color: var(--text-primary);">
-                                Sueli <span style="font-weight: normal; color: var(--text-muted);">• Viajou para
-                                    Argentina 🇦🇷</span>
-                            </div>
                         </div>
 
-                        <div
-                            style="background: white; padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="color: #fbbf24; margin-bottom: 8px;">★★★★★</div>
-                            <p
-                                style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                        <div class="testimonial-card">
+                            <div class="testimonial-header">
+                                <div class="testimonial-avatar" style="background:linear-gradient(135deg,#10b981,#34d399);">E</div>
+                                <div>
+                                    <div style="font-size: 12px; font-weight: bold; color: var(--text-primary); display:flex; align-items:center; gap:2px;">
+                                        Erika A. <span class="verified-badge">✓ Verificado</span>
+                                    </div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">Viajou para Rio de Janeiro/RJ</div>
+                                </div>
+                            </div>
+                            <div style="color: #fbbf24; margin-bottom: 6px; font-size:12px;">★★★★★</div>
+                            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">
                                 "Muito prático. Em vez de pagar caro num despachante ou advogado, fiz tudo pelo celular
                                 em 5 minutos. Levei no cartório e pronto."
                             </p>
-                            <div style="font-size: 12px; font-weight: bold; color: var(--text-primary);">
-                                Erika A. <span style="font-weight: normal; color: var(--text-muted);">• Viajou para Rio
-                                    de Janeiro/RJ</span>
-                            </div>
                         </div>
 
-                        <div
-                            style="background: white; padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="color: #fbbf24; margin-bottom: 8px;">★★★★★</div>
-                            <p
-                                style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                        <div class="testimonial-card">
+                            <div class="testimonial-header">
+                                <div class="testimonial-avatar" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);">J</div>
+                                <div>
+                                    <div style="font-size: 12px; font-weight: bold; color: var(--text-primary); display:flex; align-items:center; gap:2px;">
+                                        João P. <span class="verified-badge">✓ Verificado</span>
+                                    </div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">Viajou para Imperatriz/MA</div>
+                                </div>
+                            </div>
+                            <div style="color: #fbbf24; margin-bottom: 6px; font-size:12px;">★★★★★</div>
+                            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">
                                 "Precisava autorizar a viagem da minha filha e não sabia como redigir o documento. O
                                 sistema já preencheu tudo certo com a lei."
                             </p>
-                            <div style="font-size: 12px; font-weight: bold; color: var(--text-primary);">
-                                João P. <span style="font-weight: normal; color: var(--text-muted);">• Viajou para
-                                    Imperatriz/MA</span>
-                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div
-                    style="background: #fffbeb; border: 1px solid #fcd34d; padding: 16px; border-radius: 12px; margin-bottom: 24px;">
-                    <p style="margin: 0; font-size: 14px; color: #92400e; line-height: 1.5;">
-                        <strong>⚠️ POR QUE FAZER AQUI E NÃO NO CARTÓRIO?</strong><br>
-                        O Cartório <strong>NÃO redige</strong> o documento, apenas reconhece a assinatura. Se você
-                        chegar lá sem nada, terá que pagar caro por uma escritura pública. Leve este documento
-                        pronto e economize!
-                    </p>
+                <div class="why-here" style="margin-bottom: 24px;">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-bottom: 8px;">Por que fazer aqui?</span>
+                        <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: var(--text-primary);">Evite surpresas no cartório</h3>
+                    </div>
+                    <div class="why-here-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 16px; text-align: center; transition: all 0.25s;">
+                            <div style="font-size: 32px; margin-bottom: 10px;">💰</div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 6px;">Cartório não redige</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">O cartório só reconhece firma. Se for sem documento, paga escritura pública (muito mais caro).</div>
+                        </div>
+                        <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 16px; text-align: center; transition: all 0.25s;">
+                            <div style="font-size: 32px; margin-bottom: 10px;">⏱</div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 6px;">5 min vs 2 horas</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Aqui: 3 min preenchendo + cartório. Lá: 2h+ de espera e redação manual.</div>
+                        </div>
+                        <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 16px; text-align: center; transition: all 0.25s;">
+                            <div style="font-size: 32px; margin-bottom: 10px;">📱</div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 6px;">Faça do celular</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Preencha no sofá, veja a prévia grátis, pague só se gostar. Leve o PDF pronto ao cartório.</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--border);">
