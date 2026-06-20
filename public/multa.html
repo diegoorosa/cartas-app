@@ -27,6 +27,11 @@
         })(window, document, "clarity", "script", "u4x90t35gk");
     </script>
     <link rel="canonical" href="https://www.cartasapp.com.br/multa.html" />
+    <meta property="og:title" content="Recurso de Multa de Trânsito (Defesa Prévia/JARI) | CartasApp">
+    <meta property="og:description" content="Gere seu recurso de multa de trânsito personalizado. Defesa prévia ou JARI. Baseado no CTB. Baixe em PDF/DOC.">
+    <meta property="og:image" content="https://www.cartasapp.com.br/logo.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="CartasApp">
 </head>
 
 <body>
@@ -465,6 +470,10 @@
                 it.classList.toggle('active', n === step);
                 it.classList.toggle('completed', n < step);
             });
+            setTimeout(() => {
+                var fa = document.querySelector('.step-indicator') || document.querySelector('.form-step[data-step="' + step + '"]');
+                if (fa) fa.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
         }
 
         function validateStep(step) {

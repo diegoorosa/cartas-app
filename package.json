@@ -12,5 +12,8 @@
         "dompurify": "^3.1.0",
         "jsdom": "^24.0.0",
         "nodemailer": "^9.0.1"
+    },
+    "devDependencies": {
+        "sharp": "^0.35.2"
     }
 }

@@ -58,7 +58,7 @@
     <meta property="og:title" content="Autorização de Viagem para Menor | CartasApp" />
     <meta property="og:description"
         content="Gere a autorização de viagem para menor em minutos, com prévia gratuita. Documento pronto em PDF e Word, válido para viagens nacionais e internacionais." />
-    <meta property="og:image" content="https://www.cartasapp.com.br/logo.png" />
+    <meta property="og:image" content="https://www.cartasapp.com.br/logo.webp" />
     <meta property="og:locale" content="pt_BR" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Autorização de Viagem para Menor | CartasApp" />
@@ -341,6 +341,7 @@
         </div>
     </nav>
 
+    <main>
     <section class="hero" style="padding: 40px 0 20px;">
         <div class="container">
             <div class="hero-content">
@@ -1056,6 +1057,7 @@
             </div>
         </div>
     </section>
+    </main>
 
     <footer class="footer">
         <div class="container">
@@ -1433,9 +1435,9 @@
             }
         }
 
-        document.getElementById('nextStep1').onclick = function () { clearStepError(); if (validateStep(1)) showStep(2, false); };
-        document.getElementById('nextStep2').onclick = function () { clearStepError(); if (validateStep(2)) showStep(3, false); };
-        document.getElementById('nextStep3').onclick = function () { clearStepError(); if (validateStep(3)) showStep(4, false); };
+        document.getElementById('nextStep1').onclick = function () { clearStepError(); if (validateStep(1)) showStep(2); };
+        document.getElementById('nextStep2').onclick = function () { clearStepError(); if (validateStep(2)) showStep(3); };
+        document.getElementById('nextStep3').onclick = function () { clearStepError(); if (validateStep(3)) showStep(4); };
         document.getElementById('prevStep2').onclick = function () { clearStepError(); showStep(1); };
         document.getElementById('prevStep3').onclick = function () { clearStepError(); showStep(2); };
         document.getElementById('prevStep4').onclick = function () { clearStepError(); showStep(3); };

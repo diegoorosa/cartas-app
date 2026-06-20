@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="/style.css" />
 
     <link rel="canonical" href="https://www.cartasapp.com.br/plano-saude-negativa.html" />
+    <meta property="og:title" content="Carta para Negativa de Cobertura (Plano de Saúde) | CartasApp">
+    <meta property="og:description" content="Gere carta para contestar negativa de cobertura do plano de saúde. Baixe em PDF/Word.">
+    <meta property="og:image" content="https://www.cartasapp.com.br/logo.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="CartasApp">
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
     <script>
@@ -494,6 +499,10 @@
                 it.classList.toggle('active', n === step);
                 it.classList.toggle('completed', n < step);
             });
+            setTimeout(() => {
+                var fa = document.querySelector('.step-indicator') || document.querySelector('.form-step[data-step="' + step + '"]');
+                if (fa) fa.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
         }
 
         function ps_validateStep(step) {

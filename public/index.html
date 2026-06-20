@@ -6,11 +6,20 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Gerador de Cartas e Documentos Profissionais | CartasApp</title>
     <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" type="image/avif" href="/logo.avif" />
+    <link rel="icon" type="image/webp" href="/logo.webp" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="apple-touch-icon" href="/logo.png" />
     <link rel="preload" as="image" href="/logo.png" type="image/png">
     <meta name="description"
-        content="Gere modelos de cartas e documentos jurídicos para o dia a dia: autorização de viagem para menor, recurso de multa, negativação indevida, contestação de cartão de crédito, reembolso de passagem, bagagem extraviada e muito mais. Prévia grátis e download em PDF ou DOC." />
+        content="Gere cartas e documentos jurídicos: autorização de viagem, recurso de multa, cancelamento, reclamação. Prévia grátis e download em PDF/DOC." />
+    <link rel="canonical" href="https://www.cartasapp.com.br/" />
+    <meta property="og:title" content="Gerador de Cartas e Documentos Profissionais | CartasApp">
+    <meta property="og:description" content="Gere cartas e documentos jurídicos: autorização de viagem, recurso de multa, cancelamento, reclamação. Prévia grátis e download em PDF/DOC.">
+    <meta property="og:image" content="https://www.cartasapp.com.br/logo.webp">
+    <meta property="og:url" content="https://www.cartasapp.com.br/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="CartasApp">
     <script src="/theme.js"></script>
     <script src="/utm.js"></script>
     <link rel="stylesheet" href="/style.css" />
@@ -78,8 +87,12 @@
                 style="display: flex; justify-content: space-between; align-items: center; height: 60px;">
 
                 <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-                    <img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;" width="42" height="42"
+                    <picture>
+                        <source srcset="/logo.avif" type="image/avif">
+                        <source srcset="/logo.webp" type="image/webp">
+                        <img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;" width="42" height="42"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    </picture>
                     <span
                         style="font-weight: 800; font-size: 20px; color: var(--text-primary); letter-spacing: -0.5px;">CartasApp</span>
                 </a>

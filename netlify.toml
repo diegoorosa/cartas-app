@@ -22,3 +22,24 @@ status = 200
 from = "/checkout/falha"
 to = "/failure.html"
 status = 200
+
+# Cannibalization merges — 301 redirect duplicate pages to canonical versions
+[[redirects]]
+  from = "/guia-completo-autorizacao-viagem.html"
+  to = "/guia-definitivo-viagem-menor.html"
+  status = 301
+
+[[redirects]]
+  from = "/viagem-internacional.html"
+  to = "/guia-viagem-internacional-menor.html"
+  status = 301
+
+[[redirects]]
+  from = "/regras-idade-viagem.html"
+  to = "/guia-idade-viagem-menor.html"
+  status = 301
+
+[[redirects]]
+  from = "/modelo-word-pdf-autorizacao-viagem.html"
+  to = "/modelo-autorizacao-viagem-para-imprimir.html"
+  status = 301
