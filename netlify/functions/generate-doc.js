@@ -18,7 +18,7 @@ function withTimeout(promise, ms) {
 
 async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
     if (!genAI) return fallback;
-    const deadline = Date.now() + 4000; // orçamento total de ~4s (cabe no retry do mp-webhook)
+    const deadline = Date.now() + 8000; // orçamento total de ~8s (cold start + chamada real à API)
     for (const modelName of GEMINI_MODELS) {
         const remaining = deadline - Date.now();
         if (remaining < 500) break;
