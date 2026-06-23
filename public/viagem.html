@@ -560,38 +560,38 @@
 
                             <h2 class="section-title" style="font-size: 20px; margin-bottom: 16px;">Quem vai viajar?
                                 (Criança/Adolescente)</h2>
-                            <label class="label">Nome completo <span class="required-star">*</span></label>
+                            <label class="label" for="menor_nome">Nome completo <span class="required-star">*</span></label>
                             <input class="input input-icon input-icon-user" id="menor_nome" placeholder="Ex.: Ana Souza" />
 
                             <div class="input-row">
                                 <div>
-                                    <label class="label">Nascimento <span class="required-star">*</span></label>
+                                    <label class="label" for="menor_nascimento">Nascimento <span class="required-star">*</span></label>
                                     <input class="input input-icon input-icon-calendar" type="date" id="menor_nascimento" required />
                                     <div id="err_menor_nascimento" class="small"
                                         style="display:none;color:#fca5a5;margin-top:4px;">Data inválida.</div>
                                 </div>
                                 <div>
-                                    <label class="label">Documento (Opcional)</label>
+                                    <label class="label" for="menor_doc">Documento (Opcional)</label>
                                     <input class="input input-icon input-icon-doc" id="menor_doc" placeholder="RG ou Certidão" />
                                 </div>
                             </div>
 
                             <h2 class="section-title" style="font-size: 20px; margin: 24px 0 16px;">Detalhes do Destino
                             </h2>
-                            <label class="label">Cidade de Destino <span class="required-star">*</span></label>
+                            <label class="label" for="destino">Cidade de Destino <span class="required-star">*</span></label>
                             <input class="input input-icon input-icon-location" id="destino" list="lista_cidades"
                                 placeholder="Ex.: São Paulo/SP ou Orlando/EUA" autocomplete="off" />
 
                             <div class="input-row">
                                 <div>
-                                    <label class="label">Data de ida <span class="required-star">*</span></label>
+                                    <label class="label" for="data_ida">Data de ida <span class="required-star">*</span></label>
                                     <input class="input input-icon input-icon-calendar" type="date" id="data_ida" required />
                                     <div id="err_data_ida" class="small"
                                         style="display:none;color:#fca5a5;margin-top:4px;">Data inválida.</div>
                                 </div>
 
                                 <div>
-                                    <label class="label">Data de volta <span class="required-star">*</span></label>
+                                    <label class="label" for="data_volta">Data de volta <span class="required-star">*</span></label>
 
                                     <input class="input input-icon input-icon-calendar" type="date" id="data_volta" required />
 
@@ -615,6 +615,7 @@
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Com quem a criança
                                 vai viajar?</h2>
                             <select id="acompanhante_tipo" style="display:none">
+                                <option value="" selected></option>
                                 <option value="outro_responsavel">A Mãe / O Pai</option>
                                 <option value="terceiro">Parente / Terceiro</option>
                                 <option value="desacompanhado">Sozinho (Desacompanhado)</option>
@@ -653,14 +654,15 @@
                             <div id="acompanhanteBox"
                                 style="margin-top:20px; background: var(--bg-secondary); padding: 16px; border-radius: 12px; display:none;">
                                 <h3 style="font-size: 16px; margin-bottom: 12px;">Dados do Acompanhante</h3>
-                                <label class="label">Nome completo <span class="required-star">*</span></label>
+                                <label class="label" for="acomp_nome">Nome completo <span class="required-star">*</span></label>
                                 <input class="input input-icon input-icon-user" id="acomp_nome" placeholder="Ex.: Maria Souza" />
-                                <label class="label">Parentesco <span class="required-star">*</span></label>
+                                <label class="label" for="acomp_parentesco">Parentesco <span class="required-star">*</span></label>
                                 <input class="input input-icon input-icon-family" id="acomp_parentesco" placeholder="Ex.: Avó, Tia, Irmão" />
-                                <label class="label">CPF (Opcional)</label>
+                                <label class="label" for="acomp_cpf">CPF (Opcional)</label>
                                 <input class="input input-icon input-icon-cpf" id="acomp_cpf" placeholder="000.000.000-00" inputmode="numeric"
                                     maxlength="14" />
-                                <label class="label">RG/Documento (Opcional)</label>
+                                <div id="err_acomp_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF inválido.</div>
+                                <label class="label" for="acomp_doc">RG/Documento (Opcional)</label>
                                 <input class="input input-icon input-icon-doc" id="acomp_doc" placeholder="RG do acompanhante" />
                             </div>
 
@@ -699,11 +701,11 @@
                                 style="margin-top:20px; background: var(--bg-secondary); padding: 16px; border-radius: 12px;">
                                 <h3 style="font-size: 18px; margin-bottom: 12px; color: var(--accent-primary);">
                                     Responsável 1</h3>
-                                <label class="label">Nome completo <span class="required-star">*</span></label>
+                                <label class="label" for="resp1_nome">Nome completo <span class="required-star">*</span></label>
                                 <input class="input input-icon input-icon-user" id="resp1_nome" placeholder="Ex.: João Souza" />
                                 <div class="input-row">
                                     <div>
-                                        <label class="label">Parentesco <span class="required-star">*</span></label>
+                                        <label class="label" for="resp1_parentesco">Parentesco <span class="required-star">*</span></label>
                                         <select class="input input-icon input-icon-family" id="resp1_parentesco">
                                             <option>Pai</option>
                                             <option>Mãe</option>
@@ -712,12 +714,13 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="label">CPF (Opcional)</label>
+                                        <label class="label" for="resp1_cpf">CPF (Opcional)</label>
                                         <input class="input input-icon input-icon-cpf" id="resp1_cpf" placeholder="000.000.000-00"
                                             inputmode="numeric" maxlength="14" />
+                                        <div id="err_resp1_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF inválido.</div>
                                     </div>
                                 </div>
-                                <label class="label">RG/Documento (Opcional)</label>
+                                <label class="label" for="resp1_doc">RG/Documento (Opcional)</label>
                                 <input class="input input-icon input-icon-doc" id="resp1_doc" placeholder="RG ou CNH (Só números)" />
                             </div>
 
@@ -725,11 +728,11 @@
                                 style="margin-top:20px; background: var(--bg-secondary); padding: 16px; border-radius: 12px; display:none;">
                                 <h3 style="font-size: 18px; margin-bottom: 12px; color: var(--accent-primary);">
                                     Responsável 2</h3>
-                                <label class="label">Nome completo <span class="required-star">*</span></label>
+                                <label class="label" for="resp2_nome">Nome completo <span class="required-star">*</span></label>
                                 <input class="input input-icon input-icon-user" id="resp2_nome" placeholder="Ex.: Maria Souza" />
                                 <div class="input-row">
                                     <div>
-                                        <label class="label">Parentesco</label>
+                                        <label class="label" for="resp2_parentesco">Parentesco</label>
                                         <select class="input input-icon input-icon-family" id="resp2_parentesco">
                                             <option>Mãe</option>
                                             <option>Pai</option>
@@ -737,12 +740,13 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="label">CPF (Opcional)</label>
+                                        <label class="label" for="resp2_cpf">CPF (Opcional)</label>
                                         <input class="input input-icon input-icon-cpf" id="resp2_cpf" placeholder="000.000.000-00"
                                             inputmode="numeric" maxlength="14" />
+                                        <div id="err_resp2_cpf" class="small" style="display:none;color:#fca5a5;margin-top:4px;">CPF inválido.</div>
                                     </div>
                                 </div>
-                                <label class="label">RG/Documento (Opcional)</label>
+                                <label class="label" for="resp2_doc">RG/Documento (Opcional)</label>
                                 <input class="input input-icon input-icon-doc" id="resp2_doc" placeholder="RG ou CNH" />
                             </div>
 
@@ -754,7 +758,7 @@
 
                         <div class="form-step" data-step="4" id="step-4">
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Local e Contato</h2>
-                            <label class="label">Onde você vai assinar? (Cidade/Estado) <span
+                            <label class="label" for="cidade_uf_emissao">Onde você vai assinar? (Cidade/Estado) <span
                                     class="required-star">*</span></label>
                             <input class="input input-icon input-icon-location" id="cidade_uf_emissao" list="lista_cidades"
                                 placeholder="Digite sua cidade..." autocomplete="off">
@@ -762,13 +766,13 @@
 
                             <div class="input-row">
                                 <div>
-                                    <label class="label">Seu WhatsApp (Opcional)</label>
+                                    <label class="label" for="telefone">Seu WhatsApp (Opcional)</label>
                                     <input class="input input-icon input-icon-phone" id="telefone" placeholder="(DD) 99999-9999" type="tel"
-                                        inputmode="numeric" maxlength="15" onkeyup="mascaraTelefone(this)" />
+                                        inputmode="numeric" maxlength="15" onkeyup="mascaraTelefone(this)" autocomplete="tel" />
                                 </div>
                                 <div>
-                                    <label class="label">Seu E-mail (Opcional)</label>
-                                    <input class="input input-icon input-icon-email" id="email" placeholder="Para receber o PDF" type="email" />
+                                    <label class="label" for="email">Seu E-mail (Opcional)</label>
+                                    <input class="input input-icon input-icon-email" id="email" placeholder="Para receber o PDF" type="email" autocomplete="email" />
                                 </div>
                             </div>
                             <p class="small" style="margin-top:12px;">Seus dados de contato são usados apenas para
@@ -1123,6 +1127,7 @@
                             target="_blank" style="color:#3b82f6; text-decoration:underline;">Termos de Uso</a>.
                     </span>
                 </label>
+                <div id="err_aceite_termos" class="small" style="display:none;color:#fca5a5;margin-top:6px;">Marque a caixa acima para continuar.</div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
                     <button id="btnCancelarTermos" class="btn btn-secondary" style="flex:1;">Cancelar</button>
                     <button id="btnConfirmarTermos" class="btn btn-primary" style="flex:1;">Confirmar e Pagar</button>
@@ -1401,13 +1406,17 @@
                 else if (!p.data_ida) msg = 'Selecione a data de ida.';
                 else if (!p.data_volta) msg = 'Selecione a data de volta.';
             } else if (step === 2) {
-                if (p.acompanhante_tipo !== 'desacompanhado') {
+                if (!p.acompanhante_tipo) msg = 'Selecione com quem a criança vai viajar.';
+                else if (p.acompanhante_tipo !== 'desacompanhado') {
                     if (!p.acompanhante_nome) msg = 'Informe o nome do acompanhante.';
                     else if (!p.acompanhante_parentesco) msg = 'Informe o parentesco do acompanhante.';
+                    else if (p.acompanhante_cpf && !isValidCPF(p.acompanhante_cpf)) msg = 'CPF do acompanhante inválido. Verifique o número ou deixe em branco.';
                 }
             } else if (step === 3) {
                 if (!p.resp1_nome) msg = 'Informe o nome do responsável.';
+                else if (p.resp1_cpf && !isValidCPF(p.resp1_cpf)) msg = 'CPF do responsável 1 inválido. Verifique o número ou deixe em branco.';
                 else if (p.dois_resps && !p.resp2_nome) msg = 'Informe o nome do segundo responsável.';
+                else if (p.dois_resps && p.resp2_cpf && !isValidCPF(p.resp2_cpf)) msg = 'CPF do responsável 2 inválido. Verifique o número ou deixe em branco.';
             } else if (step === 4) {
                 if (!p.cidade_uf_emissao) msg = 'Informe sua cidade para assinatura.';
             }
@@ -1521,9 +1530,14 @@
             btnPreview.addEventListener('click', function () {
                 if (!checkCooldown()) return;
 
+                if (!validateStep(1)) { showStep(1); return; }
+                if (!validateStep(2)) { showStep(2); return; }
+                if (!validateStep(3)) { showStep(3); return; }
+                if (!validateStep(4)) { return; }
+
                 var payload = getPayload();
                 if (!validateAll(payload)) {
-                    alert('Verifique os campos obrigatórios (destacados em vermelho).');
+                    showStepError('Verifique os campos destacados em vermelho.');
                     return;
                 }
 
@@ -1651,10 +1665,12 @@
         document.getElementById('btnConfirmarTermos').onclick = async function () {
             var btnConfirm = document.getElementById('btnConfirmarTermos');
             var checkbox = document.getElementById('aceite_termos');
+            var errTermos = document.getElementById('err_aceite_termos');
             if (!checkbox.checked) {
-                alert('Você precisa marcar a caixa "Li e concordo" para continuar.');
+                if (errTermos) errTermos.style.display = 'block';
                 return;
             }
+            if (errTermos) errTermos.style.display = 'none';
             btnConfirm.disabled = true;
             btnConfirm.classList.add('loading');
             btnConfirm.textContent = 'Processando...';
