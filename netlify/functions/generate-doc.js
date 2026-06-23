@@ -18,7 +18,8 @@ function withTimeout(promise, ms) {
 
 async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
     if (!genAI) return fallback;
-    const deadline = Date.now() + 8000; // orçamento total de ~8s (cold start + chamada real à API)
+    const inicio = Date.now();
+    const deadline = inicio + 9000; // orçamento total de ~9s (limite do timeout padrao do Netlify e' 10s)
     for (const modelName of GEMINI_MODELS) {
         const remaining = deadline - Date.now();
         if (remaining < 500) break;
@@ -26,9 +27,12 @@ async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
             const model = genAI.getGenerativeModel({ model: modelName });
             const resp = await withTimeout(model.generateContent([systemPrompt, userPrompt].join('\n\n')), remaining);
             const text = (await resp.response.text() || '').trim();
-            if (text) return text;
+            if (text) {
+                console.log(`Gemini (${modelName}) OK em ${Date.now() - inicio}ms`);
+                return text;
+            }
         } catch (e) {
-            console.error(`Gemini (${modelName}) falhou:`, e.message);
+            console.error(`Gemini (${modelName}) falhou em ${Date.now() - inicio}ms:`, e.message);
         }
     }
     return fallback;
