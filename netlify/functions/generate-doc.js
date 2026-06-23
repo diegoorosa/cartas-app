@@ -6,7 +6,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // --- CONFIGURAÇÕES ---
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
-const GEMINI_MODELS = (process.env.GEMINI_MODELS || 'gemini-2.0-flash,gemini-1.5-flash')
+const GEMINI_MODELS = (process.env.GEMINI_MODELS || 'gemini-flash-latest,gemini-2.5-flash,gemini-2.0-flash-001')
     .split(',').map(s => s.trim()).filter(Boolean);
 
 // --- IA: GERAÇÃO DO PARÁGRAFO DE ARGUMENTAÇÃO (com fallback seguro) ---
@@ -16,10 +16,9 @@ function withTimeout(promise, ms) {
     return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
-async function gerarTextoIA(systemPrompt, userPrompt, fallback, debug) {
-    if (!genAI) return debug ? `${fallback}\n[DEBUG_GEMINI: sem GEMINI_API_KEY configurada]` : fallback;
+async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
+    if (!genAI) return fallback;
     const deadline = Date.now() + 4000; // orçamento total de ~4s (cabe no retry do mp-webhook)
-    let lastErr = null;
     for (const modelName of GEMINI_MODELS) {
         const remaining = deadline - Date.now();
         if (remaining < 500) break;
@@ -29,11 +28,10 @@ async function gerarTextoIA(systemPrompt, userPrompt, fallback, debug) {
             const text = (await resp.response.text() || '').trim();
             if (text) return text;
         } catch (e) {
-            lastErr = `${modelName}: ${e.message}`;
             console.error(`Gemini (${modelName}) falhou:`, e.message);
         }
     }
-    return debug && lastErr ? `${fallback}\n[DEBUG_GEMINI: ${lastErr}]` : fallback;
+    return fallback;
 }
 
 // --- HELPERS ---
@@ -123,7 +121,7 @@ async function gerarMulta(p) {
     if (motivoBruto) {
         const systemPrompt = `Você é especialista em defesa de autuações de trânsito no Brasil (Código de Trânsito Brasileiro - CTB). Escreva APENAS UM parágrafo de argumentação jurídica formal em português para um recurso/defesa prévia de multa de trânsito. Use exatamente os fatos descritos pelo condutor, sem inventar fatos novos. Cite artigos do CTB quando fizer sentido com a situação relatada (ex.: vícios formais do auto de infração, ambiguidade de sinalização, aferição de equipamentos), só se for plausível. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, técnico, objetivo.`;
         const userPrompt = `Situação relatada pelo condutor: "${motivoBruto}"\nAuto de Infração: ${p.auto_infracao || 'não informado'}\nData da autuação: ${p.data_multa || 'não informada'}\nVeículo: ${p.modelo || 'não informado'}, placa ${p.placa || 'não informada'}`;
-        argumentoParagrafo = await gerarTextoIA(systemPrompt, userPrompt, fallbackParagrafo, p.debug_ia === true);
+        argumentoParagrafo = await gerarTextoIA(systemPrompt, userPrompt, fallbackParagrafo);
     }
 
     return {
@@ -166,7 +164,7 @@ async function gerarConsumoGenerico(p, tipoFormulario, slug) {
     if (motivoBruto) {
         const systemPrompt = `Você é especialista em direito do consumidor brasileiro (Código de Defesa do Consumidor - CDC). Escreva APENAS UM parágrafo formal em português descrevendo o problema relatado e fundamentando o pedido, citando artigos do CDC quando plausível pela situação (ex.: práticas abusivas, cobrança indevida, vícios do produto/serviço). Use exatamente os fatos descritos, sem inventar fatos novos. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, objetivo.`;
         const userPrompt = `Empresa/fornecedor: ${empresa}\nSituação relatada pelo consumidor: "${motivoBruto}"\nContrato/pedido: ${p.contrato || p.pedido || 'não informado'}\nTipo de solicitação: ${tipoFormulario || 'reclamação/cancelamento'}`;
-        paragrafoMotivo = await gerarTextoIA(systemPrompt, userPrompt, fallbackMotivo, p.debug_ia === true);
+        paragrafoMotivo = await gerarTextoIA(systemPrompt, userPrompt, fallbackMotivo);
     }
 
     let paragrafos = [];
@@ -195,14 +193,6 @@ async function gerarConsumoGenerico(p, tipoFormulario, slug) {
 exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
-
-        // DEBUG TEMPORARIO: lista modelos Gemini disponiveis para esta API key
-        if (JSON.parse(event.body || '{}').list_gemini_models === true) {
-            const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`);
-            const j = await r.json();
-            const names = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes('generateContent')).map(m => m.name);
-            return { statusCode: 200, body: JSON.stringify({ models: names }) };
-        }
 
         // Validação de chamada interna (webhook -> generate-doc)
         const internalSecret = event.headers?.['x-internal-secret'] || event.headers?.['X-Internal-Secret'];
