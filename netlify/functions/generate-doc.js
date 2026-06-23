@@ -196,6 +196,14 @@ exports.handler = async (event) => {
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
 
+        // DEBUG TEMPORARIO: lista modelos Gemini disponiveis para esta API key
+        if (JSON.parse(event.body || '{}').list_gemini_models === true) {
+            const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`);
+            const j = await r.json();
+            const names = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes('generateContent')).map(m => m.name);
+            return { statusCode: 200, body: JSON.stringify({ models: names }) };
+        }
+
         // Validação de chamada interna (webhook -> generate-doc)
         const internalSecret = event.headers?.['x-internal-secret'] || event.headers?.['X-Internal-Secret'];
         const expectedSecret = process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
