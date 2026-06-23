@@ -16,9 +16,10 @@ function withTimeout(promise, ms) {
     return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
-async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
-    if (!genAI) return fallback;
+async function gerarTextoIA(systemPrompt, userPrompt, fallback, debug) {
+    if (!genAI) return debug ? `${fallback}\n[DEBUG_GEMINI: sem GEMINI_API_KEY configurada]` : fallback;
     const deadline = Date.now() + 4000; // orçamento total de ~4s (cabe no retry do mp-webhook)
+    let lastErr = null;
     for (const modelName of GEMINI_MODELS) {
         const remaining = deadline - Date.now();
         if (remaining < 500) break;
@@ -28,10 +29,11 @@ async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
             const text = (await resp.response.text() || '').trim();
             if (text) return text;
         } catch (e) {
+            lastErr = `${modelName}: ${e.message}`;
             console.error(`Gemini (${modelName}) falhou:`, e.message);
         }
     }
-    return fallback;
+    return debug && lastErr ? `${fallback}\n[DEBUG_GEMINI: ${lastErr}]` : fallback;
 }
 
 // --- HELPERS ---
@@ -121,7 +123,7 @@ async function gerarMulta(p) {
     if (motivoBruto) {
         const systemPrompt = `Você é especialista em defesa de autuações de trânsito no Brasil (Código de Trânsito Brasileiro - CTB). Escreva APENAS UM parágrafo de argumentação jurídica formal em português para um recurso/defesa prévia de multa de trânsito. Use exatamente os fatos descritos pelo condutor, sem inventar fatos novos. Cite artigos do CTB quando fizer sentido com a situação relatada (ex.: vícios formais do auto de infração, ambiguidade de sinalização, aferição de equipamentos), só se for plausível. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, técnico, objetivo.`;
         const userPrompt = `Situação relatada pelo condutor: "${motivoBruto}"\nAuto de Infração: ${p.auto_infracao || 'não informado'}\nData da autuação: ${p.data_multa || 'não informada'}\nVeículo: ${p.modelo || 'não informado'}, placa ${p.placa || 'não informada'}`;
-        argumentoParagrafo = await gerarTextoIA(systemPrompt, userPrompt, fallbackParagrafo);
+        argumentoParagrafo = await gerarTextoIA(systemPrompt, userPrompt, fallbackParagrafo, p.debug_ia === true);
     }
 
     return {
@@ -164,7 +166,7 @@ async function gerarConsumoGenerico(p, tipoFormulario, slug) {
     if (motivoBruto) {
         const systemPrompt = `Você é especialista em direito do consumidor brasileiro (Código de Defesa do Consumidor - CDC). Escreva APENAS UM parágrafo formal em português descrevendo o problema relatado e fundamentando o pedido, citando artigos do CDC quando plausível pela situação (ex.: práticas abusivas, cobrança indevida, vícios do produto/serviço). Use exatamente os fatos descritos, sem inventar fatos novos. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, objetivo.`;
         const userPrompt = `Empresa/fornecedor: ${empresa}\nSituação relatada pelo consumidor: "${motivoBruto}"\nContrato/pedido: ${p.contrato || p.pedido || 'não informado'}\nTipo de solicitação: ${tipoFormulario || 'reclamação/cancelamento'}`;
-        paragrafoMotivo = await gerarTextoIA(systemPrompt, userPrompt, fallbackMotivo);
+        paragrafoMotivo = await gerarTextoIA(systemPrompt, userPrompt, fallbackMotivo, p.debug_ia === true);
     }
 
     let paragrafos = [];
