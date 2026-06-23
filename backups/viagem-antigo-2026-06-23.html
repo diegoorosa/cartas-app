@@ -4,11 +4,6 @@
 <head>
     <meta charset="utf-8" />
     <title>Autorização de Viagem para Menor | CartasApp</title>
-    <meta name="robots" content="noindex, nofollow" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/logo.png" />
@@ -100,110 +95,6 @@
     <link rel="canonical" href="https://www.cartasapp.com.br/viagem.html" />
 
     <style>
-        /* ============================================================
-           IDENTIDADE VISUAL — "Cartório Moderno" (preview viagem2)
-           Tokens: Ink (texto), Parchment (papel), Seal/latão (assinatura)
-           ============================================================ */
-        :root {
-            --text-primary: #14213D !important;
-            --text-secondary: #3F4A5A !important;
-            --text-muted: #5C6470 !important;
-            --bg-primary: #FFFEFB !important;
-            --bg-secondary: #F1ECDD !important;
-            --card-bg: #FFFEFB !important;
-            --card-hover: #EFE8D6 !important;
-            --border: #E3D9C2 !important;
-            --accent-primary: #9C7A35 !important;
-            --accent-success: #1F6F4A !important;
-            --shadow-sm: 0 1px 2px rgba(20, 33, 61, 0.08) !important;
-        }
-
-        body {
-            font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        h1, .section-title, h3 {
-            font-family: 'Source Serif 4', Georgia, serif;
-            letter-spacing: -0.01em;
-        }
-
-        /* --- Selo notarial (assinatura visual recorrente) --- */
-        .seal-mark {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .seal-mark svg {
-            display: block;
-        }
-
-        @keyframes sealStamp {
-            0% { transform: scale(1.4) rotate(-8deg); opacity: 0; }
-            60% { transform: scale(0.96) rotate(2deg); opacity: 1; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-
-        @media (prefers-reduced-motion: no-preference) {
-            .seal-mark.seal-hero {
-                animation: sealStamp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-            }
-        }
-
-        /* --- Hero "papel timbrado" --- */
-        .letterhead {
-            background: #F6F1E4;
-            border-top: 3px double #14213D;
-            border-bottom: 1px solid #E3D9C2;
-        }
-
-        .protocol-num {
-            font-family: 'IBM Plex Mono', monospace;
-            letter-spacing: 0.04em;
-        }
-
-        /* --- Indicador de passo: "ementa numerada" --- */
-        .step-indicator .step-item {
-            font-family: 'IBM Plex Mono', monospace !important;
-            border-color: #E3D9C2 !important;
-            color: #5C6470 !important;
-        }
-
-        .step-indicator .step-item.active {
-            color: #14213D !important;
-            border-color: #9C7A35 !important;
-        }
-
-        .step-indicator .step-item.completed {
-            color: #6B5523 !important;
-            border-color: #9C7A35 !important;
-        }
-
-        /* --- Canhoto de protocolo (price card do hero) --- */
-        .ticket-stub {
-            position: relative;
-            background: #FFFEFB;
-            border: 1px solid #E3D9C2;
-            border-radius: 4px;
-            box-shadow: 0 1px 2px rgba(20, 33, 61, 0.08);
-        }
-
-        .ticket-stub::before,
-        .ticket-stub::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 14px;
-            height: 14px;
-            background: #F6F1E4;
-            border-radius: 50%;
-            transform: translateY(-50%);
-        }
-
-        .ticket-stub::before { left: -7px; }
-        .ticket-stub::after { right: -7px; }
-
         /* ESTILOS DOS CARDS VISUAIS */
         .radio-group {
             display: grid;
@@ -224,7 +115,6 @@
         }
 
         .radio-label {
-            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -246,11 +136,11 @@
         }
 
         .radio-card input[type="radio"]:checked+.radio-label {
-            background: rgba(156, 122, 53, 0.12);
+            background: rgba(59, 130, 246, 0.1);
             border-color: var(--accent-primary);
             color: var(--accent-primary);
             font-weight: 700;
-            box-shadow: 0 4px 6px -1px rgba(156, 122, 53, 0.25);
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
         }
 
         .radio-icon {
@@ -459,29 +349,20 @@
     </nav>
 
     <main>
-    <section class="hero letterhead" style="padding: 44px 0 28px;">
+    <section class="hero" style="padding: 40px 0 20px;">
         <div class="container">
             <div class="hero-content">
-                <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:22px;">
-                    <span class="seal-mark seal-hero" aria-hidden="true">
-                        <svg viewBox="0 0 100 100" width="60" height="60">
-                            <defs>
-                                <path id="sealRing" d="M 50,50 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
-                            </defs>
-                            <circle cx="50" cy="50" r="46" fill="none" stroke="#9C7A35" stroke-width="1.2"/>
-                            <circle cx="50" cy="50" r="37" fill="none" stroke="#9C7A35" stroke-width="2.5"/>
-                            <path d="M50 35 l4.6 9.4 10.3 1.5-7.5 7.3 1.8 10.2-9.2-4.9-9.2 4.9 1.8-10.2-7.5-7.3 10.3-1.5z" fill="#9C7A35"/>
-                            <text font-family="'IBM Plex Mono', monospace" font-size="6.4" fill="#14213D" letter-spacing="1.6">
-                                <textPath href="#sealRing" startOffset="1%">AUTORIZAÇÃO DE VIAGEM · CNJ 295/2019 ·</textPath>
-                            </text>
-                        </svg>
-                    </span>
-                    <div style="text-align:left;">
-                        <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; color:#6B5523; text-transform:uppercase;">
-                            Conforme Resolução CNJ nº 295/2019
-                        </div>
-                        <div style="font-size:12px; color:#5C6470; margin-top:2px;">Padrão exigido pela Polícia Federal</div>
-                    </div>
+                <div class="hero-badge"
+                    style="background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 6px; font-size: 12px; margin-bottom: 20px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    <span>Conforme Resolução CNJ nº 295/2019</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    <span style="font-size:11px;">Polícia Federal</span>
                 </div>
 
                 <h1 style="line-height: 1.15; margin-bottom: 14px;">
@@ -495,11 +376,11 @@
 
                 <div class="hero-badges-wrap" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 18px;">
                     <div
-                        style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #14213D; background: #F6F1E4; padding: 6px 10px; border-radius: 999px; border: 1px solid #E3D9C2;">
+                        style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #0f172a; background: #eff6ff; padding: 6px 10px; border-radius: 999px; border: 1px solid #dbeafe;">
                         Prévia antes de pagar
                     </div>
                     <div
-                        style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #14213D; background: #fef3c7; padding: 6px 10px; border-radius: 999px; border: 1px solid #fde68a;">
+                        style="font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #0f172a; background: #fef3c7; padding: 6px 10px; border-radius: 999px; border: 1px solid #fde68a;">
                         Pagamento Mercado Pago
                     </div>
                 </div>
@@ -513,7 +394,7 @@
                     <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
                         <div class="cf-card"
                             style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
-                            <div style="font-size: 36px; font-weight: 800; color: rgba(20, 33, 61, 0.08); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">01</div>
+                            <div style="font-size: 36px; font-weight: 800; color: rgba(59, 130, 246, 0.12); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">01</div>
                             <div style="margin-bottom: 10px; position: relative; color: var(--accent-primary);">
                                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -525,7 +406,7 @@
                         </div>
                         <div class="cf-card"
                             style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
-                            <div style="font-size: 36px; font-weight: 800; color: rgba(20, 33, 61, 0.08); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">02</div>
+                            <div style="font-size: 36px; font-weight: 800; color: rgba(59, 130, 246, 0.12); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">02</div>
                             <div style="margin-bottom: 10px; position: relative; color: var(--accent-primary);">
                                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -537,7 +418,7 @@
                         </div>
                         <div class="cf-card"
                             style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
-                            <div style="font-size: 36px; font-weight: 800; color: rgba(20, 33, 61, 0.08); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">03</div>
+                            <div style="font-size: 36px; font-weight: 800; color: rgba(59, 130, 246, 0.12); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">03</div>
                             <div style="margin-bottom: 10px; position: relative; color: var(--accent-primary);">
                                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -552,12 +433,12 @@
                     </div>
                 </div>
 
-                <div class="hero-price-card ticket-stub"
-                    style="padding: 12px 22px; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 15px;">
+                <div class="hero-price-card"
+                    style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 20px; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 15px; box-shadow: var(--shadow-sm);">
                     <div style="text-align: left;">
                         <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold;">Taxa
                             de Emissão</div>
-                        <div class="protocol-num" style="font-size: 20px; font-weight: 700; color: var(--text-primary);">R$ 29,90</div>
+                        <div style="font-size: 20px; font-weight: 700; color: var(--text-primary);">R$ 29,90</div>
                         <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">PDF + Word prontos para cartório.
                         </div>
                         <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Pagamento seguro via Mercado
@@ -575,7 +456,7 @@
                         Leva menos de 3 minutos.
                     </p>
                     <a href="#formArea" class="btn btn-primary" onclick="scrollToForm(event)"
-                        style="width: 100%; max-width: 320px; margin: 0 auto; display: block; font-size: 16px; padding: 14px; background-color: #14213D; border-color: #14213D;">
+                        style="width: 100%; max-width: 320px; margin: 0 auto; display: block; font-size: 16px; padding: 14px; background-color: #0f172a; border-color: #0f172a;">
                         GERAR AUTORIZAÇÃO AGORA →
                     </a>
                     <p style="margin: 6px 0 0; text-align: center; font-size: 12px; color: #64748b;">
@@ -598,13 +479,13 @@
                     <div id="formArea">
                         <div style="margin-bottom: 24px; text-align: center;">
                             <div
-                                style="background: #f8fafc; color: #14213D; border: 1px solid #e2e8f0; padding: 10px 16px; border-radius: 10px; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: 600; font-size: 13px;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;color:#9C7A35;">
+                                style="background: #f8fafc; color: #0f172a; border: 1px solid #e2e8f0; padding: 10px 16px; border-radius: 10px; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: 600; font-size: 13px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;color:#3b82f6;">
                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                                     <path d="M9 12l2 2 4-4"/>
                                 </svg>
                                 <span>CNJ 295/2019</span>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;color:#9C7A35;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;color:#3b82f6;">
                                     <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                                 </svg>
                                 <span>Polícia Federal</span>
@@ -646,14 +527,14 @@
 
                         <div class="form-step" data-step="1" id="step-1">
                             <div
-                                style="background-color: #F6F1E4; border: 1px solid #E3D9C2; border-radius: 8px; padding: 12px; margin-bottom: 24px; display: flex; align-items: start; gap: 10px;">
-                                <span style="margin-top: 2px; flex-shrink: 0; color: #6B5523;">
+                                style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; margin-bottom: 24px; display: flex; align-items: start; gap: 10px;">
+                                <span style="margin-top: 2px; flex-shrink: 0; color: #0369a1;">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                                         <path d="M9 12l2 2 4-4"></path>
                                     </svg>
                                 </span>
-                                <p style="margin: 0; font-size: 14px; color: #6B5523; line-height: 1.4;">
+                                <p style="margin: 0; font-size: 14px; color: #0369a1; line-height: 1.4;">
                                     <strong>Segurança:</strong> Preencha para ver a <strong>prévia gratuita</strong>
                                     antes de pagar.
                                 </p>
@@ -670,19 +551,19 @@
                                     <input type="radio" name="viagem_visual" id="v_nacional" value="nacional" checked
                                         onchange="updateViagem(this.value)">
                                     <label for="v_nacional" class="radio-label">
-                                        <span class="radio-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></span>Viagem Nacional
+                                        <span class="radio-icon">🇧🇷</span>Viagem Nacional
                                     </label>
                                 </div>
                                 <div class="radio-card">
                                     <input type="radio" name="viagem_visual" id="v_internacional" value="internacional"
                                         onchange="updateViagem(this.value)">
                                     <label for="v_internacional" class="radio-label">
-                                        <span class="radio-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></span>Internacional
+                                        <span class="radio-icon">✈️</span>Internacional
                                     </label>
                                 </div>
                             </div>
                             <p id="viagem_tipo_aviso" class="small"
-                                style="margin-top:12px; margin-bottom: 24px; color:var(--text-muted);"></p>
+                                style="margin-top:-10px; margin-bottom: 24px; color:var(--text-muted);"></p>
 
                             <h2 class="section-title" style="font-size: 20px; margin-bottom: 16px;">Quem vai viajar?
                                 (Criança/Adolescente)</h2>
@@ -752,7 +633,7 @@
                                     <input type="radio" name="acomp_visual" id="opt_resp" value="outro_responsavel"
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_resp" class="radio-label">
-                                        <span class="radio-icon"><svg width="26" height="22" viewBox="0 0 28 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 21v-2a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v2"></path><circle cx="6.5" cy="7" r="3.5"></circle><path d="M16 21v-2a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v2"></path><circle cx="21.5" cy="7" r="3.5"></circle></svg></span>
+                                        <span class="radio-icon">👨‍👩‍👧</span>
                                         Com o Pai ou Mãe<br><span style="font-size:12px; font-weight:normal;">(O outro
                                             assina)</span>
                                     </label>
@@ -761,7 +642,7 @@
                                     <input type="radio" name="acomp_visual" id="opt_terceiro" value="terceiro"
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_terceiro" class="radio-label">
-                                        <span class="radio-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+                                        <span class="radio-icon">👵</span>
                                         Avós / Tios / Outros<br><span style="font-size:12px; font-weight:normal;">(Pai e
                                             Mãe assinam)</span>
                                     </label>
@@ -770,7 +651,7 @@
                                     <input type="radio" name="acomp_visual" id="opt_sozinho" value="desacompanhado"
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_sozinho" class="radio-label">
-                                        <span class="radio-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+                                        <span class="radio-icon">🙋‍♂️</span>
                                         Viajar Sozinho<br><span
                                             style="font-size:12px; font-weight:normal;">(Desacompanhado)</span>
                                     </label>
@@ -806,7 +687,7 @@
                                     <input type="radio" name="resps_visual" id="um_resp" value="1" checked
                                         onchange="toggleResps(1)">
                                     <label for="um_resp" class="radio-label">
-                                        <span class="radio-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+                                        <span class="radio-icon">👤</span>
                                         Apenas 1 Responsável<br><span style="font-size:12px; font-weight:normal;">(Ex:
                                             Viagem com o outro pai)</span>
                                     </label>
@@ -815,7 +696,7 @@
                                     <input type="radio" name="resps_visual" id="dois_resps_visual" value="2"
                                         onchange="toggleResps(2)">
                                     <label for="dois_resps_visual" class="radio-label">
-                                        <span class="radio-icon"><svg width="26" height="22" viewBox="0 0 28 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 21v-2a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v2"></path><circle cx="6.5" cy="7" r="3.5"></circle><path d="M16 21v-2a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v2"></path><circle cx="21.5" cy="7" r="3.5"></circle></svg></span>
+                                        <span class="radio-icon">👥</span>
                                         Pai e Mãe (Ambos)<br><span style="font-size:12px; font-weight:normal;">(Ou dois
                                             guardiões)</span>
                                     </label>
@@ -951,7 +832,7 @@
                                         Ambiente Seguro processado pelo Mercado Pago
                                     </div>
 
-                                    <div class="mp-protected-badge" style="margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; color: #14213D; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+                                    <div class="mp-protected-badge" style="margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; color: #0f172a; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2ZM12 20C7.589 20 4 16.411 4 12C4 7.589 7.589 4 12 4C16.411 4 20 7.589 20 12C20 16.411 16.411 20 12 20Z" fill="#009EE3"/>
                                             <path d="M7.5 11.5H10.5V14.5H7.5V11.5Z" fill="white"/>
@@ -1009,7 +890,7 @@
                     <button
                         onclick="document.getElementById('paySection').scrollIntoView({behavior: 'smooth', block: 'center'});"
                         class="btn btn-primary"
-                        style="width:100%; margin-top: 16px; background: #14213D; border-color: #14213D; font-size: 15px; padding: 14px; white-space: normal; height: auto; line-height: 1.3; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; font-weight: 600;">
+                        style="width:100%; margin-top: 16px; background: #0f172a; border-color: #0f172a; font-size: 15px; padding: 14px; white-space: normal; height: auto; line-height: 1.3; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; font-weight: 600;">
                         <span style="flex: 1;">FINALIZAR E BAIXAR DOCUMENTO (R$ 29,90)</span>
                     </button>
 
@@ -1116,7 +997,7 @@
 
                 <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--border);">
                     <div
-                        style="background: rgba(156, 122, 53, 0.12); border: 1px solid rgba(156, 122, 53, 0.25); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                        style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
                         <p class="small" style="margin: 0; color: var(--text-secondary);">
                             <strong>Documentos aceitos para embarque (em regra):</strong><br>
                             • Criança (Nacional): Certidão de Nascimento ou RG.<br>
@@ -1250,7 +1131,7 @@
                         style="margin-top:2px; min-width:20px; min-height:20px; cursor:pointer;" />
                     <span style="font-weight:600; color:var(--text-primary); line-height: 1.4;">
                         Li, compreendi e concordo com as informações acima e com os <a href="/termos.html"
-                            target="_blank" style="color:#9C7A35; text-decoration:underline;">Termos de Uso</a>.
+                            target="_blank" style="color:#3b82f6; text-decoration:underline;">Termos de Uso</a>.
                     </span>
                 </label>
                 <div id="err_aceite_termos" class="small" style="display:none;color:#fca5a5;margin-top:6px;">Marque a caixa acima para continuar.</div>
@@ -1839,7 +1720,7 @@
         function showPaymentModal(initPoint, orderId, slug) {
             var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
             var cardBG = isLight ? '#ffffff' : '#111827';
-            var cardText = isLight ? '#14213D' : '#e6eefb';
+            var cardText = isLight ? '#0f172a' : '#e6eefb';
             var overlay = document.createElement('div');
             overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
             overlay.innerHTML =

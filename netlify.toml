@@ -43,3 +43,8 @@ status = 200
   from = "/modelo-word-pdf-autorizacao-viagem.html"
   to = "/modelo-autorizacao-viagem-para-imprimir.html"
   status = 301
+
+[[redirects]]
+  from = "/viagem2.html"
+  to = "/viagem.html"
+  status = 301
