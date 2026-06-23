@@ -1382,6 +1382,7 @@
             container.style.animation = 'none';
             void container.offsetHeight;
             container.style.animation = 'fadeSlideDown 0.35s ease forwards';
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function clearStepError() {
