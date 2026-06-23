@@ -1,9 +1,38 @@
 const { createClient } = require('@supabase/supabase-js');
 const { JSDOM } = require('jsdom');
 const DOMPurify = require('dompurify')(new JSDOM('').window);
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // --- CONFIGURAÇÕES ---
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+const GEMINI_MODELS = (process.env.GEMINI_MODELS || 'gemini-2.0-flash,gemini-1.5-flash')
+    .split(',').map(s => s.trim()).filter(Boolean);
+
+// --- IA: GERAÇÃO DO PARÁGRAFO DE ARGUMENTAÇÃO (com fallback seguro) ---
+function withTimeout(promise, ms) {
+    let timer;
+    const timeout = new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('timeout')), ms); });
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
+async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
+    if (!genAI) return fallback;
+    const deadline = Date.now() + 4000; // orçamento total de ~4s (cabe no retry do mp-webhook)
+    for (const modelName of GEMINI_MODELS) {
+        const remaining = deadline - Date.now();
+        if (remaining < 500) break;
+        try {
+            const model = genAI.getGenerativeModel({ model: modelName });
+            const resp = await withTimeout(model.generateContent([systemPrompt, userPrompt].join('\n\n')), remaining);
+            const text = (await resp.response.text() || '').trim();
+            if (text) return text;
+        } catch (e) {
+            console.error(`Gemini (${modelName}) falhou:`, e.message);
+        }
+    }
+    return fallback;
+}
 
 // --- HELPERS ---
 function getTodaySimple() {
@@ -84,13 +113,23 @@ function gerarViagem(p) {
     return { saudacao: "", corpo_paragrafos: paragrafos };
 }
 
-function gerarMulta(p) {
+async function gerarMulta(p) {
+    const motivoBruto = (p.motivo || '').trim();
+    const fallbackParagrafo = `No entanto, a referida autuação não merece prosperar pelos seguintes motivos: ${motivoBruto || '________________________________________'}. Diante dos fatos narrados, restam evidentes as falhas e inconsistências que justificam a anulação da penalidade, em respeito aos princípios constitucionais da ampla defesa e do contraditório, bem como às normas do Código de Trânsito Brasileiro.`;
+
+    let argumentoParagrafo = fallbackParagrafo;
+    if (motivoBruto) {
+        const systemPrompt = `Você é especialista em defesa de autuações de trânsito no Brasil (Código de Trânsito Brasileiro - CTB). Escreva APENAS UM parágrafo de argumentação jurídica formal em português para um recurso/defesa prévia de multa de trânsito. Use exatamente os fatos descritos pelo condutor, sem inventar fatos novos. Cite artigos do CTB quando fizer sentido com a situação relatada (ex.: vícios formais do auto de infração, ambiguidade de sinalização, aferição de equipamentos), só se for plausível. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, técnico, objetivo.`;
+        const userPrompt = `Situação relatada pelo condutor: "${motivoBruto}"\nAuto de Infração: ${p.auto_infracao || 'não informado'}\nData da autuação: ${p.data_multa || 'não informada'}\nVeículo: ${p.modelo || 'não informado'}, placa ${p.placa || 'não informada'}`;
+        argumentoParagrafo = await gerarTextoIA(systemPrompt, userPrompt, fallbackParagrafo);
+    }
+
     return {
         saudacao: `Ao Ilmo. Sr. Diretor do ${p.orgao || 'Órgão de Trânsito'} ou Presidente da JARI`,
         corpo_paragrafos: [
             `Eu, ${p.nome || '____________________'}, inscrito(a) no CPF sob o nº ${p.cpf || '___________'}, portador(a) da CNH nº ${p.cnh || '___________'}, residente e domiciliado(a) em ${p.endereco || '____________________'}, ${p.cidade_uf || ''}, na qualidade de proprietário/condutor do veículo modelo ${p.modelo || '___________'}, Placa ${p.placa || '___________'}, venho, respeitosamente, à presença de Vossa Senhoria, interpor RECURSO / DEFESA PRÉVIA contra a autuação de trânsito em epígrafe.`,
             `O requerente foi notificado da suposta infração registrada no Auto de Infração nº ${p.auto_infracao || '___________'}, que teria ocorrido na data de ${p.data_multa || '___/___/____'}.`,
-            `No entanto, a referida autuação não merece prosperar pelos seguintes motivos: ${p.motivo || '________________________________________'}. Diante dos fatos narrados, restam evidentes as falhas e inconsistências que justificam a anulação da penalidade, em respeito aos princípios constitucionais da ampla defesa e do contraditório, bem como às normas do Código de Trânsito Brasileiro.`,
+            argumentoParagrafo,
             `Diante do exposto, REQUER-SE o recebimento desta defesa, com o consequente DEFERIMENTO do pedido, determinando-se o cancelamento do Auto de Infração e a anulação de qualquer pontuação imposta ao prontuário do condutor.`
         ]
     };
@@ -108,7 +147,7 @@ function gerarReembolsoPassagem(p) {
     };
 }
 
-function gerarConsumoGenerico(p, tipoFormulario, slug) {
+async function gerarConsumoGenerico(p, tipoFormulario, slug) {
     // Tenta identificar o nome da empresa pelo slug se não vier especificado
     let empresaRaw = slug.replace('carta-', '').replace('cancelamento-', '').replace('reclamacao-', '');
     let empresa = empresaRaw.split('-')[0].toUpperCase();
@@ -118,6 +157,16 @@ function gerarConsumoGenerico(p, tipoFormulario, slug) {
     if (empresaRaw.includes('claro')) empresa = 'CLARO';
     if (!empresa || empresa === 'DOCUMENTO') empresa = p.loja || p.empresa || 'Empresa Fornecedora';
 
+    const motivoBruto = (p.motivo || '').trim();
+    const fallbackMotivo = `O motivo desta notificação se dá pela seguinte situação: ${motivoBruto || '________________________________________'}.`;
+
+    let paragrafoMotivo = fallbackMotivo;
+    if (motivoBruto) {
+        const systemPrompt = `Você é especialista em direito do consumidor brasileiro (Código de Defesa do Consumidor - CDC). Escreva APENAS UM parágrafo formal em português descrevendo o problema relatado e fundamentando o pedido, citando artigos do CDC quando plausível pela situação (ex.: práticas abusivas, cobrança indevida, vícios do produto/serviço). Use exatamente os fatos descritos, sem inventar fatos novos. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, objetivo.`;
+        const userPrompt = `Empresa/fornecedor: ${empresa}\nSituação relatada pelo consumidor: "${motivoBruto}"\nContrato/pedido: ${p.contrato || p.pedido || 'não informado'}\nTipo de solicitação: ${tipoFormulario || 'reclamação/cancelamento'}`;
+        paragrafoMotivo = await gerarTextoIA(systemPrompt, userPrompt, fallbackMotivo);
+    }
+
     let paragrafos = [];
     paragrafos.push(`Eu, ${p.nome || '____________________'}, portador(a) do CPF nº ${p.cpf || '___________'}, venho por meio deste documento formalizar notificação e requerimento extrajudicial em face desta empresa.`);
 
@@ -125,7 +174,7 @@ function gerarConsumoGenerico(p, tipoFormulario, slug) {
         paragrafos.push(`Sou titular do contrato / pedido / instalação de nº ${p.contrato || p.pedido}, adquirido/firmado com esta prestadora.`);
     }
 
-    paragrafos.push(`O motivo desta notificação se dá pela seguinte situação: ${p.motivo || '________________________________________'}.`);
+    paragrafos.push(paragrafoMotivo);
 
     if (p.itens || p.descricao) {
         paragrafos.push(`Detalhes complementares da solicitação: ${p.itens || p.descricao}.`);
@@ -209,11 +258,11 @@ exports.handler = async (event) => {
         if (tipo === 'autorizacao_viagem') {
             output = gerarViagem(payload);
         } else if (tipo === 'multa') {
-            output = gerarMulta(payload);
+            output = await gerarMulta(payload);
         } else if (tipo === 'reembolso_passagem') {
             output = gerarReembolsoPassagem(payload);
         } else {
-            output = gerarConsumoGenerico(payload, tipo, slug);
+            output = await gerarConsumoGenerico(payload, tipo, slug);
         }
 
         // --- FECHAMENTO E ASSINATURAS ---
