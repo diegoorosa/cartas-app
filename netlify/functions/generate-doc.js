@@ -19,7 +19,7 @@ function withTimeout(promise, ms) {
 async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
     if (!genAI) return fallback;
     const inicio = Date.now();
-    const deadline = inicio + 3500; // orçamento curto de proposito: mp-webhook so tem 6s pra gerar o doc inteiro
+    const deadline = inicio + 5000; // equilibrio: mp-webhook tem 6s no total pra gerar o doc inteiro
     for (const modelName of GEMINI_MODELS) {
         const remaining = deadline - Date.now();
         if (remaining < 500) break;
