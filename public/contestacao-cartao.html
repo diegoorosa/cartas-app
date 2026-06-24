@@ -10,9 +10,38 @@
     <meta name="description"
         content="Gere uma carta de contestação de cobrança/compra não reconhecida no cartão de crédito. Preencha os dados, pague R$ 9,90 e baixe em PDF e Word." />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <script src="/theme.js"></script>
     <link rel="stylesheet" href="/style.css" />
+    <style>
+        /* IDENTIDADE VISUAL - "Cartorio Moderno" (mesma do viagem.html) */
+        :root {
+            --text-primary: #14213D !important;
+            --text-secondary: #3F4A5A !important;
+            --text-muted: #5C6470 !important;
+            --bg-primary: #FFFEFB !important;
+            --bg-secondary: #F1ECDD !important;
+            --card-bg: #FFFEFB !important;
+            --card-hover: #EFE8D6 !important;
+            --border: #E3D9C2 !important;
+            --accent-primary: #9C7A35 !important;
+            --accent-success: #1F6F4A !important;
+            --shadow-sm: 0 1px 2px rgba(20, 33, 61, 0.08) !important;
+        }
+        body { font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
+        h1, .section-title, h3 { font-family: 'Source Serif 4', Georgia, serif; letter-spacing: -0.01em; }
+        .seal-mark { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .seal-mark svg { display: block; }
+        @keyframes sealStamp { 0% { transform: scale(1.4) rotate(-8deg); opacity: 0; } 60% { transform: scale(0.96) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+        @media (prefers-reduced-motion: no-preference) { .seal-mark.seal-hero { animation: sealStamp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; } }
+        .letterhead { background: #F6F1E4; border-top: 3px double #14213D; border-bottom: 1px solid #E3D9C2; }
+        .protocol-num { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em; }
+        .ticket-stub { position: relative; background: #FFFEFB; border: 1px solid #E3D9C2; border-radius: 4px; box-shadow: 0 1px 2px rgba(20, 33, 61, 0.08); }
+        .ticket-stub::before, .ticket-stub::after { content: ""; position: absolute; top: 50%; width: 14px; height: 14px; background: #F6F1E4; border-radius: 50%; transform: translateY(-50%); }
+        .ticket-stub::before { left: -7px; } .ticket-stub::after { right: -7px; }
+    </style>
 
     <link rel="canonical" href="https://www.cartasapp.com.br/contestacao-cartao.html" />
     <meta property="og:title" content="Contestação de Compra no Cartão de Crédito | CartasApp">
@@ -73,10 +102,25 @@
         </div>
     </nav>
 
-    <section class="hero" style="padding: 60px 0 40px;">
+    <section class="hero letterhead" style="padding: 60px 0 40px;">
         <div class="container">
             <div class="hero-content">
-                <div class="hero-badge">Cobrança indevida ou compra não reconhecida?</div>
+                <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:18px;">
+                    <span class="seal-mark seal-hero" aria-hidden="true">
+                        <svg viewBox="0 0 100 100" width="56" height="56">
+                            <defs>
+                                <path id="sealRingCartao" d="M 50,50 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
+                            </defs>
+                            <circle cx="50" cy="50" r="46" fill="none" stroke="#9C7A35" stroke-width="1.2"/>
+                            <circle cx="50" cy="50" r="37" fill="none" stroke="#9C7A35" stroke-width="2.5"/>
+                            <path d="M50 35 l4.6 9.4 10.3 1.5-7.5 7.3 1.8 10.2-9.2-4.9-9.2 4.9 1.8-10.2-7.5-7.3 10.3-1.5z" fill="#9C7A35"/>
+                            <text font-family="'IBM Plex Mono', monospace" font-size="6.4" fill="#14213D" letter-spacing="1.6">
+                                <textPath href="#sealRingCartao" startOffset="1%">CONTESTAÇÃO DE COBRANÇA · CDC ·</textPath>
+                            </text>
+                        </svg>
+                    </span>
+                    <div class="hero-badge">Cobrança indevida ou compra não reconhecida?</div>
+                </div>
                 <h1 style="font-size: 42px; line-height: 1.2;">
                     Carta de contestação de compra no cartão de crédito
                 </h1>
@@ -303,8 +347,8 @@
 
                             <div id="c_paySection"
                                 style="display:none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
-                                <div class="price-badge" style="margin-bottom: 20px;">
-                                    <span class="price-new">R$ 9,90</span>
+                                <div class="price-badge ticket-stub" style="margin-bottom: 20px;">
+                                    <span class="price-new protocol-num">R$ 9,90</span>
                                 </div>
 
                                 <button class="btn btn-primary" id="c_btnPagar" style="width: 100%;">
