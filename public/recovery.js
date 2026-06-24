@@ -17,12 +17,21 @@
             var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
             var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
             
-            // DETECTA TÍTULO
-            var tituloViagem = "AUTORIZAÇÃO DE VIAGEM"; 
-            if (html.toLowerCase().includes("viagem internacional")) {
+            // DETECTA TÍTULO pelo conteúdo real do documento (nesta função o texto final já chegou, não é placeholder)
+            var htmlLower = html.toLowerCase();
+            var tituloViagem = "MODELO DE DOCUMENTO";
+            if (htmlLower.includes("auto de infração") || htmlLower.includes("autuação de trânsito") || htmlLower.includes("cnh nº")) {
+                tituloViagem = "RECURSO DE MULTA";
+            } else if (htmlLower.includes("viagem internacional")) {
                 tituloViagem = "AUTORIZAÇÃO DE VIAGEM INTERNACIONAL";
-            } else if (html.toLowerCase().includes("viagem nacional")) {
+            } else if (htmlLower.includes("viagem nacional")) {
                 tituloViagem = "AUTORIZAÇÃO DE VIAGEM NACIONAL";
+            } else if (htmlLower.includes("menor") || htmlLower.includes("responsáve")) {
+                tituloViagem = "AUTORIZAÇÃO DE VIAGEM";
+            } else if (htmlLower.includes("reembolso")) {
+                tituloViagem = "SOLICITAÇÃO DE REEMBOLSO";
+            } else if (htmlLower.includes("bagagem")) {
+                tituloViagem = "RECLAMAÇÃO DE BAGAGEM";
             }
 
             var host = document.createElement('div');
