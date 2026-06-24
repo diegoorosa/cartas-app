@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="apple-touch-icon" href="/logo.png" />
   <meta name="description"
-    content="Gere uma carta formal de reclamação por bagagem extraviada ou danificada, baseada no CDC e normas da ANAC. Preencha os dados e baixe em PDF/DOC por R$ 9,90." />
+    content="Gere uma carta formal de reclamação por bagagem extraviada ou danificada, baseada no CDC e normas da ANAC. Preencha os dados e baixe em PDF/DOC por R$ 19,90." />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="/theme.js"></script>
   <link rel="stylesheet" href="/style.css" />
@@ -60,7 +60,7 @@
         <p class="hero-subtitle" style="font-size: 18px; margin-top: 16px;">
           Descreva o voo e o problema e gere uma <strong>carta formal de reclamação</strong>,
           baseada no <strong>Código de Defesa do Consumidor</strong> e normas da <strong>ANAC</strong>,
-          pronta para enviar à companhia aérea, em PDF e Word, por apenas <strong>R$ 9,90</strong>.
+          pronta para enviar à companhia aérea, em PDF e Word, por apenas <strong>R$ 19,90</strong>.
         </p>
 
         <div class="hero-actions" style="margin-top: 24px;">
@@ -107,7 +107,7 @@
 
           <div class="small"
             style="margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: var(--card-hover); border: 1px solid var(--border);">
-            <strong>Por R$ 9,90 (pagamento único)</strong>, você recebe:<br>
+            <strong>Por R$ 19,90 (pagamento único)</strong>, você recebe:<br>
             • Carta personalizada com seus dados, do voo e da ocorrência.<br>
             • Texto formal em linguagem jurídica simples, indicando o que aconteceu e o que você está pedindo.<br>
             • Versão em PDF e Word para ajustar, imprimir, assinar e enviar.<br>
@@ -253,10 +253,10 @@
                 <div id="paySection"
                   style="display:none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
                   <div class="price-badge" style="margin-bottom: 20px;">
-                    <span class="price-new">R$ 9,90</span>
+                    <span class="price-new">R$ 19,90</span>
                   </div>
                   <button class="btn btn-primary" id="btnPagar" style="width: 100%;">
-                    Gerar documento completo (R$ 9,90)
+                    Gerar documento completo (R$ 19,90)
                   </button>
                 </div>
               </div>
@@ -283,7 +283,7 @@
             </div>
             <p class="small" style="margin-top:12px;color:var(--text-muted);">
               Prévia gratuita e parcial. O documento completo (edição, PDF e Word) é liberado após o pagamento único de
-              <strong>R$ 9,90</strong>.
+              <strong>R$ 19,90</strong>.
             </p>
           </div>
 
@@ -311,7 +311,7 @@
             </p>
             <p class="small" style="margin-top:8px;">
               <strong>É pagamento único?</strong><br>
-              Sim. Você paga <strong>R$ 9,90 apenas uma vez</strong> por documento gerado, sem mensalidades.
+              Sim. Você paga <strong>R$ 19,90 apenas uma vez</strong> por documento gerado, sem mensalidades.
             </p>
           </div>
 
@@ -618,7 +618,7 @@
         showPaymentModal(data.init_point, data.order_id, 'carta-bagagem');
       } catch (e) {
         if (e.message !== 'Inválido') alert('Erro: ' + e.message);
-        btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
+        btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 19,90)';
       }
     });
 
@@ -639,7 +639,7 @@
         '</div>';
       document.body.appendChild(overlay);
       document.getElementById('lm-close').onclick = function () {
-        overlay.remove(); var btn = document.getElementById('btnPagar'); if (btn) { btn.disabled = false; btn.textContent = 'Gerar documento completo (R$ 9,90)'; }
+        overlay.remove(); var btn = document.getElementById('btnPagar'); if (btn) { btn.disabled = false; btn.textContent = 'Gerar documento completo (R$ 19,90)'; }
       };
       async function docReady() {
         try {

@@ -59,7 +59,7 @@
                 <p class="hero-subtitle" style="font-size: 18px; margin-top: 16px;">
                     Cancele serviços, conteste cobranças ou formalize pedidos em poucos minutos.
                     Preencha seus dados, explique o caso e nossa IA gera uma <strong>carta jurídica personalizada</strong>,
-                    em <strong>PDF e Word</strong>, por apenas <strong>R$ 9,90</strong>.
+                    em <strong>PDF e Word</strong>, por apenas <strong id="heroPrice">R$ 9,90</strong>.
                 </p>
 
                 <div style="display:flex;gap:15px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
@@ -103,7 +103,7 @@
 
                     <div class="small"
                         style="margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: var(--card-hover); border: 1px solid var(--border);">
-                        <strong>Por R$ 9,90 (pagamento único)</strong>, você recebe:<br>
+                        <strong>Por <span id="valuePriceAmt">R$ 9,90</span> (pagamento único)</strong>, você recebe:<br>
                         • Carta personalizada com seus dados e o resumo da situação.<br>
                         • Texto organizado, com argumentos claros e pedidos objetivos (cancelamento, estorno,
                         regularização, etc.).<br>
@@ -163,7 +163,7 @@
                             <div id="paySection"
                                 style="display:none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
                                 <div class="price-badge" style="margin-bottom: 20px;">
-                                    <span class="price-new">R$ 9,90</span>
+                                    <span class="price-new" id="priceBadge">R$ 9,90</span>
                                 </div>
                                 <button class="btn btn-primary" id="btnPagar" style="width: 100%;">
                                     Gerar documento completo (R$ 9,90)
@@ -195,7 +195,7 @@
                         </div>
                         <p class="small" style="margin-top:12px;color:var(--text-muted);">
                             Prévia gratuita e parcial. O documento completo (edição, PDF e Word) é liberado após o
-                            pagamento único de <strong>R$ 9,90</strong>.
+                            pagamento único de <strong id="previewPriceAmt">R$ 9,90</strong>.
                         </p>
                     </div>
 
@@ -223,7 +223,7 @@
                         </p>
                         <p class="small" style="margin-top:8px;">
                             <strong>É pagamento único?</strong><br>
-                            Sim. Você paga <strong>R$ 9,90 apenas uma vez</strong> por documento gerado, sem
+                            Sim. Você paga <strong><span id="faqPriceAmt">R$ 9,90</span> apenas uma vez</strong> por documento gerado, sem
                             mensalidades ou cobranças futuras.
                         </p>
                     </div>
@@ -285,6 +285,16 @@
             docTitle.textContent = 'Modelo não encontrado';
             formArea.style.display = 'none';
         }
+
+        var price = (cfg && typeof cfg.price === 'number') ? cfg.price : 9.90;
+        var priceStr = 'R$ ' + price.toFixed(2).replace('.', ',');
+        var payBtnLabel = 'Gerar documento completo (' + priceStr + ')';
+        ['heroPrice', 'valuePriceAmt', 'priceBadge', 'previewPriceAmt', 'faqPriceAmt'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.textContent = priceStr;
+        });
+        var btnPagarEl = document.getElementById('btnPagar');
+        if (btnPagarEl) btnPagarEl.textContent = payBtnLabel;
 
         function maskCPF(v) {
             v = (v || '').replace(/\D/g, '').slice(0, 11);
@@ -485,7 +495,7 @@
             } catch (e) {
                 if (e.message !== 'Inválido') alert('Erro: ' + e.message);
                 btnPagar.disabled = false;
-                btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
+                btnPagar.textContent = payBtnLabel;
             }
         });
 
@@ -511,7 +521,7 @@
                 var btn = document.getElementById('btnPagar');
                 if (btn) {
                     btn.disabled = false;
-                    btn.textContent = 'Gerar documento completo (R$ 9,90)';
+                    btn.textContent = payBtnLabel;
                 }
             };
             async function docReady() {

@@ -89,12 +89,12 @@ window.SLUGS = [
     { slug: "carta-reclamacao-agua-sabesp-cobranca-indevida", title: "Reclamação — SABESP (cobrança indevida)", brand: "SABESP", tipo: "reclamacao" },
     { slug: "carta-reclamacao-agua-copasa-cobranca-indevida", title: "Reclamação — COPASA (cobrança indevida)", brand: "COPASA", tipo: "reclamacao" },
 
-    { slug: "carta-reembolso-atraso-voo-gol", title: "Carta — Reembolso por Atraso de Voo (GOL)", brand: "GOL", tipo: "reclamacao" },
-    { slug: "carta-reembolso-atraso-voo-latam", title: "Carta — Reembolso por Atraso de Voo (LATAM)", brand: "LATAM", tipo: "reclamacao" },
-    { slug: "carta-reembolso-atraso-voo-azul", title: "Carta — Reembolso por Atraso de Voo (Azul)", brand: "Azul", tipo: "reclamacao" },
-    { slug: "carta-reembolso-cancelamento-voo-gol", title: "Carta — Reembolso por Cancelamento de Voo (GOL)", brand: "GOL", tipo: "reclamacao" },
-    { slug: "carta-reembolso-cancelamento-voo-latam", title: "Carta — Reembolso por Cancelamento de Voo (LATAM)", brand: "LATAM", tipo: "reclamacao" },
-    { slug: "carta-reembolso-cancelamento-voo-azul", title: "Carta — Reembolso por Cancelamento de Voo (Azul)", brand: "Azul", tipo: "reclamacao" },
+    { slug: "carta-reembolso-atraso-voo-gol", title: "Carta — Reembolso por Atraso de Voo (GOL)", brand: "GOL", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reembolso-atraso-voo-latam", title: "Carta — Reembolso por Atraso de Voo (LATAM)", brand: "LATAM", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reembolso-atraso-voo-azul", title: "Carta — Reembolso por Atraso de Voo (Azul)", brand: "Azul", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reembolso-cancelamento-voo-gol", title: "Carta — Reembolso por Cancelamento de Voo (GOL)", brand: "GOL", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reembolso-cancelamento-voo-latam", title: "Carta — Reembolso por Cancelamento de Voo (LATAM)", brand: "LATAM", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reembolso-cancelamento-voo-azul", title: "Carta — Reembolso por Cancelamento de Voo (Azul)", brand: "Azul", tipo: "reclamacao", price: 19.90 },
 
     { slug: "carta-reclamacao-produto-defeituoso-vicio-oculto", title: "Reclamação — Produto com defeito (vício oculto)", brand: "Consumo", tipo: "reclamacao" },
     { slug: "carta-reclamacao-produto-nao-entregue", title: "Reclamação — Produto não entregue", brand: "Consumo", tipo: "reclamacao" },

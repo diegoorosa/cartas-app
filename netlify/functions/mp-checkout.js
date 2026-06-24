@@ -19,10 +19,11 @@ function checkRateLimit(ip) {
 
 // Mapeamento de preços completo (mantido original)
 const PRICE_MAP = {
-    'default': 29.90,
-    'autorizacao-viagem-menor': 29.90,
-    "recurso-multa-transito": 9.90,
-    'carta-bagagem': 9.90,
+    'default': 39.90,
+    'autorizacao-viagem-menor': 39.90,
+    "recurso-multa-transito": 19.90,
+    'reembolso-cancelamento-passagem': 19.90,
+    'carta-bagagem': 19.90,
     'carta-ecommerce': 9.90,
     "carta-cancelamento-smart-fit": 9.90,
     "carta-reclamacao-smart-fit-cobranca-indevida": 9.90,
@@ -96,12 +97,12 @@ const PRICE_MAP = {
     "carta-reclamacao-energia-coelba-cobranca-indevida": 9.90,
     "carta-reclamacao-agua-sabesp-cobranca-indevida": 9.90,
     "carta-reclamacao-agua-copasa-cobranca-indevida": 9.90,
-    "carta-reembolso-atraso-voo-gol": 9.90,
-    "carta-reembolso-atraso-voo-latam": 9.90,
-    "carta-reembolso-atraso-voo-azul": 9.90,
-    "carta-reembolso-cancelamento-voo-gol": 9.90,
-    "carta-reembolso-cancelamento-voo-latam": 9.90,
-    "carta-reembolso-cancelamento-voo-azul": 9.90,
+    "carta-reembolso-atraso-voo-gol": 19.90,
+    "carta-reembolso-atraso-voo-latam": 19.90,
+    "carta-reembolso-atraso-voo-azul": 19.90,
+    "carta-reembolso-cancelamento-voo-gol": 19.90,
+    "carta-reembolso-cancelamento-voo-latam": 19.90,
+    "carta-reembolso-cancelamento-voo-azul": 19.90,
     "carta-reclamacao-produto-defeituoso-vicio-oculto": 9.90,
     "carta-reclamacao-produto-nao-entregue": 9.90,
     "carta-reembolso-atraso-entrega-ecommerce": 9.90,
@@ -109,8 +110,8 @@ const PRICE_MAP = {
     "carta-cancelamento-curso-presencial": 9.90,
     "carta-cancelamento-matricula-faculdade": 9.90,
     "carta-reembolso-matricula-faculdade": 9.90,
-    "carta-bagagem-extraviada": 9.90,
-    "carta-bagagem-danificada": 9.90
+    "carta-bagagem-extraviada": 19.90,
+    "carta-bagagem-danificada": 19.90
 };
 
 /**
