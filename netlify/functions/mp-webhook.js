@@ -141,22 +141,26 @@ exports.handler = async (event) => {
 
       try {
         console.log(`Tentativa ${i} de gerar documento...`);
+        const ehUltimaDoWebhook = i === 3;
         const rGen = await fetch(`${BASE_URL}/.netlify/functions/generate-doc`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'x-internal-secret': process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY
           },
-          body: JSON.stringify({ payload, preview: false })
+          // ultima_tentativa so na 3a do webhook -- antes disso, se a IA nao respondeu,
+          // generate-doc NAO cacheia o texto cru, e o polling do success.html tenta de novo.
+          body: JSON.stringify({ payload: Object.assign({}, payload, { ultima_tentativa: ehUltimaDoWebhook }), preview: false })
         });
 
         if (rGen.ok) {
           const result = await rGen.json();
-          if (result.output) {
+          if (result.output && (!result.ai_pendente || ehUltimaDoWebhook)) {
             gerouSucesso = true;
             docOutput = result.output;
             break;
           }
+          console.log(`Tentativa ${i}: IA ainda nao respondeu a tempo, tentando de novo...`);
         } else {
           await new Promise(res => setTimeout(res, 1000));
         }

@@ -491,11 +491,11 @@
                         var rs = await fetch('/.netlify/functions/generate-doc', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
+                            body: JSON.stringify({ payload: { order_id: orderId, ultima_tentativa: i === 2 }, preview: false })
                         });
                         if (rs.ok) {
                             var js = await rs.json();
-                            if (js && js.output) {
+                            if (js && js.output && (!js.ai_pendente || i === 2)) {
                                 var fullText = renderDocText(js.output, localPayload);
                                 showDocAndScroll(fullText, localPayload);
                                 return;
@@ -595,12 +595,12 @@
                     var rs = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
+                        body: JSON.stringify({ payload: { order_id: orderId, ultima_tentativa: i === 2 }, preview: false })
                     });
 
                     if (rs.ok) {
                         var js = await rs.json();
-                        if (js && js.output) {
+                        if (js && js.output && (!js.ai_pendente || i === 2)) {
                             var fullText = renderDocText(js.output, localPayload);
                             showDocAndScroll(fullText, localPayload);
                             return;

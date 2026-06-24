@@ -87,9 +87,7 @@
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 15px;">
                             <div style="font-size: ${iconSize}; line-height: 1; margin-bottom: 2px;">⚖️</div>
                             <h1 style="font-size: ${h1Size}; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">${tituloViagem}</h1>
-                            <p style="font-size: 8pt; margin: 2px 0 0 0; font-style: italic;">
-                                Conforme Resolução CNJ nº 295/2019
-                            </p>
+                            ${tituloViagem.indexOf('AUTORIZAÇÃO DE VIAGEM') === 0 ? '<p style="font-size: 8pt; margin: 2px 0 0 0; font-style: italic;">Conforme Resolução CNJ nº 295/2019</p>' : ''}
                         </div>
 
                         <div style="text-align: justify; min-height: 350px;">

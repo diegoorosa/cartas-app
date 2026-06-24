@@ -6,7 +6,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // --- CONFIGURAÇÕES ---
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
-const GEMINI_MODELS = (process.env.GEMINI_MODELS || 'gemini-flash-latest,gemini-2.5-flash,gemini-2.0-flash-001')
+const GEMINI_MODELS = (process.env.GEMINI_MODELS || 'gemini-2.5-flash-lite,gemini-flash-lite-latest,gemini-flash-latest,gemini-2.5-flash')
     .split(',').map(s => s.trim()).filter(Boolean);
 
 // --- IA: GERAÇÃO DO PARÁGRAFO DE ARGUMENTAÇÃO (com fallback seguro) ---
@@ -16,10 +16,12 @@ function withTimeout(promise, ms) {
     return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
+// Retorna {text, ok}. ok=false significa que NENHUM modelo respondeu --
+// quem chamar decide se aceita o fallback (ultima tentativa) ou tenta de novo.
 async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
-    if (!genAI) return fallback;
+    if (!genAI) return { text: fallback, ok: false };
     const inicio = Date.now();
-    const deadline = inicio + 5000; // equilibrio: mp-webhook tem 6s no total pra gerar o doc inteiro
+    const deadline = inicio + 6000;
     for (const modelName of GEMINI_MODELS) {
         const remaining = deadline - Date.now();
         if (remaining < 500) break;
@@ -29,13 +31,13 @@ async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
             const text = (await resp.response.text() || '').trim();
             if (text) {
                 console.log(`Gemini (${modelName}) OK em ${Date.now() - inicio}ms`);
-                return text;
+                return { text, ok: true };
             }
         } catch (e) {
             console.error(`Gemini (${modelName}) falhou em ${Date.now() - inicio}ms:`, e.message);
         }
     }
-    return fallback;
+    return { text: fallback, ok: false };
 }
 
 // --- HELPERS ---
@@ -122,20 +124,26 @@ async function gerarMulta(p) {
     const fallbackParagrafo = `No entanto, a referida autuação não merece prosperar pelos seguintes motivos: ${motivoBruto || '________________________________________'}. Diante dos fatos narrados, restam evidentes as falhas e inconsistências que justificam a anulação da penalidade, em respeito aos princípios constitucionais da ampla defesa e do contraditório, bem como às normas do Código de Trânsito Brasileiro.`;
 
     let argumentoParagrafo = fallbackParagrafo;
+    let aiOk = !motivoBruto; // sem motivo, nao precisa de IA -- ja esta "ok"
     if (motivoBruto) {
         const systemPrompt = `Você é especialista em defesa de autuações de trânsito no Brasil (Código de Trânsito Brasileiro - CTB). Escreva APENAS UM parágrafo de argumentação jurídica formal em português para um recurso/defesa prévia de multa de trânsito. Use exatamente os fatos descritos pelo condutor, sem inventar fatos novos. Cite artigos do CTB quando fizer sentido com a situação relatada (ex.: vícios formais do auto de infração, ambiguidade de sinalização, aferição de equipamentos), só se for plausível. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, técnico, objetivo.`;
         const userPrompt = `Situação relatada pelo condutor: "${motivoBruto}"\nAuto de Infração: ${p.auto_infracao || 'não informado'}\nData da autuação: ${p.data_multa || 'não informada'}\nVeículo: ${p.modelo || 'não informado'}, placa ${p.placa || 'não informada'}`;
-        argumentoParagrafo = await gerarTextoIA(systemPrompt, userPrompt, fallbackParagrafo);
+        const r = await gerarTextoIA(systemPrompt, userPrompt, fallbackParagrafo);
+        argumentoParagrafo = r.text;
+        aiOk = r.ok;
     }
 
     return {
-        saudacao: `Ao Ilmo. Sr. Diretor do ${p.orgao || 'Órgão de Trânsito'} ou Presidente da JARI`,
-        corpo_paragrafos: [
-            `Eu, ${p.nome || '____________________'}, inscrito(a) no CPF sob o nº ${p.cpf || '___________'}, portador(a) da CNH nº ${p.cnh || '___________'}, residente e domiciliado(a) em ${p.endereco || '____________________'}, ${p.cidade_uf || ''}, na qualidade de proprietário/condutor do veículo modelo ${p.modelo || '___________'}, Placa ${p.placa || '___________'}, venho, respeitosamente, à presença de Vossa Senhoria, interpor RECURSO / DEFESA PRÉVIA contra a autuação de trânsito em epígrafe.`,
-            `O requerente foi notificado da suposta infração registrada no Auto de Infração nº ${p.auto_infracao || '___________'}, que teria ocorrido na data de ${p.data_multa || '___/___/____'}.`,
-            argumentoParagrafo,
-            `Diante do exposto, REQUER-SE o recebimento desta defesa, com o consequente DEFERIMENTO do pedido, determinando-se o cancelamento do Auto de Infração e a anulação de qualquer pontuação imposta ao prontuário do condutor.`
-        ]
+        aiOk: aiOk,
+        doc: {
+            saudacao: `Ao Ilmo. Sr. Diretor do ${p.orgao || 'Órgão de Trânsito'} ou Presidente da JARI`,
+            corpo_paragrafos: [
+                `Eu, ${p.nome || '____________________'}, inscrito(a) no CPF sob o nº ${p.cpf || '___________'}, portador(a) da CNH nº ${p.cnh || '___________'}, residente e domiciliado(a) em ${p.endereco || '____________________'}, ${p.cidade_uf || ''}, na qualidade de proprietário/condutor do veículo modelo ${p.modelo || '___________'}, Placa ${p.placa || '___________'}, venho, respeitosamente, à presença de Vossa Senhoria, interpor RECURSO / DEFESA PRÉVIA contra a autuação de trânsito em epígrafe.`,
+                `O requerente foi notificado da suposta infração registrada no Auto de Infração nº ${p.auto_infracao || '___________'}, que teria ocorrido na data de ${p.data_multa || '___/___/____'}.`,
+                argumentoParagrafo,
+                `Diante do exposto, REQUER-SE o recebimento desta defesa, com o consequente DEFERIMENTO do pedido, determinando-se o cancelamento do Auto de Infração e a anulação de qualquer pontuação imposta ao prontuário do condutor.`
+            ]
+        }
     };
 }
 
@@ -165,10 +173,13 @@ async function gerarConsumoGenerico(p, tipoFormulario, slug) {
     const fallbackMotivo = `O motivo desta notificação se dá pela seguinte situação: ${motivoBruto || '________________________________________'}.`;
 
     let paragrafoMotivo = fallbackMotivo;
+    let aiOk = !motivoBruto;
     if (motivoBruto) {
         const systemPrompt = `Você é especialista em direito do consumidor brasileiro (Código de Defesa do Consumidor - CDC). Escreva APENAS UM parágrafo formal em português descrevendo o problema relatado e fundamentando o pedido, citando artigos do CDC quando plausível pela situação (ex.: práticas abusivas, cobrança indevida, vícios do produto/serviço). Use exatamente os fatos descritos, sem inventar fatos novos. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, objetivo.`;
         const userPrompt = `Empresa/fornecedor: ${empresa}\nSituação relatada pelo consumidor: "${motivoBruto}"\nContrato/pedido: ${p.contrato || p.pedido || 'não informado'}\nTipo de solicitação: ${tipoFormulario || 'reclamação/cancelamento'}`;
-        paragrafoMotivo = await gerarTextoIA(systemPrompt, userPrompt, fallbackMotivo);
+        const r = await gerarTextoIA(systemPrompt, userPrompt, fallbackMotivo);
+        paragrafoMotivo = r.text;
+        aiOk = r.ok;
     }
 
     let paragrafos = [];
@@ -187,8 +198,11 @@ async function gerarConsumoGenerico(p, tipoFormulario, slug) {
     paragrafos.push(`Diante do exposto, e amparado pelas normas do Código de Defesa do Consumidor (Lei 8.078/1990), exijo o atendimento e a resolução imediata desta solicitação. A ausência de solução pacífica no prazo razoável ensejará a abertura de reclamações junto aos órgãos de proteção ao crédito (PROCON, Consumidor.gov) e o ajuizamento de ação competente para reparação de danos.`);
 
     return {
-        saudacao: `À empresa ${empresa} - A/C Setor de Atendimento ao Cliente e Jurídico`,
-        corpo_paragrafos: paragrafos
+        aiOk: aiOk,
+        doc: {
+            saudacao: `À empresa ${empresa} - A/C Setor de Atendimento ao Cliente e Jurídico`,
+            corpo_paragrafos: paragrafos
+        }
     };
 }
 
@@ -258,15 +272,20 @@ exports.handler = async (event) => {
 
         // --- GERAÇÃO DO TEXTO ---
         let output = { saudacao: "", corpo_paragrafos: [] };
+        let aiOk = true; // viagem e reembolso nao usam IA, sempre "ok"
 
         if (tipo === 'autorizacao_viagem') {
             output = gerarViagem(payload);
         } else if (tipo === 'multa') {
-            output = await gerarMulta(payload);
+            const r = await gerarMulta(payload);
+            output = r.doc;
+            aiOk = r.aiOk;
         } else if (tipo === 'reembolso_passagem') {
             output = gerarReembolsoPassagem(payload);
         } else {
-            output = await gerarConsumoGenerico(payload, tipo, slug);
+            const r = await gerarConsumoGenerico(payload, tipo, slug);
+            output = r.doc;
+            aiOk = r.aiOk;
         }
 
         // --- FECHAMENTO E ASSINATURAS ---
@@ -294,7 +313,12 @@ exports.handler = async (event) => {
         }
 
         // --- SALVAR NO SUPABASE (Apenas se não for prévia, ou se for Admin/Internal) ---
-        if (orderId && (!preview || isTrusted)) {
+        // Se a IA deveria ter elaborado o texto e falhou, SO cacheia na ultima tentativa --
+        // assim quem chamou (mp-webhook) pode tentar de novo em vez de travar o texto cru pra sempre.
+        const ultimaTentativa = !!payload.ultima_tentativa;
+        const podeCachear = orderId && (!preview || isTrusted) && (aiOk || ultimaTentativa);
+
+        if (podeCachear) {
             await supabase.from('generations').upsert({
                 order_id: orderId,
                 slug: payload.slug || '',
@@ -304,7 +328,7 @@ exports.handler = async (event) => {
         }
 
         // Retorna a estrutura exata que o frontend espera!
-        return { statusCode: 200, body: JSON.stringify({ output, cached: false }) };
+        return { statusCode: 200, body: JSON.stringify({ output, cached: false, ai_pendente: !aiOk && !ultimaTentativa }) };
 
     } catch (e) {
         console.error('Erro Função:', e.message);
