@@ -19,7 +19,7 @@ function withTimeout(promise, ms) {
 async function gerarTextoIA(systemPrompt, userPrompt, fallback) {
     if (!genAI) return fallback;
     const inicio = Date.now();
-    const deadline = inicio + 9000; // orçamento total de ~9s (limite do timeout padrao do Netlify e' 10s)
+    const deadline = inicio + 3500; // orçamento curto de proposito: mp-webhook so tem 6s pra gerar o doc inteiro
     for (const modelName of GEMINI_MODELS) {
         const remaining = deadline - Date.now();
         if (remaining < 500) break;

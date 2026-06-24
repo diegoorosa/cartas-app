@@ -409,15 +409,19 @@
         function showDocAndScroll(fullText, payload) {
             // Se tiver o elemento docBox, construímos DOM de forma segura
             if (docBox) {
-                // Tenta detectar o título dinamicamente (Nacional vs Internacional)
-                var tituloDoc = "AUTORIZAÇÃO DE VIAGEM";
+                // Título decidido pelo produto comprado (slug), nao pelo texto --
+                // o texto pode ainda ser so o placeholder "processando" enquanto o doc real nao chegou.
+                var sSlug = (slug || '').toLowerCase();
+                var tituloDoc = "MODELO DE DOCUMENTO";
                 var textoLower = fullText.toLowerCase();
 
-                if (textoLower.includes("viagem internacional")) tituloDoc += " INTERNACIONAL";
-                else if (textoLower.includes("viagem nacional")) tituloDoc += " NACIONAL";
-                else if (textoLower.includes("multa") || textoLower.includes("recurso")) tituloDoc = "RECURSO DE MULTA";
-                else if (textoLower.includes("reembolso")) tituloDoc = "SOLICITAÇÃO DE REEMBOLSO";
-                else if (textoLower.includes("bagagem")) tituloDoc = "RECLAMAÇÃO DE BAGAGEM";
+                if (sSlug.indexOf('viagem') > -1) {
+                    tituloDoc = "AUTORIZAÇÃO DE VIAGEM";
+                    if (textoLower.includes("viagem internacional")) tituloDoc += " INTERNACIONAL";
+                    else if (textoLower.includes("viagem nacional")) tituloDoc += " NACIONAL";
+                } else if (sSlug.indexOf('multa') > -1) tituloDoc = "RECURSO DE MULTA";
+                else if (sSlug.indexOf('reembolso') > -1) tituloDoc = "SOLICITAÇÃO DE REEMBOLSO";
+                else if (sSlug.indexOf('bagagem') > -1) tituloDoc = "RECLAMAÇÃO DE BAGAGEM";
 
                 // Limpa e constrói DOM seguro
                 docBox.innerHTML = '';
