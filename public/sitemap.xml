@@ -162,4 +162,21 @@
   <url><loc>https://www.cartasapp.com.br/atraso-na-entrega.html</loc></url>
   <url><loc>https://www.cartasapp.com.br/produto-nao-entregue.html</loc></url>
 
+  <!-- Novas landing pages de categoria -->
+  <url><loc>https://www.cartasapp.com.br/academia.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/telefonia.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/energia.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/educacao.html</loc></url>
+
+  <!-- Novas FAQ pages -->
+  <url><loc>https://www.cartasapp.com.br/telefonia-faq.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/energia-faq.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/educacao-faq.html</loc></url>
+
+  <!-- Novas páginas de reembolso voo -->
+  <url><loc>https://www.cartasapp.com.br/reembolso-atraso-voo-azul.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/reembolso-cancelamento-voo-gol.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/reembolso-cancelamento-voo-latam.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/reembolso-cancelamento-voo-azul.html</loc></url>
+
 </urlset>
