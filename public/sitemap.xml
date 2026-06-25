@@ -143,4 +143,23 @@
   <url><loc>https://www.cartasapp.com.br/guarda-compartilhada-autorizacao-viagem.html</loc></url>
   <url><loc>https://www.cartasapp.com.br/rg-antigo-foto-bebe-viagem.html</loc></url>
 
+  <!-- Páginas de produto existentes mas não indexadas -->
+  <url><loc>https://www.cartasapp.com.br/ecommerce.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/reembolso-atraso-voo-azul.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/viagem-carro-menor-prf.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/viagem-namorado-menor-autorizacao.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/autorizacao-hospedagem-menor-hotel.html</loc></url>
+
+  <!-- Guias de cancelamento/reclamação existentes -->
+  <url><loc>https://www.cartasapp.com.br/como-cancelar-smart-fit.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/como-cancelar-plano-de-saude.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/como-cancelar-cartao-nubank.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/como-cancelar-matricula-faculdade.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/reclamacao-vivo-cobranca.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/reclamacao-enel-cobranca-indevida.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/reclamacao-claro-cobranca.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/direito-de-arrependimento.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/atraso-na-entrega.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/produto-nao-entregue.html</loc></url>
+
 </urlset>

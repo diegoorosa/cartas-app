@@ -22,7 +22,10 @@ Static HTML/JS site on Netlify selling legal document generation (cancellation l
 ## Critical gotchas
 
 ### Pricing
-Only `autorizacao-viagem-menor` costs R$29.90. **Everything else is R$9.90.** Before "correcting" a price on any page, check `PRICE_MAP` in `netlify/functions/mp-checkout.js` first.
+- `autorizacao-viagem-menor`: **R$39,90** (highest margin)
+- `recurso-multa-transito`, `carta-bagagem`, `carta-reembolso-*` (voo): **R$19,90**
+- **Everything else**: **R$9,90** (academia, telecom, cartão, utilidade, e-commerce, educação)
+- Before "correcting" a price on any page, check `PRICE_MAP` in `netlify/functions/mp-checkout.js` first.
 
 ### style.css is shared by ~100 pages
 Any change to `public/style.css` propagates to ALL pages. A previous agent accidentally removed 505 lines thinking they were only for one page — it broke CSS on every checkout page.

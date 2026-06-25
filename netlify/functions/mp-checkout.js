@@ -207,7 +207,7 @@ exports.handler = async (event) => {
                 excluded_payment_types: [
                     { id: "ticket" } // Isso remove Boleto, Lotérica e PEC (pagamentos demorados)
                 ],
-                installments: 1 // (Opcional) Como é R$ 29,90, força à vista para não parcelarem
+                installments: 1 // (Opcional) Como é R$ 39,90, força à vista para não parcelarem
             },
             back_urls: {
                 success: `${BASE_URL}/success.html?o=${encodeURIComponent(orderId)}&slug=${encodeURIComponent(slug)}&s=success`,

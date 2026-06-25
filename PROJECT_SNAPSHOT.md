@@ -30,7 +30,7 @@
 - Cartas (academias, operadoras, plano de saúde)
 - Autorização de viagem para menor (viagem.html)
 - Bagagem extraviada/danificada (bagagem.html)
-- Preço: R$ 6,90
+- Preço: R$ 9,90 a R$ 39,90 (varia por produto)
 
 ## Estado
 - Home com busca global ok
@@ -38,4 +38,4 @@
 - Guias viagem e bagagem publicados; sitemap atualizado
 
 ## Restart prompt
-Contexto: site Netlify com HTML/JS, funções (generate-doc, mp-checkout, mp-webhook, order-status), Supabase (orders/generations), Mercado Pago, Gemini 2.0 flash. URLs: https://cartasapp.netlify.app. Conversão Ads: Compra_Paga (AW-1021062139/eWBbCPil_7kbEPvX8OYD), transaction_id = orderId. Produtos: Cartas, Viagem, Bagagem. Preço R$ 6,90. Entregar arquivos INTEIROS “prontos para colar”, sem comentários. Onde paramos: publicar Pacote B de slugs (abaixo) e acrescentar as URLs no sitemap.
+Contexto: site Netlify com HTML/JS, funções (generate-doc, mp-checkout, mp-webhook, order-status), Supabase (orders/generations), Mercado Pago, Gemini 2.0 flash. URLs: https://cartasapp.netlify.app. Conversão Ads: Compra_Paga (AW-1021062139/eWBbCPil_7kbEPvX8OYD), transaction_id = orderId. Produtos: Cartas, Viagem, Bagagem. Preço: R$ 9,90 a R$ 39,90. Entregar arquivos INTEIROS “prontos para colar”, sem comentários. Onde paramos: publicar Pacote B de slugs (abaixo) e acrescentar as URLs no sitemap.
