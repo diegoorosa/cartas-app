@@ -179,6 +179,10 @@
   <url><loc>https://www.cartasapp.com.br/reembolso-cancelamento-voo-latam.html</loc></url>
   <url><loc>https://www.cartasapp.com.br/reembolso-cancelamento-voo-azul.html</loc></url>
 
+  <!-- Cancelamento por motivo especial -->
+  <url><loc>https://www.cartasapp.com.br/cancelamento-por-doenca.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/cancelamento-por-falecimento.html</loc></url>
+
   <!-- Novos guias de conteúdo -->
   <url><loc>https://www.cartasapp.com.br/guia-cancelar-smart-fit-sem-ir-loja.html</loc></url>
   <url><loc>https://www.cartasapp.com.br/multa-fidelidade-academia.html</loc></url>
@@ -186,5 +190,15 @@
   <url><loc>https://www.cartasapp.com.br/guia-como-reclamar-procon.html</loc></url>
   <url><loc>https://www.cartasapp.com.br/guia-carta-notificacao-formal.html</loc></url>
   <url><loc>https://www.cartasapp.com.br/guia-direito-arrependimento-7-dias.html</loc></url>
+
+  <!-- Guias de alto impacto (dores do consumidor) -->
+  <url><loc>https://www.cartasapp.com.br/nome-sujo-sem-dever.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/seguradora-nao-paga-sinistro.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/cartao-clonado-como-agir.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/pix-errado-como-recuperar.html</loc></url>
+  <url><loc>https://www.cartasapp.com.br/emprestimo-consignado-indevido.html</loc></url>
+
+  <!-- Página de autoridade -->
+  <url><loc>https://www.cartasapp.com.br/sobre-autoridade-documentos.html</loc></url>
 
 </urlset>
