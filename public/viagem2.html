@@ -1998,6 +1998,9 @@
                         previewWrap.style.display = 'block';
                         paySection.style.display = 'block';
                         btnPreview.style.display = 'none';
+                        btnPreview.disabled = false;
+                        btnPreview.classList.remove('loading');
+                        btnPreview.textContent = 'Ver Prévia do Documento';
                         var wa = document.querySelector('.whatsapp-float');
                         if (wa) wa.classList.add('wa-hidden');
                         var sb = document.querySelector('.sticky-bottom-bar');
