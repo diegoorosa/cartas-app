@@ -114,6 +114,16 @@ const PRICE_MAP = {
     "carta-bagagem-danificada": 19.90
 };
 
+// Títulos amigáveis para o item exibido no checkout do Mercado Pago
+const TITLE_MAP = {
+    'autorizacao-viagem-menor': 'Autorização de Viagem para Menor'
+};
+
+function tituloAmigavel(slug) {
+    if (TITLE_MAP[slug]) return TITLE_MAP[slug];
+    return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
 /**
  * Grava log de aceite de termos/aviso no Supabase.
  * Não bloqueia o fluxo de pagamento em caso de erro.
@@ -196,7 +206,7 @@ exports.handler = async (event) => {
         const pref = {
             items: [
                 {
-                    title: `Documento: ${slug}`,
+                    title: `Documento: ${tituloAmigavel(slug)}`,
                     quantity: 1,
                     currency_id: 'BRL',
                     unit_price: Number(price)
