@@ -469,6 +469,11 @@
             gap: 10px;
         }
 
+        /* Some quando a prévia/paybox já está visível (evita duplicar CTA/scroll contraditório) */
+        .sticky-bottom-bar.sb-hidden {
+            display: none !important;
+        }
+
         .sticky-bottom-bar .sticky-price {
             font-family: 'IBM Plex Mono', monospace;
             font-size: 18px;
@@ -1876,6 +1881,8 @@
             btnPagar.disabled = true;
             var wa = document.querySelector('.whatsapp-float');
             if (wa) wa.classList.remove('wa-hidden');
+            var sb = document.querySelector('.sticky-bottom-bar');
+            if (sb) sb.classList.remove('sb-hidden');
             var formArea = document.getElementById('formArea');
             if (formArea) formArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -1993,6 +2000,8 @@
                         btnPreview.style.display = 'none';
                         var wa = document.querySelector('.whatsapp-float');
                         if (wa) wa.classList.add('wa-hidden');
+                        var sb = document.querySelector('.sticky-bottom-bar');
+                        if (sb) sb.classList.add('sb-hidden');
 
                         setTimeout(function () {
                             if (previewWrap) previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
