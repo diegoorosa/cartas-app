@@ -331,6 +331,20 @@
             formArea.style.display = 'none';
         }
 
+        if (cfg) {
+            var canonicalUrl = 'https://www.cartasapp.com.br/doc/' + cfg.slug;
+            var canonicalEl = document.querySelector('link[rel="canonical"]');
+            if (canonicalEl) canonicalEl.setAttribute('href', canonicalUrl);
+            var metaDescEl = document.querySelector('meta[name="description"]');
+            if (metaDescEl) metaDescEl.setAttribute('content', cfg.title + '. Preencha os dados e baixe em PDF/DOC.');
+            var ogTitleEl = document.querySelector('meta[property="og:title"]');
+            if (ogTitleEl) ogTitleEl.setAttribute('content', cfg.title + ' | CartasApp');
+            var ogDescEl = document.querySelector('meta[property="og:description"]');
+            if (ogDescEl) ogDescEl.setAttribute('content', cfg.title + '. Preencha os dados e baixe em PDF/DOC.');
+            var ogUrlEl = document.querySelector('meta[property="og:url"]');
+            if (ogUrlEl) ogUrlEl.setAttribute('content', canonicalUrl);
+        }
+
         var price = (cfg && typeof cfg.price === 'number') ? cfg.price : 9.90;
         var priceStr = 'R$ ' + price.toFixed(2).replace('.', ',');
         var payBtnLabel = 'Gerar documento completo (' + priceStr + ')';

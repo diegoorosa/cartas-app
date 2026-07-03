@@ -60,6 +60,24 @@
         })(window, document, "clarity", "script", "u4x90t35gk");
     </script>
     <link rel="canonical" href="https://www.cartasapp.com.br/multa.html" />
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Recurso de Multa de Trânsito",
+  "image": "https://www.cartasapp.com.br/logo.webp",
+  "description": "Recurso de multa de trânsito personalizado (Defesa Prévia ou JARI), gerado com base no Código de Trânsito Brasileiro.",
+  "brand": { "@type": "Brand", "name": "CartasApp" },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://www.cartasapp.com.br/multa.html",
+    "priceCurrency": "BRL",
+    "price": "19.90",
+    "priceValidUntil": "2026-12-31",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
     <meta property="og:title" content="Recurso de Multa de Trânsito (Defesa Prévia/JARI) | CartasApp">
     <meta property="og:description" content="Gere seu recurso de multa de trânsito personalizado. Defesa prévia ou JARI. Baseado no CTB. Baixe em PDF/DOC.">
     <meta property="og:image" content="https://www.cartasapp.com.br/logo.webp">
@@ -505,7 +523,7 @@
 
         // -------- MULTI-STEP --------
         var currentStep = 1;
-        function showStep(step) {
+        function showStep(step, autoScroll = true) {
             currentStep = step;
             var steps = document.querySelectorAll('.form-step');
             steps.forEach(function (s) {
@@ -518,10 +536,12 @@
                 it.classList.toggle('active', n === step);
                 it.classList.toggle('completed', n < step);
             });
-            setTimeout(() => {
-                var fa = document.querySelector('.step-indicator') || document.querySelector('.form-step[data-step="' + step + '"]');
-                if (fa) fa.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 50);
+            if (autoScroll) {
+                setTimeout(() => {
+                    var fa = document.querySelector('.step-indicator') || document.querySelector('.form-step[data-step="' + step + '"]');
+                    if (fa) fa.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 50);
+            }
         }
 
         function validateStep(step) {
@@ -571,7 +591,7 @@
             showStep(2);
         });
 
-        showStep(1);
+        showStep(1, false);
 
         var btnPreview = document.getElementById('btnPreview');
         var btnPagar = document.getElementById('btnPagar');

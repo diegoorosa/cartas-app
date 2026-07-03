@@ -1597,7 +1597,7 @@
             // P4 — Keyboard friendly: foco no primeiro input + Enter para avançar
             var firstInput = document.getElementById('menor_nome');
             if (firstInput) {
-                setTimeout(function () { firstInput.focus(); }, 300);
+                setTimeout(function () { firstInput.focus({ preventScroll: true }); }, 300);
             }
 
             document.addEventListener('keydown', function (e) {

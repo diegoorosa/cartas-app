@@ -42,24 +42,31 @@
   "@type": "WebSite",
   "name": "CartasApp",
   "url": "https://www.cartasapp.com.br/",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://www.cartasapp.com.br/?s={search_term_string}",
-    "query-input": "required name=search_term_string"
-  },
   "description": "Gere documentos formais, autorizações de viagem, cartas de cancelamento e notificações de consumo em minutos."
 }
 </script>
     <script type="application/ld+json">
 {
-  "@context": "https://schema.org/",
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "CartasApp",
+  "url": "https://www.cartasapp.com.br/",
+  "logo": "https://www.cartasapp.com.br/logo.webp",
+  "sameAs": [
+    "https://www.instagram.com/cartasapp",
+    "https://www.pinterest.com/cartasapp"
+  ]
+}
+</script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
   "@type": "Service",
   "serviceType": "Legal Document Generation",
   "provider": {
-    "@type": "LocalBusiness",
+    "@type": "Organization",
     "name": "CartasApp",
-    "image": "https://www.cartasapp.com.br/logo.webp",
-    "priceRange": "$$"
+    "url": "https://www.cartasapp.com.br/"
   },
   "areaServed": {
     "@type": "Country",

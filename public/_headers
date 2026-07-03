@@ -12,12 +12,24 @@
   Cross-Origin-Resource-Policy: same-origin
 
 /*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 # Scripts compartilhados mudam sem aviso (recovery.js, theme.js, etc.) --
 # cache curto com revalidacao pra fixes chegarem rapido nos navegadores.
 /*.js
   Cache-Control: public, max-age=300, must-revalidate
+
+# Assets versionados/imutáveis (imagens, fontes, ícones) -- seguros para cache longo.
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+/*.avif
+  Cache-Control: public, max-age=31536000, immutable
+/*.ico
+  Cache-Control: public, max-age=31536000, immutable
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
 
 # Netlify Functions
 /.netlify/functions/*
