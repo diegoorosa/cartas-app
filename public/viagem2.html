@@ -1804,15 +1804,6 @@
             if (formArea) formArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        function checkCooldown() {
-            var last = localStorage.getItem('last_preview_ts');
-            if (last && (Date.now() - parseInt(last)) < 30000) {
-                alert('Por favor, aguarde alguns segundos antes de gerar outra prévia.');
-                return false;
-            }
-            return true;
-        }
-
         function captureLead(p) {
             fetch('/.netlify/functions/capture-lead', {
                 method: 'POST',
@@ -1830,7 +1821,6 @@
         // --- BOTÃO PRÉVIA (VERSÃO "PAYWALL" - BLOQUEIA O RESTO) ---
         if (btnPreview) {
             btnPreview.addEventListener('click', function () {
-                if (!checkCooldown()) return;
 
                 if (!validateStep(1)) { showStep(1); return; }
                 if (!validateStep(2)) { showStep(2); return; }
@@ -1935,7 +1925,6 @@
                         }
 
                         localStorage.setItem('pendingPayload', JSON.stringify(payload));
-                        localStorage.setItem('last_preview_ts', Date.now());
                         btnPagar.disabled = false;
 
                     } catch (e) {
