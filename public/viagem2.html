@@ -1112,6 +1112,10 @@
                                         <div class="secure-item">Padrão CNJ</div>
                                         <div class="secure-item">Dados Protegidos</div>
                                     </div>
+
+                                    <p style="margin-top: 16px; text-align: center; font-size: 12px;">
+                                        <a href="#" onclick="editarDados(); return false;" style="color: var(--text-muted); text-decoration: underline;">✏️ Verifiquei e errei algum dado — editar formulário</a>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -1184,6 +1188,10 @@
                         style="width:100%; margin-top: 16px; background: #14213D; border-color: #14213D; font-size: 15px; padding: 14px; white-space: normal; height: auto; line-height: 1.3; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; font-weight: 600;">
                         <span style="flex: 1;">FINALIZAR E BAIXAR DOCUMENTO (R$ 39,90)</span>
                     </button>
+
+                    <p style="margin-top: 12px; text-align: center;">
+                        <a href="#" onclick="editarDados(); return false;" style="font-size: 13px; color: var(--accent-primary); text-decoration: underline;">✏️ Errei algum dado? Editar formulário</a>
+                    </p>
 
                     <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
                         <h3 style="font-size: 16px; margin: 0 0 12px; color: var(--text-primary);">Perguntas rápidas</h3>
@@ -1733,9 +1741,9 @@
         document.getElementById('nextStep1').onclick = function () { clearStepError(); if (validateStep(1)) showStep(2); };
         document.getElementById('nextStep2').onclick = function () { clearStepError(); if (validateStep(2)) showStep(3); };
         document.getElementById('nextStep3').onclick = function () { clearStepError(); if (validateStep(3)) showStep(4); };
-        document.getElementById('prevStep2').onclick = function () { clearStepError(); showStep(1); };
-        document.getElementById('prevStep3').onclick = function () { clearStepError(); showStep(2); };
-        document.getElementById('prevStep4').onclick = function () { clearStepError(); showStep(3); };
+        document.getElementById('prevStep2').onclick = function () { clearStepError(); showStep(1); if (previewWrap.style.display !== 'none') editarDados(); };
+        document.getElementById('prevStep3').onclick = function () { clearStepError(); showStep(2); if (previewWrap.style.display !== 'none') editarDados(); };
+        document.getElementById('prevStep4').onclick = function () { clearStepError(); showStep(3); if (previewWrap.style.display !== 'none') editarDados(); };
 
         // ========== INICIALIZAÇÃO ==========
         document.addEventListener('DOMContentLoaded', function () {
@@ -1786,6 +1794,15 @@
         var previewWrap = document.getElementById('previewWrap');
         var previewBox = document.getElementById('previewBox');
         var paySection = document.getElementById('paySection');
+
+        function editarDados() {
+            previewWrap.style.display = 'none';
+            paySection.style.display = 'none';
+            btnPreview.style.display = 'block';
+            btnPagar.disabled = true;
+            var formArea = document.getElementById('formArea');
+            if (formArea) formArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
 
         function checkCooldown() {
             var last = localStorage.getItem('last_preview_ts');
