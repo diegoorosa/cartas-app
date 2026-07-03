@@ -300,6 +300,11 @@
             /* Garante que fique NA FRENTE de tudo */
         }
 
+        /* Esconde o WhatsApp float quando o paybox/prévia está visível (cobria o link "editar formulário") */
+        .whatsapp-float.wa-hidden {
+            display: none !important;
+        }
+
         .whatsapp-float {
             width: 52px;
             height: 52px;
@@ -338,6 +343,13 @@
             color: #000 !important;
             text-align: justify;
             position: relative;
+        }
+
+        /* Texto justificado cria "rios" de espaço em coluna estreita no mobile */
+        @media (max-width: 768px) {
+            #doc {
+                text-align: left !important;
+            }
         }
 
         /* Borda decorativa interna (Estilo Cartório) */
@@ -505,6 +517,36 @@
             #cookie-banner {
                 bottom: 78px !important;
             }
+
+            /* Hero comprimido: CTA + preço aparecem na 1ª dobra */
+            .hero {
+                padding: 24px 0 20px !important;
+            }
+
+            .seal-hero svg {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .hero-subtitle {
+                font-size: 14px !important;
+                margin-bottom: 16px !important;
+            }
+
+            .hero-badges-wrap {
+                margin-bottom: 12px !important;
+            }
+        }
+
+        /* Botões de pagamento na identidade navy (sem o gradiente dourado->turquesa herdado do style.css) */
+        #btnPagar, #btnConfirmarTermos {
+            background: #14213D !important;
+            border-color: #14213D !important;
+            box-shadow: 0 4px 12px rgba(20, 33, 61, 0.3) !important;
+        }
+
+        #btnPagar:hover:not(:disabled), #btnConfirmarTermos:hover:not(:disabled) {
+            box-shadow: 0 8px 20px rgba(20, 33, 61, 0.4) !important;
         }
 
         /* "Como funciona" cards no mobile — empilha vertical */
@@ -646,54 +688,6 @@
                     </div>
                 </div>
 
-                <div class="como-funciona"
-                    style="margin-bottom: 24px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 20px;">
-                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;
-                        letter-spacing: 1px; margin-bottom: 16px; text-align: center;">
-                        Como funciona
-                    </div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
-                        <div class="cf-card"
-                            style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
-                            <div style="font-size: 36px; font-weight: 800; color: rgba(20, 33, 61, 0.08); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">01</div>
-                            <div style="margin-bottom: 10px; position: relative; color: var(--accent-primary);">
-                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                            </div>
-                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">Preencha</div>
-                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Dados da viagem e dos responsáveis em menos de 3 minutos.</div>
-                        </div>
-                        <div class="cf-card"
-                            style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
-                            <div style="font-size: 36px; font-weight: 800; color: rgba(20, 33, 61, 0.08); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">02</div>
-                            <div style="margin-bottom: 10px; position: relative; color: var(--accent-primary);">
-                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </div>
-                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">Confira</div>
-                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Veja a prévia gratuita antes de decidir pagar.</div>
-                        </div>
-                        <div class="cf-card"
-                            style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
-                            <div style="font-size: 36px; font-weight: 800; color: rgba(20, 33, 61, 0.08); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">03</div>
-                            <div style="margin-bottom: 10px; position: relative; color: var(--accent-primary);">
-                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                                </svg>
-                            </div>
-                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">Baixe</div>
-                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">PDF + Word prontos para imprimir e reconhecer firma.</div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="hero-price-card ticket-stub"
                     style="padding: 12px 22px; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 15px;">
                     <div style="text-align: left;">
@@ -739,6 +733,54 @@
                 <p class="small" style="margin-top: 16px; color: #94a3b8; font-size: 12px;">
                     Plataforma segura e criptografada (SSL).
                 </p>
+
+                <div class="como-funciona"
+                    style="margin-top: 28px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 20px;">
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;
+                        letter-spacing: 1px; margin-bottom: 16px; text-align: center;">
+                        Como funciona
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+                        <div class="cf-card"
+                            style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
+                            <div style="font-size: 36px; font-weight: 800; color: rgba(20, 33, 61, 0.08); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">01</div>
+                            <div style="margin-bottom: 10px; position: relative; color: var(--accent-primary);">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">Preencha</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Dados da viagem e dos responsáveis em menos de 3 minutos.</div>
+                        </div>
+                        <div class="cf-card"
+                            style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
+                            <div style="font-size: 36px; font-weight: 800; color: rgba(20, 33, 61, 0.08); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">02</div>
+                            <div style="margin-bottom: 10px; position: relative; color: var(--accent-primary);">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">Confira</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">Veja a prévia gratuita antes de decidir pagar.</div>
+                        </div>
+                        <div class="cf-card"
+                            style="flex: 1 1 160px; max-width: 220px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px 14px; text-align: center; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;">
+                            <div style="font-size: 36px; font-weight: 800; color: rgba(20, 33, 61, 0.08); line-height: 1; position: absolute; top: 6px; right: 10px; user-select: none;">03</div>
+                            <div style="margin-bottom: 10px; position: relative; color: var(--accent-primary);">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                </svg>
+                            </div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">Baixe</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">PDF + Word prontos para imprimir e reconhecer firma.</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -874,10 +916,11 @@
 
                                     <input class="input input-icon input-icon-calendar" type="date" id="data_volta" required />
 
-                                    <small
-                                        style="display:block; font-size: 0.75rem; color: #6b7280; margin-top: 4px; line-height: 1.2;">
-                                        Sem volta definida? Selecione a data de hoje + 2 anos (validade máxima legal).
-                                    </small>
+                                    <label
+                                        style="display:flex; align-items:center; gap:6px; font-size: 0.75rem; color: #6b7280; margin-top: 6px; line-height: 1.2; cursor:pointer;">
+                                        <input type="checkbox" id="sem_volta_definida" style="width:auto; margin:0;">
+                                        Sem volta definida (usar validade máxima de 2 anos)
+                                    </label>
                                     <div id="err_data_volta" class="small"
                                         style="display:none;color:#fca5a5;margin-top:4px;">Data inválida.</div>
                                 </div>
@@ -894,8 +937,8 @@
                             <h2 class="section-title" style="font-size: 24px; margin-bottom: 16px;">Com quem a criança
                                 vai viajar?</h2>
                             <select id="acompanhante_tipo" style="display:none">
-                                <option value="" selected></option>
-                                <option value="outro_responsavel">A Mãe / O Pai</option>
+                                <option value=""></option>
+                                <option value="outro_responsavel" selected>A Mãe / O Pai</option>
                                 <option value="terceiro">Parente / Terceiro</option>
                                 <option value="desacompanhado">Sozinho (Desacompanhado)</option>
                             </select>
@@ -903,6 +946,7 @@
                             <div class="radio-group full-mobile">
                                 <div class="radio-card">
                                     <input type="radio" name="acomp_visual" id="opt_resp" value="outro_responsavel"
+                                        checked
                                         onchange="updateAcompVisibility(this.value)">
                                     <label for="opt_resp" class="radio-label">
                                         <span class="radio-icon"><svg width="26" height="22" viewBox="0 0 28 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 21v-2a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v2"></path><circle cx="6.5" cy="7" r="3.5"></circle><path d="M16 21v-2a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v2"></path><circle cx="21.5" cy="7" r="3.5"></circle></svg></span>
@@ -1744,8 +1788,8 @@
             });
             if (autoScroll) {
                 setTimeout(() => {
-                    var fa = document.getElementById('formArea');
-                    if (fa) fa.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    var si = document.querySelector('.step-indicator');
+                    if (si) si.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 50);
             }
         }
@@ -1774,6 +1818,23 @@
                 if (el) el.addEventListener('input', function () { this.value = maskCPF(this.value); });
             });
 
+            var chkSemVolta = document.getElementById('sem_volta_definida');
+            var inputDataVolta = document.getElementById('data_volta');
+            if (chkSemVolta && inputDataVolta) {
+                chkSemVolta.addEventListener('change', function () {
+                    if (this.checked) {
+                        var d = new Date();
+                        d.setFullYear(d.getFullYear() + 2);
+                        var mm = String(d.getMonth() + 1).padStart(2, '0');
+                        var dd = String(d.getDate()).padStart(2, '0');
+                        inputDataVolta.value = d.getFullYear() + '-' + mm + '-' + dd;
+                        inputDataVolta.disabled = true;
+                    } else {
+                        inputDataVolta.disabled = false;
+                    }
+                });
+            }
+
             // P4 — Keyboard friendly: foco no primeiro input + Enter para avançar
             var firstInput = document.getElementById('menor_nome');
             if (firstInput) {
@@ -1799,6 +1860,7 @@
         attachAutosave();
         showStep(1, false);
         updateViagem('nacional');
+        updateAcompVisibility('outro_responsavel');
 
         // ========== PREVIEW E PAGAMENTO ==========
         var btnPreview = document.getElementById('btnPreview');
@@ -1812,6 +1874,8 @@
             paySection.style.display = 'none';
             btnPreview.style.display = 'block';
             btnPagar.disabled = true;
+            var wa = document.querySelector('.whatsapp-float');
+            if (wa) wa.classList.remove('wa-hidden');
             var formArea = document.getElementById('formArea');
             if (formArea) formArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -1927,6 +1991,8 @@
                         previewWrap.style.display = 'block';
                         paySection.style.display = 'block';
                         btnPreview.style.display = 'none';
+                        var wa = document.querySelector('.whatsapp-float');
+                        if (wa) wa.classList.add('wa-hidden');
 
                         setTimeout(function () {
                             if (previewWrap) previewWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
