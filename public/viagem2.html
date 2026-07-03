@@ -500,6 +500,11 @@
             body {
                 padding-bottom: 72px;
             }
+
+            /* Banner de cookies (injetado por /theme.js) não pode cobrir a sticky bar de preço+CTA */
+            #cookie-banner {
+                bottom: 78px !important;
+            }
         }
 
         /* "Como funciona" cards no mobile — empilha vertical */
@@ -692,8 +697,8 @@
                 <div class="hero-price-card ticket-stub"
                     style="padding: 12px 22px; margin-bottom: 12px; display: inline-flex; align-items: center; gap: 15px;">
                     <div style="text-align: left;">
-                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold;">Taxa
-                            de Emissão</div>
+                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: bold;">Documento
+                            Completo — Pagamento Único</div>
                         <div class="protocol-num" style="font-size: 20px; font-weight: 700; color: var(--text-primary);">R$ 39,90</div>
                         <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">PDF + Word prontos para cartório.
                         </div>
@@ -705,6 +710,10 @@
                         style="font-size: 12px; color: var(--accent-success); font-weight: 600; display: flex; align-items: center; gap: 4px;">
                         Documento Validado
                     </div>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 12px; font-size: 11px; color: var(--text-muted);">
+                    Advogado: R$ 250+ · Escritura em cartório: R$ 150+ · <strong style="color: var(--text-primary);">Aqui: R$ 39,90</strong>
                 </div>
 
                 <div style="text-align: center; margin-bottom: 16px;">
@@ -1075,6 +1084,9 @@
                                         <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">
                                             Pagamento único • Acesso vitalício aos arquivos
                                         </div>
+                                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">
+                                            Advogado: R$ 250+ · Escritura em cartório: R$ 150+ · <strong style="color: var(--text-primary);">Aqui: R$ 39,90</strong>
+                                        </div>
                                     </div>
 
                                     <button class="btn btn-primary" id="btnPagar"
@@ -1383,7 +1395,7 @@
 
     <div class="sticky-bottom-bar">
         <div style="display: flex; flex-direction: column; align-items: flex-start;">
-            <span class="sticky-label">Taxa de Emissão</span>
+            <span class="sticky-label">Documento Completo</span>
             <span class="sticky-price">R$ 39,90</span>
         </div>
         <button class="sticky-btn" onclick="scrollToForm(event)">GERAR AUTORIZAÇÃO AGORA</button>
@@ -1921,7 +1933,8 @@
                         }, 300);
 
                         if (typeof gtag === 'function') {
-                            gtag('event', 'generate_lead', { 'event_category': 'engagement', 'event_label': 'viagem_nacional', 'value': 2.00, 'currency': 'BRL' });
+                            var tipoViagemLabel = (document.getElementById('viagem_tipo') || {}).value || 'nacional';
+                            gtag('event', 'generate_lead', { 'event_category': 'engagement', 'event_label': 'viagem_' + tipoViagemLabel, 'value': 2.00, 'currency': 'BRL' });
                         }
 
                         localStorage.setItem('pendingPayload', JSON.stringify(payload));
@@ -1982,85 +1995,19 @@
                 localStorage.setItem('lastOrderId', data.order_id || '');
                 if (typeof gtag === 'function') {
                     gtag('event', 'begin_checkout', {
-                        value: 29.9,
+                        value: 39.9,
                         currency: 'BRL',
                         items: [{ item_id: slugStr }]
                     });
                 }
-                showPaymentModal(data.init_point, data.order_id, slugStr);
+                location.href = data.init_point;
             } catch (e) {
                 alert('Erro: ' + e.message);
-            } finally {
                 btnConfirm.disabled = false;
                 btnConfirm.classList.remove('loading');
                 btnConfirm.textContent = 'Confirmar e Pagar';
             }
         };
-
-        function showPaymentModal(initPoint, orderId, slug) {
-            var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
-            var cardBG = isLight ? '#ffffff' : '#111827';
-            var cardText = isLight ? '#14213D' : '#e6eefb';
-            var overlay = document.createElement('div');
-            overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
-            overlay.innerHTML =
-                '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:16px;max-width:400px;width:90%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;">' +
-                '<h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3>' +
-                '<p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique no botão abaixo para finalizar o pagamento com segurança no Mercado Pago.</p>' +
-                '<div style="display:flex;flex-direction:column;gap:12px;">' +
-                '<button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix ou Cartão)</button>' +
-                '<button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir dados</button>' +
-                '</div>' +
-                '<p id="lm-statusPay" class="small" style="margin-top:16px;font-size:12px;opacity:0.8;"></p>' +
-                '</div>';
-            document.body.appendChild(overlay);
-
-            document.getElementById('lm-close').onclick = function () {
-                overlay.remove();
-                try { grecaptcha.reset(); } catch (e) { }
-                var btnPagar = document.getElementById('btnPagar');
-                if (btnPagar) {
-                    btnPagar.disabled = false;
-                    btnPagar.textContent = 'Gerar documento completo (R$ 39,90)';
-                }
-            };
-
-            async function docReady() {
-                try {
-                    var r = await fetch('/.netlify/functions/generate-doc', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
-                    });
-                    if (!r.ok) return false;
-                    var j = await r.json();
-                    return !!(j && j.output);
-                } catch (e) { return false; }
-            }
-
-            document.getElementById('lm-goPay').onclick = function () {
-                window.open(initPoint, '_blank', 'noopener');
-                var btn = this;
-                btn.textContent = 'Verificando pagamento...';
-                document.getElementById('lm-statusPay').textContent = 'Aguarde, estamos confirmando seu pagamento...';
-                var iv = setInterval(async function () {
-                    try {
-                        if (await docReady()) {
-                            clearInterval(iv);
-                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success';
-                            return;
-                        }
-                        var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
-                        var jj = rr.ok ? await rr.json() : null;
-                        if (jj && jj.status === 'paid') {
-                            clearInterval(iv);
-                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success';
-                        }
-                    } catch (e) { }
-                }, 3000);
-            };
-        }
-
 
         // Admin mode removed - moved to protected Netlify Function with proper auth
     </script>
