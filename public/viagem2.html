@@ -990,13 +990,19 @@
                     </div>
 
                     <div
-                        style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:12px; padding:24px; position:relative;">
+                        style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:12px; padding:24px; position:relative; user-select:none; -webkit-user-select:none; -ms-user-select:none;"
+                        oncopy="return false" oncut="return false" oncontextmenu="return false">
                         <div
-                            style="position:absolute; top:10px; right:10px; background:#ecfdf5; color:#065f46; padding:4px 8px; font-size:10px; border-radius:4px; font-weight:bold; text-transform:uppercase;">
+                            style="position:absolute; top:10px; right:10px; background:#ecfdf5; color:#065f46; padding:4px 8px; font-size:10px; border-radius:4px; font-weight:bold; text-transform:uppercase; z-index:2;">
                             Prévia Completa
                         </div>
+                        <div style="position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; border-radius:12px;">
+                            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-25deg); font-size:48px; font-weight:900; color:rgba(0,0,0,0.04); white-space:nowrap; letter-spacing:8px; user-select:none; -webkit-user-select:none;">
+                                PRÉVIA CARTASAPP
+                            </div>
+                        </div>
                         <div id="previewBox"
-                            style="white-space:pre-wrap; font-family:'Courier New', Courier, monospace; font-size:14px; line-height:1.6; color:#334155;">
+                            style="white-space:pre-wrap; font-family:'Courier New', Courier, monospace; font-size:14px; line-height:1.6; color:#334155; position:relative; z-index:1;">
                         </div>
                     </div>
 
@@ -1726,6 +1732,9 @@
                         pBox.appendChild(footer);
 
                         pBox.style.whiteSpace = 'normal';
+                        pBox.style.userSelect = 'none';
+                        pBox.style.webkitUserSelect = 'none';
+                        pBox.style.msUserSelect = 'none';
 
                         // -------------------------------------
 
