@@ -1031,10 +1031,13 @@
                             <input type="checkbox" id="dois_resps" style="display:none">
 
                             <div style="margin-top:14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; font-size:12.5px; line-height:1.5; color:#475569;">
-                                <strong style="color:#14213D;">Quantas assinaturas preciso?</strong><br>
-                                <strong>Viagem nacional:</strong> basta a autorização de <strong>um</strong> dos pais ou responsável legal, com firma reconhecida (Resolução CNJ 295/2019).<br>
-                                <strong>Viagem internacional:</strong> em regra, <strong>ambos</strong> os pais assinam. Se um faleceu, leve a certidão de óbito; se é ausente/desconhecido ou você tem guarda unilateral, pode ser exigida autorização judicial.<br>
-                                <span style="color:#64748b;">O cartório apenas reconhece a firma da sua assinatura — não confere nem autoriza o conteúdo. A conferência dos documentos é feita pela companhia e pela Polícia Federal no embarque.</span>
+                                <span id="hint_nacional">
+                                    <strong style="color:#14213D;">Basta um responsável.</strong> Para viagem nacional, a assinatura de <strong>um</strong> dos pais ou responsável já é suficiente — não precisa dos dois (Resolução CNJ 295/2019).
+                                </span>
+                                <span id="hint_internacional" style="display:none;">
+                                    <strong style="color:#14213D;">Viagem internacional:</strong> em regra, <strong>os dois pais</strong> assinam. Só há um responsável (falecimento, ausência ou guarda unilateral)? Leve o comprovante (certidão de óbito ou decisão judicial) para apresentar no embarque.
+                                </span>
+                                <br><span style="color:#64748b;">O cartório apenas reconhece a firma da sua assinatura; a conferência dos documentos é feita pela companhia e pela Polícia Federal no embarque.</span>
                             </div>
 
                             <div
@@ -1579,6 +1582,14 @@
                         aviso.textContent = 'Para viagens nacionais, verifique também as regras da companhia aérea/rodoviária e tenha em mãos os documentos originais do menor e dos responsáveis.';
                     }
                 }
+            }
+            // Mostra no passo 3 só a regra de assinaturas do tipo de viagem escolhido
+            var hn = document.getElementById('hint_nacional');
+            var hi = document.getElementById('hint_internacional');
+            if (hn && hi) {
+                var isInter = (val === 'internacional');
+                hn.style.display = isInter ? 'none' : 'inline';
+                hi.style.display = isInter ? 'inline' : 'none';
             }
         }
 
