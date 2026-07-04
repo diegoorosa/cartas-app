@@ -345,9 +345,10 @@
             position: relative;
         }
 
-        /* Texto justificado cria "rios" de espaço em coluna estreita no mobile */
+        /* Texto justificado cria "rios" de espaço em coluna estreita no mobile.
+           O corpo da prévia real é montado em #previewBox (o `.preview-body` abaixo). */
         @media (max-width: 768px) {
-            #doc {
+            .preview-body, .preview-body p {
                 text-align: left !important;
             }
         }
@@ -518,9 +519,16 @@
                 padding-bottom: 72px;
             }
 
-            /* Banner de cookies (injetado por /theme.js) não pode cobrir a sticky bar de preço+CTA */
+            /* Banner de cookies (injetado por /theme.js): fica acima da sticky bar e
+               ancorado à esquerda, deixando o canto direito livre para o botão do
+               WhatsApp (senão o 1º toque em "OK" cai no WhatsApp) */
             #cookie-banner {
                 bottom: 78px !important;
+                left: 10px !important;
+                right: 76px !important;
+                transform: none !important;
+                width: auto !important;
+                max-width: none !important;
             }
 
             /* Hero comprimido: CTA + preço aparecem na 1ª dobra */
@@ -543,14 +551,15 @@
             }
         }
 
-        /* Botões de pagamento na identidade navy (sem o gradiente dourado->turquesa herdado do style.css) */
-        #btnPagar, #btnConfirmarTermos {
+        /* Botões-âncora na identidade navy (sem o gradiente dourado->turquesa herdado do style.css):
+           CTA do hero + botões de pagamento */
+        .hero-actions .btn-primary, #btnPagar, #btnConfirmarTermos {
             background: #14213D !important;
             border-color: #14213D !important;
             box-shadow: 0 4px 12px rgba(20, 33, 61, 0.3) !important;
         }
 
-        #btnPagar:hover:not(:disabled), #btnConfirmarTermos:hover:not(:disabled) {
+        .hero-actions .btn-primary:hover:not(:disabled), #btnPagar:hover:not(:disabled), #btnConfirmarTermos:hover:not(:disabled) {
             box-shadow: 0 8px 20px rgba(20, 33, 61, 0.4) !important;
         }
 
@@ -1448,7 +1457,7 @@
         </svg></a>
 
     <div id="modalTermos"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(4px);">
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:100001; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(4px);">
         <div
             style="background:var(--bg-primary); border:1px solid var(--border); border-radius:16px; max-width:500px; width:100%; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; max-height: 90vh;">
 
@@ -1969,6 +1978,7 @@
                         pBox.appendChild(header);
 
                         var body = document.createElement('div');
+                        body.className = 'preview-body';
                         body.style.cssText = 'font-family:\'Times New Roman\',serif; font-size:15px; line-height:1.6; text-align:justify; color:#000;';
                         textContent.split('\n\n').forEach(function(para) {
                             var p = document.createElement('p');
@@ -2031,7 +2041,7 @@
             var checkbox = document.getElementById('aceite_termos');
             var errTermos = document.getElementById('err_aceite_termos');
             if (!checkbox.checked) {
-                if (errTermos) errTermos.style.display = 'block';
+                if (errTermos) { errTermos.textContent = 'Marque a caixa acima para continuar.'; errTermos.style.display = 'block'; }
                 return;
             }
             if (errTermos) errTermos.style.display = 'none';
@@ -2066,7 +2076,10 @@
                 }
                 location.href = data.init_point;
             } catch (e) {
-                alert('Erro: ' + e.message);
+                if (errTermos) {
+                    errTermos.textContent = 'Não foi possível iniciar o pagamento. Tente novamente em instantes. (' + e.message + ')';
+                    errTermos.style.display = 'block';
+                }
                 btnConfirm.disabled = false;
                 btnConfirm.classList.remove('loading');
                 btnConfirm.textContent = 'Confirmar e Pagar';
