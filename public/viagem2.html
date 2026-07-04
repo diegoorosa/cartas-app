@@ -1031,8 +1031,10 @@
                             <input type="checkbox" id="dois_resps" style="display:none">
 
                             <div style="margin-top:14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; font-size:12.5px; line-height:1.5; color:#475569;">
-                                <strong style="color:#14213D;">Quantas assinaturas?</strong> Em regra, quando a criança viaja com terceiros (avós, tios), <strong>pai e mãe assinam</strong>.<br>
-                                Só há um responsável legal? (o outro faleceu, não consta no registro de nascimento, ou você tem guarda unilateral) — escolha <strong>“Apenas 1 Responsável”</strong> e leve ao cartório o comprovante (certidão de óbito, certidão de nascimento ou decisão judicial de guarda).
+                                <strong style="color:#14213D;">Quantas assinaturas preciso?</strong><br>
+                                <strong>Viagem nacional:</strong> basta a autorização de <strong>um</strong> dos pais ou responsável legal, com firma reconhecida (Resolução CNJ 295/2019).<br>
+                                <strong>Viagem internacional:</strong> em regra, <strong>ambos</strong> os pais assinam. Se um faleceu, leve a certidão de óbito; se é ausente/desconhecido ou você tem guarda unilateral, pode ser exigida autorização judicial.<br>
+                                <span style="color:#64748b;">O cartório apenas reconhece a firma da sua assinatura — não confere nem autoriza o conteúdo. A conferência dos documentos é feita pela companhia e pela Polícia Federal no embarque.</span>
                             </div>
 
                             <div
@@ -1595,17 +1597,19 @@
 
         // Disparado só no clique real do usuário no passo 2 (NÃO no load/restore, pra
         // não sobrescrever uma escolha salva de 1 responsável em caso de pai único).
-        // Sugere o nº de assinaturas mais comum; o usuário pode trocar livremente no passo 3.
+        // Sugere o nº de assinaturas conforme a Resolução CNJ 295/2019; mudável no passo 3.
         function onAcompChange(val) {
             updateAcompVisibility(val);
-            if (val === 'outro_responsavel') {
-                // viaja com um dos pais -> o outro assina (1)
-                var um = document.getElementById('um_resp');
-                if (um) { um.checked = true; toggleResps(1); }
-            } else if (val === 'terceiro' || val === 'desacompanhado') {
-                // viaja com terceiro ou sozinho -> regra geral: pai e mãe assinam (2)
+            var tipo = (document.getElementById('viagem_tipo') || {}).value || 'nacional';
+            // Nacional: basta 1 dos pais em qualquer caso.
+            // Internacional: com um dos pais -> o outro assina (1); com terceiro/sozinho -> ambos (2).
+            var sugereDois = (tipo === 'internacional') && (val === 'terceiro' || val === 'desacompanhado');
+            if (sugereDois) {
                 var dois = document.getElementById('dois_resps_visual');
                 if (dois) { dois.checked = true; toggleResps(2); }
+            } else {
+                var um = document.getElementById('um_resp');
+                if (um) { um.checked = true; toggleResps(1); }
             }
         }
 
