@@ -957,7 +957,7 @@
                                 <div class="radio-card">
                                     <input type="radio" name="acomp_visual" id="opt_resp" value="outro_responsavel"
                                         checked
-                                        onchange="updateAcompVisibility(this.value)">
+                                        onchange="onAcompChange(this.value)">
                                     <label for="opt_resp" class="radio-label">
                                         <span class="radio-icon"><svg width="26" height="22" viewBox="0 0 28 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 21v-2a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v2"></path><circle cx="6.5" cy="7" r="3.5"></circle><path d="M16 21v-2a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v2"></path><circle cx="21.5" cy="7" r="3.5"></circle></svg></span>
                                         Com o Pai ou Mãe<br><span style="font-size:12px; font-weight:normal;">(O outro
@@ -966,7 +966,7 @@
                                 </div>
                                 <div class="radio-card">
                                     <input type="radio" name="acomp_visual" id="opt_terceiro" value="terceiro"
-                                        onchange="updateAcompVisibility(this.value)">
+                                        onchange="onAcompChange(this.value)">
                                     <label for="opt_terceiro" class="radio-label">
                                         <span class="radio-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
                                         Avós / Tios / Outros<br><span style="font-size:12px; font-weight:normal;">(Pai e
@@ -975,7 +975,7 @@
                                 </div>
                                 <div class="radio-card" style="grid-column: span 2;">
                                     <input type="radio" name="acomp_visual" id="opt_sozinho" value="desacompanhado"
-                                        onchange="updateAcompVisibility(this.value)">
+                                        onchange="onAcompChange(this.value)">
                                     <label for="opt_sozinho" class="radio-label">
                                         <span class="radio-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
                                         Viajar Sozinho<br><span
@@ -1029,6 +1029,11 @@
                                 </div>
                             </div>
                             <input type="checkbox" id="dois_resps" style="display:none">
+
+                            <div style="margin-top:14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; font-size:12.5px; line-height:1.5; color:#475569;">
+                                <strong style="color:#14213D;">Quantas assinaturas?</strong> Em regra, quando a criança viaja com terceiros (avós, tios), <strong>pai e mãe assinam</strong>.<br>
+                                Só há um responsável legal? (o outro faleceu, não consta no registro de nascimento, ou você tem guarda unilateral) — escolha <strong>“Apenas 1 Responsável”</strong> e leve ao cartório o comprovante (certidão de óbito, certidão de nascimento ou decisão judicial de guarda).
+                            </div>
 
                             <div
                                 style="margin-top:20px; background: var(--bg-secondary); padding: 16px; border-radius: 12px;">
@@ -1585,6 +1590,22 @@
                 } else {
                     box.style.display = 'none';
                 }
+            }
+        }
+
+        // Disparado só no clique real do usuário no passo 2 (NÃO no load/restore, pra
+        // não sobrescrever uma escolha salva de 1 responsável em caso de pai único).
+        // Sugere o nº de assinaturas mais comum; o usuário pode trocar livremente no passo 3.
+        function onAcompChange(val) {
+            updateAcompVisibility(val);
+            if (val === 'outro_responsavel') {
+                // viaja com um dos pais -> o outro assina (1)
+                var um = document.getElementById('um_resp');
+                if (um) { um.checked = true; toggleResps(1); }
+            } else if (val === 'terceiro' || val === 'desacompanhado') {
+                // viaja com terceiro ou sozinho -> regra geral: pai e mãe assinam (2)
+                var dois = document.getElementById('dois_resps_visual');
+                if (dois) { dois.checked = true; toggleResps(2); }
             }
         }
 
