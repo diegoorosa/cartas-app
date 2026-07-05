@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title>Carta para Negativa de Cobertura (Plano de Saúde) | CartasApp</title>
     <meta name="description"
-        content="Gere uma carta para contestar negativa de cobertura de exame, cirurgia ou tratamento pelo plano de saúde. Preencha os dados, pague R$ 9,90 e baixe em PDF e Word." />
+        content="Gere uma carta para contestar negativa de cobertura de exame, cirurgia ou tratamento pelo plano de saúde. Preencha os dados, pague R$ 19,90 e baixe em PDF e Word." />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,7 +71,7 @@
         "@type": "Offer",
         "url": "https://www.cartasapp.com.br/plano-saude-negativa.html",
         "priceCurrency": "BRL",
-        "price": "9.90",
+        "price": "19.90",
         "priceValidUntil": "2026-12-31",
         "availability": "https://schema.org/InStock",
         "category": "LegalService"
@@ -123,7 +123,7 @@
                 <p class="hero-subtitle" style="font-size: 18px; margin-top: 16px;">
                     Gere uma <strong>notificação extrajudicial</strong> para exigir a cobertura ou reembolso de exame,
                     cirurgia ou tratamento negado pelo plano de saúde. Documento pronto em <strong>PDF e Word</strong>
-                    por <strong>R$ 9,90</strong>.
+                    por <strong>R$ 19,90</strong>.
                 </p>
 
                 <div class="hero-actions" style="margin-top: 24px;">
@@ -174,7 +174,7 @@
 
                     <div class="small"
                         style="margin-bottom: 24px; padding: 12px 14px; border-radius: 10px; background: var(--bg-secondary); border: 1px solid var(--border);">
-                        <strong>Por R$ 9,90 (pagamento único)</strong>, você recebe:<br>
+                        <strong>Por R$ 19,90 (pagamento único)</strong>, você recebe:<br>
                         • Carta personalizada com seus dados e do procedimento negado.<br>
                         • Arquivos em PDF e Word para editar, imprimir e assinar.<br>
                         • Suporte por WhatsApp em caso de dúvidas sobre o uso do documento.
@@ -332,11 +332,11 @@
                             <div id="ps_paySection"
                                 style="display:none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
                                 <div class="price-badge ticket-stub" style="margin-bottom: 20px;">
-                                    <span class="price-new protocol-num">R$ 9,90</span>
+                                    <span class="price-new protocol-num">R$ 19,90</span>
                                 </div>
 
                                 <button class="btn btn-primary" id="ps_btnPagar" style="width: 100%;">
-                                    Gerar documento completo (R$ 9,90)
+                                    Gerar documento completo (R$ 19,90)
                                 </button>
 
                                 <div class="guarantee-badge">
@@ -368,7 +368,7 @@
                         </div>
                         <p class="small" style="margin-top:12px;color:var(--text-muted);">
                             Prévia gratuita e parcial. O documento completo (edição, PDF e Word) é liberado após o
-                            pagamento único de <strong>R$ 9,90</strong>.
+                            pagamento único de <strong>R$ 19,90</strong>.
                         </p>
                     </div>
 
@@ -404,7 +404,7 @@
                         </p>
                         <p class="small" style="margin-top:8px;">
                             <strong>É pagamento único?</strong><br>
-                            Sim, <strong>R$ 9,90 por documento</strong>, sem assinatura ou mensalidade.
+                            Sim, <strong>R$ 19,90 por documento</strong>, sem assinatura ou mensalidade.
                         </p>
                         <p class="small" style="margin-top:8px;">
                             <strong>Quer entender melhor seus direitos?</strong><br>
@@ -754,7 +754,7 @@
                 ps_showPaymentModal(data.init_point, data.order_id, slugStr);
             } catch (e) {
                 if (e.message !== 'Campos inválidos') alert('Erro: ' + e.message);
-                ps_btnPagar.disabled = false; ps_btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
+                ps_btnPagar.disabled = false; ps_btnPagar.textContent = 'Gerar documento completo (R$ 19,90)';
             }
         });
 
@@ -786,7 +786,7 @@
                 var btnPagar = document.getElementById('ps_btnPagar');
                 if (btnPagar) {
                     btnPagar.disabled = false;
-                    btnPagar.textContent = 'Gerar documento completo (R$ 9,90)';
+                    btnPagar.textContent = 'Gerar documento completo (R$ 19,90)';
                 }
             };
 
