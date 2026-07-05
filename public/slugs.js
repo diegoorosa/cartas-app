@@ -35,7 +35,7 @@ window.SLUGS = [
     { slug: "carta-reclamacao-sky-cobranca-indevida", title: "Reclamação por Cobrança Indevida — SKY", brand: "SKY", tipo: "reclamacao" },
 
     { slug: "carta-cancelamento-plano-de-saude", title: "Carta de Cancelamento — Plano de Saúde", brand: "Plano de Saúde", tipo: "cancelamento" },
-    { slug: "carta-reclamacao-plano-de-saude-negativa-de-atendimento", title: "Reclamação — Negativa de Atendimento (Plano de Saúde)", brand: "Plano de Saúde", tipo: "reclamacao" },
+    { slug: "carta-reclamacao-plano-de-saude-negativa-de-atendimento", title: "Reclamação — Negativa de Atendimento (Plano de Saúde)", brand: "Plano de Saúde", tipo: "reclamacao", price: 19.90 },
 
     { slug: "carta-cancelamento-internet", title: "Carta de Cancelamento — Internet (genérico)", brand: "Operadora", tipo: "cancelamento" },
     { slug: "carta-cancelamento-tv-por-assinatura", title: "Carta de Cancelamento — TV por Assinatura", brand: "Operadora", tipo: "cancelamento" },
@@ -74,12 +74,12 @@ window.SLUGS = [
     { slug: "carta-cancelamento-cartao-caixa", title: "Carta de Cancelamento — Cartão Caixa", brand: "Caixa", tipo: "cancelamento" },
     { slug: "carta-cancelamento-cartao-banco-do-brasil", title: "Carta de Cancelamento — Cartão Banco do Brasil", brand: "Banco do Brasil", tipo: "cancelamento" },
 
-    { slug: "carta-reclamacao-cobranca-indevida-cartao-nubank", title: "Reclamação — cobrança indevida (cartão Nubank)", brand: "Nubank", tipo: "reclamacao" },
-    { slug: "carta-reclamacao-cobranca-indevida-cartao-itau", title: "Reclamação — cobrança indevida (cartão Itaú)", brand: "Itaú", tipo: "reclamacao" },
-    { slug: "carta-reclamacao-cobranca-indevida-cartao-santander", title: "Reclamação — cobrança indevida (cartão Santander)", brand: "Santander", tipo: "reclamacao" },
-    { slug: "carta-reclamacao-cobranca-indevida-cartao-bradesco", title: "Reclamação — cobrança indevida (cartão Bradesco)", brand: "Bradesco", tipo: "reclamacao" },
-    { slug: "carta-reclamacao-cobranca-indevida-cartao-caixa", title: "Reclamação — cobrança indevida (cartão Caixa)", brand: "Caixa", tipo: "reclamacao" },
-    { slug: "carta-reclamacao-cobranca-indevida-cartao-banco-do-brasil", title: "Reclamação — cobrança indevida (cartão Banco do Brasil)", brand: "Banco do Brasil", tipo: "reclamacao" },
+    { slug: "carta-reclamacao-cobranca-indevida-cartao-nubank", title: "Reclamação — cobrança indevida (cartão Nubank)", brand: "Nubank", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reclamacao-cobranca-indevida-cartao-itau", title: "Reclamação — cobrança indevida (cartão Itaú)", brand: "Itaú", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reclamacao-cobranca-indevida-cartao-santander", title: "Reclamação — cobrança indevida (cartão Santander)", brand: "Santander", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reclamacao-cobranca-indevida-cartao-bradesco", title: "Reclamação — cobrança indevida (cartão Bradesco)", brand: "Bradesco", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reclamacao-cobranca-indevida-cartao-caixa", title: "Reclamação — cobrança indevida (cartão Caixa)", brand: "Caixa", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reclamacao-cobranca-indevida-cartao-banco-do-brasil", title: "Reclamação — cobrança indevida (cartão Banco do Brasil)", brand: "Banco do Brasil", tipo: "reclamacao", price: 19.90 },
 
     { slug: "carta-reclamacao-energia-enel-cobranca-indevida", title: "Reclamação — ENEL (cobrança indevida)", brand: "ENEL", tipo: "reclamacao" },
     { slug: "carta-reclamacao-energia-light-cobranca-indevida", title: "Reclamação — Light (cobrança indevida)", brand: "Light", tipo: "reclamacao" },
@@ -96,14 +96,14 @@ window.SLUGS = [
     { slug: "carta-reembolso-cancelamento-voo-latam", title: "Carta — Reembolso por Cancelamento de Voo (LATAM)", brand: "LATAM", tipo: "reclamacao", price: 19.90 },
     { slug: "carta-reembolso-cancelamento-voo-azul", title: "Carta — Reembolso por Cancelamento de Voo (Azul)", brand: "Azul", tipo: "reclamacao", price: 19.90 },
 
-    { slug: "carta-reclamacao-produto-defeituoso-vicio-oculto", title: "Reclamação — Produto com defeito (vício oculto)", brand: "Consumo", tipo: "reclamacao" },
-    { slug: "carta-reclamacao-produto-nao-entregue", title: "Reclamação — Produto não entregue", brand: "Consumo", tipo: "reclamacao" },
+    { slug: "carta-reclamacao-produto-defeituoso-vicio-oculto", title: "Reclamação — Produto com defeito (vício oculto)", brand: "Consumo", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-reclamacao-produto-nao-entregue", title: "Reclamação — Produto não entregue", brand: "Consumo", tipo: "reclamacao", price: 19.90 },
     { slug: "carta-reembolso-atraso-entrega-ecommerce", title: "Carta — Reembolso por atraso de entrega (e‑commerce)", brand: "Consumo", tipo: "reclamacao" },
     { slug: "carta-cancelamento-curso-online", title: "Carta de Cancelamento — Curso Online", brand: "Educação", tipo: "cancelamento" },
     { slug: "carta-cancelamento-curso-presencial", title: "Carta de Cancelamento — Curso Presencial", brand: "Educação", tipo: "cancelamento" },
     { slug: "carta-cancelamento-matricula-faculdade", title: "Carta de Cancelamento — Matrícula/Faculdade", brand: "Educação", tipo: "cancelamento" },
-    { slug: "carta-reembolso-matricula-faculdade", title: "Carta — Reembolso de Matrícula/Faculdade", brand: "Educação", tipo: "reclamacao" },
+    { slug: "carta-reembolso-matricula-faculdade", title: "Carta — Reembolso de Matrícula/Faculdade", brand: "Educação", tipo: "reclamacao", price: 19.90 },
 
-    { slug: "carta-bagagem-extraviada", title: "Carta — Bagagem Extraviada (companhia aérea)", brand: "Bagagem", tipo: "reclamacao" },
-    { slug: "carta-bagagem-danificada", title: "Carta — Bagagem Danificada (companhia aérea)", brand: "Bagagem", tipo: "reclamacao" }
+    { slug: "carta-bagagem-extraviada", title: "Carta — Bagagem Extraviada (companhia aérea)", brand: "Bagagem", tipo: "reclamacao", price: 19.90 },
+    { slug: "carta-bagagem-danificada", title: "Carta — Bagagem Danificada (companhia aérea)", brand: "Bagagem", tipo: "reclamacao", price: 19.90 }
 ];
