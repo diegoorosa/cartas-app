@@ -160,14 +160,24 @@ function gerarReembolsoPassagem(p) {
 }
 
 async function gerarConsumoGenerico(p, tipoFormulario, slug) {
-    // Tenta identificar o nome da empresa pelo slug se não vier especificado
-    let empresaRaw = slug.replace('carta-', '').replace('cancelamento-', '').replace('reclamacao-', '');
-    let empresa = empresaRaw.split('-')[0].toUpperCase();
-    if (empresaRaw.includes('smart-fit')) empresa = 'SMART FIT';
-    if (empresaRaw.includes('bluefit')) empresa = 'BLUEFIT';
-    if (empresaRaw.includes('vivo')) empresa = 'VIVO';
-    if (empresaRaw.includes('claro')) empresa = 'CLARO';
-    if (!empresa || empresa === 'DOCUMENTO') empresa = p.loja || p.empresa || 'Empresa Fornecedora';
+    // Nome da empresa: PRIORIDADE absoluta ao que o consumidor informou no formulário.
+    // O slug só é fallback para páginas de MARCA (que não coletam o campo) e NUNCA
+    // deriva uma palavra genérica do slug ("ecommerce", "consumo", "cartao"...) como nome.
+    let empresa = (p.empresa || p.loja || '').trim();
+    if (!empresa) {
+        const raw = '-' + String(slug || '').toLowerCase() + '-';
+        const BRANDS = [
+            ['smart-fit', 'SMART FIT'], ['bluefit', 'BLUEFIT'], ['selfit', 'SELFIT'], ['bodytech', 'BODYTECH'],
+            ['bio-ritmo', 'BIO RITMO'], ['just-fit', 'JUST FIT'], ['vivo', 'VIVO'], ['claro', 'CLARO'],
+            ['tim', 'TIM'], ['oi', 'OI'], ['sky', 'SKY'], ['algar', 'ALGAR'], ['nubank', 'NUBANK'],
+            ['itau', 'ITAÚ'], ['santander', 'SANTANDER'], ['bradesco', 'BRADESCO'], ['caixa', 'CAIXA'],
+            ['banco-do-brasil', 'BANCO DO BRASIL'], ['enel', 'ENEL'], ['light', 'LIGHT'], ['cemig', 'CEMIG'],
+            ['cpfl', 'CPFL'], ['coelba', 'COELBA'], ['sabesp', 'SABESP'], ['copasa', 'COPASA']
+        ];
+        for (const [k, v] of BRANDS) { if (raw.includes('-' + k + '-')) { empresa = v; break; } }
+    }
+    // Sem empresa identificada: NÃO inventar — tratar como fornecedor genérico.
+    const temEmpresa = !!empresa;
 
     const motivoBruto = (p.motivo || '').trim();
     const fallbackMotivo = `O motivo desta notificação se dá pela seguinte situação: ${motivoBruto || '________________________________________'}.`;
@@ -175,8 +185,8 @@ async function gerarConsumoGenerico(p, tipoFormulario, slug) {
     let paragrafoMotivo = fallbackMotivo;
     let aiOk = !motivoBruto;
     if (motivoBruto) {
-        const systemPrompt = `Você é especialista em direito do consumidor brasileiro (Código de Defesa do Consumidor - CDC). Escreva APENAS UM parágrafo formal em português descrevendo o problema relatado e fundamentando o pedido. REGRAS OBRIGATÓRIAS: (1) Use exclusivamente os fatos descritos pelo consumidor; NÃO invente fatos, datas, valores, produtos, números de contrato ou circunstâncias que não foram informados. (2) Só cite número de artigo do CDC se tiver certeza de que ele existe e se aplica; na dúvida, refira-se de forma genérica ("conforme o Código de Defesa do Consumidor", "boa-fé objetiva e direito à informação") SEM inventar número de artigo. (3) NÃO prometa nem garanta resultado (cancelamento, estorno); use linguagem de pedido e exigência formal. (4) Se os fatos forem vagos ou insuficientes, fundamente de forma conservadora sem fabricar detalhes. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, objetivo.`;
-        const userPrompt = `Empresa/fornecedor: ${empresa}\nSituação relatada pelo consumidor: "${motivoBruto}"\nContrato/pedido: ${p.contrato || p.pedido || 'não informado'}\nTipo de solicitação: ${tipoFormulario || 'reclamação/cancelamento'}`;
+        const systemPrompt = `Você é especialista em direito do consumidor brasileiro (Código de Defesa do Consumidor - CDC). Escreva APENAS UM parágrafo formal em português descrevendo o problema relatado e fundamentando o pedido. REGRAS OBRIGATÓRIAS: (1) Use exclusivamente os fatos descritos pelo consumidor; NÃO invente fatos, datas, valores, produtos, números de contrato ou circunstâncias que não foram informados. (2) Só cite número de artigo do CDC se tiver certeza de que ele existe e se aplica; na dúvida, refira-se de forma genérica ("conforme o Código de Defesa do Consumidor", "boa-fé objetiva e direito à informação") SEM inventar número de artigo. (3) NÃO prometa nem garanta resultado (cancelamento, estorno); use linguagem de pedido e exigência formal. (4) Se os fatos forem vagos ou insuficientes, fundamente de forma conservadora sem fabricar detalhes. (5) Refira-se ao fornecedor pelo nome APENAS se ele estiver informado nos dados; se constar "não informado", use termos genéricos ("o fornecedor", "a empresa") e NÃO invente, deduza nem repita um nome. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, objetivo.`;
+        const userPrompt = `Empresa/fornecedor: ${temEmpresa ? empresa : 'não informado'}\nSituação relatada pelo consumidor: "${motivoBruto}"\nContrato/pedido: ${p.contrato || p.pedido || 'não informado'}\nTipo de solicitação: ${tipoFormulario || 'reclamação/cancelamento'}`;
         const r = await gerarTextoIA(systemPrompt, userPrompt, fallbackMotivo);
         paragrafoMotivo = r.text;
         aiOk = r.ok;
@@ -200,7 +210,7 @@ async function gerarConsumoGenerico(p, tipoFormulario, slug) {
     return {
         aiOk: aiOk,
         doc: {
-            saudacao: `À empresa ${empresa} - A/C Setor de Atendimento ao Cliente e Jurídico`,
+            saudacao: `${temEmpresa ? `À empresa ${empresa}` : 'Ao Fornecedor'} - A/C Setor de Atendimento ao Cliente e Jurídico`,
             corpo_paragrafos: paragrafos
         }
     };
