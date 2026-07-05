@@ -350,8 +350,8 @@
                         </h2>
                         <div
                             style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;">
-                            <div id="previewBox"
-                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
+                            <div id="previewBox" oncopy="return false" oncut="return false" oncontextmenu="return false"
+                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);; user-select:none; -webkit-user-select:none; -ms-user-select:none;">
                             </div>
                         </div>
                         <p class="small" style="margin-top:12px;color:var(--text-muted);">
@@ -682,12 +682,12 @@
                     var out = data.output || data;
                     var pars = out.corpo_paragrafos || [];
                     var keep = Math.max(1, Math.min(2, pars.length));
-                    var parcialText = pars.slice(0, keep).join('\n\n') + '\n\n[...]';
+                    var parcialText = pars.join('\n\n');
                     var saud = out.saudacao || '';
                     var checklist = out.check_list_anexos || [];
                     var chkShow = checklist.slice(0, 2);
                     if (checklist.length > 2) chkShow.push('...');
-                    var finalPreview = (saud ? saud + '\n\n' : '') + parcialText + '\n\nChecklist de anexos (parcial): ' + chkShow.join('; ');
+                    var finalPreview = (saud ? saud + '\n\n' : '') + parcialText + (out.fechamento ? '\n\n' + out.fechamento : '');
 
                     previewBox.textContent = finalPreview;
                     previewWrap.style.display = 'block';

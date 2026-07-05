@@ -375,8 +375,8 @@
                         <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">Prévia do documento</h2>
                         <div
                             style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;">
-                            <div id="previewBox"
-                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);">
+                            <div id="previewBox" oncopy="return false" oncut="return false" oncontextmenu="return false"
+                                style="white-space:pre-wrap;font-family:monospace;font-size:14px;line-height:1.8;color:var(--text-secondary);; user-select:none; -webkit-user-select:none; -ms-user-select:none;">
                             </div>
                         </div>
                         <p class="small" style="margin-top:12px;color:var(--text-muted);">
@@ -667,7 +667,7 @@
                     var d = await r.json();
                     var out = d.output || d;
                     var pr = out.corpo_paragrafos || [];
-                    var parcial = pr.slice(0, 2).join('\n\n') + '\n\n[...]';
+                    var parcial = pr.join('\n\n') + (out.fechamento ? '\n\n' + out.fechamento : '');
 
                     previewBox.textContent = (out.saudacao || '') + '\n\n' + parcial;
                     previewWrap.style.display = 'block';
