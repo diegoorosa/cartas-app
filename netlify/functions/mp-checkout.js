@@ -117,7 +117,9 @@ const PRICE_MAP = {
     "carta-contestacao-cartao-credito": 19.90,
     "carta-negativa-plano-saude": 19.90,
     // Arrependimento e-commerce (baixo risco) — antes caía no default 39,90
-    "carta-direito-arrependimento-compra-online": 9.90
+    "carta-direito-arrependimento-compra-online": 9.90,
+    // Página de venda genérica de consumo (consumo-generico.html) — funil das guias
+    "carta-consumo-generico": 9.90
 };
 
 // Títulos amigáveis para o item exibido no checkout do Mercado Pago
