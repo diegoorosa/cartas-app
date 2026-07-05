@@ -126,7 +126,7 @@ async function gerarMulta(p) {
     let argumentoParagrafo = fallbackParagrafo;
     let aiOk = !motivoBruto; // sem motivo, nao precisa de IA -- ja esta "ok"
     if (motivoBruto) {
-        const systemPrompt = `Você é especialista em defesa de autuações de trânsito no Brasil (Código de Trânsito Brasileiro - CTB). Escreva APENAS UM parágrafo de argumentação jurídica formal em português para um recurso/defesa prévia de multa de trânsito. REGRAS OBRIGATÓRIAS: (1) Use exclusivamente os fatos descritos pelo condutor; NÃO invente fatos, datas, valores, locais ou circunstâncias que não foram informados. (2) Só cite número de artigo do CTB se tiver certeza de que ele existe e se aplica ao caso; na dúvida, refira-se de forma genérica ("conforme o Código de Trânsito Brasileiro", "princípios do devido processo legal, do contraditório e da ampla defesa") SEM inventar número de artigo. (3) NÃO prometa nem garanta resultado (cancelamento certo, absolvição); use linguagem de pedido e argumentação. (4) Se os fatos relatados forem vagos ou insuficientes, argumente de forma conservadora com base em vícios formais genéricos do auto de infração, sem fabricar detalhes. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, técnico, objetivo.`;
+        const systemPrompt = `Você é especialista em defesa de autuações de trânsito no Brasil (Código de Trânsito Brasileiro - CTB). Escreva APENAS UM parágrafo de argumentação jurídica formal em português para um recurso/defesa prévia de multa de trânsito. INTERPRETE o relato do condutor (que pode ter erros de português ou linguagem informal) e redija DO ZERO com as SUAS palavras, corrigindo a linguagem — não copie o texto literalmente. REGRAS OBRIGATÓRIAS: (1) Use exclusivamente os fatos descritos pelo condutor; NÃO invente fatos, datas, valores, locais ou circunstâncias que não foram informados. (2) Só cite número de artigo do CTB se tiver certeza de que ele existe e se aplica ao caso; na dúvida, refira-se de forma genérica ("conforme o Código de Trânsito Brasileiro", "princípios do devido processo legal, do contraditório e da ampla defesa") SEM inventar número de artigo. (3) NÃO prometa nem garanta resultado (cancelamento certo, absolvição); use linguagem de pedido e argumentação. (4) Se os fatos relatados forem vagos ou insuficientes, argumente de forma conservadora com base em vícios formais genéricos do auto de infração, sem fabricar detalhes. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, técnico, objetivo.`;
         const userPrompt = `Situação relatada pelo condutor: "${motivoBruto}"\nAuto de Infração: ${p.auto_infracao || 'não informado'}\nData da autuação: ${p.data_multa || 'não informada'}\nVeículo: ${p.modelo || 'não informado'}, placa ${p.placa || 'não informada'}`;
         const r = await gerarTextoIA(systemPrompt, userPrompt, fallbackParagrafo);
         argumentoParagrafo = r.text;
@@ -179,14 +179,24 @@ async function gerarConsumoGenerico(p, tipoFormulario, slug) {
     // Sem empresa identificada: NÃO inventar — tratar como fornecedor genérico.
     const temEmpresa = !!empresa;
 
-    const motivoBruto = (p.motivo || '').trim();
-    const fallbackMotivo = `O motivo desta notificação se dá pela seguinte situação: ${motivoBruto || '________________________________________'}.`;
+    // Relato do consumidor: prioriza a narrativa LIVRE (o que a pessoa escreveu);
+    // o "motivo" (menu de opções) entra só como categoria de contexto. O Gemini
+    // INTERPRETA e reescreve com as próprias palavras — não copia o texto cru.
+    const MOTIVO_LABEL = {
+        nao_entregue: 'produto/serviço não entregue', produto_nao_entregue: 'produto/serviço não entregue',
+        atraso: 'atraso na entrega', produto_errado: 'produto errado', produto_defeituoso: 'produto ou serviço com defeito',
+        arrependimento: 'direito de arrependimento', cobranca_indevida: 'cobrança indevida',
+        negativacao: 'negativação indevida', descumprimento: 'descumprimento de acordo/contrato', outro: 'reclamação de consumo'
+    };
+    const categoria = MOTIVO_LABEL[(p.motivo || '').trim()] || (p.motivo || '').trim();
+    const relato = [p.itens, p.descricao, p.observacoes].map(x => (x || '').trim()).filter(Boolean).join(' ').trim() || categoria;
+    const fallbackMotivo = `O motivo desta notificação se dá pela seguinte situação: ${relato || '________________________________________'}.`;
 
     let paragrafoMotivo = fallbackMotivo;
-    let aiOk = !motivoBruto;
-    if (motivoBruto) {
-        const systemPrompt = `Você é especialista em direito do consumidor brasileiro (Código de Defesa do Consumidor - CDC). Escreva APENAS UM parágrafo formal em português descrevendo o problema relatado e fundamentando o pedido. REGRAS OBRIGATÓRIAS: (1) Use exclusivamente os fatos descritos pelo consumidor; NÃO invente fatos, datas, valores, produtos, números de contrato ou circunstâncias que não foram informados. (2) Só cite número de artigo do CDC se tiver certeza de que ele existe e se aplica; na dúvida, refira-se de forma genérica ("conforme o Código de Defesa do Consumidor", "boa-fé objetiva e direito à informação") SEM inventar número de artigo. (3) NÃO prometa nem garanta resultado (cancelamento, estorno); use linguagem de pedido e exigência formal. (4) Se os fatos forem vagos ou insuficientes, fundamente de forma conservadora sem fabricar detalhes. (5) Refira-se ao fornecedor pelo nome APENAS se ele estiver informado nos dados; se constar "não informado", use termos genéricos ("o fornecedor", "a empresa") e NÃO invente, deduza nem repita um nome. Não use saudação nem frases de abertura/encerramento — devolva só o parágrafo. Tom formal, objetivo.`;
-        const userPrompt = `Empresa/fornecedor: ${temEmpresa ? empresa : 'não informado'}\nSituação relatada pelo consumidor: "${motivoBruto}"\nContrato/pedido: ${p.contrato || p.pedido || 'não informado'}\nTipo de solicitação: ${tipoFormulario || 'reclamação/cancelamento'}`;
+    let aiOk = !relato;
+    if (relato) {
+        const systemPrompt = `Você é advogado especialista em direito do consumidor brasileiro (Código de Defesa do Consumidor - CDC). O consumidor descreve um problema com as próprias palavras, podendo conter erros de português ou linguagem informal. Sua tarefa: INTERPRETAR o relato e REDIGIR DO ZERO um único parágrafo formal em português jurídico, com as SUAS palavras — NÃO copie nem parafraseie o texto do consumidor literalmente; corrija a linguagem e organize os fatos. REGRAS OBRIGATÓRIAS: (1) Baseie-se EXCLUSIVAMENTE nos fatos relatados; NÃO invente fatos, datas, valores, produtos, números ou circunstâncias que não foram informados. (2) Só cite número de artigo do CDC se tiver certeza de que existe e se aplica; na dúvida, refira-se de forma genérica ("conforme o Código de Defesa do Consumidor", "boa-fé objetiva e direito à informação") SEM inventar número. (3) NÃO prometa nem garanta resultado (cancelamento, estorno); use linguagem de pedido e exigência formal. (4) Se o relato for vago, fundamente de forma conservadora sem fabricar detalhes. (5) Refira-se ao fornecedor pelo nome APENAS se informado; se constar "não informado", use termos genéricos ("o fornecedor", "a empresa") e NÃO invente nem repita um nome. Devolva só o parágrafo, sem saudação nem frases de abertura/encerramento. Tom formal, técnico, jurídico.`;
+        const userPrompt = `Empresa/fornecedor: ${temEmpresa ? empresa : 'não informado'}\nCategoria da reclamação: ${categoria || 'reclamação de consumo'}\nRelato do consumidor (interprete e reescreva formalmente, NÃO copie): "${relato}"\nContrato/pedido: ${p.contrato || p.pedido || 'não informado'}`;
         const r = await gerarTextoIA(systemPrompt, userPrompt, fallbackMotivo);
         paragrafoMotivo = r.text;
         aiOk = r.ok;
@@ -200,10 +210,6 @@ async function gerarConsumoGenerico(p, tipoFormulario, slug) {
     }
 
     paragrafos.push(paragrafoMotivo);
-
-    if (p.itens || p.descricao) {
-        paragrafos.push(`Detalhes complementares da solicitação: ${p.itens || p.descricao}.`);
-    }
 
     paragrafos.push(`Diante do exposto, e amparado pelas normas do Código de Defesa do Consumidor (Lei 8.078/1990), exijo o atendimento e a resolução imediata desta solicitação. A ausência de solução pacífica no prazo razoável ensejará a abertura de reclamações junto aos órgãos de proteção ao crédito (PROCON, Consumidor.gov) e o ajuizamento de ação competente para reparação de danos.`);
 
