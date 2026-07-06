@@ -103,7 +103,11 @@ resolve os quatro sintomas — ver Item 1 abaixo.
   verificação do Google, que não é uma página HTML). Imagem editorial nos
   Articles gerada via SVG→WebP (sharp), 1200x630, padrão visual do site
   (navy + selo dourado), conectada no campo "image" do guia e do quanto-custa
-  (06/07/2026, commit `5d38f63`).
+  (06/07/2026, commit `5d38f63`). Além disso, 50 páginas de conteúdo que não
+  tinham nenhuma tag Open Graph (incluindo a maior fonte de tráfego orgânico,
+  modelo-word-pdf-autorizacao-viagem) ganharam og:title/description/image/url
+  + twitter:card — sem isso, compartilhar essas páginas não mostrava preview
+  visual (06/07/2026, commit `7f266e8`).
 
 ## O que já está bom (não mexer)
 
