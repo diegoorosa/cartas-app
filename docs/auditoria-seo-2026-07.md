@@ -1,0 +1,78 @@
+# Auditoria SEO completa — www.cartasapp.com.br (06/07/2026)
+
+Rodada via `/seo audit`, 8 subagentes especializados (técnico, conteúdo/E-E-A-T,
+schema, sitemap, performance, GEO/IA, SXO, Google APIs).
+
+**SEO Health Score: 60/100**
+
+| Categoria | Score |
+|---|---|
+| Técnico | 70 |
+| Conteúdo/E-E-A-T | 47 |
+| Schema | 58 |
+| Sitemap | 62 |
+| Performance | 78 |
+| GEO (IA) | 58 |
+| SXO | 57 |
+
+**Dados reais (GA4, 90 dias):** 1.219 sessões orgânicas, **+69,8%** últimos 28 dias
+vs anteriores. 47% do tráfego concentrado em 1 página
+(`/modelo-word-pdf-autorizacao-viagem`). **GSC bloqueado** — API desabilitada no
+projeto GCP `claude-seo-500301` (nº 915054547433) e service account não está na
+propriedade.
+
+## Achado-raiz (atravessa 4 auditorias)
+
+As ~67 páginas `/doc/{slug}` eram renderizadas 100% via JS: HTML bruto idêntico
+(title genérico, H1 placeholder, canonical apontando pro `/doc.html`). Isso gerava
+duplicação técnica + conteúdo raso + zero schema por slug + invisibilidade total
+para crawlers de IA (GPTBot/ClaudeBot/PerplexityBot não rodam JS). Um único fix
+resolve os quatro sintomas — ver Item 1 abaixo.
+
+## Itens Críticos
+
+- [x] **1. Pré-renderizar `/doc/{slug}`** — `scripts/generate-doc-pages.js`
+  gera as 67 páginas (title/H1/canonical/og/JSON-LD Service únicos por slug) a
+  partir de `slugs.js` + `sitemap.xml`. Wired no `npm run build` (roda a cada
+  deploy Netlify). Rodado localmente em 06/07/2026, arquivos em `public/doc/*.html`
+  commitados.
+- [ ] **2. Destravar GSC** (usuário faz manualmente):
+  1. Habilitar Search Console API em
+     `console.developers.google.com/apis/api/searchconsole.googleapis.com/overview?project=915054547433`
+  2. Adicionar `claude-seo@claude-seo-500301.iam.gserviceaccount.com` como
+     usuário na propriedade (Search Console → Configurações → Usuários e
+     permissões), tanto em `sc-domain:cartasapp.com.br` quanto
+     `https://www.cartasapp.com.br/`.
+- [x] **3. Religar cluster de links** viagem.html ↔ guia-definitivo-viagem-menor.html
+  ↔ quanto-custa-autorizacao-viagem.html — antes só existia 1 link (viagem→quanto-custa);
+  agora mesh completo (6 links cruzados).
+
+## Alto (pendente — próxima rodada)
+
+- [ ] Redirect 301 `/viagem` → `/viagem.html` (hoje ambas 200, duplicado)
+- [ ] Encurtar cadeia de redirect do domínio apex (2 hops → 1)
+- [ ] `<lastmod>` real no sitemap.xml (0 de 204 URLs têm hoje)
+- [ ] Schema: `publisher` no Article do guia; Article+BreadcrumbList no
+  quanto-custa (rankeia e não tem nenhum JSON-LD); author Person (Diego Rosa)
+  em vez de Organization
+- [ ] E-E-A-T: caixa de autor nos guias, link de saída p/ fonte oficial CNJ,
+  remover claim não verificável ("nenhuma recusa registrada"), CNPJ visível +
+  garantia de reembolso
+- [ ] Performance: consolidar gtag.js (GA4+Ads, hoje duplicado, -146KB),
+  defer/inline scripts do head, trocar `logo.png` (103KB, preloaded) por WebP
+
+## Médio / Baixo
+
+- [ ] Expandir quanto-custa (742 palavras, bounce 51,5%)
+- [ ] Comparativo grátis vs pago no hero da viagem.html + avisar sobre cartório
+- [ ] FAQPage JSON-LD no FAQ do guia
+- [ ] noindex em `/doc.html` nu (após item 1)
+- [ ] Investigar 70 sessões "(not set)" no GA4 (98,6% bounce — falha de tracking?)
+- [ ] `lang="pt-BR"`, `llms-full.txt`, imagem editorial nos Articles,
+  `contactPoint` no Organization
+
+## O que já está bom (não mexer)
+
+HTTPS/HSTS/CSP, robots.txt aberto a crawlers de IA (sem cloaking), llms.txt já
+existe, 404 real, CLS=0, TTFB 65-90ms, preço consistente schema↔página,
+citações legais precisas (CNJ 295/2019), tendência orgânica +70%.
