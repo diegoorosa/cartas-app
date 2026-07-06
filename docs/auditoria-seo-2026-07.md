@@ -83,13 +83,23 @@ resolve os quatro sintomas — ver Item 1 abaixo.
 
 ## Médio / Baixo
 
-- [ ] Expandir quanto-custa (742 palavras, bounce 51,5%)
-- [ ] Comparativo grátis vs pago no hero da viagem.html + avisar sobre cartório
-- [ ] FAQPage JSON-LD no FAQ do guia
-- [ ] noindex em `/doc.html` nu (após item 1)
+- [x] Expandir quanto-custa — +erros comuns de modelo grátis, +2 estados no
+  comparativo de cartório, +mini-FAQ de preços (06/07/2026, commit `cc66aab`)
+- [x] Comparativo grátis vs pago no hero da viagem.html — adicionado à linha
+  de preço já existente ("Modelo grátis: risco de erro"), sem criar bloco
+  novo (decisão do usuário: manter discreto, não competir com o CTA)
+  (06/07/2026, commit `cc66aab`)
+- [x] FAQPage JSON-LD no FAQ do guia (06/07/2026, commit `cc66aab`)
+- [x] noindex em `/doc.html` nu — `generate-doc-pages.js` remove a tag ao
+  gerar as 67 páginas /doc/{slug}, que continuam indexáveis (06/07/2026,
+  commit `cc66aab`)
 - [ ] Investigar 70 sessões "(not set)" no GA4 (98,6% bounce — falha de tracking?)
-- [ ] `lang="pt-BR"`, `llms-full.txt`, imagem editorial nos Articles,
-  `contactPoint` no Organization
+- [x] `llms-full.txt` (texto integral das páginas principais) e `contactPoint`
+  no Organization schema do index.html (06/07/2026, commit `cc66aab`).
+  `lang="pt-BR"` já cobre 100% das páginas reais (só falta no arquivo de
+  verificação do Google, que não é uma página HTML). Imagem editorial nos
+  Articles **não fiz** — exigiria criar um asset visual novo, fora do escopo
+  de um fix de metadado; ainda pendente.
 
 ## O que já está bom (não mexer)
 
