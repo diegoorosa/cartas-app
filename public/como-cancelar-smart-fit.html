@@ -155,17 +155,13 @@
   </section>
 
   <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <p>
-          Este site não presta aconselhamento jurídico. Leia os
-          <a href="/termos.html" class="footer-link">Termos de Uso</a>,
-          <a href="/privacidade.html" class="footer-link">Política de Privacidade</a> e visite nossa
-          <a href="/blog.html" class="footer-link">Central de Ajuda</a>.
-        </p>
-      </div>
-    </div>
-  </footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>Este site não presta aconselhamento jurídico. Aviso Legal: o CartasApp é uma ferramenta tecnológica privada para geração e formatação de documentos. Não somos advogados nem despachantes, não emitimos documentos oficiais e não possuímos qualquer vínculo com o Governo, Polícia Federal, Tribunais ou Cartórios. Formulários oficiais podem ser obtidos gratuitamente nos respectivos órgãos.</p>
+                <p style="margin-top:10px;">CartasApp &copy; 2026 &middot; <a href="/termos.html" class="footer-link">Termos de Uso</a> &middot; <a href="/privacidade.html" class="footer-link">Política de Privacidade</a> &middot; <a href="/sobre.html" class="footer-link">Sobre</a> &middot; <a href="/blog.html" class="footer-link">Central de Ajuda</a></p>
+            </div>
+        </div>
+    </footer>
 
   <script> (function () { function toggleTheme() { const html = document.documentElement; const currentTheme = html.getAttribute('data-theme'); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; html.setAttribute('data-theme', newTheme); localStorage.setItem('theme', newTheme); } var btn = document.querySelector('.btn-theme'); if (btn) btn.onclick = toggleTheme; const savedTheme = localStorage.getItem('theme'); if (savedTheme) { document.documentElement.setAttribute('data-theme', savedTheme); } else { const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches; document.documentElement.setAttribute('data-theme', prefersLight ? 'light' : 'dark'); } })(); </script>
 </body>
