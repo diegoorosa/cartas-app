@@ -65,8 +65,15 @@
     <nav class="navbar">
         <div class="container">
             <div class="navbar-content">
-                <a href="/" class="logo">CartasApp</a>
-                <a href="/doc.html?slug=carta-cancelamento-smart-fit" class="btn btn-primary btn-sm">Gerar Carta</a>
+                <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <picture>
+                        <source srcset="/logo.avif" type="image/avif">
+                        <source srcset="/logo.webp" type="image/webp">
+                        <img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;" width="42" height="42">
+                    </picture>
+                    <span style="font-weight: 800; font-size: 20px; color: var(--text-primary); letter-spacing: -0.5px;">CartasApp</span>
+                </a>
+                <a href="/academia.html" class="btn btn-primary btn-sm">Gerar Carta</a>
             </div>
         </div>
     </nav>
@@ -185,6 +192,8 @@
                             <a href="/doc.html?slug=carta-cancelamento-academia-por-motivo-de-saude"
                                 class="btn btn-outline" style="text-align:center;">Cancelar por Motivo de Saúde
                                 (Qualquer Academia)</a>
+                            <a href="/academia.html" class="btn btn-primary" style="text-align:center;">Outra academia
+                                ou motivo → ver todas as opções</a>
                         </div>
                     </div>
                 </article>
