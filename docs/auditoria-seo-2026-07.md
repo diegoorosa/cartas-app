@@ -36,25 +36,25 @@ resolve os quatro sintomas — ver Item 1 abaixo.
   partir de `slugs.js` + `sitemap.xml`. Wired no `npm run build` (roda a cada
   deploy Netlify). Rodado localmente em 06/07/2026, arquivos em `public/doc/*.html`
   commitados.
-- [ ] **2. Destravar GSC** (usuário faz manualmente):
-  1. Habilitar Search Console API em
-     `console.developers.google.com/apis/api/searchconsole.googleapis.com/overview?project=915054547433`
-  2. Adicionar `claude-seo@claude-seo-500301.iam.gserviceaccount.com` como
-     usuário na propriedade (Search Console → Configurações → Usuários e
-     permissões), tanto em `sc-domain:cartasapp.com.br` quanto
-     `https://www.cartasapp.com.br/`.
+- [x] **2. Destravar GSC** — usuário habilitou a API e adicionou a service
+  account na propriedade `https://www.cartasapp.com.br/` (verificado
+  06/07/2026 via `sites.list()`: `siteFullUser`). `sc-domain:` não foi
+  adicionado (exigiria verificação DNS) — decisão deliberada, tráfego real
+  já cai todo na propriedade www por causa do HSTS/redirect.
 - [x] **3. Religar cluster de links** viagem.html ↔ guia-definitivo-viagem-menor.html
   ↔ quanto-custa-autorizacao-viagem.html — antes só existia 1 link (viagem→quanto-custa);
   agora mesh completo (6 links cruzados).
 
-## Alto (pendente — próxima rodada)
+## Alto
 
-- [ ] Redirect 301 `/viagem` → `/viagem.html` (hoje ambas 200, duplicado)
-- [ ] Encurtar cadeia de redirect do domínio apex (2 hops → 1)
-- [ ] `<lastmod>` real no sitemap.xml (0 de 204 URLs têm hoje)
-- [ ] Schema: `publisher` no Article do guia; Article+BreadcrumbList no
+- [x] Redirect 301 `/viagem` → `/viagem.html` (06/07/2026, `netlify.toml`,
+  `force = true`)
+- [x] `<lastmod>` real no sitemap.xml (06/07/2026, `scripts/add-sitemap-lastmod.js`
+  wired no `npm run build`, data via `git log` por arquivo)
+- [x] Schema: `publisher` no Article do guia; Article+BreadcrumbList no
   quanto-custa (rankeia e não tem nenhum JSON-LD); author Person (Diego Rosa)
-  em vez de Organization
+  em vez de Organization — feito 06/07/2026 (commit `538fe79`)
+- [ ] Encurtar cadeia de redirect do domínio apex (2 hops → 1)
 - [ ] E-E-A-T: caixa de autor nos guias, link de saída p/ fonte oficial CNJ,
   remover claim não verificável ("nenhuma recusa registrada"), CNPJ visível +
   garantia de reembolso
