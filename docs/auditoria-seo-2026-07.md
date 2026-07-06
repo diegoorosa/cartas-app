@@ -60,12 +60,12 @@ resolve os quatro sintomas — ver Item 1 abaixo.
   commits `adb7d8f`+`7fbca51`). Tag de conversão real (`success.html`,
   evento `conversion` com `send_to` específico) não usava esse arquivo,
   ficou intacta.
-- [ ] Encurtar cadeia de redirect do domínio apex (2 hops → 1) — **investigado
+- [x] Encurtar cadeia de redirect do domínio apex (2 hops → 1) — **investigado
   06/07/2026:** é comportamento padrão do Netlify (upgrade http→https no host
   solicitado, depois redirect de alias→domínio primário); não há regra no
   `netlify.toml` nem fix simples no repo — exigiria mudança de DNS/registrar
   fora do Netlify. Baixo impacto real (afeta só quem digita `http://` sem
-  `www`). Não fazer sem decisão do usuário.
+  `www`). **Decisão do usuário (06/07/2026): ignorar, não vale a pena.**
 - [x] E-E-A-T: caixa de autor (Diego Rosa) + link de saída p/ fonte oficial
   CNJ (atos.cnj.jus.br/atos/detalhar/3015) no guia-definitivo-viagem-menor
   (06/07/2026, commit `6a20b00`). CNPJ e garantia de reembolso ficam de fora:
@@ -93,13 +93,17 @@ resolve os quatro sintomas — ver Item 1 abaixo.
 - [x] noindex em `/doc.html` nu — `generate-doc-pages.js` remove a tag ao
   gerar as 67 páginas /doc/{slug}, que continuam indexáveis (06/07/2026,
   commit `cc66aab`)
-- [ ] Investigar 70 sessões "(not set)" no GA4 (98,6% bounce — falha de tracking?)
+- [x] Investigado "(not set)" no GA4 (06/07/2026, dados reais via API): só
+  ~25 sessões em 90 dias (~1% do total), 100% bounce e 0% engajamento em
+  todas, metade sem landing page registrada, Edge desktop dominante —
+  padrão clássico de bot/scanner, não usuário real. Sem ação necessária.
 - [x] `llms-full.txt` (texto integral das páginas principais) e `contactPoint`
   no Organization schema do index.html (06/07/2026, commit `cc66aab`).
   `lang="pt-BR"` já cobre 100% das páginas reais (só falta no arquivo de
   verificação do Google, que não é uma página HTML). Imagem editorial nos
-  Articles **não fiz** — exigiria criar um asset visual novo, fora do escopo
-  de um fix de metadado; ainda pendente.
+  Articles gerada via SVG→WebP (sharp), 1200x630, padrão visual do site
+  (navy + selo dourado), conectada no campo "image" do guia e do quanto-custa
+  (06/07/2026, commit `5d38f63`).
 
 ## O que já está bom (não mexer)
 
