@@ -60,7 +60,12 @@ resolve os quatro sintomas — ver Item 1 abaixo.
   commits `adb7d8f`+`7fbca51`). Tag de conversão real (`success.html`,
   evento `conversion` com `send_to` específico) não usava esse arquivo,
   ficou intacta.
-- [ ] Encurtar cadeia de redirect do domínio apex (2 hops → 1)
+- [ ] Encurtar cadeia de redirect do domínio apex (2 hops → 1) — **investigado
+  06/07/2026:** é comportamento padrão do Netlify (upgrade http→https no host
+  solicitado, depois redirect de alias→domínio primário); não há regra no
+  `netlify.toml` nem fix simples no repo — exigiria mudança de DNS/registrar
+  fora do Netlify. Baixo impacto real (afeta só quem digita `http://` sem
+  `www`). Não fazer sem decisão do usuário.
 - [x] E-E-A-T: caixa de autor (Diego Rosa) + link de saída p/ fonte oficial
   CNJ (atos.cnj.jus.br/atos/detalhar/3015) no guia-definitivo-viagem-menor
   (06/07/2026, commit `6a20b00`). CNPJ e garantia de reembolso ficam de fora:
@@ -71,7 +76,10 @@ resolve os quatro sintomas — ver Item 1 abaixo.
   `<picture>` (AVIF ~14KB → WebP ~21KB → PNG fallback) em 116 páginas +
   template doc.html; preload do index.html aponta pro AVIF (06/07/2026,
   commit `cc45d71`)
-- [ ] Performance: defer/inline scripts do head
+- [x] Performance: `utm.js` (96 páginas) agora carrega com `defer` — não
+  bloqueia mais o render; `theme.js` continua síncrono de propósito (evita
+  flash de tema errado, testado localmente sem regressão) (06/07/2026,
+  commit `62fe8cd`)
 
 ## Médio / Baixo
 
