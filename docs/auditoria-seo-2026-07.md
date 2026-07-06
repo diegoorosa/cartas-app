@@ -67,8 +67,11 @@ resolve os quatro sintomas — ver Item 1 abaixo.
   **decisão do usuário (06/07/2026)** — CNPJ só quando o negócio "vingar"
   (sem empresa aberta ainda); claim "nenhuma recusa registrada" mantido como
   está — usuário considera verdadeiro (ausência de reclamação até hoje).
-- [ ] Performance: defer/inline scripts do head, trocar `logo.png` (103KB,
-  preloaded) por WebP
+- [x] Performance: `logo.png` (103KB, preloaded) agora serve via
+  `<picture>` (AVIF ~14KB → WebP ~21KB → PNG fallback) em 116 páginas +
+  template doc.html; preload do index.html aponta pro AVIF (06/07/2026,
+  commit `cc45d71`)
+- [ ] Performance: defer/inline scripts do head
 
 ## Médio / Baixo
 
