@@ -54,12 +54,20 @@ resolve os quatro sintomas — ver Item 1 abaixo.
 - [x] Schema: `publisher` no Article do guia; Article+BreadcrumbList no
   quanto-custa (rankeia e não tem nenhum JSON-LD); author Person (Diego Rosa)
   em vez de Organization — feito 06/07/2026 (commit `538fe79`)
+- [x] Performance: consolidar gtag.js duplicado — 128 páginas carregavam
+  `/gtag.js` local repetindo o `config` do Ads por cima do script inline
+  (que já configura GA4+Ads). Removido + arquivo órfão deletado (06/07/2026,
+  commits `adb7d8f`+`7fbca51`). Tag de conversão real (`success.html`,
+  evento `conversion` com `send_to` específico) não usava esse arquivo,
+  ficou intacta.
 - [ ] Encurtar cadeia de redirect do domínio apex (2 hops → 1)
 - [ ] E-E-A-T: caixa de autor nos guias, link de saída p/ fonte oficial CNJ,
-  remover claim não verificável ("nenhuma recusa registrada"), CNPJ visível +
-  garantia de reembolso
-- [ ] Performance: consolidar gtag.js (GA4+Ads, hoje duplicado, -146KB),
-  defer/inline scripts do head, trocar `logo.png` (103KB, preloaded) por WebP
+  CNPJ visível + garantia de reembolso. **Decisão do usuário (06/07/2026):**
+  CNPJ fica de fora até o negócio "vingar" (sem empresa aberta ainda); claim
+  "nenhuma recusa registrada" mantido como está — usuário considera verdadeiro
+  (ausência de reclamação de clientes até hoje).
+- [ ] Performance: defer/inline scripts do head, trocar `logo.png` (103KB,
+  preloaded) por WebP
 
 ## Médio / Baixo
 
