@@ -61,11 +61,12 @@ resolve os quatro sintomas — ver Item 1 abaixo.
   evento `conversion` com `send_to` específico) não usava esse arquivo,
   ficou intacta.
 - [ ] Encurtar cadeia de redirect do domínio apex (2 hops → 1)
-- [ ] E-E-A-T: caixa de autor nos guias, link de saída p/ fonte oficial CNJ,
-  CNPJ visível + garantia de reembolso. **Decisão do usuário (06/07/2026):**
-  CNPJ fica de fora até o negócio "vingar" (sem empresa aberta ainda); claim
-  "nenhuma recusa registrada" mantido como está — usuário considera verdadeiro
-  (ausência de reclamação de clientes até hoje).
+- [x] E-E-A-T: caixa de autor (Diego Rosa) + link de saída p/ fonte oficial
+  CNJ (atos.cnj.jus.br/atos/detalhar/3015) no guia-definitivo-viagem-menor
+  (06/07/2026, commit `6a20b00`). CNPJ e garantia de reembolso ficam de fora:
+  **decisão do usuário (06/07/2026)** — CNPJ só quando o negócio "vingar"
+  (sem empresa aberta ainda); claim "nenhuma recusa registrada" mantido como
+  está — usuário considera verdadeiro (ausência de reclamação até hoje).
 - [ ] Performance: defer/inline scripts do head, trocar `logo.png` (103KB,
   preloaded) por WebP
 
