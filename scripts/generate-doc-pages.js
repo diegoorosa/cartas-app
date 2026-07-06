@@ -34,6 +34,8 @@ function buildPage(template, cfg) {
   const desc = escapeHtml(`${cfg.title}. Preencha os dados e baixe em PDF/DOC.`);
 
   let html = template;
+  // O doc.html "nu" (sem slug) leva noindex; as páginas por slug devem ser indexadas.
+  html = html.replace(/\s*<meta name="robots" content="noindex, follow" \/>\n/, '\n');
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${safeTitle} | Gerador</title>`);
   html = html.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${desc}">`);
   html = html.replace(/<link rel="canonical" href="[^"]*"\s*\/>/, `<link rel="canonical" href="${url}" />`);
