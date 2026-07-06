@@ -48,3 +48,10 @@ status = 200
   from = "/viagem2.html"
   to = "/viagem.html"
   status = 301
+
+# Netlify serve /viagem.html tanto em /viagem quanto /viagem.html (clean URL) — força canonical
+[[redirects]]
+  from = "/viagem"
+  to = "/viagem.html"
+  status = 301
+  force = true
