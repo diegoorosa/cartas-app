@@ -298,29 +298,29 @@
             // -------------------------------------------------------
             // 1. LÓGICA DO NOME DO ARQUIVO BONITO (SEM ACENTOS)
             // -------------------------------------------------------
-            var filename = 'CartasApp_Documento'; // Nome padrão
+            var filename = 'CartasApp Documento'; // Nome padrão
 
             if (payload) {
-                // Função para limpar string (sem acentos e sem espaços)
+                // Função para limpar string (sem acentos, mantém espaços)
                 function sanitizeName(str) {
                     if (!str) return '';
                     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
                         .replace(/[^a-zA-Z0-9 ]/g, "") // Remove símbolos estranhos
                         .trim()
-                        .replace(/\s+/g, "_"); // Troca espaços por _
+                        .replace(/\s+/g, " "); // Normaliza espaços múltiplos
                 }
 
                 if (payload.menor_nome) {
-                    // Ex: Autorizacao_Viagem_Enzo_Gabriel
-                    filename = 'Autorizacao_Viagem_' + sanitizeName(payload.menor_nome);
+                    // Ex: Autorizacao de Viagem - Enzo Gabriel
+                    filename = 'Autorizacao de Viagem - ' + sanitizeName(payload.menor_nome);
                 }
                 else if (payload.placa) {
-                    // Ex: Recurso_Multa_ABC1234
-                    filename = 'Recurso_Multa_' + sanitizeName(payload.placa);
+                    // Ex: Recurso de Multa - ABC1234
+                    filename = 'Recurso de Multa - ' + sanitizeName(payload.placa);
                 }
                 else if (payload.nome) {
-                    // Ex: Documento_Joao_Silva
-                    filename = 'Documento_' + sanitizeName(payload.nome);
+                    // Ex: Documento - Joao Silva
+                    filename = 'Documento - ' + sanitizeName(payload.nome);
                 }
             }
             // -------------------------------------------------------
@@ -489,8 +489,9 @@
                         if (rs.ok) {
                             var js = await rs.json();
                             if (js && js.output && (!js.ai_pendente || i === 2)) {
-                                var fullText = renderDocText(js.output, localPayload);
-                                showDocAndScroll(fullText, localPayload);
+                                var confirmedPayload = js.input_json || localPayload;
+                                var fullText = renderDocText(js.output, confirmedPayload);
+                                showDocAndScroll(fullText, confirmedPayload);
                                 return;
                             }
                         }
@@ -594,8 +595,9 @@
                     if (rs.ok) {
                         var js = await rs.json();
                         if (js && js.output && (!js.ai_pendente || i === 2)) {
-                            var fullText = renderDocText(js.output, localPayload);
-                            showDocAndScroll(fullText, localPayload);
+                            var confirmedPayload = js.input_json || localPayload;
+                            var fullText = renderDocText(js.output, confirmedPayload);
+                            showDocAndScroll(fullText, confirmedPayload);
                             return;
                         }
                     }

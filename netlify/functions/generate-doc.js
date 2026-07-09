@@ -256,11 +256,11 @@ exports.handler = async (event) => {
         if (orderId && !preview) {
             const { data: rows } = await supabase
                 .from('generations')
-                .select('output_json')
+                .select('output_json, input_json')
                 .eq('order_id', orderId)
                 .limit(1);
             if (rows && rows.length) {
-                return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, cached: true }) };
+                return { statusCode: 200, body: JSON.stringify({ output: rows[0].output_json, input_json: rows[0].input_json, cached: true }) };
             }
         }
 
@@ -344,7 +344,7 @@ exports.handler = async (event) => {
         }
 
         // Retorna a estrutura exata que o frontend espera!
-        return { statusCode: 200, body: JSON.stringify({ output, cached: false, ai_pendente: !aiOk && !ultimaTentativa }) };
+        return { statusCode: 200, body: JSON.stringify({ output, input_json: payload, cached: false, ai_pendente: !aiOk && !ultimaTentativa }) };
 
     } catch (e) {
         console.error('Erro Função:', e.message);
