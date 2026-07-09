@@ -60,3 +60,33 @@ status = 200
   from = "/guia-cancelar-smart-fit-sem-ir-loja.html"
   to = "/cancelar-smart-fit-guia-completo.html"
   status = 301
+
+[[redirects]]
+  from = "/bagagem-extraviada-latam.html"
+  to = "/bagagem-extraviada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-extraviada-gol.html"
+  to = "/bagagem-extraviada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-extraviada-azul.html"
+  to = "/bagagem-extraviada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-danificada-latam.html"
+  to = "/bagagem-danificada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-danificada-gol.html"
+  to = "/bagagem-danificada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-danificada-azul.html"
+  to = "/bagagem-danificada.html"
+  status = 301
