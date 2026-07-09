@@ -85,7 +85,7 @@ function gerarViagem(p) {
     let docResp1 = formatarDocumento(p.resp1_cpf, p.resp1_doc);
     let textoQualificacao = `Eu, ${p.resp1_nome || '____________________'}, ${docResp1}`;
 
-    if (p.dois_resps || p.resp2_nome) {
+    if (p.dois_resps && p.resp2_nome) {
         let docResp2 = formatarDocumento(p.resp2_cpf, p.resp2_doc);
         textoQualificacao += `, e eu, ${p.resp2_nome || '____________________'}, ${docResp2}`;
     }
@@ -313,7 +313,7 @@ exports.handler = async (event) => {
             if (payload.resp1_cpf) assinaturas += `\nCPF: ${payload.resp1_cpf}`;
             assinaturas += `\n(Assinatura com Firma Reconhecida)`;
 
-            if (payload.dois_resps || payload.resp2_nome) {
+            if (payload.dois_resps && payload.resp2_nome) {
                 assinaturas += `\n\n\n\n\n__________________________________________________\n${payload.resp2_nome || 'Segundo Responsável'}`;
                 if (payload.resp2_cpf) assinaturas += `\nCPF: ${payload.resp2_cpf}`;
                 assinaturas += `\n(Assinatura com Firma Reconhecida)`;

@@ -2005,7 +2005,7 @@
             var docResp1 = formatarDocumentoCliente(p.resp1_cpf, p.resp1_doc);
             var textoQualificacao = 'Eu, ' + (p.resp1_nome || '____________________') + ', ' + docResp1;
 
-            if (p.dois_resps || p.resp2_nome) {
+            if (p.dois_resps && p.resp2_nome) {
                 var docResp2 = formatarDocumentoCliente(p.resp2_cpf, p.resp2_doc);
                 textoQualificacao += ', e eu, ' + (p.resp2_nome || '____________________') + ', ' + docResp2;
             }
