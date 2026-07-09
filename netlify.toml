@@ -90,3 +90,18 @@ status = 200
   from = "/bagagem-danificada-azul.html"
   to = "/bagagem-danificada.html"
   status = 301
+
+[[redirects]]
+  from = "/reembolso-atraso-voo-gol.html"
+  to = "/direitos-viajante-problemas-voo.html"
+  status = 301
+
+[[redirects]]
+  from = "/reembolso-atraso-voo-latam.html"
+  to = "/direitos-viajante-problemas-voo.html"
+  status = 301
+
+[[redirects]]
+  from = "/reembolso-atraso-voo-azul.html"
+  to = "/direitos-viajante-problemas-voo.html"
+  status = 301
