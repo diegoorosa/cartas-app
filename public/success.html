@@ -515,11 +515,12 @@
             }
         }
 
-        async function sendConversionEC() {
+        async function sendConversionEC(price) {
             var ec = await buildECData();
+            var value = (typeof price === 'number' && price > 0) ? price : 29.9; // fallback se o preço real não vier
             gtag('event', 'conversion', {
                 send_to: SEND_TO_CONVERSAO,
-                value: 29.9,
+                value: value,
                 currency: 'BRL',
                 transaction_id: orderId,
                 user_data: ec
@@ -568,7 +569,7 @@
                 if (st && st.status === 'paid') {
                     confirmed = true;
                     if (onceConv(orderId)) {
-                        await sendConversionEC();
+                        await sendConversionEC(st.price);
                     }
                     break;
                 }

@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { PRICE_MAP } = require('./price-map');
 
 exports.handler = async (event) => {
     try {
@@ -13,8 +14,11 @@ exports.handler = async (event) => {
             try {
                 const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
                 const supabase = createClient(process.env.SUPABASE_URL, key);
-                const { data } = await supabase.from('generations').select('id').eq('order_id', orderId).maybeSingle();
-                if (data) return { statusCode: 200, body: JSON.stringify({ status: 'paid', source: 'supabase' }) };
+                const { data } = await supabase.from('generations').select('id, slug').eq('order_id', orderId).maybeSingle();
+                if (data) {
+                    const price = PRICE_MAP[data.slug] || PRICE_MAP['default'];
+                    return { statusCode: 200, body: JSON.stringify({ status: 'paid', source: 'supabase', price }) };
+                }
             } catch (e) { }
         }
 
@@ -30,13 +34,17 @@ exports.handler = async (event) => {
                     });
                     if (r.ok) {
                         const p = await r.json();
-                        if (p.status === 'approved') return { statusCode: 200, body: JSON.stringify({ status: 'paid', source: 'mp-direct' }) };
+                        if (p.status === 'approved') {
+                            const price = typeof p.transaction_amount === 'number' ? p.transaction_amount : null;
+                            return { statusCode: 200, body: JSON.stringify({ status: 'paid', source: 'mp-direct', price }) };
+                        }
                     }
                 }
             } catch (e) { }
         }
 
         // 3) Fallback: search por external_reference (mais lento)
+        let searchPrice = null;
         if (MP_TOKEN) {
             try {
                 const url = 'https://api.mercadopago.com/v1/payments/search?external_reference=' + encodeURIComponent(orderId) + '&limit=5';
@@ -44,12 +52,18 @@ exports.handler = async (event) => {
                 if (r.ok) {
                     const j = await r.json();
                     const results = Array.isArray(j.results) ? j.results : [];
-                    for (const it of results) { if (it && it.status === 'approved') { paid = true; break; } }
+                    for (const it of results) {
+                        if (it && it.status === 'approved') {
+                            paid = true;
+                            searchPrice = typeof it.transaction_amount === 'number' ? it.transaction_amount : null;
+                            break;
+                        }
+                    }
                 }
             } catch (e) { }
         }
 
-        return { statusCode: 200, body: JSON.stringify({ status: paid ? 'paid' : 'pending' }) };
+        return { statusCode: 200, body: JSON.stringify({ status: paid ? 'paid' : 'pending', price: searchPrice }) };
     } catch (e) {
         return { statusCode: 200, body: JSON.stringify({ status: 'pending' }) };
     }
