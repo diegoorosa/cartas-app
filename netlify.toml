@@ -55,3 +55,8 @@ status = 200
   to = "/viagem.html"
   status = 301
   force = true
+
+[[redirects]]
+  from = "/guia-cancelar-smart-fit-sem-ir-loja.html"
+  to = "/cancelar-smart-fit-guia-completo.html"
+  status = 301
