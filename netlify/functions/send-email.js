@@ -86,8 +86,8 @@ exports.handler = async (event) => {
       text: `Olá!\n\nSeu documento "${docTitle}" está pronto.\n\nBaixe agora no link: ${recoveryLink}\n\nAVISO IMPORTANTE: este é um modelo de documento gerado automaticamente. O CartasApp não presta assessoria jurídica individual e não garante que o modelo será aceito por órgãos públicos, cartórios, empresas ou autoridades. Revise com atenção se todos os dados estão corretos antes de assinar ou enviar, e confirme com a instituição responsável se o modelo atende às exigências do seu caso.\n`,
       html: `
             <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
-                <div style="text-align: center; margin-bottom: 16px;">
-                    <img src="${logoUrl}" alt="CartasApp" style="height: 40px; width: auto;" />
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="${logoUrl}" alt="CartasApp" style="height: 72px; width: auto;" />
                 </div>
                 <h2 style="color: #3b82f6; text-align: center;">Seu documento está pronto! ✅</h2>
                 <p>Olá!</p>
