@@ -351,12 +351,110 @@
         var price = (cfg && typeof cfg.price === 'number') ? cfg.price : 9.90;
         var priceStr = 'R$ ' + price.toFixed(2).replace('.', ',');
         var payBtnLabel = 'Gerar documento completo (' + priceStr + ')';
+
+        // ===== CUPONS (cross-sell VOLTA10 = 10% OFF) =====
+        (function () {
+            var u = new URL(location.href);
+            var coupon = u.searchParams.get('coupon');
+            var COUPONS = { 'VOLTA10': 0.10, 'BEMVINDO15': 0.15, 'INDICA20': 0.20 };
+            if (coupon && COUPONS[coupon]) {
+                var discount = COUPONS[coupon];
+                var discountedPrice = Math.round(price * (1 - discount) * 100) / 100;
+                priceStr = 'R$ ' + discountedPrice.toFixed(2).replace('.', ',');
+                payBtnLabel = 'Gerar documento completo (' + priceStr + ')';
+                // Badge visual do cupom
+                var badge = document.createElement('div');
+                badge.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#10b981;color:white;padding:12px 16px;border-radius:8px;font-weight:600;font-size:14px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.15);';
+                badge.innerHTML = '🎉 Cupom <strong>' + coupon + '</strong> aplicado!<br>Desconto de ' + (discount * 100) + '% — Preço: <strong>' + priceStr + '</strong>';
+                document.body.appendChild(badge);
+                setTimeout(function () { badge.style.opacity = '0'; badge.style.transition = 'opacity .5s'; }, 5000);
+            }
+        })();
+        // ===== FIM CUPONS =====
+
         ['heroPrice', 'valuePriceAmt', 'priceBadge', 'previewPriceAmt', 'faqPriceAmt'].forEach(function (id) {
             var el = document.getElementById(id);
             if (el) el.textContent = priceStr;
         });
         var btnPagarEl = document.getElementById('btnPagar');
         if (btnPagarEl) btnPagarEl.textContent = payBtnLabel;
+
+        // ===== PRÉ-PREENCHIMENTO VIA URL (cross-sell do success.html) =====
+        (function () {
+            var u = new URL(location.href);
+            var prefill = u.searchParams.get('prefill');
+            if (prefill !== 'true') return;
+
+            // Mapeia URL params -> input IDs
+            var map = {
+                'nome': 'nome',
+                'cpf': 'cpf',
+                'email': 'email',
+                'telefone': 'telefone',
+                'cidade': 'cidade',
+                'contrato': 'contrato',
+                'motivo': 'motivo',
+                // viagem
+                'menor_nome': 'menor_nome',
+                'menor_nascimento': 'menor_nascimento',
+                'menor_documento': 'menor_documento',
+                'destino': 'destino',
+                'data_ida': 'data_ida',
+                'data_volta': 'data_volta',
+                'acompanhante_nome': 'acompanhante_nome',
+                'acompanhante_documento': 'acompanhante_documento',
+                // multa
+                'placa': 'placa',
+                'renavam': 'renavam',
+                'cnh': 'cnh',
+                'auto_infracao': 'auto_infracao',
+                'data_infracao': 'data_infracao',
+                'local_infracao': 'local_infracao',
+                'velocidade': 'velocidade',
+                // reembolso voo
+                'cia_aerea': 'cia_aerea',
+                'voo': 'voo',
+                'data_voo': 'data_voo',
+                'origem': 'origem',
+                'valor_passagem': 'valor_passagem'
+            };
+
+            Object.keys(map).forEach(function (param) {
+                var val = u.searchParams.get(param);
+                if (!val) return;
+                var el = document.getElementById(map[param]);
+                if (el) {
+                    // CPF precisa de máscara
+                    if (param === 'cpf') {
+                        val = val.replace(/\D/g, '').slice(0, 11);
+                        val = val.replace(/(\d{3})(\d)/, '$1.$2');
+                        val = val.replace(/(\d{3})(\d)/, '$1.$2');
+                        val = val.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                    }
+                    // Telefone precisa de máscara
+                    if (param === 'telefone') {
+                        val = val.replace(/\D/g, '');
+                        if (val.length === 11) {
+                            val = val.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                        } else if (val.length === 10) {
+                            val = val.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+                        }
+                    }
+                    // Data: garante formato YYYY-MM-DD para input type=date
+                    if (param === 'data_ida' || param === 'data_volta' || param === 'data_voo' || param === 'data_infracao' || param === 'menor_nascimento') {
+                        // Se vier DD/MM/YYYY, converte
+                        if (val.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                            var parts = val.split('/');
+                            val = parts[2] + '-' + parts[1] + '-' + parts[0];
+                        }
+                    }
+                    el.value = val;
+                    // Dispara input event pra máscaras
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            });
+        })();
+        // ===== FIM PRÉ-PREENCHIMENTO =====
 
         function maskCPF(v) {
             v = (v || '').replace(/\D/g, '').slice(0, 11);
@@ -544,14 +642,20 @@
                     alert('Verifique os campos obrigatórios (nome, CPF, cidade/UF e motivo).');
                     throw new Error('Inválido');
                 }
+                // Cupom da URL (cross-sell)
+                var u = new URL(location.href);
+                var coupon = u.searchParams.get('coupon');
+                var body = {
+                    slug: slug,
+                    payload: p,
+                    utm: (window.LMUTM ? LMUTM.get() : {})
+                };
+                if (coupon) body.coupon = coupon;
+
                 var r = await fetch('/.netlify/functions/mp-checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        slug: slug,
-                        payload: p,
-                        utm: (window.LMUTM ? LMUTM.get() : {})
-                    })
+                    body: JSON.stringify(body)
                 });
                 var data = await r.json();
                 if (!r.ok) throw new Error(data.error);

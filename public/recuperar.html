@@ -228,6 +228,11 @@
 
     loadDocument();
   </script>
+  <script>
+    if (window.LMRecovery && typeof LMRecovery.offerRecover === 'function') {
+      LMRecovery.offerRecover();
+    }
+  </script>
 </body>
 
 </html>
