@@ -136,12 +136,10 @@ REGRAS OBRIGATÓRIAS: (1) Use exclusivamente os fatos descritos pelo condutor; N
                 `Eu, ${p.nome || '____________________'}, inscrito(a) no CPF sob o nº ${p.cpf || '___________'}, portador(a) da CNH nº ${p.cnh || '___________'}, residente e domiciliado(a) em ${p.endereco || '____________________'}, ${p.cidade_uf || ''}, na qualidade de proprietário/condutor do veículo modelo ${p.modelo || '___________'}, Placa ${p.placa || '___________'}, venho, respeitosamente, à presença de Vossa Senhoria, interpor RECURSO / DEFESA PRÉVIA contra a autuação de trânsito em epígrafe.`,
                 `O requerente foi notificado da suposta infração registrada no Auto de Infração nº ${p.auto_infracao || '___________'}, que teria ocorrido na data de ${p.data_multa || '___/___/____'}.                    `,
                 argumentoParagrafo,
-                `Diante do exposto, REQUER-SE o recebimento desta defesa, com o consequente DEFERIMENTO do pedido, determinando-se o cancelamento do Auto de Infração e a anulação de qualquer pontuação imposta ao prontuário do condutor.
-                `
+                `Diante do exposto, REQUER-SE o recebimento desta defesa, com o consequente DEFERIMENTO do pedido, determinando-se o cancelamento do Auto de Infração e a anulação de qualquer pontuação imposta ao prontuário do condutor.                `
             ]
         };
     }
-}
 
 function gerarReembolsoPassagem(p) {
     return {
@@ -214,30 +212,27 @@ REGRAS OBRIGATÓRIAS: (1) Baseie-se EXCLUSIVAMENTE nos fatos relatados; NÃO inv
     };
 }
 
-// --- HANDLER ---
-exports.handler = async (event) => {
+// --- HANDLER PRINCIPAL ---
+exports.handler = async function(event) {
     try {
-        if (event.httpMethod !== 'POST') {
-            return { statusCode: 405, body: 'Método não permitido' };
-        }
-
         const { payload, preview, slug, order_id } = JSON.parse(event.body || '{}');
-        const p = sanitizePayload(payload || {});
-        const isTrusted = event.headers['x-internal-secret'] === process.env.INTERNAL_FUNCTION_SECRET;
+        const p = sanitizePayload(payload);
 
-        // Roteamento por slug / payload
-        let tipo;
-        if (slug && slug.includes('viagem')) tipo = 'autorizacao_viagem';
-        else if (p.menor_nome) tipo = 'autorizacao_viagem';
-        else if (slug && slug.includes('multa')) tipo = 'multa';
-        else if (p.placa || p.cnh || p.auto_infracao) tipo = 'multa';
-        else if (slug && slug.includes('reembolso-cancelamento-passagem')) tipo = 'reembolso_passagem';
-        else if (slug && slug.includes('voo')) tipo = 'reembolso_passagem';
-        else tipo = 'consumo_generico';
+        // Detecta tipo pelo slug / payload (compatível com roteamento do generate-doc)
+        let tipo = slug || 'consumo_generico';
+        if (slug && slug.includes('viagem') || (p.menor_nome && p.resp1_nome)) {
+            tipo = 'autorizacao_viagem';
+        } else if (slug && (slug.includes('multa') || p.placa || p.cnh || p.auto_infracao)) {
+            tipo = 'multa';
+        } else if (slug && (slug.includes('reembolso-cancelamento-passagem') || slug.includes('voo'))) {
+            tipo = 'reembolso_passagem';
+        } else {
+            tipo = 'consumo_generico';
+        }
 
         // --- GERAÇÃO DO TEXTO ---
         let output = { saudacao: "", corpo_paragrafos: [] };
-        let aiOk = true;
+        let aiOk = true; // viagem e reembolso não usam IA, sempre "ok"
 
         if (tipo === 'autorizacao_viagem') {
             output = gerarViagem(p);
@@ -298,3 +293,5 @@ exports.handler = async (event) => {
         return { statusCode: 500, body: 'Erro interno ao gerar documento.' };
     }
 };
+
+exports.handler = handler;
