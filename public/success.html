@@ -518,7 +518,7 @@
 
         async function sendConversionEC(price) {
             var ec = await buildECData();
-            var value = (typeof price === 'number' && price > 0) ? price : 29.9; // fallback se o preço real não vier
+            var value = (typeof price === 'number' && price > 0) ? price : 9.90; // fallback se o preço real não vier
             gtag('event', 'conversion', {
                 send_to: SEND_TO_CONVERSAO,
                 value: value,

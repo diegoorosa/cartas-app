@@ -62,7 +62,7 @@ exports.handler = async (event) => {
 
     const docTitle = friendlyTitle(doc.slug);
     const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br';
-    const recoveryLink = `${BASE_URL}/success.html?o=${order_id}`;
+    const recoveryLink = `${BASE_URL}/success.html?o=${order_id}&utm_source=email&utm_medium=transactional&utm_campaign=document_ready`;
     const logoUrl = `${BASE_URL}/logo.png`;
 
     console.log(`Documento encontrado: ${docTitle}. Preparando envio...`);

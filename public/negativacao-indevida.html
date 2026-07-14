@@ -737,7 +737,7 @@
 
                 localStorage.setItem('lastOrderId', data.order_id || '');
                 if (typeof gtag === 'function') {
-                    gtag('event', 'begin_checkout', { value: 9.9, currency: 'BRL', items: [{ item_id: slugStr }] });
+                    gtag('event', 'begin_checkout', { value: 19.90, currency: 'BRL', items: [{ item_id: slugStr }] });
                 }
                 showPaymentModal(data.init_point, data.order_id, slugStr);
             } catch (e) {
