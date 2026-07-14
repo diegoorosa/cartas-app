@@ -282,7 +282,8 @@ html[data-theme="dark"] .navbar {
 
 .btn-primary {
   background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  color: #fff;
+  background-color: var(--accent-primary); /* Fallback se gradient não renderizar */
+  color: #fff !important;
   box-shadow: 0 4px 12px rgba(59, 130, 246, .3)
 }
 

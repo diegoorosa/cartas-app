@@ -128,18 +128,23 @@ exports.handler = async (event) => {
 
     } else {
       // ========== EMAIL TRANSACTIONAL PADRÃO (DOCUMENTO PRONTO) ==========
-      const { data: doc, error } = await supabase
-        .from('generations')
-        .select('slug')
-        .eq('order_id', order_id)
-        .maybeSingle();
+      // Tenta pegar slug do body (passado pelo webhook/success.html) ou do generations
+      let docSlug = slug;
+      if (!docSlug) {
+        const { data: doc, error } = await supabase
+          .from('generations')
+          .select('slug')
+          .eq('order_id', order_id)
+          .maybeSingle();
 
-      if (error || !doc) {
-        console.error('[send-email] Documento não encontrado para order_id:', order_id);
-        return { statusCode: 404, body: 'Documento não encontrado' };
+        if (error || !doc) {
+          console.error('[send-email] Documento não encontrado para order_id:', order_id);
+          return { statusCode: 404, body: 'Documento não encontrado' };
+        }
+        docSlug = doc.slug;
       }
 
-      const docTitle = friendlyTitle(doc.slug);
+      const docTitle = friendlyTitle(docSlug);
       const recoveryLink = `${BASE_URL}/success.html?o=${order_id}&utm_source=email&utm_medium=transactional&utm_campaign=document_ready`;
 
       subject = `Seu documento está pronto: ${docTitle}`;

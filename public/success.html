@@ -414,6 +414,15 @@
                 } else if (sSlug.indexOf('multa') > -1) tituloDoc = "RECURSO DE MULTA";
                 else if (sSlug.indexOf('reembolso') > -1) tituloDoc = "SOLICITAÇÃO DE REEMBOLSO";
                 else if (sSlug.indexOf('bagagem') > -1) tituloDoc = "RECLAMAÇÃO DE BAGAGEM";
+                else if (sSlug.indexOf('consumo') > -1 || sSlug.indexOf('generico') > -1) tituloDoc = "NOTIFICAÇÃO EXTRAJUDICIAL";
+                else if (sSlug.indexOf('academia') > -1) tituloDoc = "CARTA DE CANCELAMENTO - ACADEMIA";
+                else if (sSlug.indexOf('cartao') > -1 || sSlug.indexOf('cartão') > -1) tituloDoc = "RECLAMAÇÃO - CARTÃO DE CRÉDITO";
+                else if (sSlug.indexOf('internet') > -1 || sSlug.indexOf('telecom') > -1 || sSlug.indexOf('telefone') > -1) tituloDoc = "CARTA DE CANCELAMENTO - INTERNET/TELEFONE";
+                else if (sSlug.indexOf('ecommerce') > -1) tituloDoc = "RECLAMAÇÃO - E-COMMERCE";
+                else if (sSlug.indexOf('energia') > -1 || sSlug.indexOf('luz') > -1) tituloDoc = "RECLAMAÇÃO - CONTA DE ENERGIA";
+                else if (sSlug.indexOf('agua') > -1 || sSlug.indexOf('água') > -1) tituloDoc = "RECLAMAÇÃO - CONTA DE ÁGUA";
+                else if (sSlug.indexOf('plano') > -1 || sSlug.indexOf('saude') > -1 || sSlug.indexOf('saúde') > -1) tituloDoc = "CARTA - PLANO DE SAÚDE";
+                else if (sSlug.indexOf('educacao') > -1 || sSlug.indexOf('educação') > -1 || sSlug.indexOf('curso') > -1 || sSlug.indexOf('faculdade') > -1) tituloDoc = "CARTA - CANCELAMENTO CURSO/FACULDADE";
 
                 // Limpa e constrói DOM seguro
                 docBox.innerHTML = '';
@@ -535,8 +544,15 @@
             }
 
             if (s === 'pending') {
-                info.textContent = 'Pagamento em processamento (Pix/Boleto). Aguardando confirmação...';
-                // Não mostra retry, aguarda polling
+                info.innerHTML = 'Pagamento via <strong>PIX/Boleto/Transferência bancária</strong> em processamento. Aguardando confirmação...';
+                // Esconde botões de pagar/voltar - pagamento já foi iniciado
+                if (retry) retry.style.display = 'none';
+                if (btnPay) btnPay.style.display = 'none';
+                if (btnBack) btnBack.style.display = 'none';
+            } else if (s === 'failure') {
+                info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.';
+                retry.style.display = 'flex';
+                return;
             }
 
             if (!orderId) {
@@ -544,6 +560,11 @@
                 retry.style.display = 'flex';
                 return;
             }
+
+            // Esconder botões de pagamento/retry após pagamento confirmado
+            if (retry) retry.style.display = 'none';
+            if (btnPay) btnPay.style.display = 'none';
+            if (btnBack) btnBack.style.display = 'none';
 
             // --- MOSTRA CACHE LOCAL IMEDIATAMENTE (pendingPayload) ---
             var localPayload = null;
@@ -566,10 +587,10 @@
             }
 
             // --- POLLING: aguarda confirmação de pagamento ---
-            // Para PIX/bank_transfer pode demorar mais, estende para 60s
+            // Para PIX/bank_transfer pode demorar mais, estende para 120s (boleto/transferência pode levar mais)
             var start = Date.now();
             var confirmed = false;
-            var maxPollTime = (s === 'pending') ? 60000 : 15000; // 60s para pending, 15s para success
+            var maxPollTime = (s === 'pending') ? 120000 : 15000; // 120s para pending, 15s para success
 
             while (Date.now() - start < maxPollTime) {
                 var st = await getOrderStatus().catch(function () { return null; });
@@ -583,13 +604,20 @@
                 // Atualiza mensagem a cada 10s
                 var elapsed = Math.floor((Date.now() - start) / 1000);
                 if (elapsed % 10 === 0 && elapsed > 0) {
-                    info.textContent = 'Aguardando confirmação do pagamento... ' + elapsed + 's';
+                    info.textContent = 'Aguardando confirmação do pagamento... ' + elapsed + 's (transferências podem levar minutos)';
                 }
                 await new Promise(function (r) { setTimeout(r, 1500); });
             }
 
             if (!confirmed) {
-                info.textContent = 'Ainda não conseguimos confirmar automaticamente. Se você já pagou, o documento já pode estar pronto acima. Caso contrário, clique em "Pagar agora" abaixo.';
+                var isPending = (s === 'pending');
+                if (isPending) {
+                    info.innerHTML = 'Pagamento via <strong>PIX/Boleto/Transferência</strong> pode levar alguns minutos a horas para confirmar.<br>' +
+                        'Seu documento será gerado e enviado para <strong>seu e-mail</strong> assim que o pagamento for aprovado.<br>' +
+                        'Você pode fechar esta página e voltar depois — o link do documento chegará no seu e-mail.';
+                } else {
+                    info.textContent = 'Ainda não conseguimos confirmar automaticamente. Se você já pagou, o documento já pode estar pronto acima. Caso contrário, clique em "Pagar agora" abaixo.';
+                }
                 if (retry) retry.style.display = 'flex';
                 return;
             }
@@ -613,18 +641,9 @@
                             showDocAndScroll(fullText, confirmedPayload);
                             
                             // Envia email transacional com link do documento
-                            if (confirmedPayload && confirmedPayload.email) {
-                                try {
-                                    await fetch('/.netlify/functions/send-email', {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({
-                                            order_id: orderId,
-                                            email_to: confirmedPayload.email
-                                        })
-                                    });
-                                } catch (e) { console.warn('Erro ao enviar email transacional:', e); }
-                            }
+                            // NOTA: Não envia do cliente - o webhook do MP envia quando payment_status=approved
+                            // Isso evita expor segredo interno no frontend
+                            console.log('Documento carregado, email será enviado pelo webhook quando pagamento for aprovado');
                             return;
                         }
                     }

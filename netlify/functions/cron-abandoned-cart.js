@@ -37,6 +37,7 @@ exports.handler = async (event) => {
       .from('leads')
       .select('*')
       .eq('status', 'pending')
+      .is('recovery_sent_at', null)  // não processar leads que já tiveram email de recuperação
       .not('email', 'is', null)
       .gte('created_at', todayStart)  // apenas leads de HOJE
       .lt('created_at', oneHourAgo)   // há mais de 1h

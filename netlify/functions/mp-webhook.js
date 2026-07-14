@@ -179,8 +179,11 @@ exports.handler = async (event) => {
     if (payload.email && payload.email.includes('@')) {
       fetch(`${BASE_URL}/.netlify/functions/send-email`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id: orderId, email_to: payload.email })
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Internal-Secret': process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY
+        },
+        body: JSON.stringify({ order_id: orderId, email_to: payload.email, slug: payload.slug || ci.data?.slug })
       }).catch(e => console.error('Erro async ao enviar e-mail:', e));
     }
 
