@@ -41,7 +41,7 @@ exports.handler = async (event) => {
       .gte('created_at', todayStart)  // apenas leads de HOJE
       .lt('created_at', oneHourAgo)   // há mais de 1h
       .order('created_at', { ascending: true })
-      .limit(5); // Processa no máx 5 por execução
+      .limit(3); // Processa no máx 3 por execução (evita timeout 30s)
 
     if (leadsError) {
       console.error('[cron-abandoned-cart] Erro ao buscar leads:', leadsError);
@@ -85,11 +85,11 @@ exports.handler = async (event) => {
         
         while (checkoutAttempts < maxCheckoutAttempts && !checkoutData) {
           checkoutAttempts++;
+          // Timeout de 10s para mp-checkout
+          const checkoutController = new AbortController();
+          let checkoutTimeout = setTimeout(() => checkoutController.abort(), 10000);
+          
           try {
-            // Timeout de 10s para mp-checkout
-            const checkoutController = new AbortController();
-            const checkoutTimeout = setTimeout(() => checkoutController.abort(), 10000);
-            
             const checkoutResp = await fetch(`${SITE_URL}/.netlify/functions/mp-checkout`, {
               method: 'POST',
               headers: {
@@ -124,18 +124,18 @@ exports.handler = async (event) => {
             }
             
             if (!contentType?.includes('application/json')) {
-              console.error(`[cron-abandoned-cart] Resposta não-JSON do MP para lead ${lead.id}:`, responseText);
-              if (checkoutAttempts < maxCheckoutAttempts) {
-                await new Promise(r => setTimeout(r, 1000));
-                continue;
-              }
+              console.warn(`[cron-abandoned-cart] Resposta sem Content-Type JSON do MP para lead ${lead.id}, tentando parse mesmo assim:`, responseText);
+            }
+            
+            try {
+              checkoutData = JSON.parse(responseText);
+            } catch (e) {
+              console.error(`[cron-abandoned-cart] Falha ao parsear JSON do MP para lead ${lead.id}:`, e);
               throw new Error('Resposta inválida do Mercado Pago');
             }
             
-            checkoutData = JSON.parse(responseText);
-            
           } catch (e) {
-            clearTimeout(checkoutTimeout);
+            if (checkoutTimeout) clearTimeout(checkoutTimeout);
             if (checkoutAttempts >= maxCheckoutAttempts) {
               throw e;
             }
@@ -156,10 +156,10 @@ exports.handler = async (event) => {
         
         while (emailAttempts < maxEmailAttempts && !emailSent) {
           emailAttempts++;
+          const emailController = new AbortController();
+          let emailTimeout = setTimeout(() => emailController.abort(), 8000);
+          
           try {
-            const emailController = new AbortController();
-            const emailTimeout = setTimeout(() => emailController.abort(), 8000);
-            
             const emailResp = await fetch(`${SITE_URL}/.netlify/functions/send-email`, {
               method: 'POST',
               headers: {
@@ -188,7 +188,7 @@ exports.handler = async (event) => {
             }
             emailSent = true;
           } catch (e) {
-            clearTimeout(emailTimeout);
+            if (emailTimeout) clearTimeout(emailTimeout);
             if (emailAttempts >= maxEmailAttempts) throw e;
             await new Promise(r => setTimeout(r, 2000 * emailAttempts));
           }
