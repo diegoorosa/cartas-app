@@ -228,6 +228,17 @@
                         <label class="label">Cidade/UF <span class="required-star">*</span></label>
                         <input class="input" id="cidade_uf" placeholder="Ex.: São Paulo/SP" />
 
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+                            <div>
+                                <label class="label">E-mail <span class="required-star">*</span></label>
+                                <input class="input" id="email" placeholder="Enviamos sua prévia e link de pagamento por e-mail" type="email" required autocomplete="email" />
+                            </div>
+                            <div>
+                                <label class="label">Telefone (opcional)</label>
+                                <input class="input" id="telefone" placeholder="(00) 00000-0000" type="tel" inputmode="tel" maxlength="15" />
+                            </div>
+                        </div>
+
                         <h2 class="section-title" style="font-size: 24px; margin: 32px 0 24px;">Dados da Passagem</h2>
 
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -458,6 +469,16 @@
                 if (cpfErr) cpfErr.style.display = 'block';
             } else {
                 if (cpfErr) cpfErr.style.display = 'none';
+            }
+
+            // Email obrigatório
+            if (!p.email || !p.email.includes('@')) {
+                ok = false;
+                var emailInput = document.getElementById('email');
+                if (emailInput) emailInput.style.borderColor = 'var(--accent-error)';
+            } else {
+                var emailInput = document.getElementById('email');
+                if (emailInput) emailInput.style.borderColor = '';
             }
 
             return ok;

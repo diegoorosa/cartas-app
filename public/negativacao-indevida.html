@@ -334,8 +334,8 @@
 
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
                                 <div>
-                                    <label class="label">E-mail (opcional)</label>
-                                    <input class="input" id="email" placeholder="seu@email.com" />
+                                    <label class="label">E-mail <span class="required-star">*</span></label>
+                                    <input class="input" id="email" placeholder="Enviamos sua prévia e link de pagamento por e-mail" type="email" required autocomplete="email" />
                                 </div>
                                 <div>
                                     <label class="label">Telefone (opcional)</label>
@@ -344,8 +344,7 @@
                             </div>
 
                             <p class="small" style="margin-top:12px;">
-                                O e-mail e telefone são opcionais e usados apenas para envio do documento e, se
-                                necessário, contato de suporte.
+                                Enviamos sua prévia e link de pagamento por e-mail.
                             </p>
 
                             <div class="form-navigation">
@@ -560,6 +559,16 @@
             if (p.cpf && !isValidCPF(p.cpf)) { show('err_cpf', true); ok = false; } else show('err_cpf', false);
 
             if (!isValidDateBR(p.data_negativacao)) { show('err_data_negativacao', true); ok = false; } else show('err_data_negativacao', false);
+
+            // Email obrigatório
+            if (!p.email || !p.email.includes('@')) {
+                ok = false;
+                var emailInput = document.getElementById('email');
+                if (emailInput) emailInput.style.borderColor = 'var(--accent-error)';
+            } else {
+                var emailInput = document.getElementById('email');
+                if (emailInput) emailInput.style.borderColor = '';
+            }
 
             if (!p.motivo) ok = false;
 

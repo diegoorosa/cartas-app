@@ -290,8 +290,9 @@
 
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
                                 <div>
-                                    <label class="label">E-mail (opcional)</label>
-                                    <input class="input" id="email" placeholder="seu@email.com" />
+                                    <label class="label">E-mail <span class="required-star">*</span></label>
+                                    <input class="input" id="email" placeholder="seu@email.com" required autocomplete="email" />
+                                    <p class="small" style="margin-top:4px; color:var(--text-muted);">Enviamos sua prévia e link de pagamento por e-mail</p>
                                 </div>
                                 <div>
                                     <label class="label">Telefone (opcional)</label>

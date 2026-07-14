@@ -382,8 +382,8 @@
 
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
                                 <div>
-                                    <label class="label">E-mail (opcional)</label>
-                                    <input class="input" id="ps_email" placeholder="seu@email.com" />
+                                    <label class="label">E-mail <span class="required-star">*</span></label>
+                                    <input class="input" id="ps_email" placeholder="Enviamos sua prévia e link de pagamento por e-mail" type="email" required autocomplete="email" />
                                 </div>
                                 <div>
                                     <label class="label">Telefone (opcional)</label>
@@ -392,8 +392,7 @@
                             </div>
 
                             <p class="small" style="margin-top:12px;">
-                                O e-mail e telefone são opcionais e usados apenas para envio do documento e, se
-                                necessário, contato de suporte.
+                                Enviamos sua prévia e link de pagamento por e-mail.
                             </p>
 
                             <div class="form-navigation">
@@ -602,6 +601,16 @@
             if (p.cpf && !ps_isValidCPF(p.cpf)) { show('ps_err_cpf', true); ok = false; } else show('ps_err_cpf', false);
 
             if (!ps_isValidDateBR(p.data_solicitacao)) { show('ps_err_data_solicitacao', true); ok = false; } else show('ps_err_data_solicitacao', false);
+
+            // Email obrigatório
+            if (!p.email || !p.email.includes('@')) {
+                ok = false;
+                var emailInput = document.getElementById('ps_email');
+                if (emailInput) emailInput.style.borderColor = 'var(--accent-error)';
+            } else {
+                var emailInput = document.getElementById('ps_email');
+                if (emailInput) emailInput.style.borderColor = '';
+            }
 
             if (!p.motivo) ok = false;
 

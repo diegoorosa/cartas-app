@@ -1130,8 +1130,8 @@
                                         inputmode="numeric" maxlength="15" onkeyup="mascaraTelefone(this)" autocomplete="tel" />
                                 </div>
                                 <div>
-                                    <label class="label" for="email">Seu E-mail (Opcional)</label>
-                                    <input class="input input-icon input-icon-email" id="email" placeholder="Para receber o PDF" type="email" autocomplete="email" />
+                                    <label class="label" for="email">Seu E-mail <span class="required-star">*</span></label>
+                                    <input class="input input-icon input-icon-email" id="email" placeholder="Enviamos sua prévia e link de pagamento por e-mail" type="email" required autocomplete="email" />
                                 </div>
                             </div>
                             <p class="small" style="margin-top:12px;">Seus dados de contato são usados apenas para
@@ -1817,6 +1817,17 @@
 
             if (p.acompanhante_tipo !== 'desacompanhado') {
                 if (!p.acompanhante_nome || !p.acompanhante_parentesco) { ok = false; }
+            }
+
+            // Email obrigatório
+            if (!p.email || !p.email.includes('@')) {
+                ok = false;
+                // Feedback visual opcional
+                var emailInput = document.getElementById('email');
+                if (emailInput) emailInput.style.borderColor = 'var(--accent-error)';
+            } else {
+                var emailInput = document.getElementById('email');
+                if (emailInput) emailInput.style.borderColor = '';
             }
 
             if (!p.menor_nome || !p.resp1_nome || !p.destino || !p.cidade_uf_emissao) ok = false;

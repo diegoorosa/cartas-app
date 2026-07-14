@@ -324,8 +324,8 @@
 
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
                                 <div>
-                                    <label class="label">E-mail (opcional)</label>
-                                    <input class="input" id="a_email" placeholder="seu@email.com" />
+                                    <label class="label">E-mail <span class="required-star">*</span></label>
+                                    <input class="input" id="a_email" placeholder="Enviamos sua prévia e link de pagamento por e-mail" type="email" required autocomplete="email" />
                                 </div>
                                 <div>
                                     <label class="label">Telefone (opcional)</label>
@@ -334,8 +334,7 @@
                             </div>
 
                             <p class="small" style="margin-top:12px;">
-                                O e-mail e telefone são opcionais e usados apenas para envio do documento e, se
-                                necessário, contato de suporte.
+                                Enviamos sua prévia e link de pagamento por e-mail.
                             </p>
 
                             <div class="form-navigation">
@@ -557,6 +556,16 @@
                 if (!a_isValidDateBR(p.data_entrega)) { show('a_err_data_entrega', true); ok = false; } else show('a_err_data_entrega', false);
             } else {
                 show('a_err_data_entrega', false);
+            }
+
+            // Email obrigatório
+            if (!p.a_email || !p.a_email.includes('@')) {
+                ok = false;
+                var emailInput = document.getElementById('a_email');
+                if (emailInput) emailInput.style.borderColor = 'var(--accent-error)';
+            } else {
+                var emailInput = document.getElementById('a_email');
+                if (emailInput) emailInput.style.borderColor = '';
             }
 
             if (!p.motivo) ok = false;

@@ -207,8 +207,9 @@
                 CPF inválido.
               </div>
 
-              <label class="label">E-mail (opcional)</label>
-              <input class="input" id="email" placeholder="seu@email.com" />
+              <label class="label">E-mail <span class="required-star">*</span></label>
+              <input class="input" id="email" placeholder="seu@email.com" required autocomplete="email" />
+              <p class="small" style="margin-top:4px; color:var(--text-muted);">Enviamos sua prévia e link de pagamento por e-mail</p>
 
               <label class="label">Telefone (opcional)</label>
               <input class="input" id="telefone" placeholder="(00) 00000-0000" />
@@ -483,6 +484,16 @@
         if (cpfErr) cpfErr.style.display = 'block';
       } else {
         if (cpfErr) cpfErr.style.display = 'none';
+      }
+
+      // Email obrigatório
+      if (!p.email || !p.email.includes('@')) {
+        ok = false;
+        var emailInput = document.getElementById('email');
+        if (emailInput) emailInput.style.borderColor = 'var(--accent-error)';
+      } else {
+        var emailInput = document.getElementById('email');
+        if (emailInput) emailInput.style.borderColor = '';
       }
 
       if (!isValidDateBR(p.data_voo)) {
