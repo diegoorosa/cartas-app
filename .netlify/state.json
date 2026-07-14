@@ -1,3 +1,22 @@
 {
-	"siteId": "093fb4d0-a756-4349-9844-f6fe1754072a"
+	"siteId": "093fb4d0-a756-4349-9844-f6fe1754072a",
+	"dbConnectionString": "postgres://localhost:50305/postgres",
+	"geolocation": {
+		"data": {
+			"city": "Blumenau",
+			"country": {
+				"code": "BR",
+				"name": "Brazil"
+			},
+			"subdivision": {
+				"code": "SC",
+				"name": "Santa Catarina"
+			},
+			"timezone": "America/Sao_Paulo",
+			"latitude": -26.8766,
+			"longitude": -49.0969,
+			"postalCode": "89000"
+		},
+		"timestamp": 1782132381450
+	}
 }

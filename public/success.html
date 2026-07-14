@@ -668,6 +668,10 @@
                 console.error('Upsell error', e);
             }
         });
+        // Re-engaja usuários que já compraram e voltam à página
+        if (window.LMRecovery && typeof LMRecovery.offerRecover === 'function') {
+            LMRecovery.offerRecover();
+        }
     </script>
 </body>
 

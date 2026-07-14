@@ -48,6 +48,10 @@
     <meta property="og:image" content="https://www.cartasapp.com.br/logo.webp">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="CartasApp">
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Contestação de Compra no Cartão de Crédito | CartasApp" />
+    <meta name="twitter:description" content="Compra não reconhecida ou cobrança indevida no cartão? Gere a carta de contestação para o banco em minutos, com base no Código de Defesa do Consumidor." />
+    <meta name="twitter:image" content="https://www.cartasapp.com.br/logo.webp" />
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
     <script>
@@ -77,6 +81,47 @@
         "availability": "https://schema.org/InStock",
         "category": "LegalService"
       }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que fazer quando aparece uma compra não reconhecida no cartão de crédito?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ao identificar uma compra que você não reconhece na fatura do cartão de crédito, o ideal é: 1) conferir se outra pessoa autorizada pode ter feito a compra; 2) entrar em contato imediatamente com o banco emissor, pelo telefone do cartão ou app; 3) pedir o bloqueio do cartão, se houver suspeita de fraude; e 4) registrar a contestação formal do lançamento, preferencialmente por escrito, guardando protocolos e comprovantes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Tenho direito a estorno em toda compra contestada?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nem toda compra contestada será automaticamente estornada. O banco emissor e a bandeira do cartão costumam analisar o caso com base em regras internas e evidências apresentadas. Entretanto, o Código de Defesa do Consumidor estabelece que o fornecedor de serviços financeiros deve garantir a segurança das operações: se ficar demonstrado que houve falha de segurança ou fraude, o consumidor tem direito ao estorno dos valores indevidos."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "É obrigatório fazer Boletim de Ocorrência em caso de fraude no cartão?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nem sempre o banco exige Boletim de Ocorrência para abrir uma contestação, mas muitos o recomendam quando há suspeita de fraude ou clonagem do cartão. Registrar o B.O. pode ajudar a comprovar que você tomou todas as providências e que não autorizou a compra, sendo um elemento adicional de prova em eventual discussão com o banco ou na Justiça."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "A carta do CartasApp substitui a abertura de contestação pelo app ou telefone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A carta do CartasApp não substitui os canais oficiais de atendimento do banco. O ideal é que você comunique imediatamente o problema pelo app, telefone ou chat do emissor e, em seguida, use a carta como reforço da contestação, deixando tudo por escrito. O documento também serve como prova em reclamações ao Banco Central, Procon ou em eventual processo judicial."
+          }
+        }
+      ]
     }
     </script>
     <style>/* watermark visual padrão viagem */
@@ -843,6 +888,12 @@
                     } catch (e) { }
                 }, 3000);
             };
+        }
+    </script>
+    <script>
+        // Re-engaja usuários que já compraram e voltam à página
+        if (window.LMRecovery && typeof LMRecovery.offerRecover === 'function') {
+            LMRecovery.offerRecover();
         }
     </script>
 </body>

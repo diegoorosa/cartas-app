@@ -2179,6 +2179,10 @@
         };
 
         // Admin mode removed - moved to protected Netlify Function with proper auth
+        // Re-engaja usuários que já compraram e voltam à página
+        if (window.LMRecovery && typeof LMRecovery.offerRecover === 'function') {
+            LMRecovery.offerRecover();
+        }
     </script>
 </body>
 </html>

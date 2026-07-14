@@ -77,6 +77,87 @@
       }
     }
     </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é negativa de cobertura do plano de saúde?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Negativa de cobertura é quando o plano de saúde se recusa a autorizar um exame, procedimento, internação, cirurgia ou tratamento prescrito pelo médico. A negativa pode vir com justificativas como 'não está no rol da ANS', 'está em carência', 'não é da rede credenciada' ou 'limite de sessões atingido'. Nem toda negativa é correta e, em muitos casos, ela pode ser abusiva."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quando a negativa de cobertura é abusiva?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A negativa tende a ser abusiva quando envolve procedimentos essenciais à saúde do paciente, especialmente quando há indicação médica fundamentada. Situações como recusa de cobertura por estar fora do rol da ANS, por limitação de sessões ou por alegação genérica de ausência de previsão no contrato podem ser consideradas abusivas, a depender do caso concreto, à luz do Código de Defesa do Consumidor e das normas da ANS."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Preciso de advogado para contestar a negativa do plano de saúde?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Você pode iniciar a contestação administrativamente, diretamente com o plano, usando uma notificação escrita e anexando relatório médico. Muitas pessoas conseguem resolver assim. Porém, diante de urgência, risco à vida ou manutenção injustificada da negativa, é recomendável procurar um advogado ou a Defensoria Pública, que podem ingressar com ação judicial."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "A carta do CartasApp obriga o plano a autorizar o procedimento?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nenhuma carta, por si só, obriga o plano a autorizar. A decisão final pode depender de análise interna da operadora ou de ordem judicial. A carta do CartasApp serve para formalizar a contestação com base no Código de Defesa do Consumidor e nas normas da ANS, reforçando os argumentos do beneficiário e gerando um documento que pode ser utilizado em reclamações na ANS, Procon e em eventual processo."
+          }
+        }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Plano de saúde pode negar cobertura de exame ou cirurgia?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Só pode negar se houver cláusula contratual clara de exclusão e o procedimento não for urgente/emergencial. Negativa genérica sem justificativa é abusiva (CDC Art. 51, IV). A ANS (Resolução 395/2018) exige que a negativa seja por escrito e fundamentada tecnicamente."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como contestar negativa de cobertura do plano de saúde?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Envie notificação extrajudicial formal para a operadora exigindo a autorização. Anexe relatório médico, exames e contrato. Se não resolver em 5 dias úteis, reclame na ANS (ouvidoria.ans.gov.br), Procon ou Juizado Especial. A carta do CartasApp já segue o modelo jurídico correto."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Plano de saúde pode limitar número de sessões de fisioterapia?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. A ANS (Resolução 395/2018) veda limites quantitativos para tratamentos com indicação médica (fisioterapia, fonoaudiologia, terapia ocupacional, psicologia). Limites de sessões são cláusulas abusivas (CDC Art. 51, IV e § 1º)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual o prazo para o plano autorizar procedimento urgente?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Em caso de urgência/emergência, a autorização deve ser imediata. A operadora não pode exigir autorização prévia para urgências (Lei 9.656/98 Art. 12, § 3º). Se negar, responde por danos materiais e morais."
+          }
+        }
+      ]
+    }
+    </script>
     <style>/* watermark visual padrão viagem */
 #ps_previewBox { position: relative; }
 #ps_previewBox::before { content: "PRÉVIA CARTASAPP"; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-25deg); font-size: 42px; font-weight: 900; color: rgba(20,33,61,0.09); white-space: nowrap; letter-spacing: 8px; pointer-events: none; z-index: 1; }
@@ -818,6 +899,12 @@
                     } catch (e) { }
                 }, 3000);
             };
+        }
+    </script>
+    <script>
+        // Re-engaja usuários que já compraram e voltam à página
+        if (window.LMRecovery && typeof LMRecovery.offerRecover === 'function') {
+            LMRecovery.offerRecover();
         }
     </script>
 </body>

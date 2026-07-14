@@ -1,7 +1,7 @@
 (function () {
     var KEY_GEN = 'lm:generated:v1';
     var TTL = 1000 * 60 * 60 * 24 * 7;
-    var WHATSAPP = '5547991323024';
+    var WHATSAPP = '5547988616874';
 
     function saveGeneratedDoc(state) { localStorage.setItem(KEY_GEN, JSON.stringify(Object.assign({}, state, { ts: Date.now() }))); }
     function loadGeneratedDoc() { var raw = localStorage.getItem(KEY_GEN); if (!raw) return null; try { var o = JSON.parse(raw); if (Date.now() - o.ts > TTL) { localStorage.removeItem(KEY_GEN); return null; } return o; } catch (e) { localStorage.removeItem(KEY_GEN); return null; } }

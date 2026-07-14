@@ -77,6 +77,62 @@
   }
 }
 </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "É certeza que vou ganhar o recurso de multa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não existe garantia de vitória em recurso de multa. O deferimento depende da análise dos julgadores do órgão de trânsito (JARI/Detran). Um recurso bem elaborado, com base no Código de Trânsito Brasileiro e nos fatos do caso, aumenta as chances de sucesso, mas a decisão final é exclusiva da autoridade de trânsito."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Se eu perder o recurso, o valor da multa aumenta?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. Recorrer é um direito do condutor e não gera aumento do valor da multa. Se o recurso for indeferido, será devido apenas o valor original da penalidade, geralmente com possibilidade de pagamento com desconto até a data de vencimento."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Preciso pagar a multa para poder recorrer?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Na fase de Defesa Prévia e no recurso à JARI (1ª instância), em regra não é necessário pagar a multa antecipadamente. O recurso costuma ter efeito suspensivo, o que impede a aplicação de pontos na CNH até o fim do processo administrativo. Verifique as orientações do Detran do seu estado."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual o prazo para enviar o recurso de multa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O prazo consta na notificação de autuação ou de penalidade enviada pelo órgão de trânsito. Geralmente é de 15 ou 30 dias, contados da data de recebimento ou da notificação. Perder o prazo reduz bastante as chances de sucesso do recurso."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como envio o recurso ao Detran ou PRF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cada órgão tem seus canais de protocolo. Em muitos casos é possível enviar o recurso online pelo site do Detran ou pela Carteira Digital de Trânsito. Também podem ser aceitos envio por Correios (carta registrada) ou entrega presencial no protocolo do órgão, desde que respeitados os prazos."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quais documentos devo anexar ao recurso?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Documentos típicos: cópia da CNH, cópia do documento do veículo, notificação da multa, comprovante de endereço, e provas do caso (fotos, vídeos, laudos, testemunhas). O CartasApp gera um recurso estruturado que já cita os artigos do CTB e jurisprudência relevantes — você só completa os dados do seu caso."
+          }
+        }
+      ]
+    }
+    </script>
     <meta property="og:title" content="Recurso de Multa de Trânsito (Defesa Prévia/JARI) | CartasApp">
     <meta property="og:description" content="Gere seu recurso de multa de trânsito personalizado. Defesa prévia ou JARI. Baseado no CTB. Baixe em PDF/DOC.">
     <meta property="og:image" content="https://www.cartasapp.com.br/logo.webp">
@@ -795,6 +851,12 @@
                     } catch (e) { }
                 }, 3000);
             };
+        }
+    </script>
+    <script>
+        // Re-engaja usuários que já compraram e voltam à página
+        if (window.LMRecovery && typeof LMRecovery.offerRecover === 'function') {
+            LMRecovery.offerRecover();
         }
     </script>
 </body>
