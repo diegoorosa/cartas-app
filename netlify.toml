@@ -3,8 +3,7 @@
   functions = "netlify/functions"
 
 # Scheduled Function: recuperação de carrinho abandonado (roda a cada hora)
-[[functions]]
-  name = "cron-abandoned-cart"
+[functions."cron-abandoned-cart"]
   schedule = "0 * * * *"
 
 # Rota amigável: /doc/slug -> doc.html
