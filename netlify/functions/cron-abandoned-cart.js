@@ -37,6 +37,7 @@ exports.handler = async (event) => {
       .from('leads')
       .select('*')
       .eq('status', 'pending')
+      .is('recovery_sent_at', null)  // NÃO processar leads que já tiveram email de recuperação
       .not('email', 'is', null)
       .gte('created_at', todayStart)  // apenas leads de HOJE
       .lt('created_at', oneHourAgo)   // há mais de 1h
@@ -78,21 +79,21 @@ exports.handler = async (event) => {
 
     for (const lead of leads) {
       try {
-        // 2. Verifica se já pagou (cross-ref com orders)
-        const { data: order } = await supabase
-          .from('orders')
+        // 2. Verifica se já pagou (cross-ref com generations - tabela que é populada quando doc é gerado após pagamento)
+        const { data: generation } = await supabase
+          .from('generations')
           .select('order_id')
-          .eq('email', lead.email)
           .eq('slug', lead.slug)
-          .eq('status', 'paid')
+          .filter('input_json->>email', 'eq', lead.email)
           .maybeSingle();
 
-        if (order) {
-          // Já pagou - marca lead como convertido
+        if (generation) {
+          // Já pagou - documento foi gerado - marca lead como convertido
           await supabase
             .from('leads')
             .update({ status: 'converted', converted_at: new Date().toISOString() })
             .eq('id', lead.id);
+          console.log(`[cron-abandoned-cart] Lead ${lead.id} já convertiu (doc gerado), pulando`);
           continue;
         }
 
@@ -213,8 +214,8 @@ exports.handler = async (event) => {
           }
         }
 
-        // 5. Atualiza lead como recovery_sent
-        await supabase
+        // 5. Atualiza lead como recovery_sent - COM VERIFICAÇÃO
+        const { error: updateError } = await supabase
           .from('leads')
           .update({ 
             status: 'recovery_sent',
@@ -225,13 +226,35 @@ exports.handler = async (event) => {
           })
           .eq('id', lead.id);
 
-        processed++;
-        console.log(`[cron-abandoned-cart] Recuperação enviada para lead ${lead.id} (email: ${lead.email})`);
+        if (updateError) {
+          console.error(`[cron-abandoned-cart] ERRO CRÍTICO ao atualizar lead ${lead.id}:`, updateError);
+          // Se falhou em atualizar, NÃO incrementa processed - lead será reprocessado na próxima execução
+          throw new Error(`Falha ao marcar lead como recovery_sent: ${updateError.message}`);
+        }
+
+        // Verifica se a atualização realmente persistiu
+        const { data: verifyLead } = await supabase
+          .from('leads')
+          .select('status, recovery_sent_at')
+          .eq('id', lead.id)
+          .maybeSingle();
+        
+        if (verifyLead && verifyLead.status === 'recovery_sent' && verifyLead.recovery_sent_at) {
+          processed++;
+          console.log(`[cron-abandoned-cart] ✅ Recuperação enviada e confirmada para lead ${lead.id} (email: ${lead.email})`);
+        } else {
+          console.error(`[cron-abandoned-cart] ⚠️ Atualização do lead ${lead.id} não persistiu corretamente!`, verifyLead);
+          throw new Error('Atualização do lead não confirmada no banco');
+        }
 
       } catch (e) {
         console.error(`[cron-abandoned-cart] Erro processando lead ${lead.id}:`, e);
         errors++;
       }
+
+      // Pequeno delay entre leads para não estourar rate limits
+      await new Promise(r => setTimeout(r, 1000));
+
     }
 
     return { 

@@ -264,6 +264,18 @@ exports.handler = async (event) => {
             }
         }
 
+        // Se só tem order_id (chamada interna do success.html polling), busca payload completo no checkout_intents
+        if (orderId && isTrusted && (!payload.slug || !payload.nome) && !payload.menor_nome && !payload.placa) {
+            const { data: intent } = await supabase
+                .from('checkout_intents')
+                .select('payload, slug')
+                .eq('order_id', orderId)
+                .maybeSingle();
+            if (intent?.payload) {
+                payload = { ...intent.payload, order_id: orderId, slug: intent.slug };
+            }
+        }
+
         if (!isTrusted) {
             if (!payload.slug && !payload.menor_nome && !payload.nome) {
                 return { statusCode: 404, body: 'Documento ainda não gerado ou não encontrado.' };
