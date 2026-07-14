@@ -21,6 +21,13 @@ function checkRateLimit(ip) {
 // compartilhada com order-status.js pro valor real da conversão do Ads)
 const { PRICE_MAP } = require('./price-map');
 
+// Cupons válidos — % de desconto (0.10 = 10%)
+const COUPONS = {
+    'VOLTA10': 0.10,      // 10% OFF - recuperação de abandono
+    'BEMVINDO15': 0.15,   // 15% OFF - primeira compra (exemplo futuro)
+    'INDICA20': 0.20,     // 20% OFF - indicação (exemplo futuro)
+};
+
 // Títulos amigáveis para o item exibido no checkout do Mercado Pago
 const TITLE_MAP = {
     'autorizacao-viagem-menor': 'Autorização de Viagem para Menor'
@@ -82,10 +89,19 @@ exports.handler = async (event) => {
         }
 
         // CORREÇÃO: Removido captchaToken da extração e da validação
-        const { slug, payload, utm } = JSON.parse(event.body || '{}');
+        const { slug, payload, utm, coupon } = JSON.parse(event.body || '{}');
 
-        // Recupera o preço ou usa o default
-        const price = PRICE_MAP[slug] || PRICE_MAP[slug.split('?')[0]] || PRICE_MAP['default'];
+        // Recupera o preço base ou usa o default
+        let price = PRICE_MAP[slug] || PRICE_MAP[slug.split('?')[0]] || PRICE_MAP['default'];
+
+        // Aplica cupom se válido
+        let appliedCoupon = null;
+        let discount = 0;
+        if (coupon && COUPONS[coupon]) {
+            discount = COUPONS[coupon];
+            price = Math.round(price * (1 - discount) * 100) / 100; // 2 casas decimais
+            appliedCoupon = coupon;
+        }
 
         if (!slug) return { statusCode: 400, body: 'Missing slug' };
 
@@ -100,7 +116,10 @@ exports.handler = async (event) => {
                 order_id: orderId,
                 slug,
                 payload: payload || null,
-                utm: utm || null
+                utm: utm || null,
+                coupon: appliedCoupon,
+                discount: discount,
+                final_price: price
             });
         } catch (e) {
             console.error('Erro ao salvar intent no Supabase:', e);
@@ -150,7 +169,7 @@ exports.handler = async (event) => {
             return { statusCode: 400, body: JSON.stringify({ error: 'Falha ao criar pagamento no Mercado Pago', details: data }) };
         }
 
-        return { statusCode: 200, body: JSON.stringify({ init_point: data.init_point, order_id: orderId }) };
+        return { statusCode: 200, body: JSON.stringify({ init_point: data.init_point, order_id: orderId, applied_coupon: appliedCoupon, final_price: price, discount: discount }) };
 
     } catch (e) {
         console.error('Erro fatal no checkout:', e);
