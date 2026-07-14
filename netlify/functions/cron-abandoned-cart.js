@@ -28,7 +28,9 @@ exports.handler = async (event) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   try {
-    // 1. Busca leads pendentes há mais de 1 hora
+    // 1. Busca leads pendentes de HOJE há mais de 1 hora
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     
     const { data: leads, error: leadsError } = await supabase
@@ -36,9 +38,10 @@ exports.handler = async (event) => {
       .select('*')
       .eq('status', 'pending')
       .not('email', 'is', null)
-      .lt('created_at', oneHourAgo)
+      .gte('created_at', todayStart)  // apenas leads de HOJE
+      .lt('created_at', oneHourAgo)   // há mais de 1h
       .order('created_at', { ascending: true })
-      .limit(50); // Processa em lotes de 50
+      .limit(15); // Processa no máx 15 por execução
 
     if (leadsError) {
       console.error('[cron-abandoned-cart] Erro ao buscar leads:', leadsError);
