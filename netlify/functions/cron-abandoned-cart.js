@@ -85,7 +85,8 @@ exports.handler = async (event) => {
             slug: lead.slug,
             payload: lead.payload,
             utm: { source: 'email', medium: 'recovery', campaign: 'abandoned_cart' },
-            coupon: RECOVERY_COUPON
+            coupon: RECOVERY_COUPON,
+            lead_created_at: lead.created_at
           })
         });
 

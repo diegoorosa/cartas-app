@@ -89,7 +89,7 @@ exports.handler = async (event) => {
         }
 
         // CORREÇÃO: Removido captchaToken da extração e da validação
-        const { slug, payload, utm, coupon } = JSON.parse(event.body || '{}');
+        const { slug, payload, utm, coupon, lead_created_at } = JSON.parse(event.body || '{}');
 
         // Recupera o preço base ou usa o default
         let price = PRICE_MAP[slug] || PRICE_MAP[slug.split('?')[0]] || PRICE_MAP['default'];
@@ -98,9 +98,23 @@ exports.handler = async (event) => {
         let appliedCoupon = null;
         let discount = 0;
         if (coupon && COUPONS[coupon]) {
-            discount = COUPONS[coupon];
-            price = Math.round(price * (1 - discount) * 100) / 100; // 2 casas decimais
-            appliedCoupon = coupon;
+            // Expiração real de 24h para cupom VOLTA10 (recuperação abandono)
+            if (coupon === 'VOLTA10' && lead_created_at) {
+                const leadCreated = new Date(lead_created_at);
+                const hoursDiff = (Date.now() - leadCreated.getTime()) / (1000 * 60 * 60);
+                if (hoursDiff > 24) {
+                    console.log(`[mp-checkout] Cupom VOLTA10 expirado (${hoursDiff.toFixed(1)}h > 24h), ignorando desconto`);
+                    // Ignora cupom, preço normal
+                } else {
+                    discount = COUPONS[coupon];
+                    price = Math.round(price * (1 - discount) * 100) / 100;
+                    appliedCoupon = coupon;
+                }
+            } else {
+                discount = COUPONS[coupon];
+                price = Math.round(price * (1 - discount) * 100) / 100;
+                appliedCoupon = coupon;
+            }
         }
 
         if (!slug) return { statusCode: 400, body: 'Missing slug' };
