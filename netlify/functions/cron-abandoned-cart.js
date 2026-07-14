@@ -75,53 +75,105 @@ exports.handler = async (event) => {
           continue;
         }
 
-        // 3. Chama mp-checkout internamente com o cupom
-        const checkoutResp = await fetch(`${SITE_URL}/.netlify/functions/mp-checkout`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Internal-Secret': INTERNAL_SECRET
-          },
-          body: JSON.stringify({
-            slug: lead.slug,
-            payload: lead.payload,
-            utm: { source: 'email', medium: 'recovery', campaign: 'abandoned_cart' },
-            coupon: RECOVERY_COUPON,
-            lead_created_at: lead.created_at
-          })
-        });
-
-        const checkoutData = await checkoutResp.json();
-
-        if (!checkoutResp.ok || !checkoutData.init_point) {
-          console.error(`[cron-abandoned-cart] Erro no checkout para lead ${lead.id}:`, checkoutData);
-          errors++;
-          continue;
+        // 3. Chama mp-checkout internamente com o cupom (com retry para rate limit)
+        let checkoutData = null;
+        let checkoutAttempts = 0;
+        const maxCheckoutAttempts = 3;
+        
+        while (checkoutAttempts < maxCheckoutAttempts && !checkoutData) {
+          checkoutAttempts++;
+          try {
+            const checkoutResp = await fetch(`${SITE_URL}/.netlify/functions/mp-checkout`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Internal-Secret': INTERNAL_SECRET
+              },
+              body: JSON.stringify({
+                slug: lead.slug,
+                payload: lead.payload,
+                utm: { source: 'email', medium: 'recovery', campaign: 'abandoned_cart' },
+                coupon: RECOVERY_COUPON,
+                lead_created_at: lead.created_at
+              })
+            });
+            
+            const contentType = checkoutResp.headers.get('content-type');
+            let responseText = await checkoutResp.text();
+            
+            if (!checkoutResp.ok) {
+              // Rate limit do Mercado Pago
+              if (checkoutResp.status === 429) {
+                const waitMs = Math.min(1000 * Math.pow(2, checkoutAttempts), 10000);
+                console.warn(`[cron-abandoned-cart] Rate limit MP (tentativa ${checkoutAttempts}/${maxCheckoutAttempts}), aguardando ${waitMs}ms`);
+                await new Promise(r => setTimeout(r, waitMs));
+                continue;
+              }
+              console.error(`[cron-abandoned-cart] Erro HTTP ${checkoutResp.status} no checkout para lead ${lead.id}:`, responseText);
+              throw new Error(`HTTP ${checkoutResp.status}: ${responseText}`);
+            }
+            
+            if (!contentType?.includes('application/json')) {
+              console.error(`[cron-abandoned-cart] Resposta não-JSON do MP para lead ${lead.id}:`, responseText);
+              if (checkoutAttempts < maxCheckoutAttempts) {
+                await new Promise(r => setTimeout(r, 1000));
+                continue;
+              }
+              throw new Error('Resposta inválida do Mercado Pago');
+            }
+            
+            checkoutData = JSON.parse(responseText);
+            
+          } catch (e) {
+            if (checkoutAttempts >= maxCheckoutAttempts) {
+              throw e;
+            }
+            await new Promise(r => setTimeout(r, 1000 * checkoutAttempts));
+          }
+        }
+        
+        if (!checkoutData || !checkoutData.init_point) {
+          throw new Error('Falha ao criar checkout no Mercado Pago após tentativas');
         }
 
         const { init_point: checkoutUrl, order_id: newOrderId, final_price } = checkoutData;
 
-        // 4. Envia email de recuperação
-        const emailResp = await fetch(`${SITE_URL}/.netlify/functions/send-email`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Internal-Secret': INTERNAL_SECRET
-          },
-          body: JSON.stringify({
-            order_id: newOrderId,
-            email_to: lead.email,
-            recovery_mode: true,
-            coupon: RECOVERY_COUPON,
-            final_price,
-            checkout_url: checkoutUrl
-          })
-        });
-
-        if (!emailResp.ok) {
-          console.error(`[cron-abandoned-cart] Erro ao enviar email para lead ${lead.id}`);
-          errors++;
-          continue;
+        // 4. Envia email de recuperação (com retry)
+        let emailSent = false;
+        let emailAttempts = 0;
+        const maxEmailAttempts = 3;
+        
+        while (emailAttempts < maxEmailAttempts && !emailSent) {
+          emailAttempts++;
+          try {
+            const emailResp = await fetch(`${SITE_URL}/.netlify/functions/send-email`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Internal-Secret': INTERNAL_SECRET
+              },
+              body: JSON.stringify({
+                order_id: newOrderId,
+                email_to: lead.email,
+                recovery_mode: true,
+                coupon: RECOVERY_COUPON,
+                final_price,
+                checkout_url: checkoutUrl
+              })
+            });
+            
+            if (!emailResp.ok) {
+              if (emailResp.status === 429 && emailAttempts < maxEmailAttempts) {
+                await new Promise(r => setTimeout(r, 2000 * emailAttempts));
+                continue;
+              }
+              throw new Error(`Email falhou: ${emailResp.status}`);
+            }
+            emailSent = true;
+          } catch (e) {
+            if (emailAttempts >= maxEmailAttempts) throw e;
+            await new Promise(r => setTimeout(r, 2000 * emailAttempts));
+          }
         }
 
         // 5. Atualiza lead como recovery_sent
@@ -138,9 +190,6 @@ exports.handler = async (event) => {
 
         processed++;
         console.log(`[cron-abandoned-cart] Recuperação enviada para lead ${lead.id} (email: ${lead.email})`);
-
-        // Pequeno delay pra não estourar rate limits
-        await new Promise(r => setTimeout(r, 200));
 
       } catch (e) {
         console.error(`[cron-abandoned-cart] Erro processando lead ${lead.id}:`, e);
