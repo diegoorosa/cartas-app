@@ -172,7 +172,8 @@ exports.handler = async (event) => {
                 recovery_mode: true,
                 coupon: RECOVERY_COUPON,
                 final_price,
-                checkout_url: checkoutUrl
+                checkout_url: checkoutUrl,
+                slug: lead.slug
               }),
               signal: emailController.signal
             });

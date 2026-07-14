@@ -44,7 +44,7 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body);
-    const { order_id, email_to, recovery_mode, coupon, final_price, checkout_url } = body;
+    const { order_id, email_to, recovery_mode, coupon, final_price, checkout_url, slug } = body;
 
     console.log(`[send-email] Modo: ${recovery_mode ? 'recuperação' : 'transacional'} | Email: ${email_to} | Order: ${order_id}`);
 
@@ -69,13 +69,18 @@ exports.handler = async (event) => {
       
       // Busca título do documento pelo slug (precisa achar o slug)
       let docTitle = 'Seu Documento';
-      // Tenta achar o slug no checkout_intents
-      const { data: intent } = await supabase
-        .from('checkout_intents')
-        .select('slug')
-        .eq('order_id', order_id)
-        .maybeSingle();
-      if (intent?.slug) docTitle = friendlyTitle(intent.slug);
+      // 1. Tenta slug vindo direto do body (cron recovery)
+      if (slug) {
+        docTitle = friendlyTitle(slug);
+      } else {
+        // 2. Tenta achar o slug no checkout_intents
+        const { data: intent } = await supabase
+          .from('checkout_intents')
+          .select('slug')
+          .eq('order_id', order_id)
+          .maybeSingle();
+        if (intent?.slug) docTitle = friendlyTitle(intent.slug);
+      }
 
       subject = `⏰ Sua prévia de "${docTitle}" expira em 24h — ${discountPercent} OFF`;
 
