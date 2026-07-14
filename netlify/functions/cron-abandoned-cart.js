@@ -41,7 +41,7 @@ exports.handler = async (event) => {
       .gte('created_at', todayStart)  // apenas leads de HOJE
       .lt('created_at', oneHourAgo)   // há mais de 1h
       .order('created_at', { ascending: true })
-      .limit(15); // Processa no máx 15 por execução
+      .limit(5); // Processa no máx 5 por execução
 
     if (leadsError) {
       console.error('[cron-abandoned-cart] Erro ao buscar leads:', leadsError);
@@ -86,6 +86,10 @@ exports.handler = async (event) => {
         while (checkoutAttempts < maxCheckoutAttempts && !checkoutData) {
           checkoutAttempts++;
           try {
+            // Timeout de 10s para mp-checkout
+            const checkoutController = new AbortController();
+            const checkoutTimeout = setTimeout(() => checkoutController.abort(), 10000);
+            
             const checkoutResp = await fetch(`${SITE_URL}/.netlify/functions/mp-checkout`, {
               method: 'POST',
               headers: {
@@ -98,8 +102,11 @@ exports.handler = async (event) => {
                 utm: { source: 'email', medium: 'recovery', campaign: 'abandoned_cart' },
                 coupon: RECOVERY_COUPON,
                 lead_created_at: lead.created_at
-              })
+              }),
+              signal: checkoutController.signal
             });
+            
+            clearTimeout(checkoutTimeout);
             
             const contentType = checkoutResp.headers.get('content-type');
             let responseText = await checkoutResp.text();
@@ -128,6 +135,7 @@ exports.handler = async (event) => {
             checkoutData = JSON.parse(responseText);
             
           } catch (e) {
+            clearTimeout(checkoutTimeout);
             if (checkoutAttempts >= maxCheckoutAttempts) {
               throw e;
             }
@@ -149,6 +157,9 @@ exports.handler = async (event) => {
         while (emailAttempts < maxEmailAttempts && !emailSent) {
           emailAttempts++;
           try {
+            const emailController = new AbortController();
+            const emailTimeout = setTimeout(() => emailController.abort(), 8000);
+            
             const emailResp = await fetch(`${SITE_URL}/.netlify/functions/send-email`, {
               method: 'POST',
               headers: {
@@ -162,8 +173,11 @@ exports.handler = async (event) => {
                 coupon: RECOVERY_COUPON,
                 final_price,
                 checkout_url: checkoutUrl
-              })
+              }),
+              signal: emailController.signal
             });
+            
+            clearTimeout(emailTimeout);
             
             if (!emailResp.ok) {
               if (emailResp.status === 429 && emailAttempts < maxEmailAttempts) {
@@ -174,6 +188,7 @@ exports.handler = async (event) => {
             }
             emailSent = true;
           } catch (e) {
+            clearTimeout(emailTimeout);
             if (emailAttempts >= maxEmailAttempts) throw e;
             await new Promise(r => setTimeout(r, 2000 * emailAttempts));
           }
