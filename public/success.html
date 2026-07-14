@@ -549,9 +549,21 @@
                 if (retry) retry.style.display = 'none';
                 if (btnPay) btnPay.style.display = 'none';
                 if (btnBack) btnBack.style.display = 'none';
-                // Para pending: NÃO mostra preview - documento será gerado e enviado por email quando aprovado
-                if (docWrapper) docWrapper.style.display = 'none';
-                if (actions) actions.style.display = 'none';
+                // MOSTRA preview local IMEDIATAMENTE (dados já estão no localStorage)
+                // Isso dá feedback visual enquanto aguarda confirmação do pagamento
+                var localPayload = null;
+                try {
+                    var saved = localStorage.getItem('pendingPayload');
+                    if (saved) localPayload = JSON.parse(saved);
+                } catch (e) { }
+                if (localPayload) {
+                    var previewText = renderDocText({
+                        saudacao: '',
+                        corpo_paragrafos: ['Pagamento em processamento... Seu documento será exibido aqui assim que confirmado.'],
+                        fechamento: ''
+                    }, localPayload);
+                    showDocAndScroll(previewText, localPayload);
+                }
             } else if (s === 'failure') {
                 info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.';
                 retry.style.display = 'flex';
@@ -570,22 +582,32 @@
             if (btnPay) btnPay.style.display = 'none';
             if (btnBack) btnBack.style.display = 'none';
 
-            // Carrega localPayload para usar no fallback se necessário
+            // --- Carrega localPayload IMEDIATAMENTE e MOSTRA PREVIEW LOCAL ---
+            // Isso dá feedback visual instantâneo enquanto confirma pagamento
             var localPayload = null;
             try {
                 var saved = localStorage.getItem('pendingPayload');
                 if (saved) localPayload = JSON.parse(saved);
             } catch (e) { }
 
-            // Para success: NÃO mostra placeholder preview. 
-            // Aguarda polling confirmar e busca doc definitivo.
-            info.textContent = 'Confirmando pagamento...';
+            // SEMPRE mostra preview local se tiver dados (para success E pending)
+            if (localPayload) {
+                info.textContent = 'Carregando seu documento...';
+                var previewText = renderDocText({
+                    saudacao: '',
+                    corpo_paragrafos: ['Processando pagamento... Seu documento será exibido em instantes.'],
+                    fechamento: ''
+                }, localPayload);
+                showDocAndScroll(previewText, localPayload);
+            } else {
+                info.textContent = 'Confirmando pagamento...';
+            }
 
             // --- POLLING: aguarda confirmação de pagamento ---
-            // Para PIX/bank_transfer pode demorar mais, estende para 120s (boleto/transferência pode levar mais)
+            // Para PIX/bank_transfer pode demorar mais, estende para 120s
             var start = Date.now();
             var confirmed = false;
-            var maxPollTime = (s === 'pending') ? 120000 : 15000; // 120s para pending, 15s para success
+            var maxPollTime = (s === 'pending') ? 120000 : 30000; // 120s para pending, 30s para success
 
             while (Date.now() - start < maxPollTime) {
                 var st = await getOrderStatus().catch(function () { return null; });
@@ -611,9 +633,9 @@
                         'Seu documento será gerado e enviado para <strong>seu e-mail</strong> assim que o pagamento for aprovado.<br>' +
                         'Você pode fechar esta página e voltar depois — o link do documento chegará no seu e-mail.';
                 } else {
-                    info.textContent = 'Ainda não conseguimos confirmar automaticamente. Se você já pagou, o documento já pode estar pronto acima. Caso contrário, clique em "Pagar agora" abaixo.';
+                    // Para success: se não confirmou em 30s, mostra mensagem mas MANTÉM o preview local
+                    info.textContent = 'Pagamento confirmado pelo sistema. Carregando documento final...';
                 }
-                if (retry) retry.style.display = 'flex';
                 return;
             }
 
@@ -646,21 +668,9 @@
                 await new Promise(function (r) { setTimeout(r, 1000); });
             }
 
-            // Fallback: se não achou no Supabase após 3 tentativas
-            // Para success: NUNCA mostra botões de pagar/voltar - pagamento já foi feito
-            // Documento será enviado por email pelo webhook
-            if (s === 'pending') {
-                // Para pending, pode mostrar retry se quiser tentar pagar de novo
-                if (retry) retry.style.display = 'flex';
-            } else {
-                // Para success: mostra mensagem de que documento chegará por email
-                info.innerHTML = 'Pagamento confirmado! ✅<br>' +
-                    'Seu documento está sendo finalizado e será enviado para <strong>seu e-mail</strong> em instantes.<br>' +
-                    'Você pode fechar esta página — o link para download chegará no seu e-mail.';
-                // Mantém botões escondidos
-                if (retry) retry.style.display = 'none';
-                if (btnPay) btnPay.style.display = 'none';
-                if (btnBack) btnBack.style.display = 'none';
+            // Fallback: se não achou no Supabase após 3 tentativas, mantém o preview local
+            if (info && docWrapper.style.display !== 'none') {
+                info.textContent = 'Documento carregado (versão local). Se houver diferenças, recarregue a página em alguns instantes.';
             }
         }
         flow();

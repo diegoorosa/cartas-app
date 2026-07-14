@@ -8,6 +8,7 @@ exports.handler = async (event) => {
 
         const MP_TOKEN = process.env.MP_ACCESS_TOKEN || '';
         let paid = false;
+        let price = null;
 
         // 1) FAST PATH: Verifica Supabase primeiro (cache hit = pago confirmado)
         if (process.env.SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
@@ -16,13 +17,13 @@ exports.handler = async (event) => {
                 const supabase = createClient(process.env.SUPABASE_URL, key);
                 const { data } = await supabase.from('generations').select('id, slug').eq('order_id', orderId).maybeSingle();
                 if (data) {
-                    const price = PRICE_MAP[data.slug] || PRICE_MAP['default'];
+                    price = PRICE_MAP[data.slug] || PRICE_MAP['default'];
                     return { statusCode: 200, body: JSON.stringify({ status: 'paid', source: 'supabase', price }) };
                 }
-            } catch (e) { }
+            } catch (e) { console.warn('[order-status] Supabase fast path error:', e.message); }
         }
 
-        // 2) Verifica checkout_intents para pegar payment_id se houver (mais direto que search)
+        // 2) Verifica checkout_intents para pegar payment_id (mais direto que search)
         if (MP_TOKEN && process.env.SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) {
             try {
                 const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
@@ -35,19 +36,21 @@ exports.handler = async (event) => {
                     if (r.ok) {
                         const p = await r.json();
                         if (p.status === 'approved') {
-                            const price = typeof p.transaction_amount === 'number' ? p.transaction_amount : null;
+                            price = typeof p.transaction_amount === 'number' ? p.transaction_amount : null;
                             return { statusCode: 200, body: JSON.stringify({ status: 'paid', source: 'mp-direct', price }) };
+                        }
+                        if (p.status === 'pending' || p.status === 'in_process') {
+                            return { statusCode: 200, body: JSON.stringify({ status: 'pending', source: 'mp-direct', price: null }) };
                         }
                     }
                 }
-            } catch (e) { }
+            } catch (e) { console.warn('[order-status] MP direct check error:', e.message); }
         }
 
-        // 3) Fallback: search por external_reference (mais lento)
-        let searchPrice = null;
+        // 3) Fallback: search por external_reference (mais lento, pega últimos 5)
         if (MP_TOKEN) {
             try {
-                const url = 'https://api.mercadopago.com/v1/payments/search?external_reference=' + encodeURIComponent(orderId) + '&limit=5';
+                const url = 'https://api.mercadopago.com/v1/payments/search?external_reference=' + encodeURIComponent(orderId) + '&limit=5&sort=date_created&criteria=desc';
                 const r = await fetch(url, { headers: { Authorization: 'Bearer ' + MP_TOKEN } });
                 if (r.ok) {
                     const j = await r.json();
@@ -55,16 +58,17 @@ exports.handler = async (event) => {
                     for (const it of results) {
                         if (it && it.status === 'approved') {
                             paid = true;
-                            searchPrice = typeof it.transaction_amount === 'number' ? it.transaction_amount : null;
+                            price = typeof it.transaction_amount === 'number' ? it.transaction_amount : null;
                             break;
                         }
                     }
                 }
-            } catch (e) { }
+            } catch (e) { console.warn('[order-status] MP search error:', e.message); }
         }
 
-        return { statusCode: 200, body: JSON.stringify({ status: paid ? 'paid' : 'pending', price: searchPrice }) };
+        return { statusCode: 200, body: JSON.stringify({ status: paid ? 'paid' : 'pending', price }) };
     } catch (e) {
+        console.error('[order-status] Fatal error:', e.message);
         return { statusCode: 200, body: JSON.stringify({ status: 'pending' }) };
     }
 };
