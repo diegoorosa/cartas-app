@@ -37,7 +37,6 @@ exports.handler = async (event) => {
       .from('leads')
       .select('*')
       .eq('status', 'pending')
-      .is('recovery_sent_at', null)  // não processar leads que já tiveram email de recuperação
       .not('email', 'is', null)
       .gte('created_at', todayStart)  // apenas leads de HOJE
       .lt('created_at', oneHourAgo)   // há mais de 1h
@@ -46,6 +45,24 @@ exports.handler = async (event) => {
 
     if (leadsError) {
       console.error('[cron-abandoned-cart] Erro ao buscar leads:', leadsError);
+      // Se a coluna recovery_sent_at não existir, tenta sem esse filtro
+      if (leadsError.message && leadsError.message.includes('recovery_sent_at')) {
+        console.warn('[cron-abandoned-cart] Coluna recovery_sent_at não existe, tentando sem esse filtro...');
+        const { data: leads2, error: leadsError2 } = await supabase
+          .from('leads')
+          .select('*')
+          .eq('status', 'pending')
+          .not('email', 'is', null)
+          .gte('created_at', todayStart)
+          .lt('created_at', oneHourAgo)
+          .order('created_at', { ascending: true })
+          .limit(3);
+        if (leadsError2) {
+          console.error('[cron-abandoned-cart] Erro ao buscar leads (fallback):', leadsError2);
+          return { statusCode: 500, body: 'Erro ao buscar leads' };
+        }
+        return { data: leads2, error: null };
+      }
       return { statusCode: 500, body: 'Erro ao buscar leads' };
     }
 
