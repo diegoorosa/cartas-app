@@ -566,15 +566,17 @@
             if (btnPay) btnPay.style.display = 'none';
             if (btnBack) btnBack.style.display = 'none';
 
-            // --- MOSTRA CACHE LOCAL IMEDIATAMENTE (pendingPayload) ---
+            // --- MOSTRA CACHE LOCAL IMEDIATAMENTE (apenas para success, NÃO para pending) ---
             var localPayload = null;
+            var isPending = (s === 'pending');
+            
             try {
                 var saved = localStorage.getItem('pendingPayload');
                 if (saved) localPayload = JSON.parse(saved);
             } catch (e) { }
 
-            if (localPayload) {
-                // Gera preview local instantâneo enquanto confirma pagamento
+            if (localPayload && !isPending) {
+                // Para success: gera preview local instantâneo enquanto confirma pagamento
                 info.textContent = 'Carregando seu documento...';
                 var previewText = renderDocText({
                     saudacao: '',
@@ -582,6 +584,14 @@
                     fechamento: ''
                 }, localPayload);
                 showDocAndScroll(previewText, localPayload);
+            } else if (isPending) {
+                // Para pending (boleto/transferência): NÃO mostra preview - documento será gerado e enviado por email quando aprovado
+                info.innerHTML = 'Pagamento via <strong>PIX/Boleto/Transferência bancária</strong> em processamento.<br>' +
+                    'Seu documento será gerado e enviado para <strong>seu e-mail</strong> assim que o pagamento for aprovado.<br>' +
+                    'Você pode fechar esta página e voltar depois — o link do documento chegará no seu e-mail.';
+                // Não mostra doc-wrapper nem actions
+                if (docWrapper) docWrapper.style.display = 'none';
+                if (actions) actions.style.display = 'none';
             } else {
                 info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
             }
