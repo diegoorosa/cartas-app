@@ -301,6 +301,23 @@ html[data-theme="dark"] .navbar {
   border: 1px solid var(--border)
 }
 
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--bg-secondary);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.btn-outline:disabled {
+  opacity: .5;
+  cursor: not-allowed
+}
+
 .label {
   display: block;
   font-size: 14px;

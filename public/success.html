@@ -53,8 +53,8 @@
             <p id="info" class="small" style="margin-bottom: 8px;"></p>
 
             <div id="retry" style="display:none; margin:10px 0; gap:8px; flex-wrap:wrap">
-                <button class="btn" id="btnBack">Voltar ao formulário</button>
-                <button class="btn btn-outline" id="btnPay">Pagar agora</button>
+                <button class="btn btn-secondary" id="btnBack">Voltar ao formulário</button>
+                <button class="btn btn-primary" id="btnPay">Pagar agora</button>
             </div>
 
             <div id="doc-wrapper" style="display:none; margin-top:16px;">
@@ -527,10 +527,16 @@
         }
 
         async function flow() {
+            // Tratar status da URL
             if (s === 'failure') {
                 info.textContent = 'Pagamento não concluído. Você pode voltar ao documento ou tentar pagar novamente.';
                 retry.style.display = 'flex';
                 return;
+            }
+
+            if (s === 'pending') {
+                info.textContent = 'Pagamento em processamento (Pix/Boleto). Aguardando confirmação...';
+                // Não mostra retry, aguarda polling
             }
 
             if (!orderId) {
@@ -548,7 +554,7 @@
 
             if (localPayload) {
                 // Gera preview local instantâneo enquanto confirma pagamento
-                info.textContent = 'Pagamento confirmado. Carregando seu documento...';
+                info.textContent = 'Carregando seu documento...';
                 var previewText = renderDocText({
                     saudacao: '',
                     corpo_paragrafos: ['Processando pagamento... Seu documento será exibido em instantes.'],
@@ -559,11 +565,13 @@
                 info.textContent = 'Confirmando pagamento (pode levar alguns segundos com Pix)...';
             }
 
-            // --- POLLING CURTO: apenas confirma status, não gera doc ---
+            // --- POLLING: aguarda confirmação de pagamento ---
+            // Para PIX/bank_transfer pode demorar mais, estende para 60s
             var start = Date.now();
             var confirmed = false;
+            var maxPollTime = (s === 'pending') ? 60000 : 15000; // 60s para pending, 15s para success
 
-            while (Date.now() - start < 15000) { // Max 15s polling (era 60s)
+            while (Date.now() - start < maxPollTime) {
                 var st = await getOrderStatus().catch(function () { return null; });
                 if (st && st.status === 'paid') {
                     confirmed = true;
@@ -571,6 +579,11 @@
                         await sendConversionEC(st.price);
                     }
                     break;
+                }
+                // Atualiza mensagem a cada 10s
+                var elapsed = Math.floor((Date.now() - start) / 1000);
+                if (elapsed % 10 === 0 && elapsed > 0) {
+                    info.textContent = 'Aguardando confirmação do pagamento... ' + elapsed + 's';
                 }
                 await new Promise(function (r) { setTimeout(r, 1500); });
             }
@@ -598,6 +611,20 @@
                             var confirmedPayload = js.input_json || localPayload;
                             var fullText = renderDocText(js.output, confirmedPayload);
                             showDocAndScroll(fullText, confirmedPayload);
+                            
+                            // Envia email transacional com link do documento
+                            if (confirmedPayload && confirmedPayload.email) {
+                                try {
+                                    await fetch('/.netlify/functions/send-email', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            order_id: orderId,
+                                            email_to: confirmedPayload.email
+                                        })
+                                    });
+                                } catch (e) { console.warn('Erro ao enviar email transacional:', e); }
+                            }
                             return;
                         }
                     }
@@ -770,9 +797,11 @@
             }
         });
         // Re-engaja usuários que já compraram e voltam à página
-        if (window.LMRecovery && typeof LMRecovery.offerRecover === 'function') {
-            LMRecovery.offerRecover();
-        }
+        // LMRecovery.offerRecover() SÓ deve rodar quando o usuário VOLTA à página depois
+        // NÃO deve rodar logo após o pagamento (senão abre modal "Documento encontrado" indevidamente)
+        // if (window.LMRecovery && typeof LMRecovery.offerRecover === 'function') {
+        //     LMRecovery.offerRecover();
+        // }
     </script>
 </body>
 
