@@ -5,7 +5,7 @@
 # Scheduled Function: recuperação de carrinho abandonado (roda a cada hora)
 [[functions]]
   name = "cron-abandoned-cart"
-  cron = "0 * * * *"
+  schedule = "0 * * * *"
 
 # Rota amigável: /doc/slug -> doc.html
 [[redirects]]
