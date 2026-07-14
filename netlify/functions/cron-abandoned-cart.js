@@ -13,11 +13,12 @@ const INTERNAL_SECRET = process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPA
 const RECOVERY_COUPON = 'VOLTA10';
 
 exports.handler = async (event) => {
-  // Verifica se é chamada interna (cron) ou manual com secret
+  // Permite execução agendada (sem header) OU manual com secret
   const authHeader = event.headers['x-internal-secret'] || event.headers['authorization'];
-  const isInternal = authHeader === INTERNAL_SECRET || authHeader === `Bearer ${INTERNAL_SECRET}`;
+  const isManualCall = authHeader === INTERNAL_SECRET || authHeader === `Bearer ${INTERNAL_SECRET}`;
+  const isScheduledRun = !event.headers['x-internal-secret'] && !event.headers['authorization'];
   
-  if (!isInternal) {
+  if (!isManualCall && !isScheduledRun) {
     console.warn('Tentativa de acesso não autorizado ao cron-abandoned-cart');
     return { statusCode: 401, body: 'Unauthorized' };
   }
