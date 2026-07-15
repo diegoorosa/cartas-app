@@ -627,16 +627,9 @@
             }
 
             if (!confirmed) {
-                var isPending = (s === 'pending');
-                if (isPending) {
-                    info.innerHTML = 'Pagamento via <strong>PIX/Boleto/Transferência</strong> pode levar alguns minutos a horas para confirmar.<br>' +
-                        'Seu documento será gerado e enviado para <strong>seu e-mail</strong> assim que o pagamento for aprovado.<br>' +
-                        'Você pode fechar esta página e voltar depois — o link do documento chegará no seu e-mail.';
-                } else {
-                    // Para success: se não confirmou em 30s, mostra mensagem mas MANTÉM o preview local
-                    info.textContent = 'Pagamento confirmado pelo sistema. Carregando documento final...';
-                }
-                return;
+                // Mesmo não confirmado via polling, TENTA buscar o documento no Supabase
+                // (o webhook pode ter processado e salvo enquanto esperávamos)
+                info.textContent = 'Tentando localizar seu documento...';
             }
 
             // Pagamento confirmado - busca doc definitivo no Supabase (cache hit)

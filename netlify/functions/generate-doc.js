@@ -233,13 +233,15 @@ exports.handler = async function(event) {
             }
         }
 
-        // Detecta tipo pelo slug / payload (compatível com roteamento do generate-doc)
-        let tipo = slug || 'consumo_generico';
-        if (slug && slug.includes('viagem') || (p.menor_nome && p.resp1_nome)) {
+        // Detecta tipo pelo slug / payload — lógica do generate-doc original
+        const payloadStr = JSON.stringify(p || {}).toLowerCase();
+        const effectiveSlug = String(slug || p.slug || '').toLowerCase();
+        let tipo = 'consumo_generico';
+        if (effectiveSlug.includes('viagem') || payloadStr.includes('menor_nome') || p.menor_nome) {
             tipo = 'autorizacao_viagem';
-        } else if (slug && (slug.includes('multa') || p.placa || p.cnh || p.auto_infracao)) {
+        } else if (effectiveSlug.includes('multa') || p.placa || p.cnh || p.auto_infracao) {
             tipo = 'multa';
-        } else if (slug && (slug.includes('reembolso-cancelamento-passagem') || slug.includes('voo'))) {
+        } else if (effectiveSlug.includes('reembolso-cancelamento-passagem') || effectiveSlug.includes('voo')) {
             tipo = 'reembolso_passagem';
         } else {
             tipo = 'consumo_generico';
