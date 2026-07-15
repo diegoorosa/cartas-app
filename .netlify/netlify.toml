@@ -6,6 +6,8 @@ plugins = []
 [build]
 publish = "E:\\Meus Arquivos\\cartas-app-main\\public"
 publishOrigin = "config"
+commandOrigin = "ui"
+command = "npm install"
 functions = "E:\\Meus Arquivos\\cartas-app-main\\netlify\\functions"
 
 [build.environment]

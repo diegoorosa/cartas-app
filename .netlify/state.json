@@ -1,5 +1,4 @@
 {
-	"siteId": "093fb4d0-a756-4349-9844-f6fe1754072a",
 	"dbConnectionString": "postgres://localhost:50305/postgres",
 	"geolocation": {
 		"data": {
@@ -18,5 +17,6 @@
 			"postalCode": "89000"
 		},
 		"timestamp": 1782132381450
-	}
+	},
+	"siteId": "d604ae4c-5a83-4134-a62a-ba679073555f"
 }
