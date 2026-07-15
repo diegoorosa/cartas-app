@@ -493,7 +493,8 @@
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ payload: { order_id: orderId, ultima_tentativa: i === 2 }, preview: false })
-                        if (rs.ok) {
+                    });
+                    if (rs.ok) {
                             var js = await rs.json();
                             if (js && js.output && (!js.ai_pendente || i === 2)) {
                                 var confirmedPayload = js.input_json || localPayload;
