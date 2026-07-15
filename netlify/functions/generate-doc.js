@@ -3,7 +3,9 @@ const { JSDOM } = require('jsdom');
 const DOMPurify = require('dompurify')(new JSDOM('').window);
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// --- CONFIGURAÇÕES ---
+console.log('[generate-doc] FUNCAO CARREGADA as ' + new Date().toISOString());
+
+// --- CONFIGURACOES ---
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
 const GEMINI_MODELS = (process.env.GEMINI_MODELS || 'gemini-2.5-flash-lite,gemini-flash-lite-latest,gemini-flash-latest,gemini-2.5-flash')

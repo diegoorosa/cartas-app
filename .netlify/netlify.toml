@@ -1,13 +1,12 @@
-functionsDirectory = "C:\\Users\\Administrator\\Desktop\\cartas-app\\netlify\\functions"
+functionsDirectory = "E:\\Meus Arquivos\\cartas-app-main\\netlify\\functions"
 functionsDirectoryOrigin = "config-v1"
 redirectsOrigin = "config"
 plugins = []
-headers = []
 
 [build]
-publish = "C:\\Users\\Administrator\\Desktop\\cartas-app\\public"
+publish = "E:\\Meus Arquivos\\cartas-app-main\\public"
 publishOrigin = "config"
-functions = "C:\\Users\\Administrator\\Desktop\\cartas-app\\netlify\\functions"
+functions = "E:\\Meus Arquivos\\cartas-app-main\\netlify\\functions"
 
 [build.environment]
 
@@ -25,7 +24,74 @@ functions = "C:\\Users\\Administrator\\Desktop\\cartas-app\\netlify\\functions"
 
 [functions]
 
+[functions.cron-abandoned-cart]
+schedule = "0 * * * *"
+
 [functions."*"]
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://*.clarity.ms https://cdn.jsdelivr.net https://googleads.g.doubleclick.net https://www.google.com https://www.googleadservices.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.mercadopago.com https://www.google-analytics.com https://region1.google-analytics.com https://*.clarity.ms https://www.googletagmanager.com https://googleads.g.doubleclick.net https://ad.doubleclick.net https://www.google.com https://www.google.com.br https://www.googleadservices.com; frame-src https://www.mercadopago.com https://www.mercadopago.com.br https://www.mercadopago.com.mx; form-action 'self' https://www.mercadopago.com https://www.mercadopago.com.br; base-uri 'self'; object-src 'none'; frame-ancestors 'none';"
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
+Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+Cross-Origin-Opener-Policy = "same-origin"
+Cross-Origin-Resource-Policy = "same-origin"
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+for = "/*.js"
+
+[headers.values]
+Cache-Control = "public, max-age=300, must-revalidate"
+
+[[headers]]
+for = "/*.png"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*.webp"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*.avif"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*.ico"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*.css"
+
+[headers.values]
+Cache-Control = "public, max-age=300, must-revalidate"
+
+[[headers]]
+for = "/.netlify/functions/*"
+
+[headers.values]
+Access-Control-Allow-Origin = "https://www.cartasapp.com.br"
+Access-Control-Allow-Methods = "POST, OPTIONS"
+Access-Control-Allow-Headers = "Content-Type, X-CSRF-Token, X-Internal-Secret"
+Access-Control-Max-Age = "86400"
 
 [[redirects]]
 from = "/doc/*"
@@ -67,6 +133,198 @@ force = false
 from = "/checkout/falha"
 to = "/failure.html"
 status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/guia-completo-autorizacao-viagem.html"
+to = "/guia-definitivo-viagem-menor.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/viagem-internacional.html"
+to = "/guia-viagem-internacional-menor.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/regras-idade-viagem.html"
+to = "/guia-idade-viagem-menor.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/modelo-word-pdf-autorizacao-viagem.html"
+to = "/modelo-autorizacao-viagem-para-imprimir.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/viagem2.html"
+to = "/viagem.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/viagem"
+to = "/viagem.html"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/guia-cancelar-smart-fit-sem-ir-loja.html"
+to = "/cancelar-smart-fit-guia-completo.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/bagagem-extraviada-latam.html"
+to = "/bagagem-extraviada.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/bagagem-extraviada-gol.html"
+to = "/bagagem-extraviada.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/bagagem-extraviada-azul.html"
+to = "/bagagem-extraviada.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/bagagem-danificada-latam.html"
+to = "/bagagem-danificada.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/bagagem-danificada-gol.html"
+to = "/bagagem-danificada.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/bagagem-danificada-azul.html"
+to = "/bagagem-danificada.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/reembolso-atraso-voo-gol.html"
+to = "/direitos-viajante-problemas-voo.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/reembolso-atraso-voo-latam.html"
+to = "/direitos-viajante-problemas-voo.html"
+status = 301.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/reembolso-atraso-voo-azul.html"
+to = "/direitos-viajante-problemas-voo.html"
+status = 301.0
 force = false
 
 [redirects.query]
