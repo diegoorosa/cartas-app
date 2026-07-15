@@ -492,8 +492,7 @@
                         var rs = await fetch('/.netlify/functions/generate-doc', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ payload: Object.assign({}, localPayload || {}, { order_id: orderId, ultima_tentativa: i === 2 }), slug: slug, preview: false })
-                        });
+                            body: JSON.stringify({ payload: { order_id: orderId, ultima_tentativa: i === 2 }, preview: false })
                         if (rs.ok) {
                             var js = await rs.json();
                             if (js && js.output && (!js.ai_pendente || i === 2)) {
@@ -640,7 +639,7 @@
                     var rs = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payload: Object.assign({}, localPayload || {}, { order_id: orderId, ultima_tentativa: i === 2 }), slug: slug, preview: false })
+                        body: JSON.stringify({ payload: { order_id: orderId, ultima_tentativa: i === 2 }, preview: false })
                     });
 
                     if (rs.ok) {
@@ -649,8 +648,6 @@
                             var confirmedPayload = js.input_json || localPayload;
                             var fullText = renderDocText(js.output, confirmedPayload);
                             showDocAndScroll(fullText, confirmedPayload);
-                            
-                            console.log('Documento carregado, email será enviado pelo webhook quando pagamento for aprovado');
                             return;
                         }
                     }
@@ -658,9 +655,11 @@
                 await new Promise(function (r) { setTimeout(r, 1000); });
             }
 
-            // Fallback: se não achou no Supabase após 3 tentativas, mantém o preview local
-            if (info && docWrapper.style.display !== 'none') {
+            // Fallback: se não achou no Supabase, mantém o que já mostrou do cache local
+            if (info && !docWrapper.style.display) {
                 info.textContent = 'Documento carregado (versão local). Se houver diferenças, recarregue a página em alguns instantes.';
+            } else if (retry) {
+                retry.style.display = 'flex';
             }
         }
         flow();
