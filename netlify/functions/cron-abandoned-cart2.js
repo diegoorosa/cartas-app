@@ -86,11 +86,27 @@ exports.handler = async (event) => {
           .maybeSingle();
 
         if (generation) {
+          // Já pagou - documento foi gerado - marca lead como convertido
           await supabase
             .from('leads')
             .update({ status: 'converted', converted_at: new Date().toISOString() })
             .eq('id', lead.id);
-          console.log(`[cron-abandoned-cart2] Lead ${lead.id} ja converteu, pulando`);
+          console.log(`[cron-abandoned-cart2] Lead ${lead.id} já convertiu (doc gerado), pulando`);
+          continue;
+        }
+
+        // 2b. Dedup: mesmo email já recebeu recovery nas últimas 24h?
+        const { data: recentRecovery } = await supabase
+          .from('leads')
+          .select('id')
+          .eq('email', lead.email)
+          .eq('status', 'recovery_sent')
+          .gte('recovery_sent_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+          .limit(1);
+
+        if (recentRecovery && recentRecovery.length > 0) {
+          await supabase.from('leads').update({ status: 'recovery_skipped' }).eq('id', lead.id);
+          console.log(`[cron-abandoned-cart2] Lead ${lead.id} pulado - email ${lead.email} já recebeu recovery nas últimas 24h`);
           continue;
         }
 

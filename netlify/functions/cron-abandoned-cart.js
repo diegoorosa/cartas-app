@@ -102,6 +102,21 @@ exports.handler = async (event) => {
           continue;
         }
 
+        // 2b. Dedup: mesmo email já recebeu recovery nas últimas 24h?
+        const { data: recentRecovery } = await supabase
+          .from('leads')
+          .select('id')
+          .eq('email', lead.email)
+          .eq('status', 'recovery_sent')
+          .gte('recovery_sent_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+          .limit(1);
+
+        if (recentRecovery && recentRecovery.length > 0) {
+          await supabase.from('leads').update({ status: 'recovery_skipped' }).eq('id', lead.id);
+          console.log(`[cron-abandoned-cart] Lead ${lead.id} pulado - email ${lead.email} já recebeu recovery nas últimas 24h`);
+          continue;
+        }
+
         // 3. Chama mp-checkout internamente com o cupom (com retry para rate limit)
         let checkoutData = null;
         let checkoutAttempts = 0;
