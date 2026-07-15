@@ -127,7 +127,7 @@ exports.handler = async (event) => {
           </div>
 
           <p style="font-size: 14px; color: #666; margin-top: 24px;">
-            <strong>Dica:</strong> Se for enviar por correio, use AR (Aviso de Recebimento). Se for por e-mail, anexe o PDF baixado.
+            <strong>Dica:</strong> Após o pagamento, você poderá baixar o documento em PDF diretamente pelo link enviado no e-mail de confirmação.
           </p>
 
           <hr style="border: 0; border-top: 1px solid #eee; margin: 24px 0;">
@@ -195,7 +195,7 @@ exports.handler = async (event) => {
           </div>
 
           <p style="font-size: 14px; color: #666;">
-            <strong>Dica Importante:</strong> Se for enviar por correio, recomendamos o uso de AR (Aviso de Recebimento). Se for por e-mail, anexe o PDF baixado.
+            <strong>Dica Importante:</strong> Se for enviar por correio, recomendamos o uso de AR (Aviso de Recebimento). Se for por e-mail, baixe o PDF pelo botão abaixo.
           </p>
 
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
