@@ -36,41 +36,60 @@ exports.handler = async (event) => {
       return r.ok ? r.json() : null;
     }
 
-    // 2. Identifica o ID do pagamento no webhook
+    // 2. Identifica o pagamento no webhook
     let payment = null;
 
     // Formato payment: {"data":{"id":123}}
     if (body?.data?.id) {
       payment = await getPayment(body.data.id);
+
     // Formato merchant_order: {"resource":"https://api.mercadolibre.com/merchant_orders/XXX","topic":"merchant_order"}
     } else if (body?.topic === 'merchant_order' && body?.resource) {
       const moMatch = body.resource.match(/\/(\d+)$/);
       if (moMatch) {
         const moId = moMatch[1];
         console.log(`[mp-webhook] Merchant Order recebido: ${moId}`);
-        // Tenta na URL original do resource, e fallback para mercadopago.com
+
+        // Busca o merchant_order — tenta mercadopago.com primeiro (onde o token funciona)
         let mo = null;
-        for (const baseUrl of ['https://api.mercadolibre.com', 'https://api.mercadopago.com/v1']) {
-          try {
-            const moR = await fetch(`${baseUrl}/merchant_orders/${moId}`, {
-              headers: { Authorization: `Bearer ${MP_TOKEN}` }
-            });
-            if (moR.ok) { mo = await moR.json(); break; }
-            console.log(`[mp-webhook] merchant_order fetch falhou (${baseUrl}): ${moR.status}`);
-          } catch (e) { console.log(`[mp-webhook] merchant_order fetch erro (${baseUrl}): ${e.message}`); }
-        }
-        if (mo) {
-          console.log(`[mp-webhook] merchant_order keys: ${Object.keys(mo).join(', ')}`);
-          // Pega pagamento: payments[] ou iterate do array
-          const payments = mo.payments || mo.order?.payments || [];
-          console.log(`[mp-webhook] merchant_order payments count: ${payments.length}`);
-          if (payments.length > 0) {
-            const approved = payments.find(p => p.status === 'approved');
-            const payCandidate = approved || payments[0];
-            console.log(`[mp-webhook] Usando payment id: ${payCandidate.id}, status: ${payCandidate.status}`);
-            payment = await getPayment(payCandidate.id);
+        try {
+          const moR = await fetch(`https://api.mercadopago.com/v1/merchant_orders/${moId}`, {
+            headers: { Authorization: `Bearer ${MP_TOKEN}` }
+          });
+          console.log(`[mp-webhook] merchant_order fetch status: ${moR.status}`);
+          if (moR.ok) {
+            mo = await moR.json();
           } else {
-            console.log(`[mp-webhook] merchant_order sem payments. Dados: ${JSON.stringify(mo).substring(0, 500)}`);
+            const errBody = await moR.text();
+            console.log(`[mp-webhook] merchant_order erro body: ${errBody.substring(0, 300)}`);
+          }
+        } catch (e) { console.log(`[mp-webhook] merchant_order fetch erro: ${e.message}`); }
+
+        if (mo) {
+          // Extrai pagamento DIRETO do merchant_order (sem segunda chamada)
+          const payments = mo.payments || [];
+          console.log(`[mp-webhook] merchant_order id=${mo.id}, status=${mo.status}, payments=${payments.length}, external_reference=${mo.external_reference}`);
+
+          if (payments.length > 0) {
+            // Pega pagamento aprovado ou o primeiro
+            const approved = payments.find(p => p.status === 'approved');
+            const pay = approved || payments[0];
+            // Monta objeto payment SEM precisar de segunda chamada à API
+            payment = {
+              id: pay.id,
+              status: pay.status,
+              transaction_amount: pay.transaction_amount,
+              external_reference: mo.external_reference || pay.external_reference,
+              metadata: pay.metadata || {}
+            };
+            console.log(`[mp-webhook] Payment extraído: id=${payment.id}, status=${payment.status}, ext_ref=${payment.external_reference}`);
+          } else {
+            // Sem payments no merchant_order — tenta getPayment direto
+            console.log(`[mp-webhook] merchant_order sem payments. Tentando getPayment...`);
+            if (mo.external_reference) {
+              // Último recurso: busca por external_reference no Supabase
+              console.log(`[mp-webhook] Tentando buscar pagamento via external_reference: ${mo.external_reference}`);
+            }
           }
         }
       }
@@ -78,7 +97,7 @@ exports.handler = async (event) => {
       payment = await getPayment(body.id);
     }
 
-    if (!payment) { console.log('[mp-webhook] Nenhum pagamento encontrado para body:', JSON.stringify(body).substring(0, 300)); return { statusCode: 200, body: 'no payment found' }; }
+    if (!payment) { console.log('[mp-webhook] Nenhum pagamento encontrado. Body:', JSON.stringify(body).substring(0, 300)); return { statusCode: 200, body: 'no payment found' }; }
 
     const status = payment.status;
     const orderId = payment.external_reference || (payment.metadata && payment.metadata.order_id);
