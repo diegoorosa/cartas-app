@@ -233,11 +233,6 @@ exports.handler = async function(event) {
             }
         }
 
-        // Se não tem payload mínimo, retorna erro
-        if (!p.slug && !p.menor_nome && !p.nome && !p.resp1_nome) {
-            return { statusCode: 404, body: 'Documento ainda não gerado ou não encontrado.' };
-        }
-
         // Detecta tipo pelo slug / payload (compatível com roteamento do generate-doc)
         let tipo = slug || 'consumo_generico';
         if (slug && slug.includes('viagem') || (p.menor_nome && p.resp1_nome)) {
