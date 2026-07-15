@@ -124,6 +124,7 @@ exports.handler = async (event) => {
         const MP_TOKEN = process.env.MP_ACCESS_TOKEN;
         const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br';
         const orderId = crypto.randomUUID();
+        console.log('[mp-checkout] order_id gerado:', orderId);
 
         // Salva a intenção de compra + payload no Supabase para uso posterior no webhook
         try {
@@ -136,8 +137,9 @@ exports.handler = async (event) => {
                 discount: discount,
                 final_price: price
             });
+            console.log('[mp-checkout] checkout_intents salvo com sucesso para order_id:', orderId);
         } catch (e) {
-            console.error('Erro ao salvar intent no Supabase:', e);
+            console.error('[mp-checkout] ERRO ao salvar intent no Supabase:', e);
             // Não bloqueia o fluxo se o log falhar, mas é ideal que funcione
         }
 
