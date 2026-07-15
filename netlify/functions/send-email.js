@@ -44,7 +44,7 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body);
-    const { order_id, email_to, recovery_mode, coupon, final_price, checkout_url, slug } = body;
+    const { order_id, email_to, recovery_mode, reminder_mode, coupon, final_price, checkout_url, slug } = body;
 
     console.log(`[send-email] Modo: ${recovery_mode ? 'recuperação' : 'transacional'} | Email: ${email_to} | Order: ${order_id}`);
 
@@ -82,7 +82,9 @@ exports.handler = async (event) => {
         if (intent?.slug) docTitle = friendlyTitle(intent.slug);
       }
 
-      subject = `⏰ Sua prévia de "${docTitle}" expira em 24h — ${discountPercent} OFF`;
+      subject = reminder_mode
+        ? `⏰ ÚLTIMA CHANCE — "${docTitle}" — ${discountPercent} OFF expira em 12h`
+        : `⏰ Sua prévia de "${docTitle}" expira em 24h — ${discountPercent} OFF`;
 
       textBody = `Olá!\n\nVocê preencheu os dados para "${docTitle}" mas não finalizou o pagamento.\n\nA prévia expira em 24 horas. Use o cupom ${coupon || 'VOLTA10'} para ${discountPercent} OFF:\n${actionLink}\n\nPreço com desconto: ${priceDisplay}\n\n---\nAVISO: este é um modelo de documento gerado automaticamente. O CartasApp não presta assessoria jurídica e não garante aceitação por órgãos públicos, cartórios ou empresas. Revise os dados antes de assinar.\n`;
 

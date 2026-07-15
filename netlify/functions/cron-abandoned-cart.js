@@ -262,14 +262,101 @@ exports.handler = async (event) => {
 
     }
 
-    return { 
-      statusCode: 200, 
-      body: JSON.stringify({ 
-        processed, 
-        errors, 
-        total_found: leads.length,
+    // ================================================================
+    // STAGE 2: Segundo email de lembrete (12h apos o primeiro recovery)
+    // ================================================================
+    const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString();
+    let reminded = 0;
+    let remindErrors = 0;
+
+    const { data: remindLeads, error: remindError } = await supabase
+      .from('leads')
+      .select('*')
+      .eq('status', 'recovery_sent')
+      .is('recovery_reminded_at', null)
+      .not('email', 'is', null)
+      .lt('recovery_sent_at', twelveHoursAgo)
+      .order('recovery_sent_at', { ascending: true })
+      .limit(3);
+
+    if (remindError) {
+      console.error('[cron-abandoned-cart] Erro ao buscar leads para lembrete:', remindError);
+    } else if (remindLeads && remindLeads.length > 0) {
+      console.log(`[cron-abandoned-cart] Encontrados ${remindLeads.length} leads para segundo lembrete`);
+
+      for (const lead of remindLeads) {
+        try {
+          const { data: generation } = await supabase
+            .from('generations')
+            .select('order_id')
+            .eq('slug', lead.slug)
+            .filter('input_json->>email', 'eq', lead.email)
+            .maybeSingle();
+
+          if (generation) {
+            await supabase.from('leads').update({ status: 'converted', converted_at: new Date().toISOString() }).eq('id', lead.id);
+            console.log(`[cron-abandoned-cart] Lead ${lead.id} converteu, pulando lembrete`);
+            continue;
+          }
+
+          const checkoutUrl = lead.recovery_checkout_url;
+          if (!checkoutUrl) {
+            console.warn(`[cron-abandoned-cart] Lead ${lead.id} sem recovery_checkout_url, pulando`);
+            continue;
+          }
+
+          let emailSent = false;
+          let emailAttempts = 0;
+          while (emailAttempts < 3 && !emailSent) {
+            emailAttempts++;
+            try {
+              const emailResp = await fetch(`${SITE_URL}/.netlify/functions/send-email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Internal-Secret': INTERNAL_SECRET },
+                body: JSON.stringify({
+                  order_id: lead.recovery_order_id,
+                  email_to: lead.email,
+                  recovery_mode: true,
+                  reminder_mode: true,
+                  coupon: lead.recovery_coupon,
+                  final_price: null,
+                  checkout_url: checkoutUrl,
+                  slug: lead.slug
+                }),
+                signal: AbortSignal.timeout(8000)
+              });
+              if (emailResp.ok) emailSent = true;
+            } catch (e) {
+              if (emailAttempts >= 3) throw e;
+              await new Promise(r => setTimeout(r, 2000));
+            }
+          }
+
+          if (!emailSent) throw new Error('Falha ao enviar lembrete');
+
+          await supabase.from('leads').update({
+            recovery_reminded_at: new Date().toISOString(),
+            status: 'recovery_final'
+          }).eq('id', lead.id);
+
+          reminded++;
+          console.log(`[cron-abandoned-cart] Lembrete enviado para lead ${lead.id} (${lead.email})`);
+
+        } catch (e) {
+          console.error(`[cron-abandoned-cart] Erro no lembrete lead ${lead.id}:`, e);
+          remindErrors++;
+        }
+        await new Promise(r => setTimeout(r, 1000));
+      }
+    }
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        first_wave: { processed, errors, total_found: leads.length },
+        second_wave: { reminded, remindErrors, total_found: remindLeads?.length || 0 },
         timestamp: new Date().toISOString()
-      }) 
+      })
     };
 
   } catch (e) {

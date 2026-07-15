@@ -37,7 +37,8 @@ ALTER TABLE public.leads
     ADD COLUMN IF NOT EXISTS recovery_sent_at TIMESTAMPTZ,
     ADD COLUMN IF NOT EXISTS recovery_coupon TEXT,
     ADD COLUMN IF NOT EXISTS recovery_order_id TEXT,
-    ADD COLUMN IF NOT EXISTS recovery_checkout_url TEXT;
+    ADD COLUMN IF NOT EXISTS recovery_checkout_url TEXT,
+    ADD COLUMN IF NOT EXISTS recovery_reminded_at TIMESTAMPTZ;
 
 -- 4. RLS (obrigatorio para tabelas novas no Supabase)
 ALTER TABLE public.checkout_intents2 ENABLE ROW LEVEL SECURITY;
