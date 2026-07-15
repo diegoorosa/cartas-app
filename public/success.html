@@ -492,7 +492,11 @@
                         var rs = await fetch('/.netlify/functions/generate-doc', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ payload: { order_id: orderId, ultima_tentativa: i === 2 }, preview: false })
+                            body: JSON.stringify({
+                                slug: slug,
+                                payload: localPayload || { order_id: orderId, ultima_tentativa: i === 2 },
+                                preview: false
+                            })
                     });
                     if (rs.ok) {
                             var js = await rs.json();
@@ -640,9 +644,12 @@
                     var rs = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payload: { order_id: orderId, ultima_tentativa: i === 2 }, preview: false })
+                        body: JSON.stringify({
+                                slug: slug,
+                                payload: localPayload || { order_id: orderId, ultima_tentativa: i === 2 },
+                                preview: false
+                            })
                     });
-
                     if (rs.ok) {
                         var js = await rs.json();
                         if (js && js.output && (!js.ai_pendente || i === 2)) {
