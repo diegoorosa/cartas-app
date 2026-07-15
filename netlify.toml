@@ -1,0 +1,111 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+# Scheduled Function: recuperação de carrinho abandonado (roda a cada hora)
+[functions."cron-abandoned-cart"]
+  schedule = "0 * * * *"
+
+# Rota amigável: /doc/slug -> doc.html
+[[redirects]]
+  from = "/doc/*"
+  to = "/doc.html"
+  status = 200
+
+# Página de sucesso do checkout (vamos usar na Fase 3)
+[[redirects]]
+  from = "/checkout/sucesso"
+  to = "/success.html"
+  status = 200
+
+  [[redirects]]
+from = "/checkout/pending"
+to = "/pending.html"
+status = 200
+[[redirects]]
+from = "/checkout/falha"
+to = "/failure.html"
+status = 200
+
+# Cannibalization merges — 301 redirect duplicate pages to canonical versions
+[[redirects]]
+  from = "/guia-completo-autorizacao-viagem.html"
+  to = "/guia-definitivo-viagem-menor.html"
+  status = 301
+
+[[redirects]]
+  from = "/viagem-internacional.html"
+  to = "/guia-viagem-internacional-menor.html"
+  status = 301
+
+[[redirects]]
+  from = "/regras-idade-viagem.html"
+  to = "/guia-idade-viagem-menor.html"
+  status = 301
+
+[[redirects]]
+  from = "/modelo-word-pdf-autorizacao-viagem.html"
+  to = "/modelo-autorizacao-viagem-para-imprimir.html"
+  status = 301
+
+[[redirects]]
+  from = "/viagem2.html"
+  to = "/viagem.html"
+  status = 301
+
+# Netlify serve /viagem.html tanto em /viagem quanto /viagem.html (clean URL) — força canonical
+[[redirects]]
+  from = "/viagem"
+  to = "/viagem.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/guia-cancelar-smart-fit-sem-ir-loja.html"
+  to = "/cancelar-smart-fit-guia-completo.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-extraviada-latam.html"
+  to = "/bagagem-extraviada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-extraviada-gol.html"
+  to = "/bagagem-extraviada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-extraviada-azul.html"
+  to = "/bagagem-extraviada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-danificada-latam.html"
+  to = "/bagagem-danificada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-danificada-gol.html"
+  to = "/bagagem-danificada.html"
+  status = 301
+
+[[redirects]]
+  from = "/bagagem-danificada-azul.html"
+  to = "/bagagem-danificada.html"
+  status = 301
+
+[[redirects]]
+  from = "/reembolso-atraso-voo-gol.html"
+  to = "/direitos-viajante-problemas-voo.html"
+  status = 301
+
+[[redirects]]
+  from = "/reembolso-atraso-voo-latam.html"
+  to = "/direitos-viajante-problemas-voo.html"
+  status = 301
+
+[[redirects]]
+  from = "/reembolso-atraso-voo-azul.html"
+  to = "/direitos-viajante-problemas-voo.html"
+  status = 301

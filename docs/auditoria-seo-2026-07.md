@@ -1,0 +1,116 @@
+# Auditoria SEO completa — www.cartasapp.com.br (06/07/2026)
+
+Rodada via `/seo audit`, 8 subagentes especializados (técnico, conteúdo/E-E-A-T,
+schema, sitemap, performance, GEO/IA, SXO, Google APIs).
+
+**SEO Health Score: 60/100**
+
+| Categoria | Score |
+|---|---|
+| Técnico | 70 |
+| Conteúdo/E-E-A-T | 47 |
+| Schema | 58 |
+| Sitemap | 62 |
+| Performance | 78 |
+| GEO (IA) | 58 |
+| SXO | 57 |
+
+**Dados reais (GA4, 90 dias):** 1.219 sessões orgânicas, **+69,8%** últimos 28 dias
+vs anteriores. 47% do tráfego concentrado em 1 página
+(`/modelo-word-pdf-autorizacao-viagem`). **GSC bloqueado** — API desabilitada no
+projeto GCP `claude-seo-500301` (nº 915054547433) e service account não está na
+propriedade.
+
+## Achado-raiz (atravessa 4 auditorias)
+
+As ~67 páginas `/doc/{slug}` eram renderizadas 100% via JS: HTML bruto idêntico
+(title genérico, H1 placeholder, canonical apontando pro `/doc.html`). Isso gerava
+duplicação técnica + conteúdo raso + zero schema por slug + invisibilidade total
+para crawlers de IA (GPTBot/ClaudeBot/PerplexityBot não rodam JS). Um único fix
+resolve os quatro sintomas — ver Item 1 abaixo.
+
+## Itens Críticos
+
+- [x] **1. Pré-renderizar `/doc/{slug}`** — `scripts/generate-doc-pages.js`
+  gera as 67 páginas (title/H1/canonical/og/JSON-LD Service únicos por slug) a
+  partir de `slugs.js` + `sitemap.xml`. Wired no `npm run build` (roda a cada
+  deploy Netlify). Rodado localmente em 06/07/2026, arquivos em `public/doc/*.html`
+  commitados.
+- [x] **2. Destravar GSC** — usuário habilitou a API e adicionou a service
+  account na propriedade `https://www.cartasapp.com.br/` (verificado
+  06/07/2026 via `sites.list()`: `siteFullUser`). `sc-domain:` não foi
+  adicionado (exigiria verificação DNS) — decisão deliberada, tráfego real
+  já cai todo na propriedade www por causa do HSTS/redirect.
+- [x] **3. Religar cluster de links** viagem.html ↔ guia-definitivo-viagem-menor.html
+  ↔ quanto-custa-autorizacao-viagem.html — antes só existia 1 link (viagem→quanto-custa);
+  agora mesh completo (6 links cruzados).
+
+## Alto
+
+- [x] Redirect 301 `/viagem` → `/viagem.html` (06/07/2026, `netlify.toml`,
+  `force = true`)
+- [x] `<lastmod>` real no sitemap.xml (06/07/2026, `scripts/add-sitemap-lastmod.js`
+  wired no `npm run build`, data via `git log` por arquivo)
+- [x] Schema: `publisher` no Article do guia; Article+BreadcrumbList no
+  quanto-custa (rankeia e não tem nenhum JSON-LD); author Person (Diego Rosa)
+  em vez de Organization — feito 06/07/2026 (commit `538fe79`)
+- [x] Performance: consolidar gtag.js duplicado — 128 páginas carregavam
+  `/gtag.js` local repetindo o `config` do Ads por cima do script inline
+  (que já configura GA4+Ads). Removido + arquivo órfão deletado (06/07/2026,
+  commits `adb7d8f`+`7fbca51`). Tag de conversão real (`success.html`,
+  evento `conversion` com `send_to` específico) não usava esse arquivo,
+  ficou intacta.
+- [x] Encurtar cadeia de redirect do domínio apex (2 hops → 1) — **investigado
+  06/07/2026:** é comportamento padrão do Netlify (upgrade http→https no host
+  solicitado, depois redirect de alias→domínio primário); não há regra no
+  `netlify.toml` nem fix simples no repo — exigiria mudança de DNS/registrar
+  fora do Netlify. Baixo impacto real (afeta só quem digita `http://` sem
+  `www`). **Decisão do usuário (06/07/2026): ignorar, não vale a pena.**
+- [x] E-E-A-T: caixa de autor (Diego Rosa) + link de saída p/ fonte oficial
+  CNJ (atos.cnj.jus.br/atos/detalhar/3015) no guia-definitivo-viagem-menor
+  (06/07/2026, commit `6a20b00`). CNPJ e garantia de reembolso ficam de fora:
+  **decisão do usuário (06/07/2026)** — CNPJ só quando o negócio "vingar"
+  (sem empresa aberta ainda); claim "nenhuma recusa registrada" mantido como
+  está — usuário considera verdadeiro (ausência de reclamação até hoje).
+- [x] Performance: `logo.png` (103KB, preloaded) agora serve via
+  `<picture>` (AVIF ~14KB → WebP ~21KB → PNG fallback) em 116 páginas +
+  template doc.html; preload do index.html aponta pro AVIF (06/07/2026,
+  commit `cc45d71`)
+- [x] Performance: `utm.js` (96 páginas) agora carrega com `defer` — não
+  bloqueia mais o render; `theme.js` continua síncrono de propósito (evita
+  flash de tema errado, testado localmente sem regressão) (06/07/2026,
+  commit `62fe8cd`)
+
+## Médio / Baixo
+
+- [x] Expandir quanto-custa — +erros comuns de modelo grátis, +2 estados no
+  comparativo de cartório, +mini-FAQ de preços (06/07/2026, commit `cc66aab`)
+- [x] Comparativo grátis vs pago no hero da viagem.html — adicionado à linha
+  de preço já existente ("Modelo grátis: risco de erro"), sem criar bloco
+  novo (decisão do usuário: manter discreto, não competir com o CTA)
+  (06/07/2026, commit `cc66aab`)
+- [x] FAQPage JSON-LD no FAQ do guia (06/07/2026, commit `cc66aab`)
+- [x] noindex em `/doc.html` nu — `generate-doc-pages.js` remove a tag ao
+  gerar as 67 páginas /doc/{slug}, que continuam indexáveis (06/07/2026,
+  commit `cc66aab`)
+- [x] Investigado "(not set)" no GA4 (06/07/2026, dados reais via API): só
+  ~25 sessões em 90 dias (~1% do total), 100% bounce e 0% engajamento em
+  todas, metade sem landing page registrada, Edge desktop dominante —
+  padrão clássico de bot/scanner, não usuário real. Sem ação necessária.
+- [x] `llms-full.txt` (texto integral das páginas principais) e `contactPoint`
+  no Organization schema do index.html (06/07/2026, commit `cc66aab`).
+  `lang="pt-BR"` já cobre 100% das páginas reais (só falta no arquivo de
+  verificação do Google, que não é uma página HTML). Imagem editorial nos
+  Articles gerada via SVG→WebP (sharp), 1200x630, padrão visual do site
+  (navy + selo dourado), conectada no campo "image" do guia e do quanto-custa
+  (06/07/2026, commit `5d38f63`). Além disso, 50 páginas de conteúdo que não
+  tinham nenhuma tag Open Graph (incluindo a maior fonte de tráfego orgânico,
+  modelo-word-pdf-autorizacao-viagem) ganharam og:title/description/image/url
+  + twitter:card — sem isso, compartilhar essas páginas não mostrava preview
+  visual (06/07/2026, commit `7f266e8`).
+
+## O que já está bom (não mexer)
+
+HTTPS/HSTS/CSP, robots.txt aberto a crawlers de IA (sem cloaking), llms.txt já
+existe, 404 real, CLS=0, TTFB 65-90ms, preço consistente schema↔página,
+citações legais precisas (CNJ 295/2019), tendência orgânica +70%.

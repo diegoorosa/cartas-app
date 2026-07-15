@@ -1,0 +1,22 @@
+# CartasApp
+
+> Plataforma online para gerar documentos jurídicos simples (autorização de viagem para menores, contestações, reembolsos e outros) em minutos, com prévia gratuita antes do pagamento.
+
+## Produto principal
+
+- [Autorização de Viagem para Menor](https://www.cartasapp.com.br/viagem.html): gera a autorização de viagem nacional ou internacional, com prévia gratuita antes de pagar. Documento em PDF e Word, baseado na Resolução CNJ nº 295/2019.
+- [Perguntas frequentes sobre autorização de viagem](https://www.cartasapp.com.br/autorizacao-viagem-faq.html)
+
+## Institucional
+
+- [Sobre o CartasApp](https://www.cartasapp.com.br/sobre.html)
+- [Contato](https://www.cartasapp.com.br/contato.html)
+- [Termos de Uso](https://www.cartasapp.com.br/termos.html)
+
+## Conteúdo completo
+
+- [llms-full.txt](https://www.cartasapp.com.br/llms-full.txt): texto integral das páginas principais (autorização de viagem, guia definitivo, custos, FAQ, sobre), sem necessidade de crawling.
+
+## Aviso legal
+
+O CartasApp é uma ferramenta tecnológica privada para geração e formatação de documentos. Não é despachante, não emite documentos oficiais e não possui vínculo, afiliação ou parceria com o Governo, Polícia Federal, Tribunais ou Cartórios.

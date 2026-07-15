@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gerador de Cartas e Documentos Profissionais | CartasApp</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" type="image/avif" href="/logo.avif" />
+    <link rel="icon" type="image/webp" href="/logo.webp" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="preload" as="image" href="/logo.avif" type="image/avif">
+    <meta name="description"
+        content="Gere cartas e documentos jurídicos: autorização de viagem, recurso de multa, cancelamento, reclamação. Prévia grátis e download em PDF/DOC." />
+    <link rel="canonical" href="https://www.cartasapp.com.br/" />
+    <meta property="og:title" content="Gerador de Cartas e Documentos Profissionais | CartasApp">
+    <meta property="og:description" content="Gere cartas e documentos jurídicos: autorização de viagem, recurso de multa, cancelamento, reclamação. Prévia grátis e download em PDF/DOC.">
+    <meta property="og:image" content="https://www.cartasapp.com.br/logo.webp">
+    <meta property="og:url" content="https://www.cartasapp.com.br/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="CartasApp">
+    <script src="/theme.js"></script>
+    <script src="/utm.js" defer></script>
+    <link rel="stylesheet" href="/style.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
+    <meta name="p:domain_verify" content="21e2c318d017d5f8e7b3d6a6fe20e2e6" />
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'AW-1021062139');
+        gtag('config', 'G-D40QPP9KNP');
+    </script>
+    <script
+        type="text/javascript">(function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", "u4x90t35gk");</script>
+    <meta name="google-site-verification" content="7lHnDvnY-qPZ14zg79sQnZ9Z9EzG0HiPMlaK6mDMy9o" />
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "CartasApp",
+  "url": "https://www.cartasapp.com.br/",
+  "description": "Gere documentos formais, autorizações de viagem, cartas de cancelamento e notificações de consumo em minutos."
+}
+</script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "CartasApp",
+  "url": "https://www.cartasapp.com.br/",
+  "logo": "https://www.cartasapp.com.br/logo.webp",
+  "sameAs": [
+    "https://www.instagram.com/cartasapp",
+    "https://www.pinterest.com/cartasapp"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "availableLanguage": "Portuguese"
+  }
+}
+</script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Legal Document Generation",
+  "provider": {
+    "@type": "Organization",
+    "name": "CartasApp",
+    "url": "https://www.cartasapp.com.br/"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Brazil"
+  }
+}
+</script>
+
+    <style>
+        .hidden-card {
+            display: none;
+        }
+
+        .show-more-btn {
+            margin: 20px auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <div class="container">
+            <div class="navbar-content"
+                style="display: flex; justify-content: space-between; align-items: center; height: 60px;">
+
+                <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <picture>
+                        <source srcset="/logo.avif" type="image/avif">
+                        <source srcset="/logo.webp" type="image/webp">
+                        <img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;" width="42" height="42"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    </picture>
+                    <span
+                        style="font-weight: 800; font-size: 20px; color: var(--text-primary); letter-spacing: -0.5px;">CartasApp</span>
+                </a>
+                <div class="nav-links">
+                    <a href="#destaques" class="nav-link">Destaques</a>
+                    <a href="#viagem" class="nav-link">Viagem</a>
+                    <a href="#multa" class="nav-link">Multas</a>
+                    <a href="#reembolso" class="nav-link">Reembolso</a>
+                    <a href="#bagagem" class="nav-link">Bagagem</a>
+                    <a href="#consumo" class="nav-link">Consumo</a>
+                    <a href="/sobre.html" class="nav-link">Sobre</a>
+                </div>
+
+                <div class="nav-actions" style="display: flex; align-items: center; gap: 10px;">
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema"
+                        style="background: transparent; border: 1px solid var(--border); color: var(--text-primary); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+                        🌙
+                    </button>
+
+                    <button class="mobile-menu-btn" aria-label="Menu Principal">☰</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">⚡ Documentos prontos em poucos minutos</div>
+                <h1>Modelos de cartas e documentos jurídicos para o dia a dia</h1>
+                <p class="hero-subtitle">
+                    Gere <strong>autorizações de viagem</strong>, <strong>recursos de multa</strong>,
+                    <strong>cartas para bancos, planos de saúde e lojas online</strong>,
+                    além de reembolso de passagem, bagagem extraviada e muito mais.
+                    Prévia gratuita, download em <strong>DOC</strong> e <strong>PDF</strong>.
+                </p>
+                <div class="hero-actions">
+                    <a href="/viagem.html" class="btn btn-primary">Gerar Autorização de Viagem</a>
+                    <a href="#destaques" class="btn btn-secondary">Ver principais modelos</a>
+                </div>
+                <div class="trust-badges">
+                    <div class="trust-badge">Pagamento seguro via Mercado Pago</div>
+                    <div class="trust-badge">Suporte por WhatsApp</div>
+                    <div class="trust-badge">Documentos profissionais</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="search-container">
+            <input type="text" class="search-input"
+                placeholder="Buscar documentos (ex: viagem, multa, nome sujo, cartão, plano de saúde, arrependimento, bagagem, cancelamento)..."
+                id="searchInput">
+        </div>
+    </section>
+
+    <!-- DESTAQUES -->
+    <section class="section category-section" id="destaques" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Principais modelos</h2>
+                <p class="section-subtitle">Comece pelos documentos mais usados e procurados</p>
+            </div>
+            <div class="grid">
+                <div class="card featured-card"
+                    data-search="autorizacao viagem menor nacional internacional crianca adolescente">
+                    <div class="card-icon">✈️</div>
+                    <h3 class="card-title">Autorização de Viagem para Menor</h3>
+                    <p class="card-description">
+                        Modelo alinhado à Polícia Federal e CNJ. Use para viagens nacionais e internacionais com
+                        menores.
+                    </p>
+                    <div class="card-tags"><span class="tag">Muito usado</span><span class="tag tag-success">Pronto em 5
+                            min</span></div>
+                    <div class="card-footer">
+                        <a href="/viagem.html" class="btn btn-primary btn-sm">Gerar Autorização</a>
+                    </div>
+                </div>
+
+                <div class="card featured-card" data-search="recurso multa transito ctb defesa previa jari">
+                    <div class="card-icon">🚗</div>
+                    <h3 class="card-title">Recurso de Multa de Trânsito</h3>
+                    <p class="card-description">
+                        Descreva o que aconteceu e gere um recurso com base no CTB para Defesa Prévia ou JARI.
+                    </p>
+                    <div class="card-tags"><span class="tag">Direito de Trânsito</span></div>
+                    <div class="card-footer">
+                        <a href="/multa.html" class="btn btn-primary btn-sm">Gerar Recurso</a>
+                    </div>
+                </div>
+
+                <div class="card featured-card"
+                    data-search="negativacao indevida nome sujo spc serasa retirar apontamento limpar nome">
+                    <div class="card-icon">📉</div>
+                    <h3 class="card-title">Negativação Indevida (SPC/Serasa)</h3>
+                    <p class="card-description">
+                        Notificação para contestar nome sujo indevidamente e exigir a retirada da negativação.
+                    </p>
+                    <div class="card-tags"><span class="tag">Proteção ao crédito</span></div>
+                    <div class="card-footer">
+                        <a href="/negativacao-indevida.html" class="btn btn-primary btn-sm">Gerar Carta</a>
+                    </div>
+                </div>
+
+                <div class="card featured-card"
+                    data-search="contestacao compra nao reconhecida cartao credito cobranca indevida estorno">
+                    <div class="card-icon">💳</div>
+                    <h3 class="card-title">Contestação de Compra no Cartão</h3>
+                    <p class="card-description">
+                        Carta para contestar compra não reconhecida ou cobrança indevida na fatura do cartão de crédito.
+                    </p>
+                    <div class="card-tags"><span class="tag">Bancos e Cartões</span></div>
+                    <div class="card-footer">
+                        <a href="/contestacao-cartao.html" class="btn btn-primary btn-sm">Gerar Carta</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIAGEM -->
+    <section class="section category-section" id="viagem">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Autorizações de Viagem</h2>
+                <p class="section-subtitle">Documentos para viagens nacionais e internacionais com menores</p>
+            </div>
+            <div class="grid">
+                <div class="card featured-card"
+                    data-search="autorização viagem menor completa nacional internacional popular">
+                    <div class="card-icon">✈️</div>
+                    <h3 class="card-title">Autorização de Viagem Completa</h3>
+                    <p class="card-description">Gere automaticamente a autorização de viagem para menor. Válido para
+                        viagens nacionais e internacionais.</p>
+                    <div class="card-tags"><span class="tag">Popular</span><span class="tag tag-success">Pronto em 5
+                            min</span></div>
+                    <div class="card-footer"><a href="/viagem.html" class="btn btn-primary btn-sm">Gerar Autorização</a><a
+                            href="/menor-nacional-um-responsavel.html" class="btn btn-secondary btn-sm">Ver Guia</a>
+                    </div>
+                </div>
+                <div class="card" data-search="autorização viagem menor nacional brasil um responsável">
+                    <div class="card-icon">🇧🇷</div>
+                    <h3 class="card-title">Nacional - 1 Responsável</h3>
+                    <p class="card-description">Autorização para viagem nacional com um responsável.</p>
+                    <div class="card-footer"><a href="/menor-nacional-um-responsavel.html"
+                            class="btn btn-secondary btn-sm">Ver Guia</a></div>
+                </div>
+                <div class="card" data-search="autorização viagem menor nacional brasil dois responsáveis pais">
+                    <div class="card-icon">🇧🇷</div>
+                    <h3 class="card-title">Nacional - 2 Responsáveis</h3>
+                    <p class="card-description">Autorização para viagem nacional com dois responsáveis.</p>
+                    <div class="card-footer"><a href="/menor-nacional-dois-responsaveis.html"
+                            class="btn btn-secondary btn-sm">Ver Guia</a></div>
+                </div>
+                <div class="card" data-search="autorização viagem menor internacional exterior um responsável">
+                    <div class="card-icon">🌎</div>
+                    <h3 class="card-title">Internacional - 1 Responsável</h3>
+                    <p class="card-description">Autorização para viagem internacional com um responsável.</p>
+                    <div class="card-footer"><a href="/menor-internacional-um-responsavel.html"
+                            class="btn btn-secondary btn-sm">Ver Guia</a></div>
+                </div>
+                <div class="card" data-search="autorização viagem menor internacional exterior dois responsáveis pais">
+                    <div class="card-icon">🌎</div>
+                    <h3 class="card-title">Internacional - 2 Responsáveis</h3>
+                    <p class="card-description">Autorização para viagem internacional com dois responsáveis.</p>
+                    <div class="card-footer"><a href="/menor-internacional-dois-responsaveis.html"
+                            class="btn btn-secondary btn-sm">Ver Guia</a></div>
+                </div>
+                <div class="card" data-search="autorização viagem menor acompanhado terceiro avó tia parente">
+                    <div class="card-icon">👨‍👩‍👧</div>
+                    <h3 class="card-title">Acompanhado por Terceiro</h3>
+                    <p class="card-description">Autorização para menor acompanhado por terceiro.</p>
+                    <div class="card-footer"><a href="/menor-acompanhado-por-terceiro.html"
+                            class="btn btn-secondary btn-sm">Ver Guia</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MULTA -->
+    <section class="section category-section" id="multa" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Recursos de Multas de Trânsito</h2>
+                <p class="section-subtitle">Evite pontos na CNH e multas injustas. Defesa Prévia e JARI com base no CTB.
+                </p>
+            </div>
+            <div class="grid">
+                <div class="card featured-card" data-search="multa transito recurso defesa previa jari detran ctb">
+                    <div class="card-icon">🚗</div>
+                    <h3 class="card-title">Recurso de Multa (IA Especialista)</h3>
+                    <p class="card-description">Descreva o que aconteceu e nossa IA gera uma defesa jurídica
+                        personalizada citando as leis de trânsito corretas para o seu caso.</p>
+                    <div class="card-tags"><span class="tag">Novo</span><span class="tag tag-success">Defesa
+                            Jurídica</span></div>
+                    <div class="card-footer">
+                        <a href="/multa.html" class="btn btn-primary btn-sm">Gerar Recurso</a>
+                    </div>
+                </div>
+                <div class="card" data-search="multa velocidade radar transito">
+                    <div class="card-icon">📸</div>
+                    <h3 class="card-title">Multa por Velocidade</h3>
+                    <p class="card-description">Recurso para infrações de radar (art. 218 CTB).</p>
+                    <div class="card-footer"><a href="/multa.html" class="btn btn-secondary btn-sm">Recorrer</a></div>
+                </div>
+                <div class="card" data-search="multa sinal vermelho avanço semaforo">
+                    <div class="card-icon">🚦</div>
+                    <h3 class="card-title">Avanço de Sinal Vermelho</h3>
+                    <p class="card-description">Justificativas legais para anular a multa.</p>
+                    <div class="card-footer"><a href="/multa.html" class="btn btn-secondary btn-sm">Recorrer</a></div>
+                </div>
+                <div class="card" data-search="multa estacionamento proibido">
+                    <div class="card-icon">🅿️</div>
+                    <h3 class="card-title">Estacionamento Irregular</h3>
+                    <p class="card-description">Defesa para multas de estacionamento.</p>
+                    <div class="card-footer"><a href="/multa.html" class="btn btn-secondary btn-sm">Recorrer</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REEMBOLSO -->
+    <section class="section category-section" id="reembolso" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title category-title">💸 Dinheiro de Volta</h2>
+                <p class="section-subtitle">Recupere valores retidos indevidamente por companhias aéreas.</p>
+            </div>
+            <div class="grid">
+                <a href="/reembolso-cancelamento-passagem.html" class="card featured-card"
+                    style="text-decoration: none;">
+                    <div style="display:flex;justify-content:space-between;align-items:start">
+                        <div class="card-icon">✈️</div>
+                        <span class="tag tag-success">Art. 740 Código Civil</span>
+                    </div>
+                    <h3 class="card-title">Reembolso de Passagem (Cancelamento)</h3>
+                    <p class="card-description">Cancelou a viagem e a companhia quer reter 100% ou 50%? A lei limita a
+                        multa a 5%. Gere a notificação extrajudicial e exija seus 95% de volta agora.</p>
+                    <span class="btn btn-primary btn-sm"
+                        style="margin-top:16px; width:100%; justify-content:center;">Gerar Pedido de Reembolso</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- BAGAGEM -->
+    <section class="section category-section" id="bagagem" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Problemas com Bagagem</h2>
+                <p class="section-subtitle">Cartas prontas para resolver problemas com sua bagagem em viagens aéreas.
+                </p>
+            </div>
+            <div class="grid">
+                <div class="card" data-search="bagagem extraviada perdida mala voo avião gol latam azul">
+                    <div class="card-icon">🧳</div>
+                    <h3 class="card-title">Bagagem Extraviada</h3>
+                    <p class="card-description">Carta formal para reclamação de bagagem extraviada.</p>
+                    <div class="card-tags"><span class="tag">Carta + Checklist</span></div>
+                    <div class="card-footer"><a href="/bagagem-extraviada.html" class="btn btn-primary btn-sm">Gerar
+                            Carta</a></div>
+                </div>
+                <div class="card" data-search="bagagem danificada quebrada estragada mala voo avião">
+                    <div class="card-icon">💼</div>
+                    <h3 class="card-title">Bagagem Danificada</h3>
+                    <p class="card-description">Carta para reclamação de bagagem danificada.</p>
+                    <div class="card-tags"><span class="tag">Carta + Checklist</span></div>
+                    <div class="card-footer"><a href="/bagagem-danificada.html" class="btn btn-primary btn-sm">Gerar
+                            Carta</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONSUMO -->
+    <section class="section category-section" id="consumo">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Cartas de Consumo</h2>
+                <p class="section-subtitle">Cancelamentos, reclamações e defesa do consumidor</p>
+            </div>
+
+            <!-- Academias -->
+            <div class="category-section" id="academias">
+                <h3 class="category-title"
+                    style="font-size: 28px; font-weight: 700; margin-bottom: 24px; color: var(--text-primary);">💪
+                    Academias</h3>
+                <div class="grid" id="gridAcademias">
+                    <div class="card" data-search="smart fit cancelamento academia">
+                        <div class="card-icon">🏋️</div>
+                        <h3 class="card-title">Smart Fit — Cancelamento</h3>
+                        <p class="card-description">Carta de cancelamento para Smart Fit.</p>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-smart-fit"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="bluefit cancelamento academia">
+                        <div class="card-icon">🏋️</div>
+                        <h3 class="card-title">Bluefit — Cancelamento</h3>
+                        <p class="card-description">Carta de cancelamento para Bluefit.</p>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-bluefit"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="selfit cancelamento academia">
+                        <div class="card-icon">🏋️</div>
+                        <h3 class="card-title">Selfit — Cancelamento</h3>
+                        <p class="card-description">Carta de cancelamento para Selfit.</p>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-selfit"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="bodytech cancelamento academia">
+                        <div class="card-icon">🏋️</div>
+                        <h3 class="card-title">Bodytech — Cancelamento</h3>
+                        <p class="card-description">Carta de cancelamento para Bodytech.</p>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-bodytech"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="academia cancelamento saúde motivo médico">
+                        <div class="card-icon">🏋️</div>
+                        <h3 class="card-title">Academia — Cancelamento por Saúde</h3>
+                        <p class="card-description">Cancelamento de academia por motivo de saúde.</p>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-academia-por-motivo-de-saude"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="academia cancelamento mudança cidade">
+                        <div class="card-icon">🏋️</div>
+                        <h3 class="card-title">Academia — Cancelamento por Mudança</h3>
+                        <p class="card-description">Cancelamento de academia por mudança de cidade.</p>
+                        <div class="card-footer"><a
+                                href="doc.html?slug=carta-cancelamento-academia-por-mudanca-de-cidade"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+
+                    <div class="card hidden-card" data-search="bio ritmo cancelamento academia">
+                        <div class="card-icon">🏋️</div>
+                        <h3 class="card-title">Bio Ritmo — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-bio-ritmo"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card hidden-card" data-search="just fit cancelamento academia">
+                        <div class="card-icon">🏋️</div>
+                        <h3 class="card-title">Just Fit — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-just-fit"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                </div>
+                <button class="btn btn-outline btn-sm show-more-btn" onclick="toggleSection('gridAcademias', this)">Ver
+                    mais academias</button>
+            </div>
+
+            <!-- Telefonia -->
+            <div class="category-section" id="telefonia" style="margin-top: 60px;">
+                <h3 class="category-title"
+                    style="font-size: 28px; font-weight: 700; margin-bottom: 24px; color: var(--text-primary);">📱
+                    Telefonia e Internet</h3>
+                <div class="grid" id="gridTelefonia">
+                    <div class="card" data-search="vivo fibra internet cancelamento">
+                        <div class="card-icon">📶</div>
+                        <h3 class="card-title">Vivo Fibra — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-vivo-fibra"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="vivo reclamação cobrança indevida">
+                        <div class="card-icon">📶</div>
+                        <h3 class="card-title">Vivo — Reclamação Cobrança</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-reclamacao-vivo-cobranca-indevida"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="claro net internet cancelamento">
+                        <div class="card-icon">📶</div>
+                        <h3 class="card-title">Claro NET — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-claro-net"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="claro reclamação cobrança indevida">
+                        <div class="card-icon">📶</div>
+                        <h3 class="card-title">Claro — Reclamação Cobrança</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-reclamacao-claro-cobranca-indevida"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="tim cancelamento telefone móvel">
+                        <div class="card-icon">📱</div>
+                        <h3 class="card-title">TIM — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-tim"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="tim reclamação cobrança indevida">
+                        <div class="card-icon">📱</div>
+                        <h3 class="card-title">TIM — Reclamação Cobrança</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-reclamacao-tim-cobranca-indevida"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+
+                    <div class="card hidden-card" data-search="oi cancelamento telefone">
+                        <div class="card-icon">📱</div>
+                        <h3 class="card-title">Oi — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-oi"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card hidden-card" data-search="sky tv televisão cancelamento">
+                        <div class="card-icon">📺</div>
+                        <h3 class="card-title">SKY TV — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-sky-tv"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                </div>
+                <button class="btn btn-outline btn-sm show-more-btn" onclick="toggleSection('gridTelefonia', this)">Ver
+                    mais operadoras</button>
+            </div>
+
+            <!-- Bancos e Cartões -->
+            <div class="category-section" id="bancos" style="margin-top: 60px;">
+                <h3 class="category-title"
+                    style="font-size: 28px; font-weight: 700; margin-bottom: 24px; color: var(--text-primary);">🏦
+                    Bancos e Cartões</h3>
+                <div class="grid" id="gridBancos">
+                    <div class="card" data-search="nubank cartão cancelamento">
+                        <div class="card-icon">💳</div>
+                        <h3 class="card-title">Nubank — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-cartao-nubank"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="itaú itau cartão cancelamento">
+                        <div class="card-icon">💳</div>
+                        <h3 class="card-title">Itaú — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-cartao-itau"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="santander cartão cancelamento">
+                        <div class="card-icon">💳</div>
+                        <h3 class="card-title">Santander — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-cartao-santander"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="bradesco cartão cancelamento">
+                        <div class="card-icon">💳</div>
+                        <h3 class="card-title">Bradesco — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-cartao-bradesco"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="caixa econômica cartão cancelamento">
+                        <div class="card-icon">💳</div>
+                        <h3 class="card-title">Caixa — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-cartao-caixa"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                    <div class="card" data-search="banco do brasil cartão cancelamento">
+                        <div class="card-icon">💳</div>
+                        <h3 class="card-title">Banco do Brasil — Cancelamento</h3>
+                        <div class="card-footer"><a href="doc.html?slug=carta-cancelamento-cartao-banco-do-brasil"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+
+                    <!-- Contestação de compra no cartão -->
+                    <div class="card"
+                        data-search="contestação compra cartão crédito não reconheço cobrança indevida estorno chargeback fatura">
+                        <div class="card-icon">💳</div>
+                        <h3 class="card-title">Contestação de Compra no Cartão</h3>
+                        <p class="card-description">Carta para contestar compra não reconhecida ou cobrança indevida na
+                            sua
+                            fatura de cartão de crédito.</p>
+                        <div class="card-footer"><a href="/contestacao-cartao.html" class="btn btn-primary btn-sm">Gerar
+                                carta</a></div>
+                    </div>
+
+                    <!-- Negativação indevida -->
+                    <div class="card"
+                        data-search="negativação indevida nome sujo spc serasa limpar nome dívida já paga não reconheço">
+                        <div class="card-icon">📉</div>
+                        <h3 class="card-title">Negativação Indevida (SPC/Serasa)</h3>
+                        <p class="card-description">Notificação para exigir retirada de negativação indevida em
+                            SPC/Serasa e
+                            outros órgãos de proteção ao crédito.</p>
+                        <div class="card-footer"><a href="/negativacao-indevida.html"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                </div>
+                <button class="btn btn-outline btn-sm show-more-btn" onclick="toggleSection('gridBancos', this)">Ver
+                    mais bancos</button>
+            </div>
+
+            <!-- Saúde e E-commerce -->
+            <div class="category-section" id="outros-consumo" style="margin-top: 60px;">
+                <h3 class="category-title"
+                    style="font-size: 28px; font-weight: 700; margin-bottom: 24px; color: var(--text-primary);">
+                    🩺 Saúde e Compras Online
+                </h3>
+                <div class="grid">
+                    <div class="card"
+                        data-search="plano de saúde negativa cobertura exame cirurgia tratamento unimed amil sulamerica bradesco saúde ans cdc">
+                        <div class="card-icon">🏥</div>
+                        <h3 class="card-title">Negativa de Cobertura (Plano de Saúde)</h3>
+                        <p class="card-description">
+                            Carta para contestar negativa de exame, cirurgia ou tratamento pelo plano de saúde, com base
+                            no
+                            CDC e normas da ANS.
+                        </p>
+                        <div class="card-footer"><a href="/plano-saude-negativa.html"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+
+                    <div class="card"
+                        data-search="direito arrependimento compra online internet art 49 cdc cancelar compra reembolso integral 7 dias ecommerce">
+                        <div class="card-icon">🛒</div>
+                        <h3 class="card-title">Direito de Arrependimento (Compra Online)</h3>
+                        <p class="card-description">
+                            Carta para exercer o direito de arrependimento em até 7 dias (art. 49 do CDC) e pedir
+                            reembolso
+                            integral de compra online.
+                        </p>
+                        <div class="card-footer"><a href="/arrependimento-compra-online.html"
+                                class="btn btn-primary btn-sm">Gerar carta</a></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--bg-secondary); margin-top: 60px;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Quem usou, aprovou</h2>
+                <p class="section-subtitle">Veja como ajudamos pessoas a resolver burocracias do dia a dia</p>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <div style="display:flex; gap:4px; margin-bottom:12px; color:#fbbf24;">★★★★★</div>
+                    <p class="card-description" style="font-style: italic;">"Eu estava desesperada porque meu ex-marido
+                        mora em outra cidade e precisávamos da autorização pra ontem. Gerei o PDF aqui, mandei pra ele
+                        imprimir e assinar. Deu tudo certo no embarque com a GOL."</p>
+                    <div style="margin-top:16px; display:flex; align-items:center; gap:12px;">
+                        <div
+                            style="width:40px; height:40px; background:#3b82f6; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                            AM</div>
+                        <div>
+                            <div style="font-weight:bold; color:var(--text-primary)">Ana Maria S.</div>
+                            <div class="small">Viajou com a filha menor</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="display:flex; gap:4px; margin-bottom:12px; color:#fbbf24;">★★★★★</div>
+                    <p class="card-description" style="font-style: italic;">"Fiquei com medo da polícia federal não
+                        aceitar, mas o documento sai certinho com todos os campos que eles pedem. Reconheci firma no
+                        cartório e passamos tranquilamente na imigração."</p>
+                    <div style="margin-top:16px; display:flex; align-items:center; gap:12px;">
+                        <div
+                            style="width:40px; height:40px; background:#10b981; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                            RC</div>
+                        <div>
+                            <div style="font-weight:bold; color:var(--text-primary)">Roberto C.</div>
+                            <div class="small">Viagem Internacional</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="display:flex; gap:4px; margin-bottom:12px; color:#fbbf24;">★★★★★</div>
+                    <p class="card-description" style="font-style: italic;">"Muito prático. Eu ia pagar um despachante
+                        pra fazer isso, aqui gastei menos de 10 reais e ficou pronto em 5 minutos. O suporte no WhatsApp
+                        também foi muito atencioso."</p>
+                    <div style="margin-top:16px; display:flex; align-items:center; gap:12px;">
+                        <div
+                            style="width:40px; height:40px; background:#f59e0b; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                            JP</div>
+                        <div>
+                            <div style="font-weight:bold; color:var(--text-primary)">Júlia P.</div>
+                            <div class="small">Viagem Nacional</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="category-section" style="padding: 48px 0 32px;">
+        <div class="container">
+            <h2 class="section-title" style="font-size:28px; margin-bottom:8px;">Guias e Dicas</h2>
+            <p class="small" style="color:var(--text-muted); margin-bottom:8px;">Artigos com seus direitos como consumidor. Saiba o que fazer antes de gerar sua carta.</p>
+            <p style="margin-bottom:24px;"><a href="/blog.html" style="color:var(--accent-primary);text-decoration:none;font-weight:600;">Ver todos os artigos na Central de Ajuda →</a></p>
+
+            <h3 style="font-size:18px; margin:24px 0 12px; color:var(--text-primary);">Academia</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+                <a href="/cancelar-smart-fit-guia-completo.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Como Cancelar Smart Fit</h3>
+                    <p class="card-description" style="font-size:13px;">Pelo app, sem ir à loja. Multa, prazo e direitos.</p>
+                </a>
+                <a href="/cancelar-bluefit-guia-completo.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Como Cancelar Bluefit</h3>
+                    <p class="card-description" style="font-size:13px;">Guia completo: app, e-mail, sem ir à loja.</p>
+                </a>
+                <a href="/quanto-custa-cancelar-academia.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Quanto Custa Cancelar Academia?</h3>
+                    <p class="card-description" style="font-size:13px;">Multa, prazo, documentos e como evitar pagar a mais.</p>
+                </a>
+                <a href="/cancelar-academia-por-saude.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Cancelar por Motivo de Saúde</h3>
+                    <p class="card-description" style="font-size:13px;">Sem multa. Atestado médico e documentos.</p>
+                </a>
+                <a href="/cancelar-academia-mudanca-cidade.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Cancelar por Mudança de Cidade</h3>
+                    <p class="card-description" style="font-size:13px;">Sem multa se não houver unidade na nova cidade.</p>
+                </a>
+                <a href="/cancelar-academia-fidelidade-expirada.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Fidelidade Expirou? Cancele Sem Multa</h3>
+                    <p class="card-description" style="font-size:13px;">Após 12 meses, cancelamento livre.</p>
+                </a>
+            </div>
+
+            <h3 style="font-size:18px; margin:24px 0 12px; color:var(--text-primary);">Operadoras (Internet e Celular)</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+                <a href="/cancelar-vivo-fibra-guia.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Como Cancelar Vivo Fibra</h3>
+                    <p class="card-description" style="font-size:13px;">Ligação, app ou carta. ANATEL garante 10 dias.</p>
+                </a>
+                <a href="/cancelar-claro-net-guia.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Como Cancelar Claro</h3>
+                    <p class="card-description" style="font-size:13px;">Internet, celular, TV. Pelo app ou ligação.</p>
+                </a>
+                <a href="/cancelar-tim-guia.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Como Cancelar TIM</h3>
+                    <p class="card-description" style="font-size:13px;">App Meu TIM, ligação ou carta formal.</p>
+                </a>
+                <a href="/cancelar-oi-guia.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Como Cancelar Oi</h3>
+                    <p class="card-description" style="font-size:13px;">Ligação 10315, app ou carta.</p>
+                </a>
+                <a href="/cancelar-sky-tv-guia.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Como Cancelar SKY TV</h3>
+                    <p class="card-description" style="font-size:13px;">Ligação, site ou carta formal.</p>
+                </a>
+                <a href="/operadora-nao-aceita-cancelamento.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Operadora Não Aceita Cancelamento</h3>
+                    <p class="card-description" style="font-size:13px;">Recusa é prática abusiva. Saiba como agir.</p>
+                </a>
+            </div>
+
+            <h3 style="font-size:18px; margin:24px 0 12px; color:var(--text-primary);">Direitos do Consumidor</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+                <a href="/direitos-consumidor-guia-completo.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Direitos do Consumidor: Guia Completo</h3>
+                    <p class="card-description" style="font-size:13px;">CDC, cancelamento, cobrança indevida, troca, devolução.</p>
+                </a>
+                <a href="/cobranca-indevida-como-agir.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Cobrança Indevida: Como Contestar</h3>
+                    <p class="card-description" style="font-size:13px;">Receba em dobro. CDC Art. 42.</p>
+                </a>
+                <a href="/nome-sujo-sem-dever.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Nome Sujo sem Dever? Limpe o Serasa</h3>
+                    <p class="card-description" style="font-size:13px;">Como limpar nome no Serasa e SPC.</p>
+                </a>
+                <a href="/cartao-clonado-como-agir.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Cartão Clonado: Como Agir</h3>
+                    <p class="card-description" style="font-size:13px;">Bloquear, estornar e proteger seu crédito.</p>
+                </a>
+                <a href="/pix-errado-como-recuperar.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Pix Errado: Como Recuperar</h3>
+                    <p class="card-description" style="font-size:13px;">Enviou para conta errada? Saiba como recuperar.</p>
+                </a>
+                <a href="/direito-arrependimento-compra-online.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Direito de Arrependimento: 7 Dias</h3>
+                    <p class="card-description" style="font-size:13px;">Comprou online? 7 dias para devolver.</p>
+                </a>
+                <a href="/produto-defeituoso-troca-devolucao.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Produto com Defeito: Trocar ou Devolver</h3>
+                    <p class="card-description" style="font-size:13px;">Garantia legal, troca, devolução.</p>
+                </a>
+                <a href="/reajuste-abusivo-como-agir.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Reajuste Abusivo: Como Contestar</h3>
+                    <p class="card-description" style="font-size:13px;">Plano aumentou? Saiba contestar.</p>
+                </a>
+            </div>
+
+            <h3 style="font-size:18px; margin:24px 0 12px; color:var(--text-primary);">Trânsito e Multas</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+                <a href="/multa-transito-como-recorrer.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Multa de Trânsito: Como Recorrer</h3>
+                    <p class="card-description" style="font-size:13px;">Defesa prévia, recursos, multas nulas.</p>
+                </a>
+                <a href="/quanto-custa-recorrer-multa.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Quanto Custa Recorrer?</h3>
+                    <p class="card-description" style="font-size:13px;">Gratuito na defesa prévia e JARI.</p>
+                </a>
+            </div>
+
+            <h3 style="font-size:18px; margin:24px 0 12px; color:var(--text-primary);">Viagem e Aéreas</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+                <a href="/direitos-viajante-problemas-voo.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Direitos do Viajante</h3>
+                    <p class="card-description" style="font-size:13px;">Voo cancelado ou atrasado? Seus direitos.</p>
+                </a>
+                <a href="/cancelamento-por-doenca.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Cancelar por Doença</h3>
+                    <p class="card-description" style="font-size:13px;">Academia, plano, curso, viagem. Sem multa.</p>
+                </a>
+                <a href="/cancelamento-por-falecimento.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Cancelar por Falecimento</h3>
+                    <p class="card-description" style="font-size:13px;">Após morte do titular. Direitos da família.</p>
+                </a>
+            </div>
+
+            <h3 style="font-size:18px; margin:24px 0 12px; color:var(--text-primary);">Energia, Água e Utilidades</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+                <a href="/conta-energia-alta-como-agir.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Conta de Energia Alta</h3>
+                    <p class="card-description" style="font-size:13px;">Como contestar na Aneel.</p>
+                </a>
+                <a href="/guia-cobranca-indevida-energia.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Cobrança Indevida de Energia</h3>
+                    <p class="card-description" style="font-size:13px;">Conta errada, leitura estimada.</p>
+                </a>
+            </div>
+
+            <h3 style="font-size:18px; margin:24px 0 12px; color:var(--text-primary);">Outros</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+                <a href="/cancelar-assinatura-streaming.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Cancelar Assinatura: Netflix, Spotify</h3>
+                    <p class="card-description" style="font-size:13px;">Guia para cada serviço de streaming.</p>
+                </a>
+                <a href="/cancelar-plano-saude-guia-completo.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Cancelar Plano de Saúde</h3>
+                    <p class="card-description" style="font-size:13px;">Multa, carência, portabilidade.</p>
+                </a>
+                <a href="/emprestimo-consignado-indevido.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Empréstimo Consignado Indevido</h3>
+                    <p class="card-description" style="font-size:13px;">Desconto sem autorização? Como contestar.</p>
+                </a>
+                <a href="/seguradora-nao-paga-sinistro.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Seguradora Não Paga Sinistro</h3>
+                    <p class="card-description" style="font-size:13px;">Negativa de sinistro, prazos Susep.</p>
+                </a>
+                <a href="/black-friday-direitos-consumidor.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Black Friday: Direitos</h3>
+                    <p class="card-description" style="font-size:13px;">Desconto falso, preço inflado.</p>
+                </a>
+                <a href="/sobre-autoridade-documentos.html" class="card" style="text-decoration:none; padding:20px;">
+                    <h3 class="card-title" style="font-size:16px;">Sobre o CartasApp</h3>
+                    <p class="card-description" style="font-size:13px;">Referência em documentos jurídicos no Brasil.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>Este site não presta aconselhamento jurídico. Aviso Legal: o CartasApp é uma ferramenta tecnológica privada para geração e formatação de documentos. Não somos advogados nem despachantes, não emitimos documentos oficiais e não possuímos qualquer vínculo com o Governo, Polícia Federal, Tribunais ou Cartórios. Formulários oficiais podem ser obtidos gratuitamente nos respectivos órgãos.</p>
+                <p style="margin-top:10px;">CartasApp &copy; 2026 &middot; <a href="/termos.html" class="footer-link">Termos de Uso</a> &middot; <a href="/privacidade.html" class="footer-link">Política de Privacidade</a> &middot; <a href="/sobre.html" class="footer-link">Sobre</a> &middot; <a href="/blog.html" class="footer-link">Central de Ajuda</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleSection(gridId, btn) {
+            var grid = document.getElementById(gridId);
+            var hiddenCards = grid.querySelectorAll('.hidden-card');
+
+            if (btn.textContent.includes('Ver mais')) {
+                hiddenCards.forEach(function (card) { card.style.display = 'block'; card.classList.remove('hidden-card'); card.classList.add('visible-card'); });
+                btn.textContent = 'Mostrar menos';
+            } else {
+                var visibleCards = grid.querySelectorAll('.visible-card');
+                visibleCards.forEach(function (card) { card.style.display = 'none'; card.classList.add('hidden-card'); card.classList.remove('visible-card'); });
+                btn.textContent = 'Ver mais...';
+                grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var searchInput = document.getElementById('searchInput');
+            var allCards = document.querySelectorAll('.card[data-search]');
+            var mainSections = document.querySelectorAll('section.category-section');
+            var subSections = document.querySelectorAll('div.category-section');
+
+            if (!searchInput) return;
+
+            searchInput.addEventListener('input', function () {
+                var searchTerm = this.value.toLowerCase().trim();
+                if (searchTerm === '') {
+                    allCards.forEach(function (card) {
+                        if (card.classList.contains('hidden-card')) card.style.display = 'none';
+                        else card.style.display = 'block';
+                    });
+                    mainSections.forEach(function (s) { s.style.display = 'block' });
+                    subSections.forEach(function (s) { s.style.display = 'block' });
+                    document.querySelectorAll('.show-more-btn').forEach(function (btn) { btn.style.display = 'block' });
+                    return;
+                }
+
+                document.querySelectorAll('.show-more-btn').forEach(function (btn) { btn.style.display = 'none' });
+
+                mainSections.forEach(function (s) { s.style.display = 'none' });
+                subSections.forEach(function (s) { s.style.display = 'none' });
+
+                allCards.forEach(function (card) {
+                    var searchData = (card.getAttribute('data-search') || '').toLowerCase();
+                    var cardTitle = card.querySelector('.card-title').textContent.toLowerCase();
+                    if (searchData.includes(searchTerm) || cardTitle.includes(searchTerm)) {
+                        card.style.display = 'block';
+                        var parent = card.parentElement;
+                        while (parent) {
+                            if (parent.classList && parent.classList.contains('category-section')) parent.style.display = 'block';
+                            parent = parent.parentElement;
+                        }
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="/slugs.js"></script>
+</body>
+
+</html>
