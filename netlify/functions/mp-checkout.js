@@ -79,6 +79,7 @@ async function logConsent(supabase, orderId, payload, event, slug) {
 }
 
 exports.handler = async (event) => {
+  console.log("[mp-checkout] INVOCADO - Method: " + event.httpMethod + " | Time: " + new Date().toISOString());
     try {
         if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method not allowed' };
 

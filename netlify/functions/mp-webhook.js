@@ -189,10 +189,16 @@ exports.handler = async (event) => {
     // =================================================================
 
     // Recupera payload para geração
+    console.log('[mp-webhook] Buscando checkout_intents para order_id:', orderId);
     const ci = await supabase.from('checkout_intents').select('payload, slug').eq('order_id', orderId).maybeSingle();
+    console.log('[mp-webhook] checkout_intents encontrado:', !!ci.data, 'slug:', (ci.data?.slug) || 'null');
     const payload = ci.data?.payload || null;
 
-    if (!payload) return { statusCode: 200, body: 'no payload found' };
+    if (!payload) {
+      console.log('[mp-webhook] PAYLOAD NAO ENCONTRADO para order_id:', orderId);
+      return { statusCode: 200, body: 'no payload found' };
+    }
+    console.log('[mp-webhook] Payload carregado, menor_nome:', payload.menor_nome || 'AUSENTE');
 
     payload.order_id = orderId;
 
