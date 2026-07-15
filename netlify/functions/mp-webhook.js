@@ -48,16 +48,29 @@ exports.handler = async (event) => {
       if (moMatch) {
         const moId = moMatch[1];
         console.log(`[mp-webhook] Merchant Order recebido: ${moId}`);
-        const moR = await fetch(`https://api.mercadopago.com/v1/merchant_orders/${moId}`, {
-          headers: { Authorization: `Bearer ${MP_TOKEN}` }
-        });
-        if (moR.ok) {
-          const mo = await moR.json();
-          // Pega o primeiro pagamento aprovado ou o último pagamento da lista
-          const approved = (mo.payments || []).find(p => p.status === 'approved');
-          const payCandidate = approved || (mo.payments || [])[0];
-          if (payCandidate?.id) {
+        // Tenta na URL original do resource, e fallback para mercadopago.com
+        let mo = null;
+        for (const baseUrl of ['https://api.mercadolibre.com', 'https://api.mercadopago.com/v1']) {
+          try {
+            const moR = await fetch(`${baseUrl}/merchant_orders/${moId}`, {
+              headers: { Authorization: `Bearer ${MP_TOKEN}` }
+            });
+            if (moR.ok) { mo = await moR.json(); break; }
+            console.log(`[mp-webhook] merchant_order fetch falhou (${baseUrl}): ${moR.status}`);
+          } catch (e) { console.log(`[mp-webhook] merchant_order fetch erro (${baseUrl}): ${e.message}`); }
+        }
+        if (mo) {
+          console.log(`[mp-webhook] merchant_order keys: ${Object.keys(mo).join(', ')}`);
+          // Pega pagamento: payments[] ou iterate do array
+          const payments = mo.payments || mo.order?.payments || [];
+          console.log(`[mp-webhook] merchant_order payments count: ${payments.length}`);
+          if (payments.length > 0) {
+            const approved = payments.find(p => p.status === 'approved');
+            const payCandidate = approved || payments[0];
+            console.log(`[mp-webhook] Usando payment id: ${payCandidate.id}, status: ${payCandidate.status}`);
             payment = await getPayment(payCandidate.id);
+          } else {
+            console.log(`[mp-webhook] merchant_order sem payments. Dados: ${JSON.stringify(mo).substring(0, 500)}`);
           }
         }
       }
