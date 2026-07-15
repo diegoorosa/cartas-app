@@ -12,6 +12,10 @@ const INTERNAL_SECRET = process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPA
 // Cupom para recuperação de abandono
 const RECOVERY_COUPON = 'VOLTA10';
 
+// TRAVA DE SEGURANÇA: leads criados antes desta data NUNCA recebem email de recuperação
+// (evita disparar para leads de teste ou período anterior à ativação do sistema)
+const MIN_CREATED_AT = '2026-07-15T00:00:00Z';
+
 exports.handler = async (event) => {
   // Permite execução agendada (sem header) OU manual com secret
   const authHeader = event.headers['x-internal-secret'] || event.headers['authorization'];
@@ -39,8 +43,9 @@ exports.handler = async (event) => {
       .eq('status', 'pending')
       .is('recovery_sent_at', null)  // NÃO processar leads que já tiveram email de recuperação
       .not('email', 'is', null)
-      .gte('created_at', todayStart)  // apenas leads de HOJE
-      .lt('created_at', oneHourAgo)   // há mais de 1h
+      .gte('created_at', MIN_CREATED_AT)  // trava de segurança: nunca processar leads antigos
+      .gte('created_at', todayStart)       // apenas leads de HOJE
+      .lt('created_at', oneHourAgo)        // há mais de 1h
       .order('created_at', { ascending: true })
       .limit(3); // Processa no máx 3 por execução (evita timeout 30s)
 

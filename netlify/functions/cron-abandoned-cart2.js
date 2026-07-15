@@ -10,6 +10,9 @@ const INTERNAL_SECRET = process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPA
 
 const RECOVERY_COUPON = 'VOLTA10';
 
+// TRAVA DE SEGURANÇA: leads criados antes desta data NUNCA recebem email de recuperação
+const MIN_CREATED_AT = '2026-07-15T00:00:00Z';
+
 exports.handler = async (event) => {
   const authHeader = event.headers['x-internal-secret'] || event.headers['authorization'];
   const isManualCall = authHeader === INTERNAL_SECRET || authHeader === `Bearer ${INTERNAL_SECRET}`;
@@ -35,6 +38,7 @@ exports.handler = async (event) => {
       .eq('status', 'pending')
       .is('recovery_sent_at', null)
       .not('email', 'is', null)
+      .gte('created_at', MIN_CREATED_AT)  // trava de segurança
       .gte('created_at', todayStart)
       .lt('created_at', oneHourAgo)
       .order('created_at', { ascending: true })

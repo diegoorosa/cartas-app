@@ -114,6 +114,16 @@ exports.handler = async (event) => {
             </p>
           </div>
 
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 14px 16px; border-radius: 8px; margin: 20px 0;">
+            <p style="font-size: 13px; color: #1e40af; margin: 0;">
+            <strong>🔒 Ao clicar no botão de pagamento acima</strong>, você confirma que leu e concorda com nossos
+            <a href="https://www.cartasapp.com.br/termos" style="color: #2563eb;">Termos de Uso</a>
+            e
+            <a href="https://www.cartasapp.com.br/privacidade" style="color: #2563eb;">Política de Privacidade</a>.
+            Os dados informados serão utilizados exclusivamente para a geração do documento e comunicação sobre seu pedido.
+            </p>
+          </div>
+
           <p style="font-size: 14px; color: #666; margin-top: 24px;">
             <strong>Dica:</strong> Se for enviar por correio, use AR (Aviso de Recebimento). Se for por e-mail, anexe o PDF baixado.
           </p>
@@ -170,6 +180,15 @@ exports.handler = async (event) => {
           <div style="background: #fffbeb; border: 1px solid #fde68a; padding: 14px 16px; border-radius: 8px; margin: 20px 0;">
             <p style="font-size: 13px; color: #92400e; margin: 0;">
             <strong>⚠️ Aviso importante:</strong> este é um <strong>modelo de documento</strong> gerado automaticamente a partir dos dados que você informou. O CartasApp não presta assessoria jurídica individual e <strong>não garante que o modelo será aceito</strong> por órgãos públicos, cartórios, empresas ou autoridades. <strong>Revise com atenção todos os dados antes de assinar ou enviar</strong>, e confirme com a instituição responsável (cartório, companhia aérea, Polícia Federal, empresa etc.) se o modelo atende às exigências do seu caso.
+            </p>
+          </div>
+
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 14px 16px; border-radius: 8px; margin: 20px 0;">
+            <p style="font-size: 13px; color: #1e40af; margin: 0;">
+            <strong>🔒</strong> Este documento foi gerado com base nos dados que você forneceu no site. Ao realizar o pagamento, você confirmou que leu e concordou com nossos
+            <a href="https://www.cartasapp.com.br/termos" style="color: #2563eb;">Termos de Uso</a>
+            e
+            <a href="https://www.cartasapp.com.br/privacidade" style="color: #2563eb;">Política de Privacidade</a>.
             </p>
           </div>
 
