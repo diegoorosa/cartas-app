@@ -126,16 +126,18 @@ exports.handler = async (event) => {
         await supabase.from('checkout_intents').update({ payment_id: paymentId }).eq('order_id', orderId);
     } catch (e) { console.warn('Falha ao salvar payment_id:', e); }
 
-    // Registra processamento para idempotência
-    try {
-      await supabase.from('webhook_processed').insert({ payment_id: paymentId, order_id: orderId, status });
-    } catch (e) { console.warn('Falha ao registrar webhook_processed:', e); }
 
     // =================================================================
-    // NOVO BLOCO: TRATAMENTO DE PAGAMENTO RECUSADO (ALERTA PARA O DIEGO)
+    // TRATAMENTO DE PAGAMENTO RECUSADO (ALERTA PARA O DIEGO)
     // =================================================================
     if (status === 'rejected' || status === 'cancelled') {
       console.log(`Pagamento RECUSADO/CANCELADO para Order ID: ${orderId}. Iniciando alerta...`);
+      
+      // Registra idempotÃªncia APÃS processar o status
+      try {
+        await supabase.from('webhook_processed').insert({ payment_id: paymentId, order_id: orderId, status });
+      } catch (e) { console.warn('Falha ao registrar webhook_processed:', e); }
+      
 
       // Busca dados do cliente no checkout_intents para compor o alerta
       const ciRejected = await supabase.from('checkout_intents').select('payload').eq('order_id', orderId).maybeSingle();
@@ -178,6 +180,11 @@ exports.handler = async (event) => {
 
 
     // =================================================================
+    // Registra idempotÃªncia APÃS confirmar approved
+    try {
+      await supabase.from('webhook_processed').insert({ payment_id: paymentId, order_id: orderId, status });
+    } catch (e) { console.warn('Falha ao registrar webhook_processed:', e); }
+    
     // BLOCO OTIMIZADO: PAGAMENTO APROVADO (GERAÇÃO DE DOCUMENTO)
     // =================================================================
 
