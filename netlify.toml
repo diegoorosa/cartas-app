@@ -48,11 +48,6 @@ status = 200
   to = "/modelo-autorizacao-viagem-para-imprimir.html"
   status = 301
 
-[[redirects]]
-  from = "/viagem2.html"
-  to = "/viagem.html"
-  status = 301
-
 # Netlify serve /viagem.html tanto em /viagem quanto /viagem.html (clean URL) — força canonical
 [[redirects]]
   from = "/viagem"
