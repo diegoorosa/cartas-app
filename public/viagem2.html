@@ -1784,8 +1784,15 @@
             };
         }
 
+        function clearErrors() {
+            document.querySelectorAll('.input-error').forEach(function(el) {
+                el.classList.remove('input-error');
+            });
+        }
+
         function validateAll(p) {
             var ok = true;
+            clearErrors();
             function show(id, showFlag) { var el = document.getElementById(id); if (el) el.style.display = showFlag ? 'block' : 'none'; }
 
             var menorNasc = formatDateBR(document.getElementById('menor_nascimento').value);
@@ -1822,15 +1829,17 @@
             // Email obrigatório
             if (!p.email || !p.email.includes('@')) {
                 ok = false;
-                // Feedback visual opcional
                 var emailInput = document.getElementById('email');
-                if (emailInput) emailInput.style.borderColor = 'var(--accent-error)';
+                if (emailInput) emailInput.classList.add('input-error');
             } else {
                 var emailInput = document.getElementById('email');
-                if (emailInput) emailInput.style.borderColor = '';
+                if (emailInput) emailInput.classList.remove('input-error');
             }
 
-            if (!p.menor_nome || !p.resp1_nome || !p.destino || !p.cidade_uf_emissao) ok = false;
+            if (!p.menor_nome) { ok = false; var el = document.getElementById('menor_nome'); if (el) el.classList.add('input-error'); }
+            if (!p.resp1_nome) { ok = false; var el = document.getElementById('resp1_nome'); if (el) el.classList.add('input-error'); }
+            if (!p.destino) { ok = false; var el = document.getElementById('destino'); if (el) el.classList.add('input-error'); }
+            if (!p.cidade_uf_emissao) { ok = false; var el = document.getElementById('cidade_uf_emissao'); if (el) el.classList.add('input-error'); }
 
             return ok;
         }
@@ -1852,29 +1861,36 @@
             if (container) container.style.display = 'none';
         }
 
+        function markError(id) {
+            var el = document.getElementById(id);
+            if (el) el.classList.add('input-error');
+        }
+
         function validateStep(step) {
             clearStepError();
+            clearErrors();
             var p = getPayload();
             var msg = '';
             if (step === 1) {
-                if (!p.menor_nome) msg = 'Digite o nome da criança ou adolescente.';
-                else if (!p.menor_nascimento) msg = 'Informe a data de nascimento do menor.';
-                else if (!p.destino) msg = 'Informe o destino da viagem.';
-                else if (!p.data_ida) msg = 'Selecione a data de ida.';
-                else if (!p.data_volta) msg = 'Selecione a data de volta.';
+                if (!p.menor_nome) { msg = 'Digite o nome da criança ou adolescente.'; markError('menor_nome'); }
+                else if (!p.menor_nascimento) { msg = 'Informe a data de nascimento do menor.'; markError('menor_nascimento'); }
+                else if (!p.destino) { msg = 'Informe o destino da viagem.'; markError('destino'); }
+                else if (!p.data_ida) { msg = 'Selecione a data de ida.'; markError('data_ida'); }
+                else if (!p.data_volta) { msg = 'Selecione a data de volta.'; markError('data_volta'); }
             } else if (step === 2) {
-                if (!p.acompanhante_tipo) msg = 'Selecione com quem a criança vai viajar.';
+                if (!p.acompanhante_tipo) { msg = 'Selecione com quem a criança vai viajar.'; markError('acompanhante_tipo'); }
                 else if (p.acompanhante_tipo !== 'desacompanhado') {
-                    if (!p.acompanhante_nome) msg = 'Informe o nome do acompanhante.';
-                    else if (!p.acompanhante_parentesco) msg = 'Informe o parentesco do acompanhante.';
-                    else if (p.acompanhante_cpf && !isValidCPF(p.acompanhante_cpf)) msg = 'CPF do acompanhante inválido. Verifique o número ou deixe em branco.';
+                    if (!p.acompanhante_nome) { msg = 'Informe o nome do acompanhante.'; markError('acomp_nome'); }
+                    else if (!p.acompanhante_parentesco) { msg = 'Informe o parentesco do acompanhante.'; markError('acomp_parentesco'); }
+                    else if (p.acompanhante_cpf && !isValidCPF(p.acompanhante_cpf)) { msg = 'CPF do acompanhante inválido. Verifique o número ou deixe em branco.'; markError('acomp_cpf'); }
                 }
             } else if (step === 3) {
-                if (!p.resp1_nome) msg = 'Informe o nome do responsável.';
-                else if (p.resp1_cpf && !isValidCPF(p.resp1_cpf)) msg = 'CPF do responsável 1 inválido. Verifique o número ou deixe em branco.';
-                else if (p.dois_resps && !p.resp2_nome) msg = 'Informe o nome do segundo responsável.';
-                else if (p.dois_resps && p.resp2_cpf && !isValidCPF(p.resp2_cpf)) msg = 'CPF do responsável 2 inválido. Verifique o número ou deixe em branco.';
-                else if (!p.cidade_uf_emissao) msg = 'Informe sua cidade para assinatura.';
+                if (!p.resp1_nome) { msg = 'Informe o nome do responsável.'; markError('resp1_nome'); }
+                else if (p.resp1_cpf && !isValidCPF(p.resp1_cpf)) { msg = 'CPF do responsável 1 inválido. Verifique o número ou deixe em branco.'; markError('resp1_cpf'); }
+                else if (p.dois_resps && !p.resp2_nome) { msg = 'Informe o nome do segundo responsável.'; markError('resp2_nome'); }
+                else if (p.dois_resps && p.resp2_cpf && !isValidCPF(p.resp2_cpf)) { msg = 'CPF do responsável 2 inválido. Verifique o número ou deixe em branco.'; markError('resp2_cpf'); }
+                else if (!p.email) { msg = 'Informe seu e-mail para receber o documento.'; markError('email'); }
+                else if (!p.cidade_uf_emissao) { msg = 'Informe sua cidade para assinatura.'; markError('cidade_uf_emissao'); }
             }
             if (msg) { showStepError(msg); return false; }
             return true;
