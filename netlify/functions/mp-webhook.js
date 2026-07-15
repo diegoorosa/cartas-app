@@ -38,8 +38,32 @@ exports.handler = async (event) => {
 
     // 2. Identifica o ID do pagamento no webhook
     let payment = null;
-    if (body?.data?.id) payment = await getPayment(body.data.id);
-    else if (body?.id) payment = await getPayment(body.id);
+
+    // Formato payment: {"data":{"id":123}}
+    if (body?.data?.id) {
+      payment = await getPayment(body.data.id);
+    // Formato merchant_order: {"resource":"https://api.mercadolibre.com/merchant_orders/XXX","topic":"merchant_order"}
+    } else if (body?.topic === 'merchant_order' && body?.resource) {
+      const moMatch = body.resource.match(/\/(\d+)$/);
+      if (moMatch) {
+        const moId = moMatch[1];
+        console.log(`[mp-webhook] Merchant Order recebido: ${moId}`);
+        const moR = await fetch(`https://api.mercadopago.com/v1/merchant_orders/${moId}`, {
+          headers: { Authorization: `Bearer ${MP_TOKEN}` }
+        });
+        if (moR.ok) {
+          const mo = await moR.json();
+          // Pega o primeiro pagamento aprovado ou o último pagamento da lista
+          const approved = (mo.payments || []).find(p => p.status === 'approved');
+          const payCandidate = approved || (mo.payments || [])[0];
+          if (payCandidate?.id) {
+            payment = await getPayment(payCandidate.id);
+          }
+        }
+      }
+    } else if (body?.id) {
+      payment = await getPayment(body.id);
+    }
 
     if (!payment) { console.log('[mp-webhook] Nenhum pagamento encontrado para body:', JSON.stringify(body).substring(0, 300)); return { statusCode: 200, body: 'no payment found' }; }
 
