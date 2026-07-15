@@ -132,10 +132,7 @@ exports.handler = async (event) => {
                 order_id: orderId,
                 slug,
                 payload: payload || null,
-                utm: utm || null,
-                coupon: appliedCoupon,
-                discount: discount,
-                final_price: price
+                utm: utm || null
             });
             console.log('[mp-checkout] checkout_intents salvo com sucesso para order_id:', orderId);
         } catch (e) {

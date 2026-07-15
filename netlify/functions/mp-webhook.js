@@ -5,20 +5,20 @@ const crypto = require('crypto');
 
 exports.handler = async (event) => {
   console.log(`[mp-webhook] INVOCADO - Method: ${event.httpMethod} | Time: ${new Date().toISOString()}`);
-  // Cronômetro global para monitorar timeout do Netlify
+  // CronÃ´metro global para monitorar timeout do Netlify
   const startTime = Date.now();
 
   try {
     // 1. Apenas aceita POST
     if (event.httpMethod !== 'POST') return { statusCode: 200, body: 'ok' };
 
-    // Verificação de assinatura do Mercado Pago (HMAC-SHA256)
+    // VerificaÃ§Ã£o de assinatura do Mercado Pago (HMAC-SHA256)
     const mpSignature = event.headers['x-signature'] || event.headers['X-Signature'];
     const webhookSecret = process.env.MP_WEBHOOK_SECRET;
     if (webhookSecret && mpSignature) {
       const expectedSig = crypto.createHmac('sha256', webhookSecret).update(event.body || '').digest('hex');
       if (!crypto.timingSafeEqual(Buffer.from(mpSignature), Buffer.from(expectedSig))) {
-        console.warn('MP Webhook: assinatura inválida');
+        console.warn('MP Webhook: assinatura invÃ¡lida');
         return { statusCode: 401, body: 'Invalid signature' };
       }
     }
@@ -28,7 +28,7 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body || '{}');
     console.log(`[mp-webhook] Body recebido:`, JSON.stringify(body).substring(0, 500));
 
-    // --- FUNÇÃO AUXILIAR PARA BUSCAR PAGAMENTO NO MERCADO PAGO ---
+    // --- FUNÃÃO AUXILIAR PARA BUSCAR PAGAMENTO NO MERCADO PAGO ---
     async function getPayment(paymentId) {
       const r = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         headers: { Authorization: `Bearer ${MP_TOKEN}` }
@@ -50,7 +50,7 @@ exports.handler = async (event) => {
         const moId = moMatch[1];
         console.log(`[mp-webhook] Merchant Order recebido: ${moId}`);
 
-        // Busca o merchant_order — tenta mercadopago.com primeiro (onde o token funciona)
+        // Busca o merchant_order â tenta mercadopago.com primeiro (onde o token funciona)
         let mo = null;
         try {
           const moR = await fetch(`https://api.mercadopago.com/v1/merchant_orders/${moId}`, {
@@ -74,7 +74,7 @@ exports.handler = async (event) => {
             // Pega pagamento aprovado ou o primeiro
             const approved = payments.find(p => p.status === 'approved');
             const pay = approved || payments[0];
-            // Monta objeto payment SEM precisar de segunda chamada à API
+            // Monta objeto payment SEM precisar de segunda chamada Ã  API
             payment = {
               id: pay.id,
               status: pay.status,
@@ -82,12 +82,12 @@ exports.handler = async (event) => {
               external_reference: mo.external_reference || pay.external_reference,
               metadata: pay.metadata || {}
             };
-            console.log(`[mp-webhook] Payment extraído: id=${payment.id}, status=${payment.status}, ext_ref=${payment.external_reference}`);
+            console.log(`[mp-webhook] Payment extraÃ­do: id=${payment.id}, status=${payment.status}, ext_ref=${payment.external_reference}`);
           } else {
-            // Sem payments no merchant_order — tenta getPayment direto
+            // Sem payments no merchant_order â tenta getPayment direto
             console.log(`[mp-webhook] merchant_order sem payments. Tentando getPayment...`);
             if (mo.external_reference) {
-              // Último recurso: busca por external_reference no Supabase
+              // Ãltimo recurso: busca por external_reference no Supabase
               console.log(`[mp-webhook] Tentando buscar pagamento via external_reference: ${mo.external_reference}`);
             }
           }
@@ -110,21 +110,22 @@ exports.handler = async (event) => {
     // INICIALIZA SUPABASE (Movido para cima para usar tanto no Rejected quanto no Approved)
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-    // Idempotência: verifica se já processamos este payment_id
-    const { data: processed } = await supabase
-      .from('webhook_processed')
-      .select('id')
-      .eq('payment_id', paymentId)
-      .maybeSingle();
-    if (processed) {
-      console.log(`Webhook duplicado ignorado: payment_id ${paymentId}`);
-      return { statusCode: 200, body: 'already processed' };
-    }
-
-    // Salva payment_id no checkout_intents para consultas diretas futuras (order-status)
+    // IdempotÃªncia: armazena payment_id no payload JSONB (jÃ¡ que nÃ£o hÃ¡ coluna prÃ³pria)
     try {
-        await supabase.from('checkout_intents').update({ payment_id: paymentId }).eq('order_id', orderId);
-    } catch (e) { console.warn('Falha ao salvar payment_id:', e); }
+      const { data: current } = await supabase
+        .from('checkout_intents')
+        .select('payload')
+        .eq('order_id', orderId)
+        .maybeSingle();
+      if (current?.payload) {
+        current.payload._payment_id = paymentId;
+        current.payload._payment_status = status;
+        await supabase
+          .from('checkout_intents')
+          .update({ payload: current.payload })
+          .eq('order_id', orderId);
+      }
+    } catch (e) { console.warn('Falha ao salvar payment_id no payload:', e); }
 
 
     // =================================================================
@@ -133,13 +134,8 @@ exports.handler = async (event) => {
     if (status === 'rejected' || status === 'cancelled') {
       console.log(`Pagamento RECUSADO/CANCELADO para Order ID: ${orderId}. Iniciando alerta...`);
       
-      // Registra idempotÃªncia APÃS processar o status
-      try {
-        await supabase.from('webhook_processed').insert({ payment_id: paymentId, order_id: orderId, status });
-      } catch (e) { console.warn('Falha ao registrar webhook_processed:', e); }
       
-
-      // Busca dados do cliente no checkout_intents para compor o alerta
+// Busca dados do cliente no checkout_intents para compor o alerta
       const ciRejected = await supabase.from('checkout_intents').select('payload').eq('order_id', orderId).maybeSingle();
       const payloadRejected = ciRejected.data?.payload || {};
       
@@ -147,19 +143,19 @@ exports.handler = async (event) => {
       const foneCliente = payloadRejected.telefone || 'Sem telefone';
       const emailCliente = payloadRejected.email || 'Sem e-mail';
 
-      // Tenta enviar o e-mail de alerta para você
+      // Tenta enviar o e-mail de alerta para vocÃª
       try {
         await fetch(`${BASE_URL}/.netlify/functions/send-email`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            // Parâmetros especiais para o seu alerta
+            // ParÃ¢metros especiais para o seu alerta
             email_to: 'diegosch.rosa@gmail.com',
-            subject: `🚨 Venda RECUSADA: ${nomeCliente}`,
+            subject: `ð¨ Venda RECUSADA: ${nomeCliente}`,
             // Se o seu send-email.js suportar 'message' ou 'text', ele vai usar isso.
-            // Caso ele espere apenas 'order_id', ele pode enviar um e-mail padrão, 
-            // mas o Assunto acima ajudará você a identificar.
-            message: `ATENÇÃO: Pagamento recusado.\n\nCliente: ${nomeCliente}\nTelefone: ${foneCliente}\nEmail: ${emailCliente}\n\nEntre em contato via WhatsApp para recuperar a venda com Pix Manual.`
+            // Caso ele espere apenas 'order_id', ele pode enviar um e-mail padrÃ£o, 
+            // mas o Assunto acima ajudarÃ¡ vocÃª a identificar.
+            message: `ATENÃÃO: Pagamento recusado.\n\nCliente: ${nomeCliente}\nTelefone: ${foneCliente}\nEmail: ${emailCliente}\n\nEntre em contato via WhatsApp para recuperar a venda com Pix Manual.`
           })
         });
         console.log('Alerta de recusa enviado com sucesso para diegosch.rosa@gmail.com');
@@ -167,7 +163,7 @@ exports.handler = async (event) => {
         console.error('Erro ao enviar alerta de recusa:', errAlert);
       }
 
-      // Retorna 200 para o Mercado Pago não ficar reenviando o webhook de recusa
+      // Retorna 200 para o Mercado Pago nÃ£o ficar reenviando o webhook de recusa
       return { statusCode: 200, body: 'rejected alert sent' };
     }
     // =================================================================
@@ -175,20 +171,15 @@ exports.handler = async (event) => {
     // =================================================================
 
 
-    // Se não for aprovado (e não for rejected que já tratamos acima), ignora.
+    // Se nÃ£o for aprovado (e nÃ£o for rejected que jÃ¡ tratamos acima), ignora.
     if (status !== 'approved') return { statusCode: 200, body: 'not approved' };
 
 
     // =================================================================
-    // Registra idempotÃªncia APÃS confirmar approved
-    try {
-      await supabase.from('webhook_processed').insert({ payment_id: paymentId, order_id: orderId, status });
-    } catch (e) { console.warn('Falha ao registrar webhook_processed:', e); }
-    
-    // BLOCO OTIMIZADO: PAGAMENTO APROVADO (GERAÇÃO DE DOCUMENTO)
+    // BLOCO OTIMIZADO: PAGAMENTO APROVADO (GERAÃÃO DE DOCUMENTO)
     // =================================================================
 
-    // Recupera payload para geração
+    // Recupera payload para geraÃ§Ã£o
     console.log('[mp-webhook] Buscando checkout_intents para order_id:', orderId);
     const ci = await supabase.from('checkout_intents').select('payload, slug').eq('order_id', orderId).maybeSingle();
     console.log('[mp-webhook] checkout_intents encontrado:', !!ci.data, 'slug:', (ci.data?.slug) || 'null');
@@ -202,8 +193,8 @@ exports.handler = async (event) => {
 
     payload.order_id = orderId;
 
-    // --- TENTATIVA DE GERAÇÃO (LOOP INTELIGENTE) ---
-    // Idempotência é tratada DENTRO do generate-doc (cache hit retorna cached: true)
+    // --- TENTATIVA DE GERAÃÃO (LOOP INTELIGENTE) ---
+    // IdempotÃªncia Ã© tratada DENTRO do generate-doc (cache hit retorna cached: true)
     let gerouSucesso = false;
     let docOutput = null;
 
@@ -243,12 +234,12 @@ exports.handler = async (event) => {
     }
 
     if (!gerouSucesso) {
-      console.error(`FALHA CRÍTICA: Não foi possível gerar o doc para ${orderId}.`);
+      console.error(`FALHA CRÃTICA: NÃ£o foi possÃ­vel gerar o doc para ${orderId}.`);
       return { statusCode: 500, body: 'Failed to generate doc. Retry later.' };
     }
 
-    // --- ENVIO DE E-MAIL PARA O CLIENTE (Fire-and-forget, NÃO await) ---
-    // Dispara em background, não bloqueia retorno 200 pro Mercado Pago
+    // --- ENVIO DE E-MAIL PARA O CLIENTE (Fire-and-forget, NÃO await) ---
+    // Dispara em background, nÃ£o bloqueia retorno 200 pro Mercado Pago
     if (payload.email && payload.email.includes('@')) {
       fetch(`${BASE_URL}/.netlify/functions/send-email`, {
         method: 'POST',

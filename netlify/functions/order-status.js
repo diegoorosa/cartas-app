@@ -28,9 +28,10 @@ exports.handler = async (event) => {
             try {
                 const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
                 const supabase = createClient(process.env.SUPABASE_URL, key);
-                const { data: intent } = await supabase.from('checkout_intents').select('payment_id').eq('order_id', orderId).maybeSingle();
-                if (intent?.payment_id) {
-                    const r = await fetch(`https://api.mercadopago.com/v1/payments/${intent.payment_id}`, {
+                const { data: intent } = await supabase.from('checkout_intents').select('payload').eq('order_id', orderId).maybeSingle();
+                const pid = intent?.payload?._payment_id;
+                if (pid) {
+                    const r = await fetch(`https://api.mercadopago.com/v1/payments/${pid}`, {
                         headers: { Authorization: `Bearer ${MP_TOKEN}` }
                     });
                     if (r.ok) {
