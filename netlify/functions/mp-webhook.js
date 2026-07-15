@@ -4,6 +4,7 @@ const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 
 exports.handler = async (event) => {
+  console.log(`[mp-webhook] INVOCADO - Method: ${event.httpMethod} | Time: ${new Date().toISOString()}`);
   // Cronômetro global para monitorar timeout do Netlify
   const startTime = Date.now();
 
@@ -25,6 +26,7 @@ exports.handler = async (event) => {
     const MP_TOKEN = process.env.MP_ACCESS_TOKEN;
     const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br';
     const body = JSON.parse(event.body || '{}');
+    console.log(`[mp-webhook] Body recebido:`, JSON.stringify(body).substring(0, 500));
 
     // --- FUNÇÃO AUXILIAR PARA BUSCAR PAGAMENTO NO MERCADO PAGO ---
     async function getPayment(paymentId) {
@@ -39,13 +41,15 @@ exports.handler = async (event) => {
     if (body?.data?.id) payment = await getPayment(body.data.id);
     else if (body?.id) payment = await getPayment(body.id);
 
-    if (!payment) return { statusCode: 200, body: 'no payment found' };
+    if (!payment) { console.log('[mp-webhook] Nenhum pagamento encontrado para body:', JSON.stringify(body).substring(0, 300)); return { statusCode: 200, body: 'no payment found' }; }
 
     const status = payment.status;
     const orderId = payment.external_reference || (payment.metadata && payment.metadata.order_id);
     const paymentId = payment.id; // MP payment ID para consultas diretas
 
-    if (!orderId) return { statusCode: 200, body: 'no order_id' };
+    if (!orderId) { console.log(`[mp-webhook] Pagamento ${paymentId} sem order_id. Status: ${status}`); return { statusCode: 200, body: 'no order_id' }; }
+
+    console.log(`[mp-webhook] Pagamento ${paymentId} | Status: ${status} | OrderID: ${orderId}`);
 
     // INICIALIZA SUPABASE (Movido para cima para usar tanto no Rejected quanto no Approved)
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
