@@ -1,0 +1,76 @@
+functionsDirectory = "C:\\Users\\Administrator\\Desktop\\cartas-app\\netlify\\functions"
+functionsDirectoryOrigin = "config-v1"
+redirectsOrigin = "config"
+plugins = []
+headers = []
+
+[build]
+publish = "C:\\Users\\Administrator\\Desktop\\cartas-app\\public"
+publishOrigin = "config"
+functions = "C:\\Users\\Administrator\\Desktop\\cartas-app\\netlify\\functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[functions]
+
+[functions."*"]
+
+[[redirects]]
+from = "/doc/*"
+to = "/doc.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/checkout/sucesso"
+to = "/success.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/checkout/pending"
+to = "/pending.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/checkout/falha"
+to = "/failure.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
