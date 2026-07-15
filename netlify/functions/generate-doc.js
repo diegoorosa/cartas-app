@@ -219,6 +219,25 @@ exports.handler = async function(event) {
         const { payload, preview, slug, order_id } = JSON.parse(event.body || '{}');
         const p = sanitizePayload(payload);
 
+        const ordId = order_id || p.order_id || p.orderId || null;
+
+        // --- CACHE LOOKUP: busca doc já gerado pelo webhook ---
+        if (ordId && !preview) {
+            const { data: cached } = await supabase
+                .from('generations')
+                .select('output_json, input_json')
+                .eq('order_id', ordId)
+                .limit(1);
+            if (cached && cached.length) {
+                return { statusCode: 200, body: JSON.stringify({ output: cached[0].output_json, input_json: cached[0].input_json, cached: true }) };
+            }
+        }
+
+        // Se não tem payload mínimo, retorna erro
+        if (!p.slug && !p.menor_nome && !p.nome && !p.resp1_nome) {
+            return { statusCode: 404, body: 'Documento ainda não gerado ou não encontrado.' };
+        }
+
         // Detecta tipo pelo slug / payload (compatível com roteamento do generate-doc)
         let tipo = slug || 'consumo_generico';
         if (slug && slug.includes('viagem') || (p.menor_nome && p.resp1_nome)) {
@@ -274,7 +293,6 @@ exports.handler = async function(event) {
         }
 
         // --- SALVAR NO SUPABASE ---
-        const ordId = order_id || p.order_id;
         const ultimaTentativa = !!p.ultima_tentativa;
         const podeCachear = ordId && (!preview) && (aiOk || ultimaTentativa);
 
