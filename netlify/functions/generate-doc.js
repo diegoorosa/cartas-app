@@ -274,13 +274,14 @@ exports.handler = async function(event) {
         }
 
         // --- SALVAR NO SUPABASE ---
+        const ordId = order_id || p.order_id;
         const ultimaTentativa = !!p.ultima_tentativa;
-        const podeCachear = order_id && (!preview) && (aiOk || ultimaTentativa);
+        const podeCachear = ordId && (!preview) && (aiOk || ultimaTentativa);
 
         if (podeCachear) {
             await supabase.from('generations').upsert({
-                order_id: order_id,
-                slug: p.slug || '',
+                order_id: ordId,
+                slug: p.slug || slug || '',
                 input_json: p,
                 output_json: output
             }, { onConflict: 'order_id' });

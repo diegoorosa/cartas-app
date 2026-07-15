@@ -492,7 +492,7 @@
                         var rs = await fetch('/.netlify/functions/generate-doc', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ payload: { order_id: orderId, ultima_tentativa: i === 2 }, preview: false })
+                            body: JSON.stringify({ payload: Object.assign({}, localPayload || {}, { order_id: orderId, ultima_tentativa: i === 2 }), slug: slug, preview: false })
                         });
                         if (rs.ok) {
                             var js = await rs.json();
@@ -647,7 +647,7 @@
                     var rs = await fetch('/.netlify/functions/generate-doc', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payload: { order_id: orderId, ultima_tentativa: i === 2 }, preview: false })
+                        body: JSON.stringify({ payload: Object.assign({}, localPayload || {}, { order_id: orderId, ultima_tentativa: i === 2 }), slug: slug, preview: false })
                     });
 
                     if (rs.ok) {
@@ -657,9 +657,6 @@
                             var fullText = renderDocText(js.output, confirmedPayload);
                             showDocAndScroll(fullText, confirmedPayload);
                             
-                            // Envia email transacional com link do documento
-                            // NOTA: Não envia do cliente - o webhook do MP envia quando payment_status=approved
-                            // Isso evita expor segredo interno no frontend
                             console.log('Documento carregado, email será enviado pelo webhook quando pagamento for aprovado');
                             return;
                         }
