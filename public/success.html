@@ -679,7 +679,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             try {
-                var s = (window.slug || '').toLowerCase();
+                var s = (slug || '').toLowerCase();
                 var cards = document.querySelectorAll('#extra-docs a[data-doc]');
                 if (!cards.length) return;
 
@@ -804,8 +804,6 @@
                             console.error('Cross-sell prefill error:', err);
                         }
                     });
-                })();
-
                 if (s.indexOf('viagem') > -1) {
                     // Comprou AUTORIZAÇÃO DE VIAGEM
                     hide('viagem');

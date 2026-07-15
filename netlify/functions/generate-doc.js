@@ -138,8 +138,9 @@ REGRAS OBRIGATÓRIAS: (1) Use exclusivamente os fatos descritos pelo condutor; N
                 argumentoParagrafo,
                 `Diante do exposto, REQUER-SE o recebimento desta defesa, com o consequente DEFERIMENTO do pedido, determinando-se o cancelamento do Auto de Infração e a anulação de qualquer pontuação imposta ao prontuário do condutor.                `
             ]
-        };
-    }
+        }
+    };
+}
 
 function gerarReembolsoPassagem(p) {
     return {
@@ -274,7 +275,7 @@ exports.handler = async function(event) {
 
         // --- SALVAR NO SUPABASE ---
         const ultimaTentativa = !!p.ultima_tentativa;
-        const podeCachear = order_id && (!preview || isTrusted) && (aiOk || ultimaTentativa);
+        const podeCachear = order_id && (!preview) && (aiOk || ultimaTentativa);
 
         if (podeCachear) {
             await supabase.from('generations').upsert({
@@ -293,5 +294,3 @@ exports.handler = async function(event) {
         return { statusCode: 500, body: 'Erro interno ao gerar documento.' };
     }
 };
-
-exports.handler = handler;
