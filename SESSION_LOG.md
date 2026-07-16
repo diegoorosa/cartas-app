@@ -44,13 +44,13 @@ Páginas tratadas: `doc.html` (template genérico usado por dezenas de produtos 
 
 Em cada uma:
 - **SEGURANÇA**: removido o backdoor client-side `?modo=admin` (criava botão "👑 Gerar Admin" que chamava `generate-doc` com `admin_key`). Esse backdoor só tinha sido removido de `viagem.html` no commit P0 anterior — continuava ativo em TODAS as outras páginas de checkout.
-- Removida a "Oferta hoje: de R$29,90 por R$9,90" com timer "⚡ O preço pode voltar ao normal em breve" — esses produtos sempre custaram R$9,90 (confirmado no `PRICE_MAP` de `netlify/functions/mp-checkout.js`), nunca houve desconto real. Era um preço-âncora e urgência fabricados.
+- Removida a "Oferta hoje: de R$29,90 por R$9,90" com timer "⚡ O preço pode voltar ao normal em breve" — esses produtos sempre custaram R$9,90 (confirmado no `PRICE_MAP` de `netlify/functions/price-map.js`), nunca houve desconto real. Era um preço-âncora e urgência fabricados.
 - Removida claim fabricada "⭐️ 4,9 de 5 — centenas de [clientes] já usaram..." (sem sistema de avaliação real por trás).
 - Emoji decorativo trocado por texto limpo/SVG nos badges de feature e garantia.
 - Removido `ecom.html` (rascunho antigo órfão, substituído por `ecommerce.html`).
 
 ## ARQUIVOS-CHAVE PARA CONTEXTO FUTURO
-- `netlify/functions/mp-checkout.js` — `PRICE_MAP` com o preço real de cada produto. **Importante**: só `autorizacao-viagem-menor` custa R$39,90; todo o resto (multa, bagagem, cancelamentos, energia, cartão, etc.) é R$9,90. Antes de "corrigir" qualquer preço em qualquer página, checar esse mapa primeiro.
+- `netlify/functions/price-map.js` — `PRICE_MAP` com o preço real de cada produto (importado por `mp-checkout.js`). **Importante**: só `autorizacao-viagem-menor` custa R$39,90; `recurso-multa-transito`, `carta-bagagem`, `carta-reembolso-*` custam R$19,90; todo o resto é R$9,90. Antes de "corrigir" qualquer preço em qualquer página, checar esse mapa primeiro.
 - `netlify/functions/generate-doc.js` — gera o texto dos documentos, roteamento por slug.
 - `netlify.toml` — redirect `/doc/*` → `/doc.html` (200, não 301) é o que torna `doc.html` um template genérico pra dezenas de produtos.
 - `public/style.css` — CSS compartilhado por ~100 páginas. Qualquer mudança nele se propaga pra tudo automaticamente (foi assim que a animação do hero e a cor dos blobs foram corrigidas em todas as páginas de uma vez).
