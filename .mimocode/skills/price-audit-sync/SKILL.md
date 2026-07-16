@@ -1,11 +1,11 @@
 ---
 name: price-audit-sync
-description: Audit all frontend pages against PRICE_MAP in netlify/functions/mp-checkout.js and sync mismatched prices. Source of truth is the serverless function; frontend HTML must match exactly.
+description: Audit all frontend pages against PRICE_MAP in netlify/functions/price-map.js and sync mismatched prices. Source of truth is price-map.js (imported by mp-checkout.js); frontend HTML must match exactly.
 ---
 
 # Price Audit & Sync Skill
 
-**Purpose:** Ensure every customer-facing page shows the exact price defined in `PRICE_MAP` (netlify/functions/mp-checkout.js). Prevents conversion-killing mismatches like R$29,90 vs R$39,90 on the same page.
+**Purpose:** Ensure every customer-facing page shows the exact price defined in `PRICE_MAP` (`netlify/functions/price-map.js`, imported by `mp-checkout.js`). Prevents conversion-killing mismatches like R$29,90 vs R$39,90 on the same page.
 
 **Trigger:** Run after any pricing change, before major deployments, or when user reports "preço errado".
 
@@ -13,8 +13,9 @@ description: Audit all frontend pages against PRICE_MAP in netlify/functions/mp-
 
 ## Source of Truth
 
-**File:** `netlify/functions/mp-checkout.js`  
-**Variable:** `const PRICE_MAP = { ... }` (lines ~21-115)
+**File:** `netlify/functions/price-map.js`  
+**Variable:** `const PRICE_MAP = { ... }` (lines ~3-115)  
+**Consumer:** `netlify/functions/mp-checkout.js` imports via `const { PRICE_MAP } = require('./price-map')`
 
 ```javascript
 // Current tiers (2026-06-24):
@@ -51,10 +52,10 @@ Check **all** price occurrences in:
 
 ### Step 1: Extract PRICE_MAP
 ```bash
-# Get canonical prices in cents
+# Get canonical prices in cents (from price-map.js, the actual source file)
 node -e "
 const fs = require('fs');
-const content = fs.readFileSync('netlify/functions/mp-checkout.js', 'utf8');
+const content = fs.readFileSync('netlify/functions/price-map.js', 'utf8');
 const match = content.match(/const PRICE_MAP = ({[\s\S]*?^});/m);
 if (match) {
   const PRICE_MAP = eval('(' + match[1] + ')');
@@ -117,7 +118,7 @@ Run this to get a quick mismatch report:
 ```bash
 node -e "
 const fs = require('fs');
-const checkout = fs.readFileSync('netlify/functions/mp-checkout.js', 'utf8');
+const checkout = fs.readFileSync('netlify/functions/price-map.js', 'utf8');
 const pmMatch = checkout.match(/const PRICE_MAP = ({[\s\S]*?^});/m);
 const PRICE_MAP = eval('(' + pmMatch[1] + ')');
 

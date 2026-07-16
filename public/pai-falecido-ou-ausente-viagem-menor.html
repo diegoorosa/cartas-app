@@ -33,10 +33,9 @@
 </head>
 
 <body>
-    <nav class="navbar" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <nav class="navbar">
         <div class="container">
-            <div class="navbar-content"
-                style="display: flex; justify-content: space-between; align-items: center; height: 60px;">
+            <div class="navbar-content">
                 <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
                     <picture><source srcset="/logo.avif" type="image/avif"><source srcset="/logo.webp" type="image/webp"><img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></picture>
@@ -53,17 +52,31 @@
         </div>
     </nav>
 
-    <div class="container" style="padding-top: 40px; padding-bottom: 60px;">
-        <div class="card" style="max-width: 800px; margin: 0 auto;">
+    <section class="article-page">
+        <div class="article-container">
+            <div class="article-header">
+            <a href="/" class="article-back-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+                Voltar ao início
+            </a>
+            <h1 class="article-title">Pai/Mãe Falecido ou Ausente: Como viajar?</h1>
+            <div class="article-meta">
+                <span>Guia informativo</span>
+                <span class="article-meta-separator"></span>
+                <span>5 min de leitura</span>
+            </div>
+        </div>
+            <div class="article-body">
+
             <div style="margin-bottom: 24px;">
                 <div style="padding:16px 18px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:12px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;"><div style="font-size:15px; color:var(--text-primary); font-weight:600; flex:1 1 240px;">Precisa do documento? Gere sua autorização de viagem com prévia grátis, pronta em 3 minutos.</div><a href="/viagem.html" class="btn btn-primary" style="white-space:nowrap;">Gerar autorização &rarr;</a></div>
             </div>
 
-            <h1 style="margin-bottom: 16px;">Pai/Mãe Falecido ou Ausente: Como viajar?</h1>
+            
 
             <div
                 style="background-color: #f0f9ff; border-left: 5px solid #0ea5e9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-                <p style="margin: 0; font-weight: 500; color: #0c4a6e; line-height: 1.6;">
+                <p >
                     <strong>Resumo Rápido:</strong> Se um dos pais é falecido, basta apresentar a <strong>Certidão de
                         Óbito Original</strong> (ou cópia autenticada) no embarque. Não é necessário fazer autorização.
                     Se o pai é "ausente" (sumiu) mas está vivo e na certidão, você precisará de uma autorização judicial
@@ -77,14 +90,14 @@
                 para evitar ser barrado pela Polícia Federal ou cia aérea.
             </p>
 
-            <h2 style="font-size: 24px; margin-top: 32px; margin-bottom: 16px;">1. Pai ou Mãe Falecido</h2>
+            <h2>1. Pai ou Mãe Falecido</h2>
             <p>
                 A morte extingue o poder familiar. Portanto, a autorização desse genitor não é mais necessária.
                 <br><strong>O que levar:</strong> Certidão de Óbito (Original ou Autenticada). Leve sempre que for
                 viajar.
             </p>
 
-            <h2 style="font-size: 24px; margin-top: 32px; margin-bottom: 16px;">2. Pai não consta na Certidão (Pai
+            <h2>2. Pai não consta na Certidão (Pai
                 Desconhecido)</h2>
             <p>
                 Se na certidão de nascimento do menor consta apenas o nome da mãe e o campo do pai está em branco.
@@ -92,7 +105,7 @@
                 precisa de autorização de ninguém.
             </p>
 
-            <h2 style="font-size: 24px; margin-top: 32px; margin-bottom: 16px;">3. Pai "Sumiu" (Paradeiro Desconhecido)
+            <h2>3. Pai "Sumiu" (Paradeiro Desconhecido)
             </h2>
             <p>
                 Se o pai consta na certidão, está vivo, mas você não sabe onde ele está ou ele se recusa a assinar.
@@ -101,14 +114,13 @@
                 lugar do pai).
             </p>
 
-            <div
-                style="margin: 30px 0; padding: 24px; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border); text-align: center;">
-                <h3 style="margin-top: 0;">Seu caso é "Pais Separados"?</h3>
+            <div class="article-cta">
+                <h3>Seu caso é "Pais Separados"?</h3>
                 <p>Se o pai está presente e concorda com a viagem, gere a autorização extrajudicial simples.</p>
                 <a href="/viagem.html" class="btn btn-primary">Gerar Autorização (Pais Vivos)</a>
             </div>
 
-            <h3 style="font-size: 20px; margin-top: 24px;">Artigos Relacionados</h3>
+            <h3>Artigos Relacionados</h3>
             <ul>
                 <li><a href="/pais-separados-autorizacao-viagem.html" style="color: var(--accent-primary);">Guarda
                         Unilateral e Pais Separados</a></li>
@@ -123,7 +135,7 @@
         <div class="container">
             <div class="footer-content">
                 <p>Este site não presta aconselhamento jurídico. Aviso Legal: o CartasApp é uma ferramenta tecnológica privada para geração e formatação de documentos. Não somos advogados nem despachantes, não emitimos documentos oficiais e não possuímos qualquer vínculo com o Governo, Polícia Federal, Tribunais ou Cartórios. Formulários oficiais podem ser obtidos gratuitamente nos respectivos órgãos.</p>
-                <p style="margin-top:10px;">CartasApp &copy; 2026 &middot; <a href="/termos.html" class="footer-link">Termos de Uso</a> &middot; <a href="/privacidade.html" class="footer-link">Política de Privacidade</a> &middot; <a href="/sobre.html" class="footer-link">Sobre</a> &middot; <a href="/blog.html" class="footer-link">Central de Ajuda</a></p>
+                <p >CartasApp &copy; 2026 &middot; <a href="/termos.html" class="footer-link">Termos de Uso</a> &middot; <a href="/privacidade.html" class="footer-link">Política de Privacidade</a> &middot; <a href="/sobre.html" class="footer-link">Sobre</a> &middot; <a href="/blog.html" class="footer-link">Central de Ajuda</a></p>
             </div>
         </div>
     </footer>

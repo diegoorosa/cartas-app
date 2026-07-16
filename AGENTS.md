@@ -12,7 +12,7 @@ Static HTML/JS site on Netlify selling legal document generation (cancellation l
 - **`public/`** — Static site. ~100 HTML pages, shared `style.css`, `slugs.js` (product catalog), `recovery.js`, `theme.js`, `utm.js`.
 - **`netlify/functions/`** — 6 serverless functions:
   - `generate-doc.js` — Template-based document generation (routing by slug: viagem → multa → reembolso → consumo_generico). Uses DOMPurify for sanitization.
-  - `mp-checkout.js` — Creates Mercado Pago Checkout Pro preference. Contains `PRICE_MAP` (source of truth for pricing).
+  - `mp-checkout.js` — Creates Mercado Pago Checkout Pro preference. Imports `PRICE_MAP` from `price-map.js` (source of truth for pricing).
   - `mp-webhook.js` — Handles MP payment notifications. Calls generate-doc on approval, sends email.
   - `order-status.js` — Checks payment status (Supabase fast-path → MP direct → MP search fallback).
   - `send-email.js` — Sends document link via Zoho SMTP (nodemailer).
@@ -25,7 +25,7 @@ Static HTML/JS site on Netlify selling legal document generation (cancellation l
 - `autorizacao-viagem-menor`: **R$39,90** (highest margin)
 - `recurso-multa-transito`, `carta-bagagem`, `carta-reembolso-*` (voo): **R$19,90**
 - **Everything else**: **R$9,90** (academia, telecom, cartão, utilidade, e-commerce, educação)
-- Before "correcting" a price on any page, check `PRICE_MAP` in `netlify/functions/mp-checkout.js` first.
+- Before "correcting" a price on any page, check `PRICE_MAP` in `netlify/functions/price-map.js` first.
 
 ### style.css is shared by ~100 pages
 Any change to `public/style.css` propagates to ALL pages. A previous agent accidentally removed 505 lines thinking they were only for one page — it broke CSS on every checkout page.
@@ -44,7 +44,7 @@ Slugs containing `viagem` or payload with `menor_nome` → travel auth template.
 
 ## Adding a new product
 1. Add slug entry to `public/slugs.js` (slug, title, brand, tipo)
-2. Add price to `PRICE_MAP` in `netlify/functions/mp-checkout.js`
+2. Add price to `PRICE_MAP` in `netlify/functions/price-map.js`
 3. Create an SEO landing page in `public/` if needed
 4. If it needs a new document template, add a function in `generate-doc.js` (currently uses generic consumer template as fallback)
 5. Add the page URL to `public/sitemap.xml` if created

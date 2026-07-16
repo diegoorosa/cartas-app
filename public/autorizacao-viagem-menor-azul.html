@@ -34,10 +34,9 @@
 </head>
 
 <body>
-    <nav class="navbar" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <nav class="navbar">
         <div class="container">
-            <div class="navbar-content"
-                style="display: flex; justify-content: space-between; align-items: center; height: 60px;">
+            <div class="navbar-content">
                 <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
                     <picture><source srcset="/logo.avif" type="image/avif"><source srcset="/logo.webp" type="image/webp"><img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></picture>
@@ -54,17 +53,31 @@
         </div>
     </nav>
 
-    <div class="container" style="padding-top: 40px; padding-bottom: 60px;">
-        <div class="card" style="max-width: 800px; margin: 0 auto;">
+    <section class="article-page">
+        <div class="article-container">
+            <div class="article-header">
+            <a href="/" class="article-back-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+                Voltar ao início
+            </a>
+            <h1 class="article-title">Autorização de Viagem Azul: Guia para Pais</h1>
+            <div class="article-meta">
+                <span>Guia informativo</span>
+                <span class="article-meta-separator"></span>
+                <span>5 min de leitura</span>
+            </div>
+        </div>
+            <div class="article-body">
+
             <div style="margin-bottom: 24px;">
                 <div style="padding:16px 18px; background:var(--bg-secondary); border:1px solid var(--border); border-radius:12px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;"><div style="font-size:15px; color:var(--text-primary); font-weight:600; flex:1 1 240px;">Precisa do documento? Gere sua autorização de viagem com prévia grátis, pronta em 3 minutos.</div><a href="/viagem.html" class="btn btn-primary" style="white-space:nowrap;">Gerar autorização &rarr;</a></div>
             </div>
 
-            <h1 style="margin-bottom: 16px;">Autorização de Viagem Azul: Guia para Pais</h1>
+            
 
             <div
                 style="background-color: #f0f9ff; border-left: 5px solid #0ea5e9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-                <p style="margin: 0; font-weight: 500; color: #0c4a6e; line-height: 1.6;">
+                <p >
                     <strong>Resumo Rápido:</strong> A Azul exige autorização judicial ou extrajudicial para menores de
                     16 anos viajando fora da comarca de residência desacompanhados. É necessário reconhecer firma em
                     cartório. Para voos internacionais, a regra se aplica a menores de 18 anos.
@@ -78,7 +91,7 @@
                 o embarque será negado.
             </p>
 
-            <h2 style="font-size: 24px; margin-top: 32px; margin-bottom: 16px;">Documentos Aceitos pela Azul</h2>
+            <h2>Documentos Aceitos pela Azul</h2>
             <ul>
                 <li><strong>Autorização do CNJ (Resolução 295):</strong> É o modelo padrão que geramos aqui. Aceito em
                     todo território nacional.</li>
@@ -86,14 +99,13 @@
                     impressa na página de identificação, não precisa de papel avulso (para viagens internacionais).</li>
             </ul>
 
-            <div
-                style="margin: 30px 0; padding: 24px; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border); text-align: center;">
-                <h3 style="margin-top: 0;">Gere sua autorização agora</h3>
+            <div class="article-cta">
+                <h3>Gere sua autorização agora</h3>
                 <p>Modelo 100% aceito pela Azul, pronto para imprimir e levar ao cartório.</p>
                 <a href="/viagem.html" class="btn btn-primary">Gerar Autorização Azul</a>
             </div>
 
-            <h2 style="font-size: 24px; margin-top: 32px; margin-bottom: 16px;">Conexões e Escalas</h2>
+            <h2>Conexões e Escalas</h2>
             <p>
                 Se o menor estiver viajando desacompanhado com conexão, a Azul exige atenção redobrada.
                 Certifique-se de que a autorização menciona explicitamente o destino final e, se possível, as cidades de
@@ -101,7 +113,7 @@
                 Nosso gerador possui campo de observação onde você pode incluir esses detalhes.
             </p>
 
-            <h3 style="font-size: 20px; margin-top: 24px;">Links Recomendados</h3>
+            <h3>Links Recomendados</h3>
             <ul>
                 <li><a href="/documentos-embarque-menor.html" style="color: var(--accent-primary);">RG ou Certidão: O
                         que levar?</a></li>
@@ -115,7 +127,7 @@
         <div class="container">
             <div class="footer-content">
                 <p>Este site não presta aconselhamento jurídico. Aviso Legal: o CartasApp é uma ferramenta tecnológica privada para geração e formatação de documentos. Não somos advogados nem despachantes, não emitimos documentos oficiais e não possuímos qualquer vínculo com o Governo, Polícia Federal, Tribunais ou Cartórios. Formulários oficiais podem ser obtidos gratuitamente nos respectivos órgãos.</p>
-                <p style="margin-top:10px;">CartasApp &copy; 2026 &middot; <a href="/termos.html" class="footer-link">Termos de Uso</a> &middot; <a href="/privacidade.html" class="footer-link">Política de Privacidade</a> &middot; <a href="/sobre.html" class="footer-link">Sobre</a> &middot; <a href="/blog.html" class="footer-link">Central de Ajuda</a></p>
+                <p >CartasApp &copy; 2026 &middot; <a href="/termos.html" class="footer-link">Termos de Uso</a> &middot; <a href="/privacidade.html" class="footer-link">Política de Privacidade</a> &middot; <a href="/sobre.html" class="footer-link">Sobre</a> &middot; <a href="/blog.html" class="footer-link">Central de Ajuda</a></p>
             </div>
         </div>
     </footer>
