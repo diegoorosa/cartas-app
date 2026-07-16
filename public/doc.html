@@ -509,7 +509,7 @@
             var ok = true;
             var cpfErr = document.getElementById('cpfError');
 
-            if (!p.nome || !p.cpf || !p.cidade_uf || !p.motivo) ok = false;
+            if (!p.nome || !p.cpf || !p.email || !p.cidade_uf || !p.motivo) ok = false;
 
             if (!p.cpf || !isValidCPF(p.cpf)) {
                 ok = false;

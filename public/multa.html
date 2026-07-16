@@ -560,7 +560,7 @@
         function validateAll(p) {
             var ok = true;
             var cpfErr = document.getElementById('err_cpf');
-            if (!p.nome || !p.cpf || !p.placa || !p.orgao || !p.motivo || !p.cidade_uf) ok = false;
+            if (!p.nome || !p.cpf || !p.email || !p.placa || !p.orgao || !p.motivo || !p.cidade_uf) ok = false;
 
             if (!p.cpf || !isValidCPF(p.cpf)) {
                 ok = false;
