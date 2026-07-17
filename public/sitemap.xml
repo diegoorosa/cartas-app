@@ -5,6 +5,7 @@
   <url><loc>https://www.cartasapp.com.br/multa.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/bagagem.html</loc><lastmod>2026-07-16</lastmod></url>
 
+  <!-- Guias de Autorização de Viagem -->
   <url><loc>https://www.cartasapp.com.br/menor-nacional-um-responsavel.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/menor-nacional-dois-responsaveis.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/menor-internacional-um-responsavel.html</loc><lastmod>2026-07-16</lastmod></url>
@@ -12,22 +13,19 @@
   <url><loc>https://www.cartasapp.com.br/menor-acompanhado-por-terceiro.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/autorizacao-viagem-faq.html</loc><lastmod>2026-07-16</lastmod></url>
 
+  <!-- Bagagem e reembolso -->
   <url><loc>https://www.cartasapp.com.br/bagagem-extraviada.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/bagagem-danificada.html</loc><lastmod>2026-07-16</lastmod></url>
-
   <url><loc>https://www.cartasapp.com.br/reembolso-cancelamento-passagem.html</loc><lastmod>2026-07-16</lastmod></url>
 
-
-
-
-
-
-
+  <!-- FAQ pages de categoria -->
   <url><loc>https://www.cartasapp.com.br/multa-faq.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/academia-faq.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/bagagem-faq.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/reembolso-faq.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/sobre.html</loc><lastmod>2026-07-16</lastmod></url>
+
+  <!-- Landing pages de produto principais -->
   <url><loc>https://www.cartasapp.com.br/contestacao-cartao.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/negativacao-indevida.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/plano-saude-negativa.html</loc><lastmod>2026-07-16</lastmod></url>
@@ -36,6 +34,8 @@
   <url><loc>https://www.cartasapp.com.br/contestacao-cartao-faq.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/plano-saude-negativa-faq.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/arrependimento-compra-online-faq.html</loc><lastmod>2026-07-16</lastmod></url>
+
+  <!-- Guias de viagem por cenário -->
   <url><loc>https://www.cartasapp.com.br/viagem-avo-tio.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/guia-idade-viagem-menor.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/guia-viagem-internacional-menor.html</loc><lastmod>2026-07-16</lastmod></url>
@@ -89,18 +89,18 @@
   <url><loc>https://www.cartasapp.com.br/atraso-na-entrega.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/produto-nao-entregue.html</loc><lastmod>2026-07-16</lastmod></url>
 
-  <!-- Novas landing pages de categoria -->
+  <!-- Landing pages de categoria -->
   <url><loc>https://www.cartasapp.com.br/academia.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/telefonia.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/energia.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/educacao.html</loc><lastmod>2026-07-16</lastmod></url>
 
-  <!-- Novas FAQ pages -->
+  <!-- FAQ pages de categoria (novas) -->
   <url><loc>https://www.cartasapp.com.br/telefonia-faq.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/energia-faq.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/educacao-faq.html</loc><lastmod>2026-07-16</lastmod></url>
 
-  <!-- Novas páginas de reembolso voo -->
+  <!-- Reembolso por companhia aérea -->
   <url><loc>https://www.cartasapp.com.br/reembolso-cancelamento-voo-gol.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/reembolso-cancelamento-voo-latam.html</loc><lastmod>2026-07-16</lastmod></url>
   <url><loc>https://www.cartasapp.com.br/reembolso-cancelamento-voo-azul.html</loc><lastmod>2026-07-16</lastmod></url>
