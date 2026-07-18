@@ -2271,45 +2271,56 @@
                     paymentMethods: {
                         creditCard: 'all',
                         debitCard: 'all',
-                        ticket: 'all',
-                        bankTransfer: 'all',
                         pix: 'all'
+                        // ticket (boleto) e bankTransfer removidos: o PDF precisa ser
+                        // liberado imediatamente apos confirmacao. Boleto demora 1-2
+                        // dias uteis para compensar; bankTransfer pode incluir metodos
+                        // nao-instantaneos. So pix e cartao sao confirmados na hora.
                     }
                 },
                 callbacks: {
                     onSubmit: function (param) {
-                        // O Brick chama onSubmit com { formData, additionalInfo }.
-                        // Em Bricks de "payment", o SDK processa o pagamento internamente
-                        // (tokeniza cartão, envia pro MP) e chama onSubmit quando o pagamento
-                        // foi efetivamente criado. Aqui só aguardamos o webhook atualizar o
-                        // status no Supabase e redirecionamos para /success.html.
+                        // O Brick chama onSubmit quando o cliente submete o formulario.
+                        // Em Bricks de "payment" o SDK ja processou internamente e o
+                        // pagamento foi CRIADO no MP. Aqui aguardamos o webhook confirmar
+                        // o status final (approved/rejected) no Supabase, e so redirecionamos
+                        // para /success.html se approved. Em pending (Pix ainda nao pago pelo
+                        // cliente no app do banco) o Brick continua mostrando o QR Code dentro
+                        // do modal — NAO redirecionamos.
                         return new Promise(function (resolve, reject) {
-                            // Tenta order-status algumas vezes (polling curto) — o webhook
-                            // pode demorar 1-3s para atualizar o order_id no Supabase.
                             var tentativas = 0;
-                            var maxTentativas = 10;
+                            var maxTentativas = 40; // ~80s: tempo razoavel pro webhook chegar
+                            var jaRedirecionou = false;
                             function checar() {
+                                if (jaRedirecionou) return;
                                 tentativas++;
                                 fetch('/.netlify/functions/order-status?order_id=' + encodeURIComponent(orderId))
                                     .then(function (r) { return r.json(); })
                                     .then(function (status) {
+                                        if (jaRedirecionou) return;
                                         if (status && status.status === 'approved') {
+                                            jaRedirecionou = true;
                                             resolve();
                                             window.location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slugStr) + '&s=success';
+                                        } else if (status && (status.status === 'rejected' || status.status === 'failure' || status.status === 'cancelled')) {
+                                            jaRedirecionou = true;
+                                            reject(new Error('Pagamento rejeitado. Tente outro metodo.'));
                                         } else if (status && status.status === 'pending') {
-                                            resolve();
-                                            window.location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slugStr) + '&s=pending';
-                                        } else if (tentativas < maxTentativas) {
-                                            setTimeout(checar, 800);
+                                            // Pix ainda nao pago: Brick continua mostrando QR. Continuar esperando.
+                                            if (tentativas < maxTentativas) setTimeout(checar, 2000);
+                                            else {
+                                                // Mais de 80s em pending: deixamos o Brick no modal; so
+                                                // resolvemos o callback para nao travar o SDK.
+                                                resolve();
+                                            }
                                         } else {
-                                            // Demorou demais para o webhook chegar — manda pra
-                                            // /success.html que vai ficar em estado "aguardando".
-                                            resolve();
-                                            window.location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slugStr) + '&s=pending';
+                                            // status desconhecido (webhook nao chegou). Continua.
+                                            if (tentativas < maxTentativas) setTimeout(checar, 2000);
+                                            else reject(new Error('Tempo esgotado aguardando confirmacao do pagamento. Tente novamente.'));
                                         }
                                     })
                                     .catch(function () {
-                                        if (tentativas < maxTentativas) setTimeout(checar, 800);
+                                        if (tentativas < maxTentativas) setTimeout(checar, 2000);
                                         else reject(new Error('Falha ao verificar status do pagamento'));
                                     });
                             }
