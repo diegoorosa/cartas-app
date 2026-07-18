@@ -2271,7 +2271,10 @@
                     paymentMethods: {
                         creditCard: 'all',
                         debitCard: 'all',
-                        pix: 'all'
+                        // Sintaxe especial do Pix: NAO aceita string 'all'. Precisa ser
+                        // um objeto com showStatusPayment:true (mostra "Pago" apos confirmar).
+                        // Cartao usa 'all' como string, mas pix usa este formato.
+                        pix: { showStatusPayment: true }
                         // ticket (boleto) e bankTransfer removidos: o PDF precisa ser
                         // liberado imediatamente apos confirmacao. Boleto demora 1-2
                         // dias uteis para compensar; bankTransfer pode incluir metodos
