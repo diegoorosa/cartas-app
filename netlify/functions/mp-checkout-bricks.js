@@ -155,15 +155,14 @@ exports.handler = async (event) => {
                     unit_price: Number(price)
                 }
             ],
-            // --- BLOQUEIO DE BOLETO COMEÇA AQUI ---
-            payment_methods: {
-                excluded_payment_types: [
-                    { id: "ticket" } // Isso remove Boleto, Lotérica e PEC (pagamentos demorados)
-                ],
-                installments: 1 // (Opcional) Como é R$ 39,90, força à vista para não parcelarem
-            },
-            // Bricks: o cliente não sai do site, então back_urls e auto_return não se aplicam.
-            // O webhook continua sendo a fonte de verdade para confirmação de pagamento.
+            // NAO enviar payment_methods aqui: o Brick de Payment controla os meios no
+            // front via customization.paymentMethods (em viagem2.html). Enviar
+            // payment_methods na preferencia faz o Brick respeitar apenas os meios
+            // compativeis com a restricao, e isso silenciava o Pix (so carcao aparecia).
+            // Boleto e bloqueado no front porque customization.paymentMethods nao
+            // lista ticket nem bankTransfer — so creditCard, debitCard, pix.
+            // Bricks: o cliente nao sai do site, entao back_urls e auto_return nao se aplicam.
+            // O webhook continua sendo a fonte de verdade para confirmacao de pagamento.
             external_reference: orderId,
             notification_url: `${BASE_URL}/.netlify/functions/mp-webhook`,
             metadata: { order_id: orderId, slug, utm: utm || {} }
