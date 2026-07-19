@@ -2291,7 +2291,7 @@
                                 function checar() {
                                     if (jaRedirecionou) return;
                                     tentativas++;
-                                    fetch('/.netlify/functions/order-status?order_id=' + encodeURIComponent(orderId))
+                                    fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId))
                                         .then(function (r) { return r.json(); })
                                         .then(function (status) {
                                             if (jaRedirecionou) return;
@@ -2372,7 +2372,7 @@
                         var maxTentativas = 60; // 5 min: da tempo pro cliente abrir app do banco e pagar
                         function checar() {
                             tentativas++;
-                            fetch('/.netlify/functions/order-status?order_id=' + encodeURIComponent(orderId))
+                            fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId))
                                 .then(function (r) { return r.json(); })
                                 .then(function (status) {
                                     if (status && status.status === 'approved') {
