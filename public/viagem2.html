@@ -2272,7 +2272,10 @@
             // payer.email e OBRIGATORIO para o Brick mostrar QR Code Pix inline (em vez
             // de pedir email num formulario antes). Sem payer.email o Brick fica em
             // status pending_waiting_payer e o QR nunca aparece.
-            if (payerEmail) init.payer = { email: payerEmail };
+            // Atencao: passar payer parcial (so email) faz o SDK cuspir warning
+            // "Bricks Payment: entityType only receives the value individual or association"
+            // e ainda pedir email. Precisa passar entityType: 'individual' (pessoa fisica).
+            if (payerEmail) init.payer = { email: payerEmail, entityType: 'individual' };
             var brick = await bricksBuilder.create('payment', 'bricksContainer', {
                 initialization: init,
                 customization: {
