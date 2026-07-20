@@ -238,17 +238,29 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: 'Failed to generate doc. Retry later.' };
     }
 
-    // --- ENVIO DE E-MAIL PARA O CLIENTE (Fire-and-forget, NÃO await) ---
-    // Dispara em background, nÃ£o bloqueia retorno 200 pro Mercado Pago
+    // --- ENVIO DE E-MAIL PARA O CLIENTE (com timeout wrapper) ---
+    // Aguarda ate 4s pelo send-email; se falhar/timeout, loga e segue.
+    // Fire-and-forget anterior podia perder o e-mail silenciosamente.
     if (payload.email && payload.email.includes('@')) {
-      fetch(`${BASE_URL}/.netlify/functions/send-email`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-Internal-Secret': process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY
-        },
-        body: JSON.stringify({ order_id: orderId, email_to: payload.email, slug: payload.slug || ci.data?.slug })
-      }).catch(e => console.error('Erro async ao enviar e-mail:', e));
+      try {
+        const emailPromise = fetch(`${BASE_URL}/.netlify/functions/send-email`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Internal-Secret': process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY
+          },
+          body: JSON.stringify({ order_id: orderId, email_to: payload.email, slug: payload.slug || ci.data?.slug })
+        });
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('send-email timeout')), 4000));
+        const r = await Promise.race([emailPromise, timeout]);
+        if (r.ok) {
+          console.log('[mp-webhook] Email enviado para:', payload.email);
+        } else {
+          console.error('[mp-webhook] send-email retornou erro:', r.status);
+        }
+      } catch (e) {
+        console.error('[mp-webhook] Erro ao enviar e-mail (nao bloqueante):', e.message);
+      }
     }
 
     return { statusCode: 200, body: JSON.stringify({ ok: true, cached: false }) };
