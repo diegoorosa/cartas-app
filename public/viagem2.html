@@ -2295,7 +2295,7 @@
                                         .then(function (r) { return r.json(); })
                                         .then(function (status) {
                                             if (jaRedirecionou) return;
-                                            if (status && status.status === 'approved') {
+                                            if (status && (status.status === 'paid' || status.status === 'approved')) {
                                                 jaRedirecionou = true;
                                                 resolve();
                                                 window.location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slugStr) + '&s=success';
@@ -2375,7 +2375,7 @@
                             fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId))
                                 .then(function (r) { return r.json(); })
                                 .then(function (status) {
-                                    if (status && status.status === 'approved') {
+                                    if (status && (status.status === 'paid' || status.status === 'approved')) {
                                         window.location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slugStr) + '&s=success';
                                     } else if (status && (status.status === 'rejected' || status.status === 'cancelled')) {
                                         var st = document.getElementById('pixStatus');
