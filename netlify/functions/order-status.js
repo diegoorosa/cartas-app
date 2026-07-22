@@ -49,6 +49,8 @@ exports.handler = async (event) => {
                             return { statusCode: 200, body: JSON.stringify({ status: 'pending', source: 'mp-direct', price: null }) };
                         }
                     }
+                    }
+                }
                 } catch (e) { console.warn('[order-status] MP direct check error:', e.message); }
             }
 
