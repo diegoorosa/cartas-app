@@ -2251,7 +2251,6 @@
             var brickCarregado = false;
             async function garantirBrickCartao() {
                 if (brickCarregado) return;
-                brickCarregado = true;
                 if (!window.MercadoPago) {
                     var s = document.createElement('script');
                     s.src = 'https://sdk.mercadopago.com/js/v2';
@@ -2260,19 +2259,27 @@
                         document.head.appendChild(s);
                     });
                 }
+                // Aguarda SDK inicializar completamente
+                await new Promise(function (r) { setTimeout(r, 300); });
                 var pubResp = await fetch('/.netlify/functions/get-mp-config');
                 var pubData = await pubResp.json();
                 if (!pubResp.ok || !pubData.public_key) throw new Error('Nao foi possivel obter a public key do MP');
-                var mp = new MercadoPago(pubData.public_key);
+                // Forca global para o Brick encontrar
+                window.MercadoPago = window.MercadoPago || MercadoPago;
+                var mp = new window.MercadoPago(pubData.public_key);
                 var bricksBuilder = mp.bricks();
-                var init = { amount: 39.90, preferenceId: preferenceId };
-                if (payerEmail) init.payer = { email: payerEmail, entityType: 'individual' };
+                var init = {
+                    amount: 39.90,
+                    preferenceId: preferenceId,
+                    payer: payerEmail ? { email: payerEmail, entityType: 'individual' } : undefined
+                };
                 await bricksBuilder.create('payment', 'bricksContainer', {
                     initialization: init,
                     customization: {
-                        paymentMethods: { creditCard: 'all', debitCard: 'all' }
-                        // bankTransfer removido daqui: agora Pix e tratado fora do Brick
-                        // (aba separada). Brick so cuida de cartao.
+                        paymentMethods: {
+                            creditCard: 'all',
+                            debitCard: 'all'
+                        }
                     },
                     callbacks: {
                         onSubmit: function () {
@@ -2314,6 +2321,7 @@
                         onReady: function () { /* ok */ }
                     }
                 });
+                brickCarregado = true;
             }
 
             // Fluxo Pix manual: chama mp-pix-payment, mostra QR inline, polling ate approved
