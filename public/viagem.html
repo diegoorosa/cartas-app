@@ -2282,6 +2282,12 @@
 
                 var mp = new MPCtor(pubData.public_key);
                 var bricksBuilder = mp.bricks();
+                var init = {
+                    amount: 39.90,
+                    preferenceId: preferenceId,
+                    payer: payerEmail ? { email: payerEmail, entityType: 'individual' } : undefined
+                };
+                await bricksBuilder.create('payment', 'bricksContainer', {
                     initialization: init,
                     customization: {
                         paymentMethods: {
