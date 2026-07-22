@@ -26,137 +26,217 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="card">
-            <h1 style="margin-bottom: 8px;">Modelo de documento gerado (ou em processamento)</h1>
+    <!-- ===== HERO DE SUCESSO ===== -->
+    <div class="success-hero" style="
+        position: relative;
+        margin-top: 0;
+        padding: 48px 24px 40px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        text-align: center;
+        overflow: hidden;
+    ">
+        <!-- confetti dots decorativos -->
+        <div aria-hidden="true" style="position:absolute; inset:0; opacity:.18; pointer-events:none;
+            background-image: radial-gradient(circle at 12% 30%, #fff 2px, transparent 3px),
+                              radial-gradient(circle at 88% 20%, #fff 2px, transparent 3px),
+                              radial-gradient(circle at 25% 80%, #fff 2px, transparent 3px),
+                              radial-gradient(circle at 70% 65%, #fff 2px, transparent 3px),
+                              radial-gradient(circle at 50% 10%, #fff 1px, transparent 2px);
+            background-size: 100% 100%;"></div>
 
-            <p class="small" style="margin-bottom: 12px; color: var(--text-secondary);">
-                Use esta página para acompanhar a confirmação do pagamento e acessar o modelo do seu documento.
-                A mensagem logo abaixo será atualizada automaticamente pelo sistema.
+        <div style="position:relative; z-index:1; max-width: 720px; margin: 0 auto;">
+            <div style="
+                width: 72px; height: 72px; margin: 0 auto 16px;
+                border-radius: 50%;
+                background: #fff;
+                display: flex; align-items: center; justify-content: center;
+                box-shadow: 0 8px 24px rgba(0,0,0,.18);
+                font-size: 38px;
+            ">&#9989;</div>
+            <h1 style="margin: 0 0 8px; color: #fff; font-size: 30px; font-weight: 800; letter-spacing: -.02em;">
+                Pagamento confirmado!
+            </h1>
+            <p style="margin: 0; color: rgba(255,255,255,.92); font-size: 16px; font-weight: 500;">
+                Seu documento est&aacute; pronto. Baixe abaixo em PDF ou Word.
             </p>
+        </div>
+    </div>
 
-            <div class="small" style="margin-bottom: 12px; padding: 10px 12px; border-radius: 8px;
-                        background: var(--bg-secondary); border: 1px solid var(--border);">
-                <strong>Aviso importante:</strong>
-                este é um <strong>modelo de documento</strong> gerado automaticamente a partir
-                das informações que você informou. O CartasApp não presta assessoria jurídica
-                individual, não analisa situações concretas de processos, guarda ou contratos
-                e <strong>não garante que o modelo será aceito</strong> por órgãos públicos, cartórios,
-                empresas ou autoridades. A responsabilidade pela conferência do conteúdo e pelo
-                uso do documento é exclusivamente do usuário.
+    <!-- ===== CONTE&Uacute;DO PRINCIPAL ===== -->
+    <div class="container" style="padding-top: 28px; padding-bottom: 48px;">
+
+        <!-- Pedido em processamento / info din&acirc;mica -->
+        <div id="info-bar" style="
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 20px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, rgba(59,130,246,.08), rgba(6,182,212,.08));
+            border: 1px solid rgba(59,130,246,.18);
+        ">
+            <div style="
+                flex: 0 0 36px; width: 36px; height: 36px;
+                border-radius: 50%;
+                background: var(--accent-primary);
+                display: flex; align-items: center; justify-content: center;
+                color: #fff; font-size: 18px; font-weight: 700;
+            ">&#8505;</div>
+            <p id="info" class="small" style="margin:0; flex:1; font-size: 14px; color: var(--text-primary); font-weight: 500;"></p>
+        </div>
+
+        <!-- Bot&otilde;es retry (pagar / voltar) -->
+        <div id="retry" style="display:none; margin: 0 0 20px; gap:10px; flex-wrap:wrap">
+            <button class="btn btn-secondary" id="btnBack" style="padding: 12px 22px;">&#8592; Voltar ao formul&aacute;rio</button>
+            <button class="btn btn-primary" id="btnPay" style="padding: 12px 22px;">Pagar agora</button>
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden;">
+
+            <!-- Aviso de responsabilidade (card destacado) -->
+            <div style="
+                padding: 16px 20px;
+                background: linear-gradient(90deg, rgba(245,158,11,.07), rgba(245,158,11,.03));
+                border-bottom: 1px solid var(--border);
+                display: flex; gap: 12px; align-items: flex-start;
+            ">
+                <div style="flex:0 0 22px; font-size:18px; line-height:1.4;">&#9888;&#65039;</div>
+                <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.55; font-size: 13px;">
+                    <strong style="color: var(--text-primary);">Aviso importante:</strong>
+                    este &eacute; um <strong>modelo de documento</strong> gerado automaticamente. O CartasApp n&atilde;o presta assessoria jur&iacute;dica individual e <strong>n&atilde;o garante que o modelo ser&aacute; aceito</strong> por &oacute;rg&atilde;os p&uacute;blicos, cart&oacute;rios, empresas ou autoridades. A confer&ecirc;ncia do conte&uacute;do e o uso do documento s&atilde;o responsabilidade exclusiva do usu&aacute;rio.
+                </div>
             </div>
 
-            <div id="slug-warning" class="small" style="display:none; margin-bottom: 12px; padding: 10px 12px; border-radius: 8px;
-                        background: var(--card-hover); border: 1px dashed var(--border);">
-            </div>
+            <!-- Aviso espec&iacute;fico do slug (viagem, etc) -->
+            <div id="slug-warning" class="small" style="display:none; padding: 16px 20px; border-bottom: 1px solid var(--border); background: var(--bg-secondary); color: var(--text-secondary); line-height: 1.55;"></div>
 
-            <p id="info" class="small" style="margin-bottom: 8px;"></p>
-
-            <div id="retry" style="display:none; margin:10px 0; gap:8px; flex-wrap:wrap">
-                <button class="btn btn-secondary" id="btnBack">Voltar ao formulário</button>
-                <button class="btn btn-primary" id="btnPay">Pagar agora</button>
-            </div>
-
-            <div id="doc-wrapper" style="display:none; margin-top:16px;">
-                <div
-                    style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
-                    <div class="small"
-                        style="font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
-                        <span>📄 Pré-visualização do modelo</span>
+            <!-- ===== PR&Eacute;-VIA + DOWNLOADS ===== -->
+            <div id="doc-wrapper" style="display:none; padding: 24px 24px 8px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom: 14px;">
+                    <div style="font-weight: 700; color: var(--text-primary); display:flex; align-items:center; gap:8px; font-size: 16px;">
+                        <span style="font-size: 20px;">&#128196;</span> Pr&eacute;-visualiza&ccedil;&atilde;o do modelo
                     </div>
-                    <div class="small" style="color:var(--text-muted);">
-                        Revise os dados abaixo. Depois, você pode ajustar o layout no arquivo Word se desejar.
+                    <div class="small" style="color: var(--text-muted); font-size: 12px;">
+                        Revise os dados abaixo. O arquivo final em Word/PDF ter&aacute; a mesma reda&ccedil;&atilde;o.
                     </div>
                 </div>
 
-                <div
-                    style="border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); padding:14px;">
+                <!-- "folha A4" -->
+                <div style="background: var(--bg-secondary); border-radius: 14px; padding: 18px; border: 1px solid var(--border);">
                     <div id="doc" class="preview" data-clarity-mask="true" style="
-                            background:#ffffff;
-                            border-radius:10px;
-                            padding:32px 40px;
-                            max-height:520px;
-                            overflow:auto;
-                            box-shadow:0 10px 25px rgba(15,23,42,0.15);
-                            font-family: 'Times New Roman', Georgia, 'serif';
-                            font-size:14px;
-                            line-height:1.7;
-                            color:#111827;">
-                    </div>
+                            background: #ffffff;
+                            border-radius: 8px;
+                            padding: 40px 44px;
+                            max-height: 540px;
+                            overflow: auto;
+                            box-shadow: 0 12px 28px rgba(15,23,42,.14);
+                            font-family: 'Times New Roman', Georgia, serif;
+                            font-size: 14.5px;
+                            line-height: 1.75;
+                            color: #111827;
+                    "></div>
                 </div>
 
-                <p class="small" style="margin-top:8px; color:var(--text-muted);">
-                    Esta é apenas uma visualização em texto. O arquivo final em <strong>Word/PDF</strong> terá
-                    a mesma redação, pronto para impressão e assinatura.
+                <p class="small" style="margin: 10px 0 0; color: var(--text-muted); font-size: 12px; text-align: center;">
+                    Esta &eacute; apenas uma visualiza&ccedil;&atilde;o em texto. O arquivo final em <strong>Word/PDF</strong> estar&aacute; pronto para impress&atilde;o e assinatura.
                 </p>
             </div>
 
-            <div id="actions" style="display:none; gap:8px; margin-top:16px; flex-wrap:wrap; align-items:center;">
-                <span class="small" style="color:var(--text-secondary); margin-right:8px;">
-                    Salve o seu modelo:
-                </span>
-                <button class="btn" id="btnCopiar">Copiar texto</button>
-                <button class="btn btn-outline" id="btnDoc">Baixar .DOC</button>
-                <button class="btn btn-outline" id="btnPdf">Baixar .PDF</button>
-                <button class="btn btn-outline" id="btnZap">Enviar no WhatsApp</button>
-                <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener">
-                    Falar no WhatsApp
-                </a>
+            <!-- ===== BOT&Otilde;ES DE DOWNLOAD ===== -->
+            <div id="actions" style="display:none; padding: 0 24px 20px; flex-wrap:wrap; align-items:center;">
+                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin: 0 0 12px; width: 100%;">
+                    &#128190; Salve o seu modelo
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; width: 100%;">
+                    <button class="btn btn-primary" id="btnPdf" style="padding: 14px 22px; font-size: 15px; font-weight: 700;">
+                        &#11015; Baixar PDF
+                    </button>
+                    <button class="btn btn-outline" id="btnDoc" style="padding: 14px 22px; font-size: 15px;">
+                        &#11015; Baixar Word
+                    </button>
+                    <button class="btn btn-outline" id="btnCopiar" style="padding: 14px 22px; font-size: 15px;">
+                        &#128203; Copiar texto
+                    </button>
+                    <button class="btn btn-outline" id="btnZap" style="padding: 14px 22px; font-size: 15px;">
+                        &#128241; Enviar no WhatsApp
+                    </button>
+                    <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener" style="padding: 14px 22px; font-size: 15px;">
+                        &#128172; Falar com suporte
+                    </a>
+                </div>
             </div>
 
-            <div class="small" style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
-                <strong>O que fazer agora?</strong>
-                <ol style="margin:8px 0 0 18px; padding:0;">
-                    <li>Assim que o texto aparecer acima, revise com atenção se todos os dados estão corretos.</li>
-                    <li>Use os botões para <strong>baixar em Word/PDF</strong> e salvar em um lugar seguro.</li>
-                    <li>Envie o documento por <strong>e-mail ou WhatsApp</strong> e, se necessário, leve impresso
-                        (cartório, empresa, companhia aérea, órgão de trânsito, órgão público etc.).</li>
-                    <li>Verifique sempre com a instituição/autoridade responsável (cartório, órgão público,
-                        empresa, Polícia Federal, companhia aérea, juiz etc.) se o modelo atende às
-                        <strong>exigências específicas</strong> do seu caso antes de utilizar.
-                    </li>
-                </ol>
+            <!-- ===== CHECKLIST "O QUE FAZER AGORA" ===== -->
+            <div style="padding: 24px; border-top: 1px solid var(--border); background: var(--bg-secondary);">
+                <div style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 14px;">
+                    &#9989; Pr&oacute;ximos passos
+                </div>
+                <div style="display: grid; gap: 10px;">
+                    <div style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
+                        <span style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">1</span>
+                        <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Assim que o texto aparecer, <strong>revise com aten&ccedil;&atilde;o</strong> se todos os dados est&atilde;o corretos.</div>
+                    </div>
+                    <div style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
+                        <span style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">2</span>
+                        <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Use os bot&otilde;es para <strong>baixar em Word/PDF</strong> e salvar em um lugar seguro.</div>
+                    </div>
+                    <div style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
+                        <span style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">3</span>
+                        <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Envie por <strong>e-mail ou WhatsApp</strong> e, se necess&aacute;rio, leve impresso (cart&oacute;rio, empresa, companhia a&eacute;rea, &oacute;rg&atilde;o p&uacute;blico etc.).</div>
+                    </div>
+                    <div style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
+                        <span style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">4</span>
+                        <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Verifique sempre com a autoridade respons&aacute;vel se o modelo atende &agrave;s <strong>exig&ecirc;ncias espec&iacute;ficas</strong> do seu caso antes de utilizar.</div>
+                    </div>
+                </div>
             </div>
 
+            <!-- ===== ENVIAR POR E-MAIL ===== -->
             <div id="email-section"
-                style="display:none; margin-top:24px; padding-top:24px; border-top: 1px solid var(--border);">
-                <label class="label" style="margin-top:0;">Enviar por e-mail</label>
-                <div style="display:flex; gap:8px;">
-                    <input class="input" id="email-input" type="email" placeholder="digite_seu_email@exemplo.com"
-                        style="flex:1;">
-                    <button class="btn btn-secondary" id="email-button" style="padding-left:16px; padding-right:16px;">
+                style="display:none; padding: 20px 24px; border-top: 1px solid var(--border);">
+                <div style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
+                    &#9993;&#65039; Enviar uma c&oacute;pia por e-mail
+                </div>
+                <p class="small" style="margin: 0 0 10px; color: var(--text-muted); font-size: 12px;">
+                    Para ter uma c&oacute;pia de seguran&ccedil;a na sua caixa de entrada.
+                </p>
+                <div style="display:flex; gap: 10px; flex-wrap: wrap;">
+                    <input class="input" id="email-input" type="email" placeholder="seu_email@exemplo.com"
+                        style="flex:1; min-width: 220px; padding: 12px 16px;">
+                    <button class="btn btn-primary" id="email-button" style="padding: 12px 22px; font-weight: 600;">
                         Enviar
                     </button>
                 </div>
-                <p class="small" id="email-status" style="margin-top:8px;"></p>
+                <p class="small" id="email-status" style="margin-top: 10px; font-size: 13px;"></p>
             </div>
 
-            <div id="nav-extra" style="display:none; gap:8px; margin-top:24px; padding-top:24px;
-                        border-top: 1px solid var(--border); flex-wrap:wrap; align-items:center;">
-                <a class="btn btn-primary" id="btnNovoDoc">Gerar Novo Documento</a>
-                <a href="/" class="btn btn-outline">Voltar ao Início</a>
+            <!-- ===== NAVEGAÇÃO EXTRA (Gerar Novo) ===== -->
+            <div id="nav-extra" style="display:none; gap: 10px; padding: 20px 24px; border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center;">
+                <a class="btn btn-primary" id="btnNovoDoc" style="padding: 12px 22px;">&#10010; Gerar Novo Documento</a>
+                <a href="/" class="btn btn-outline" style="padding: 12px 22px;">&#127968; Voltar ao In&iacute;cio</a>
             </div>
 
-            <p class="small" style="margin-top:8px;">
-                Dica: salve uma cópia em seu e-mail e leve o documento impresso se houver
-                atendimento presencial (cartório, empresa, companhia aérea, órgão público etc.).
-            </p>
+        </div><!-- /card -->
 
-            <div class="small" style="margin-top:16px; opacity:.9">
-                Este site não presta aconselhamento jurídico individual, nem garante a aceitação
-                dos documentos gerados por órgãos públicos, cartórios, empresas ou autoridades.
-                Leia os <a href="/termos.html" style="text-decoration:underline">Termos de Uso</a>.
-            </div>
+        <!-- Dica -->
+        <p class="small" style="text-align: center; margin: 16px 0 0; color: var(--text-muted); font-size: 12.5px;">
+            Dica: salve uma c&oacute;pia em seu e-mail e leve o documento impresso se houver atendimento presencial (cart&oacute;rio, empresa, companhia a&eacute;rea, &oacute;rg&atilde;o p&uacute;blico etc.).
+        </p>
 
-            <div id="extra-docs" style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
-                <h2 class="section-title" style="font-size:20px; margin-bottom:12px;">
+        <!-- ===== UPSELL: OUTROS DOCUMENTOS ===== -->
+        <div id="extra-docs" style="margin-top: 36px;">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div style="display: inline-block; padding: 6px 14px; border-radius: 999px; background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px;">
+                    &#127873; B&ocirc;nus de cliente
+                </div>
+                <h2 style="font-size: 22px; font-weight: 800; color: var(--text-primary); margin: 0 0 6px; letter-spacing: -.02em;">
                     Outros documentos que podem te ajudar
                 </h2>
-                <p class="small" style="color:var(--text-secondary); margin-bottom:16px;">
-                    Como você já finalizou uma compra, ganha <strong>10% OFF</strong> no próximo documento (cupom <code style="background:var(--bg-secondary);padding:2px 6px;border-radius:4px;">VOLTA10</code> aplicado automaticamente).
+                <p class="small" style="color: var(--text-secondary); margin: 0; max-width: 560px; margin-left:auto; margin-right:auto; font-size: 13.5px;">
+                    Como voc&ecirc; j&aacute; finalizou uma compra, ganha <strong>10% OFF</strong> no pr&oacute;ximo documento (cupom <code style="background: var(--bg-secondary); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); font-weight: 700;">VOLTA10</code> aplicado automaticamente).
                 </p>
+            </div>
 
-                <div style="display:grid; gap:12px;">
+            <div style="display:grid; gap:14px; max-width: 880px; margin: 0 auto;">
                     <a href="/viagem.html" data-doc="viagem" data-slug="autorizacao-viagem-menor" data-price="39.90" data-discounted="35.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;">
                         <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
                         <div class="small" style="font-weight:600; margin-bottom:4px;">Autorização de Viagem para Menor</div>
@@ -202,7 +282,6 @@
                     </a>
                 </div>
             </div>
-        </div>
     </div>
 
     <footer class="footer">
