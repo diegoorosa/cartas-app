@@ -2264,9 +2264,16 @@
                 var pubResp = await fetch('/.netlify/functions/get-mp-config');
                 var pubData = await pubResp.json();
                 if (!pubResp.ok || !pubData.public_key) throw new Error('Nao foi possivel obter a public key do MP');
-                // Forca global para o Brick encontrar
-                window.MercadoPago = window.MercadoPago || MercadoPago;
-                var mp = new window.MercadoPago(pubData.public_key);
+
+                // Detecta construtor correto do MercadoPago (v2 pode expor como MercadoPago ou MercadoPagoSDK)
+                var MPCtor = window.MercadoPago || window.MercadoPagoSDK;
+                if (!MPCtor) {
+                    // Ultimo recurso: verifica o que o SDK expôs
+                    var keys = Object.keys(window).filter(function (k) { return /mercadopago/i.test(k); });
+                    console.log('[Bricks] SDK keys:', keys);
+                    throw new Error('MercadoPago construtor nao encontrado no window. Keys: ' + keys.join(', '));
+                }
+                var mp = new MPCtor(pubData.public_key);
                 var bricksBuilder = mp.bricks();
                 var init = {
                     amount: 39.90,
