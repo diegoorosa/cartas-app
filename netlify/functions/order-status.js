@@ -40,13 +40,17 @@ exports.handler = async (event) => {
                             price = typeof p.transaction_amount === 'number' ? p.transaction_amount : null;
                             return { statusCode: 200, body: JSON.stringify({ status: 'paid', source: 'mp-direct', price }) };
                         }
+                        // 3DS pendente: considera como pago se já passou pela autenticação
+                        if (p.status === 'pending' && p.status_detail && (p.status_detail.includes('pending_challenge') || p.status_detail.includes('pending_contingency') || p.status_detail === 'pending_waiting_payment')) {
+                            price = typeof p.transaction_amount === 'number' ? p.transaction_amount : null;
+                            return { statusCode: 200, body: JSON.stringify({ status: 'paid', source: 'mp-direct-3ds', price }) };
+                        }
                         if (p.status === 'pending' || p.status === 'in_process') {
                             return { statusCode: 200, body: JSON.stringify({ status: 'pending', source: 'mp-direct', price: null }) };
                         }
                     }
-                }
-            } catch (e) { console.warn('[order-status] MP direct check error:', e.message); }
-        }
+                } catch (e) { console.warn('[order-status] MP direct check error:', e.message); }
+            }
 
         // 3) Fallback: search por external_reference (mais lento, pega últimos 5)
         if (MP_TOKEN) {
@@ -58,6 +62,12 @@ exports.handler = async (event) => {
                     const results = Array.isArray(j.results) ? j.results : [];
                     for (const it of results) {
                         if (it && it.status === 'approved') {
+                            price = typeof it.transaction_amount === 'number' ? it.transaction_amount : null;
+                            paid = true;
+                            break;
+                        }
+                        // 3DS pendente nos resultados de busca
+                        if (it.status === 'pending' && it.status_detail && (it.status_detail.includes('pending_challenge') || it.status_detail.includes('pending_contingency') || it.status_detail === 'pending_waiting_payment')) {
                             paid = true;
                             price = typeof it.transaction_amount === 'number' ? it.transaction_amount : null;
                             break;
