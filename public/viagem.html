@@ -2259,28 +2259,29 @@
                         document.head.appendChild(s);
                     });
                 }
-                // Aguarda SDK inicializar completamente
-                await new Promise(function (r) { setTimeout(r, 300); });
+                // Aguarda SDK inicializar completamente - polling ate 2s
+                var MPCtor = null;
+                var tentativas = 0;
+                while (!MPCtor && tentativas < 20) {
+                    MPCtor = window.MercadoPago || window.MercadoPagoSDK || window.MP || window.mercadopago;
+                    if (!MPCtor) {
+                        await new Promise(function (r) { setTimeout(r, 100); });
+                        tentativas++;
+                    }
+                }
+                if (!MPCtor) {
+                    var keys = Object.keys(window).filter(function (k) { return /mercadopago/i.test(k); });
+                    console.error('[Bricks] MercadoPago nao encontrado. window keys:', keys);
+                    throw new Error('MercadoPago construtor nao encontrado. Keys: ' + keys.join(', '));
+                }
+                console.log('[Bricks] Construtor detectado:', MPCtor.name || 'anonymous');
+                
                 var pubResp = await fetch('/.netlify/functions/get-mp-config');
                 var pubData = await pubResp.json();
                 if (!pubResp.ok || !pubData.public_key) throw new Error('Nao foi possivel obter a public key do MP');
 
-                // Detecta construtor correto do MercadoPago (v2 pode expor como MercadoPago ou MercadoPagoSDK)
-                var MPCtor = window.MercadoPago || window.MercadoPagoSDK;
-                if (!MPCtor) {
-                    // Ultimo recurso: verifica o que o SDK expôs
-                    var keys = Object.keys(window).filter(function (k) { return /mercadopago/i.test(k); });
-                    console.log('[Bricks] SDK keys:', keys);
-                    throw new Error('MercadoPago construtor nao encontrado no window. Keys: ' + keys.join(', '));
-                }
                 var mp = new MPCtor(pubData.public_key);
                 var bricksBuilder = mp.bricks();
-                var init = {
-                    amount: 39.90,
-                    preferenceId: preferenceId,
-                    payer: payerEmail ? { email: payerEmail, entityType: 'individual' } : undefined
-                };
-                await bricksBuilder.create('payment', 'bricksContainer', {
                     initialization: init,
                     customization: {
                         paymentMethods: {
