@@ -2197,7 +2197,7 @@
                 // Passa o email do cliente: sem initialization.payer.email o Brick pede email
                 // num formulario antes de criar o pagamento (status pending_waiting_payer),
                 // e o QR Code Pix nunca aparece inline.
-                await abrirBricksCheckout(data.preference_id, data.order_id, slugStr, (payload.email || ''));
+                await abrirBricksCheckout(data.preference_id, data.order_id, slugStr, (payload.email || ''), data.final_price);
             } catch (e) {
                 if (errTermos) {
                     errTermos.textContent = 'Não foi possível iniciar o pagamento. Tente novamente em instantes. (' + e.message + ')';
@@ -2221,7 +2221,7 @@
         // Brick para cartao (que funciona bem) e um fluxo manual via POST /v1/payments
         // para Pix (function mp-pix-payment.js devolve qr_code + qr_code_base64 que
         // renderizamos direto em <img> — sem formulario de email).
-        async function abrirBricksCheckout(preferenceId, orderId, slugStr, payerEmail) {
+        async function abrirBricksCheckout(preferenceId, orderId, slugStr, payerEmail, finalPrice) {
             // Modal unico com 2 abas: Cartao | Pix
             var modalExistente = document.getElementById('bricksModal');
             if (modalExistente) modalExistente.remove();
@@ -2283,7 +2283,7 @@
                 var mp = new MPCtor(pubData.public_key);
                 var bricksBuilder = mp.bricks();
                 var init = {
-                    amount: 39.90,
+                    amount: finalPrice || 39.90,
                     preferenceId: preferenceId,
                     payer: payerEmail ? { email: payerEmail, entityType: 'individual' } : undefined
                 };
