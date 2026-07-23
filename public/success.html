@@ -23,11 +23,87 @@
     </script>
     <title>Modelo de documento gerado | CartasApp</title>
     <meta name="robots" content="noindex, nofollow">
+    <!-- ===== STYLE refinamento app-like + mobile-first ===== -->
+    <style>
+        body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+        /* Tornar a container Hero/preview/download upsell responsivos no APP */
+        .success-hero { transition: padding .2s ease; }
+        .success-card { padding: 0 !important; overflow: hidden; }
+
+        /* Tap targets ≥ 44px e visual app-like para botões de download */
+        .dl-btn { min-height: 48px; padding: 14px 18px; font-weight: 700; border-radius: 12px; }
+
+        /* Preview/folha A4 vira "signature card" — borda interna, cabeçalho discreto */
+        #doc { -webkit-overflow-scrolling: touch; }
+
+        /* Checklist icones maiores no touch */
+        .check-num { flex: 0 0 28px; width: 28px; height: 28px; font-size: 13px; }
+
+        /* Animação leve do hero (guardada por prefers-reduced-motion) */
+        @media (prefers-reduced-motion: no-preference) {
+            .hero-pop { animation: popOk .55s cubic-bezier(.34,1.56,.64,1) both; }
+            @keyframes popOk {
+                0%   { transform: scale(.6); opacity: 0; }
+                60%  { transform: scale(1.06); opacity: 1; }
+                100% { transform: scale(1); }
+            }
+            .hero-bar { animation: slideDown .5s ease-out both; }
+            @keyframes slideDown {
+                from { transform: translateY(-12px); opacity: 0; }
+                to   { transform: translateY(0); opacity: 1; }
+            }
+        }
+
+        /* ===== MOBILE-FIRST (375px target) ===== */
+        @media (max-width: 640px) {
+            /* Hero compacto e full-bleed no celular */
+            .success-hero {
+                padding: 32px 18px 28px !important;
+                margin-left: calc(-50vw + 50%);   /* estica além do container */
+                margin-right: calc(-50vw + 50%);
+                padding-left: 18px !important;
+                padding-right: 18px !important;
+            }
+            .success-hero h1 { font-size: 24px !important; }
+            .success-hero p { font-size: 14.5px !important; }
+
+            /* Container com padding lateral menor no mobile */
+            .container.sx { padding-left: 14px !important; padding-right: 14px !important; }
+
+            /* Folha A4 com padding interno menor no mobile para não fazer wrap */
+            #doc { padding: 22px 18px !important; font-size: 13.5px !important; line-height: 1.65 !important; }
+
+            /* Botões full-width em coluna no mobile — fácil de tocar (≥ 48px) */
+            .dl-row { flex-direction: column !important; }
+            .dl-row > .btn { width: 100% !important; justify-content: center; }
+            .dl-row > .btn:not(:last-child) { margin-bottom: 10px; }
+
+            /* Checklist: ícones + textos se encaixam sem wrap horizontal */
+            .check-row { padding: 10px 12px !important; }
+            .check-row .small { font-size: 12.5px !important; }
+
+            /* Upsells em coluna */
+            .upsell-card { padding: 14px !important; }
+            .upsell-card .small { font-size: 12.5px !important; }
+
+            /* Checklist + cards: gap menor pra caber tudo sem scroll vertical */
+            .check-grid { gap: 8px !important; }
+        }
+
+        /* Focus-visible — sessões de acessibilidade/teclado */
+        .btn:focus-visible,
+        a.btn:focus-visible,
+        .upsell-card:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+    </style>
 </head>
 
 <body>
     <!-- ===== HERO DE SUCESSO ===== -->
-    <div class="success-hero" style="
+    <div class="success-hero hero-bar" style="
         position: relative;
         margin-top: 0;
         padding: 48px 24px 40px;
@@ -45,7 +121,7 @@
             background-size: 100% 100%;"></div>
 
         <div style="position:relative; z-index:1; max-width: 720px; margin: 0 auto;">
-            <div style="
+            <div class="hero-pop" style="
                 width: 72px; height: 72px; margin: 0 auto 16px;
                 border-radius: 50%;
                 background: #fff;
@@ -63,7 +139,7 @@
     </div>
 
     <!-- ===== CONTE&Uacute;DO PRINCIPAL ===== -->
-    <div class="container" style="padding-top: 28px; padding-bottom: 48px;">
+    <div class="container sx" style="padding-top: 28px; padding-bottom: 48px;">
 
         <!-- Pedido em processamento / info din&acirc;mica -->
         <div id="info-bar" style="
@@ -90,7 +166,7 @@
             <button class="btn btn-primary" id="btnPay" style="padding: 12px 22px;">Pagar agora</button>
         </div>
 
-        <div class="card" style="padding: 0; overflow: hidden;">
+        <div class="card success-card" style="padding: 0; overflow: hidden;">
 
             <!-- Aviso de responsabilidade (card destacado) -->
             <div style="
@@ -146,20 +222,20 @@
                 <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin: 0 0 12px; width: 100%;">
                     &#128190; Salve o seu modelo
                 </div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; width: 100%;">
-                    <button class="btn btn-primary" id="btnPdf" style="padding: 14px 22px; font-size: 15px; font-weight: 700;">
+                <div class="dl-row" style="display: flex; gap: 10px; flex-wrap: wrap; width: 100%;">
+                    <button class="btn btn-primary dl-btn" id="btnPdf" style="padding: 14px 22px; font-size: 15px; font-weight: 700;">
                         &#11015; Baixar PDF
                     </button>
-                    <button class="btn btn-outline" id="btnDoc" style="padding: 14px 22px; font-size: 15px;">
+                    <button class="btn btn-outline dl-btn" id="btnDoc" style="padding: 14px 22px; font-size: 15px;">
                         &#11015; Baixar Word
                     </button>
-                    <button class="btn btn-outline" id="btnCopiar" style="padding: 14px 22px; font-size: 15px;">
+                    <button class="btn btn-outline dl-btn" id="btnCopiar" style="padding: 14px 22px; font-size: 15px;">
                         &#128203; Copiar texto
                     </button>
-                    <button class="btn btn-outline" id="btnZap" style="padding: 14px 22px; font-size: 15px;">
+                    <button class="btn btn-outline dl-btn" id="btnZap" style="padding: 14px 22px; font-size: 15px;">
                         &#128241; Enviar no WhatsApp
                     </button>
-                    <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener" style="padding: 14px 22px; font-size: 15px;">
+                    <a class="btn btn-outline dl-btn" id="btnSuporte" target="_blank" rel="noopener" style="padding: 14px 22px; font-size: 15px;">
                         &#128172; Falar com suporte
                     </a>
                 </div>
@@ -170,21 +246,21 @@
                 <div style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 14px;">
                     &#9989; Pr&oacute;ximos passos
                 </div>
-                <div style="display: grid; gap: 10px;">
-                    <div style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
-                        <span style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">1</span>
+                <div class="check-grid" style="display: grid; gap: 10px;">
+                    <div class="check-row" style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
+                        <span class="check-num" style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">1</span>
                         <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Assim que o texto aparecer, <strong>revise com aten&ccedil;&atilde;o</strong> se todos os dados est&atilde;o corretos.</div>
                     </div>
-                    <div style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
-                        <span style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">2</span>
+                    <div class="check-row" style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
+                        <span class="check-num" style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">2</span>
                         <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Use os bot&otilde;es para <strong>baixar em Word/PDF</strong> e salvar em um lugar seguro.</div>
                     </div>
-                    <div style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
-                        <span style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">3</span>
+                    <div class="check-row" style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
+                        <span class="check-num" style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">3</span>
                         <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Envie por <strong>e-mail ou WhatsApp</strong> e, se necess&aacute;rio, leve impresso (cart&oacute;rio, empresa, companhia a&eacute;rea, &oacute;rg&atilde;o p&uacute;blico etc.).</div>
                     </div>
-                    <div style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
-                        <span style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">4</span>
+                    <div class="check-row" style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
+                        <span class="check-num" style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">4</span>
                         <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Verifique sempre com a autoridade respons&aacute;vel se o modelo atende &agrave;s <strong>exig&ecirc;ncias espec&iacute;ficas</strong> do seu caso antes de utilizar.</div>
                     </div>
                 </div>
@@ -237,7 +313,7 @@
             </div>
 
             <div style="display:grid; gap:14px; max-width: 880px; margin: 0 auto;">
-                    <a href="/viagem.html" data-doc="viagem" data-slug="autorizacao-viagem-menor" data-price="39.90" data-discounted="35.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;">
+                    <a href="/viagem.html" data-doc="viagem" data-slug="autorizacao-viagem-menor" data-price="39.90" data-discounted="35.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
                         <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
                         <div class="small" style="font-weight:600; margin-bottom:4px;">Autorização de Viagem para Menor</div>
                         <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Modelo baseado nas orientações da Polícia Federal e CNJ, para imprimir, assinar e reconhecer firma.</div>
@@ -248,7 +324,7 @@
                         </div>
                     </a>
 
-                    <a href="/multa.html" data-doc="multa" data-slug="recurso-multa-transito" data-price="19.90" data-discounted="17.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;">
+                    <a href="/multa.html" data-doc="multa" data-slug="recurso-multa-transito" data-price="19.90" data-discounted="17.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
                         <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
                         <div class="small" style="font-weight:600; margin-bottom:4px;">Recurso de Multa de Trânsito</div>
                         <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Modelo de recurso personalizado (Defesa Prévia ou JARI) para apresentar ao órgão de trânsito.</div>
@@ -259,7 +335,7 @@
                         </div>
                     </a>
 
-                    <a href="/reembolso-cancelamento-passagem.html" data-doc="reembolso" data-slug="reembolso-cancelamento-passagem" data-price="19.90" data-discounted="17.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;">
+                    <a href="/reembolso-cancelamento-passagem.html" data-doc="reembolso" data-slug="reembolso-cancelamento-passagem" data-price="19.90" data-discounted="17.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
                         <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
                         <div class="small" style="font-weight:600; margin-bottom:4px;">Reembolso de Passagem Aérea</div>
                         <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Carta-modelo para exigir reembolso quando a companhia desconta mais que o permitido por lei.</div>
@@ -270,7 +346,7 @@
                         </div>
                     </a>
 
-                    <a href="/bagagem.html" data-doc="bagagem" data-slug="carta-bagagem" data-price="19.90" data-discounted="17.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;">
+                    <a href="/bagagem.html" data-doc="bagagem" data-slug="carta-bagagem" data-price="19.90" data-discounted="17.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
                         <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
                         <div class="small" style="font-weight:600; margin-bottom:4px;">Reclamação de Bagagem Extraviada ou Danificada</div>
                         <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Modelo de reclamação para companhias aéreas em caso de extravio, dano ou atraso na entrega da bagagem.</div>
