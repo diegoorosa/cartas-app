@@ -4,3 +4,9 @@ node_modules/
 
 .mimocode/
 lh-*.json
+
+# screenshots temporarios (dev)
+screenshots/
+node_modules/
+package-lock.json
+*.png.bak

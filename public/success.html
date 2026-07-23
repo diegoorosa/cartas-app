@@ -23,24 +23,180 @@
     </script>
     <title>Modelo de documento gerado | CartasApp</title>
     <meta name="robots" content="noindex, nofollow">
-    <!-- ===== STYLE refinamento app-like + mobile-first ===== -->
+    <!-- ===== STYLE refinamento app-like + mobile-first (bottom sheet) ===== -->
     <style>
-        body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body {
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            background: var(--bg-secondary);
+        }
 
-        /* Tornar a container Hero/preview/download upsell responsivos no APP */
+        /* ===== HERO (mantém gradiente, mas mais curto) ===== */
         .success-hero { transition: padding .2s ease; }
-        .success-card { padding: 0 !important; overflow: hidden; }
 
-        /* Tap targets ≥ 44px e visual app-like para botões de download */
-        .dl-btn { min-height: 48px; padding: 14px 18px; font-weight: 700; border-radius: 12px; }
+        /* ===== INFO BAR compacta — substitui o card antigo cheio de desculpas ===== */
+        .info-compact {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 14px; border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        .info-compact .info-icon {
+            flex: 0 0 32px; width: 32px; height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-success), #059669);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; font-weight: 700;
+        }
+        .info-compact #info {
+            margin: 0; flex: 1; font-size: 13.5px; line-height: 1.45;
+            color: var(--text-primary); font-weight: 500;
+        }
+        /* Spinner durante polling */
+        .info-spinner {
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 2px solid var(--border); border-top-color: var(--accent-primary);
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Preview/folha A4 vira "signature card" — borda interna, cabeçalho discreto */
-        #doc { -webkit-overflow-scrolling: touch; }
+        /* ===== DETAILS colapsáveis (aviso jurídico + slug-warning) ===== */
+        details.disclaimer {
+            padding: 0; border-radius: 10px;
+            background: var(--card-bg); border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        details.disclaimer > summary {
+            list-style: none; cursor: pointer;
+            padding: 11px 14px; display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: var(--text-muted); font-weight: 500;
+        }
+        details.disclaimer > summary::-webkit-details-marker { display: none; }
+        details.disclaimer > summary::after {
+            content: '▸'; margin-left: auto; font-size: 11px; transition: transform .2s;
+        }
+        details.disclaimer[open] > summary::after { transform: rotate(90deg); }
+        details.disclaimer > summary > .warn-icon { font-size: 14px; }
+        details.disclaimer[open] > summary {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+        details.disclaimer .disclaimer-body {
+            padding: 12px 14px; font-size: 12.5px; line-height: 1.55;
+            color: var(--text-secondary);
+        }
+        details.disclaimer .disclaimer-body ul { margin: 6px 0 0 16px; padding: 0; }
+        details.disclaimer .disclaimer-body li { margin-bottom: 4px; }
 
-        /* Checklist icones maiores no touch */
-        .check-num { flex: 0 0 28px; width: 28px; height: 28px; font-size: 13px; }
+        /* ===== CARD PREMIUM da prévia do documento ===== */
+        .doc-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+        .doc-card-header {
+            padding: 12px 16px;
+            background: linear-gradient(90deg, rgba(59,130,246,.05), rgba(6,182,212,.05));
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .doc-card-header .doc-icon {
+            width: 34px; height: 34px; border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .doc-card-header .doc-label {
+            font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: .04em; font-weight: 600; margin: 0 0 2px;
+        }
+        .doc-card-header .doc-title-text {
+            font-size: 14px; color: var(--text-primary); font-weight: 700; margin: 0;
+        }
+        .doc-card-body { background: var(--bg-secondary); padding: 14px; }
+        #doc {
+            -webkit-overflow-scrolling: touch;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 28px 24px;
+            max-height: 460px;
+            overflow: auto;
+            box-shadow: 0 8px 24px rgba(15,23,42,.10);
+            font-family: 'Times New Roman', Georgia, serif;
+            font-size: 14px; line-height: 1.7; color: #111827;
+        }
 
-        /* Animação leve do hero (guardada por prefers-reduced-motion) */
+        /* ===== AÇÕES: 1 CTA + menu horizontal de secundárias (app-like) ===== */
+        .dl-cta {
+            display: flex; align-items: stretch; gap: 10px;
+            margin-top: 12px;
+        }
+        .btn-xl {
+            min-height: 56px; padding: 14px 22px; font-size: 15.5px; font-weight: 700;
+            border-radius: 14px;
+        }
+        .btn-secondary-icon {
+            min-height: 56px; width: 56px; flex: 0 0 56px;
+            border-radius: 14px; background: var(--card-bg);
+            border: 1px solid var(--border); color: var(--text-primary);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 22px; cursor: pointer;
+            transition: background .15s, border-color .15s;
+        }
+        .btn-secondary-icon:hover {
+            background: var(--bg-secondary); border-color: var(--accent-primary);
+        }
+
+        /* ===== STICKY CTA no rodapé no mobile (estilo app) ===== */
+        .sticky-cta {
+            position: sticky; bottom: 0; left: 0; right: 0;
+            padding: 12px 14px env(safe-area-inset-bottom, 12px);
+            background: linear-gradient(to top, var(--bg-primary) 60%, transparent);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+        }
+        @media (min-width: 641px) { .sticky-cta { display: none !important; } }
+
+        /* ===== EMAIL card compacto ===== */
+        .email-card {
+            padding: 14px; background: var(--card-bg);
+            border: 1px solid var(--border); border-radius: 12px;
+        }
+        .email-card-lead {
+            font-size: 13px; color: var(--text-primary); font-weight: 600; margin: 0 0 6px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .email-card-hint { font-size: 12px; color: var(--text-muted); margin: 0 0 10px; }
+
+        /* ===== NAV compacta ===== */
+        .nav-mini { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-mini .btn {
+            min-height: 44px; padding: 10px 16px; border-radius: 10px;
+            font-size: 13.5px;
+        }
+
+        /* ===== UPSELL: 1 card destacado + "ver mais" ===== */
+        .upsell-badge {
+            display: inline-block; padding: 5px 12px; border-radius: 999px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff; font-size: 11px; font-weight: 700;
+            letter-spacing: .04em; text-transform: uppercase;
+        }
+        .upsell-card {
+            display: block; text-decoration: none;
+            padding: 16px; border-radius: 14px;
+            border: 1px solid var(--border); background: var(--card-bg);
+            position: relative; box-shadow: var(--shadow-sm);
+            transition: transform .15s, box-shadow .15s;
+        }
+        .upsell-card:hover {
+            transform: translateY(-2px); box-shadow: var(--shadow-md);
+        }
+        .upsell-card .small { font-size: 12.5px; }
+
+        /* ===== Animação leve (guardada por prefers-reduced-motion) ===== */
         @media (prefers-reduced-motion: no-preference) {
             .hero-pop { animation: popOk .55s cubic-bezier(.34,1.56,.64,1) both; }
             @keyframes popOk {
@@ -48,271 +204,172 @@
                 60%  { transform: scale(1.06); opacity: 1; }
                 100% { transform: scale(1); }
             }
-            .hero-bar { animation: slideDown .5s ease-out both; }
-            @keyframes slideDown {
-                from { transform: translateY(-12px); opacity: 0; }
-                to   { transform: translateY(0); opacity: 1; }
+            .slide-in { animation: slideIn .4s ease-out both; }
+            @keyframes slideIn {
+                from { opacity: 0; transform: translateY(8px); }
+                to   { opacity: 1; transform: translateY(0); }
             }
         }
 
-        /* ===== MOBILE-FIRST (375px target) ===== */
+        /* ===== MOBILE 375px ===== */
         @media (max-width: 640px) {
-            /* Hero compacto e full-bleed no celular */
             .success-hero {
-                padding: 32px 18px 28px !important;
-                margin-left: calc(-50vw + 50%);   /* estica além do container */
-                margin-right: calc(-50vw + 50%);
-                padding-left: 18px !important;
-                padding-right: 18px !important;
+                padding: 28px 18px 24px !important;
+                margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%);
+                padding-left: 18px !important; padding-right: 18px !important;
             }
             .success-hero h1 { font-size: 24px !important; }
             .success-hero p { font-size: 14.5px !important; }
-
-            /* Container com padding lateral menor no mobile */
             .container.sx { padding-left: 14px !important; padding-right: 14px !important; }
-
-            /* Folha A4 com padding interno menor no mobile para não fazer wrap */
-            #doc { padding: 22px 18px !important; font-size: 13.5px !important; line-height: 1.65 !important; }
-
-            /* Botões full-width em coluna no mobile — fácil de tocar (≥ 48px) */
-            .dl-row { flex-direction: column !important; }
-            .dl-row > .btn { width: 100% !important; justify-content: center; }
-            .dl-row > .btn:not(:last-child) { margin-bottom: 10px; }
-
-            /* Checklist: ícones + textos se encaixam sem wrap horizontal */
-            .check-row { padding: 10px 12px !important; }
-            .check-row .small { font-size: 12.5px !important; }
-
-            /* Upsells em coluna */
+            #doc { padding: 22px 18px !important; font-size: 13.5px !important; line-height: 1.65 !important; max-height: 380px !important; }
+            .btn-xl { min-height: 54px; padding: 14px 18px; font-size: 15px; }
+            .btn-secondary-icon { width: 54px; height: 54px; flex: 0 0 54px; }
             .upsell-card { padding: 14px !important; }
-            .upsell-card .small { font-size: 12.5px !important; }
-
-            /* Checklist + cards: gap menor pra caber tudo sem scroll vertical */
-            .check-grid { gap: 8px !important; }
+            .upsell-card .small { font-size: 12px !important; }
         }
 
-        /* Focus-visible — sessões de acessibilidade/teclado */
-        .btn:focus-visible,
-        a.btn:focus-visible,
-        .upsell-card:focus-visible {
-            outline: 2px solid var(--accent-primary);
-            outline-offset: 2px;
+        /* focus-visible — a11y */
+        .btn:focus-visible, a.btn:focus-visible, button:focus-visible, summary:focus-visible, .upsell-card:focus-visible {
+            outline: 2px solid var(--accent-primary); outline-offset: 2px;
         }
     </style>
 </head>
-
 <body>
-    <!-- ===== HERO DE SUCESSO ===== -->
+    <!-- ===== HERO DE SUCESSO (compacto) ===== -->
     <div class="success-hero hero-bar" style="
         position: relative;
         margin-top: 0;
-        padding: 48px 24px 40px;
+        padding: 36px 24px 28px;
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         text-align: center;
         overflow: hidden;
     ">
-        <!-- confetti dots decorativos -->
-        <div aria-hidden="true" style="position:absolute; inset:0; opacity:.18; pointer-events:none;
-            background-image: radial-gradient(circle at 12% 30%, #fff 2px, transparent 3px),
-                              radial-gradient(circle at 88% 20%, #fff 2px, transparent 3px),
-                              radial-gradient(circle at 25% 80%, #fff 2px, transparent 3px),
-                              radial-gradient(circle at 70% 65%, #fff 2px, transparent 3px),
-                              radial-gradient(circle at 50% 10%, #fff 1px, transparent 2px);
+        <div aria-hidden="true" style="position:absolute; inset:0; opacity:.15; pointer-events:none;
+            background-image: radial-gradient(circle at 14% 28%, #fff 2px, transparent 3px),
+                              radial-gradient(circle at 86% 22%, #fff 2px, transparent 3px),
+                              radial-gradient(circle at 28% 78%, #fff 2px, transparent 3px),
+                              radial-gradient(circle at 70% 70%, #fff 2px, transparent 3px);
             background-size: 100% 100%;"></div>
-
         <div style="position:relative; z-index:1; max-width: 720px; margin: 0 auto;">
             <div class="hero-pop" style="
-                width: 72px; height: 72px; margin: 0 auto 16px;
-                border-radius: 50%;
-                background: #fff;
+                width: 64px; height: 64px; margin: 0 auto 12px;
+                border-radius: 50%; background: #fff;
                 display: flex; align-items: center; justify-content: center;
-                box-shadow: 0 8px 24px rgba(0,0,0,.18);
-                font-size: 38px;
+                box-shadow: 0 6px 18px rgba(0,0,0,.18); font-size: 32px;
             ">&#9989;</div>
-            <h1 style="margin: 0 0 8px; color: #fff; font-size: 30px; font-weight: 800; letter-spacing: -.02em;">
+            <h1 style="margin: 0 0 4px; color: #fff; font-size: 26px; font-weight: 800; letter-spacing: -.02em;">
                 Pagamento confirmado!
             </h1>
-            <p style="margin: 0; color: rgba(255,255,255,.92); font-size: 16px; font-weight: 500;">
-                Seu documento est&aacute; pronto. Baixe abaixo em PDF ou Word.
+            <p style="margin: 0; color: rgba(255,255,255,.92); font-size: 15px; font-weight: 500;">
+                Seu documento est&aacute; pronto para baixar.
             </p>
         </div>
     </div>
 
     <!-- ===== CONTE&Uacute;DO PRINCIPAL ===== -->
-    <div class="container sx" style="padding-top: 28px; padding-bottom: 48px;">
+    <div class="container sx" style="padding-top: 16px; padding-bottom: 0; max-width: 560px;">
 
-        <!-- Pedido em processamento / info din&acirc;mica -->
-        <div id="info-bar" style="
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 20px;
-            padding: 14px 18px;
-            border-radius: 12px;
-            background: linear-gradient(90deg, rgba(59,130,246,.08), rgba(6,182,212,.08));
-            border: 1px solid rgba(59,130,246,.18);
-        ">
-            <div style="
-                flex: 0 0 36px; width: 36px; height: 36px;
-                border-radius: 50%;
-                background: var(--accent-primary);
-                display: flex; align-items: center; justify-content: center;
-                color: #fff; font-size: 18px; font-weight: 700;
-            ">&#8505;</div>
-            <p id="info" class="small" style="margin:0; flex:1; font-size: 14px; color: var(--text-primary); font-weight: 500;"></p>
+        <!-- Status info compacto (spinner durante processamento) -->
+        <div class="info-compact slide-in" role="status" aria-live="polite" style="margin-bottom: 14px;">
+            <div class="info-icon" id="info-icon">&#10003;</div>
+            <p id="info" class="small">Confirmando pagamento...</p>
+            <span class="info-spinner" id="info-spinner"></span>
         </div>
 
-        <!-- Bot&otilde;es retry (pagar / voltar) -->
-        <div id="retry" style="display:none; margin: 0 0 20px; gap:10px; flex-wrap:wrap">
-            <button class="btn btn-secondary" id="btnBack" style="padding: 12px 22px;">&#8592; Voltar ao formul&aacute;rio</button>
-            <button class="btn btn-primary" id="btnPay" style="padding: 12px 22px;">Pagar agora</button>
+        <!-- Bot&otilde;es de retry -->
+        <div id="retry" style="display:none; margin: 0 0 14px; gap:10px; flex-wrap:wrap">
+            <button class="btn btn-secondary" id="btnBack" style="padding: 12px 18px;">&#8592; Voltar ao formul&aacute;rio</button>
+            <button class="btn btn-primary" id="btnPay" style="padding: 12px 18px;">Pagar agora</button>
         </div>
 
-        <div class="card success-card" style="padding: 0; overflow: hidden;">
-
-            <!-- Aviso de responsabilidade (card destacado) -->
-            <div style="
-                padding: 16px 20px;
-                background: linear-gradient(90deg, rgba(245,158,11,.07), rgba(245,158,11,.03));
-                border-bottom: 1px solid var(--border);
-                display: flex; gap: 12px; align-items: flex-start;
-            ">
-                <div style="flex:0 0 22px; font-size:18px; line-height:1.4;">&#9888;&#65039;</div>
-                <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.55; font-size: 13px;">
-                    <strong style="color: var(--text-primary);">Aviso importante:</strong>
-                    este &eacute; um <strong>modelo de documento</strong> gerado automaticamente. O CartasApp n&atilde;o presta assessoria jur&iacute;dica individual e <strong>n&atilde;o garante que o modelo ser&aacute; aceito</strong> por &oacute;rg&atilde;os p&uacute;blicos, cart&oacute;rios, empresas ou autoridades. A confer&ecirc;ncia do conte&uacute;do e o uso do documento s&atilde;o responsabilidade exclusiva do usu&aacute;rio.
-                </div>
+        <!-- Aviso jur&iacute;dico colaps&aacute;vel (n&atilde;o rouba viewport) -->
+        <details class="disclaimer" style="margin-bottom: 14px;">
+            <summary>
+                <span class="warn-icon">&#9888;&#65039;</span>
+                <span>Aviso legal e impedimentos</span>
+            </summary>
+            <div class="disclaimer-body">
+                <p style="margin:0 0 8px;">Este &eacute; um <strong>modelo de documento</strong> gerado automaticamente a partir das informa&ccedil;&otilde;es que voc&ecirc; informou. O CartasApp n&atilde;o presta assessoria jur&iacute;dica individual e <strong>n&atilde;o garante que o modelo ser&aacute; aceito</strong> por &oacute;rg&atilde;os p&uacute;blicos, cart&oacute;rios, empresas ou autoridades. A confer&ecirc;ncia do conte&uacute;do e o uso do documento s&atilde;o responsabilidade exclusiva do usu&aacute;rio.</p>
+                <div id="slug-warning" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);"></div>
             </div>
+        </details>
 
-            <!-- Aviso espec&iacute;fico do slug (viagem, etc) -->
-            <div id="slug-warning" class="small" style="display:none; padding: 16px 20px; border-bottom: 1px solid var(--border); background: var(--bg-secondary); color: var(--text-secondary); line-height: 1.55;"></div>
-
-            <!-- ===== PR&Eacute;-VIA + DOWNLOADS ===== -->
-            <div id="doc-wrapper" style="display:none; padding: 24px 24px 8px;">
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom: 14px;">
-                    <div style="font-weight: 700; color: var(--text-primary); display:flex; align-items:center; gap:8px; font-size: 16px;">
-                        <span style="font-size: 20px;">&#128196;</span> Pr&eacute;-visualiza&ccedil;&atilde;o do modelo
-                    </div>
-                    <div class="small" style="color: var(--text-muted); font-size: 12px;">
-                        Revise os dados abaixo. O arquivo final em Word/PDF ter&aacute; a mesma reda&ccedil;&atilde;o.
+        <!-- ===== CARD DU DOCUMENTO (premium) ===== -->
+        <div id="doc-wrapper" style="display:none; margin-bottom: 14px;" class="slide-in">
+            <div class="doc-card">
+                <div class="doc-card-header">
+                    <div class="doc-icon">&#128196;</div>
+                    <div style="flex:1; min-width:0;">
+                        <p class="doc-label">Seu modelo</p>
+                        <p class="doc-title-text" id="doc-card-title">Autoriza&ccedil;&atilde;o de Viagem</p>
                     </div>
                 </div>
-
-                <!-- "folha A4" -->
-                <div style="background: var(--bg-secondary); border-radius: 14px; padding: 18px; border: 1px solid var(--border);">
-                    <div id="doc" class="preview" data-clarity-mask="true" style="
-                            background: #ffffff;
-                            border-radius: 8px;
-                            padding: 40px 44px;
-                            max-height: 540px;
-                            overflow: auto;
-                            box-shadow: 0 12px 28px rgba(15,23,42,.14);
-                            font-family: 'Times New Roman', Georgia, serif;
-                            font-size: 14.5px;
-                            line-height: 1.75;
-                            color: #111827;
-                    "></div>
-                </div>
-
-                <p class="small" style="margin: 10px 0 0; color: var(--text-muted); font-size: 12px; text-align: center;">
-                    Esta &eacute; apenas uma visualiza&ccedil;&atilde;o em texto. O arquivo final em <strong>Word/PDF</strong> estar&aacute; pronto para impress&atilde;o e assinatura.
-                </p>
-            </div>
-
-            <!-- ===== BOT&Otilde;ES DE DOWNLOAD ===== -->
-            <div id="actions" style="display:none; padding: 0 24px 20px; flex-wrap:wrap; align-items:center;">
-                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin: 0 0 12px; width: 100%;">
-                    &#128190; Salve o seu modelo
-                </div>
-                <div class="dl-row" style="display: flex; gap: 10px; flex-wrap: wrap; width: 100%;">
-                    <button class="btn btn-primary dl-btn" id="btnPdf" style="padding: 14px 22px; font-size: 15px; font-weight: 700;">
-                        &#11015; Baixar PDF
-                    </button>
-                    <button class="btn btn-outline dl-btn" id="btnDoc" style="padding: 14px 22px; font-size: 15px;">
-                        &#11015; Baixar Word
-                    </button>
-                    <button class="btn btn-outline dl-btn" id="btnCopiar" style="padding: 14px 22px; font-size: 15px;">
-                        &#128203; Copiar texto
-                    </button>
-                    <button class="btn btn-outline dl-btn" id="btnZap" style="padding: 14px 22px; font-size: 15px;">
-                        &#128241; Enviar no WhatsApp
-                    </button>
-                    <a class="btn btn-outline dl-btn" id="btnSuporte" target="_blank" rel="noopener" style="padding: 14px 22px; font-size: 15px;">
-                        &#128172; Falar com suporte
-                    </a>
+                <div class="doc-card-body">
+                    <div id="doc" class="preview" data-clarity-mask="true"></div>
                 </div>
             </div>
+        </div>
 
-            <!-- ===== CHECKLIST "O QUE FAZER AGORA" ===== -->
-            <div style="padding: 24px; border-top: 1px solid var(--border); background: var(--bg-secondary);">
-                <div style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 14px;">
-                    &#9989; Pr&oacute;ximos passos
-                </div>
-                <div class="check-grid" style="display: grid; gap: 10px;">
-                    <div class="check-row" style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
-                        <span class="check-num" style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">1</span>
-                        <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Assim que o texto aparecer, <strong>revise com aten&ccedil;&atilde;o</strong> se todos os dados est&atilde;o corretos.</div>
-                    </div>
-                    <div class="check-row" style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
-                        <span class="check-num" style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">2</span>
-                        <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Use os bot&otilde;es para <strong>baixar em Word/PDF</strong> e salvar em um lugar seguro.</div>
-                    </div>
-                    <div class="check-row" style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
-                        <span class="check-num" style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">3</span>
-                        <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Envie por <strong>e-mail ou WhatsApp</strong> e, se necess&aacute;rio, leve impresso (cart&oacute;rio, empresa, companhia a&eacute;rea, &oacute;rg&atilde;o p&uacute;blico etc.).</div>
-                    </div>
-                    <div class="check-row" style="display:flex; gap:12px; align-items:flex-start; padding: 12px 14px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border);">
-                        <span class="check-num" style="flex:0 0 22px; width:22px; height:22px; border-radius:50%; background: var(--accent-success); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">4</span>
-                        <div class="small" style="flex:1; color: var(--text-secondary); line-height: 1.5; font-size: 13px;">Verifique sempre com a autoridade respons&aacute;vel se o modelo atende &agrave;s <strong>exig&ecirc;ncias espec&iacute;ficas</strong> do seu caso antes de utilizar.</div>
-                    </div>
-                </div>
+        <!-- ===== BAIXAR: 1 CTA + 3 a&ccedil;&otilde;es secund&aacute;rias ícone (estilo app) ===== -->
+        <div id="actions" style="display:none; flex-direction: column; gap: 10px;">
+            <div style="font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 2px; display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 16px;">&#128190;</span> Baixar e compartilhar
             </div>
-
-            <!-- ===== ENVIAR POR E-MAIL ===== -->
-            <div id="email-section"
-                style="display:none; padding: 20px 24px; border-top: 1px solid var(--border);">
-                <div style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
-                    &#9993;&#65039; Enviar uma c&oacute;pia por e-mail
-                </div>
-                <p class="small" style="margin: 0 0 10px; color: var(--text-muted); font-size: 12px;">
-                    Para ter uma c&oacute;pia de seguran&ccedil;a na sua caixa de entrada.
-                </p>
-                <div style="display:flex; gap: 10px; flex-wrap: wrap;">
-                    <input class="input" id="email-input" type="email" placeholder="seu_email@exemplo.com"
-                        style="flex:1; min-width: 220px; padding: 12px 16px;">
-                    <button class="btn btn-primary" id="email-button" style="padding: 12px 22px; font-weight: 600;">
-                        Enviar
-                    </button>
-                </div>
-                <p class="small" id="email-status" style="margin-top: 10px; font-size: 13px;"></p>
+            <div class="dl-cta">
+                <button class="btn btn-primary btn-xl" id="btnPdf" style="flex:1;">
+                    &#11015; Baixar PDF
+                </button>
+                <button class="btn-secondary-icon" id="btnDoc" title="Baixar em Word">&#128209;</button>
             </div>
-
-            <!-- ===== NAVEGAÇÃO EXTRA (Gerar Novo) ===== -->
-            <div id="nav-extra" style="display:none; gap: 10px; padding: 20px 24px; border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center;">
-                <a class="btn btn-primary" id="btnNovoDoc" style="padding: 12px 22px;">&#10010; Gerar Novo Documento</a>
-                <a href="/" class="btn btn-outline" style="padding: 12px 22px;">&#127968; Voltar ao In&iacute;cio</a>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 4px;">
+                <button class="btn btn-outline" id="btnZap" style="padding: 10px 16px; font-size: 13px; min-height: 44px;">
+                    &#128241; WhatsApp
+                </button>
+                <button class="btn btn-outline" id="btnCopiar" style="padding: 10px 16px; font-size: 13px; min-height: 44px;">
+                    &#128203; Copiar
+                </button>
+                <a class="btn btn-outline" id="btnSuporte" target="_blank" rel="noopener" style="padding: 10px 16px; font-size: 13px; min-height: 44px;">
+                    &#128172; Suporte
+                </a>
             </div>
+        </div>
 
-        </div><!-- /card -->
+        <!-- ===== ENVIAR POR E-MAIL (card compacto) ===== -->
+        <div id="email-section" class="email-card" style="display:none; margin-top: 14px;">
+            <p class="email-card-lead">&#9993;&#65039; Enviar c&oacute;pia por e-mail</p>
+            <p class="email-card-hint">Salve uma c&oacute;pia segura na sua caixa de entrada.</p>
+            <div style="display:flex; gap: 8px; flex-wrap: wrap;">
+                <input class="input" id="email-input" type="email" placeholder="seu_email@exemplo.com"
+                    style="flex:1; min-width: 200px; padding: 10px 14px; min-height: 44px;">
+                <button class="btn btn-primary" id="email-button" style="padding: 10px 18px; min-height: 44px; font-weight: 600;">Enviar</button>
+            </div>
+            <p class="small" id="email-status" style="margin: 8px 0 0; font-size: 12.5px;"></p>
+        </div>
 
-        <!-- Dica -->
-        <p class="small" style="text-align: center; margin: 16px 0 0; color: var(--text-muted); font-size: 12.5px;">
-            Dica: salve uma c&oacute;pia em seu e-mail e leve o documento impresso se houver atendimento presencial (cart&oacute;rio, empresa, companhia a&eacute;rea, &oacute;rg&atilde;o p&uacute;blico etc.).
+        <!-- ===== NAV MINI ===== -->
+        <div id="nav-extra" class="nav-mini" style="display:none; margin-top: 14px; justify-content: center;">
+            <a class="btn btn-primary" id="btnNovoDoc" style="padding: 10px 16px;">&#10010; Gerar outro</a>
+            <a href="/" class="btn btn-outline" style="padding: 10px 16px;">&#127968; In&iacute;cio</a>
+        </div>
+
+        <!-- Dica curta -->
+        <p class="small" style="text-align: center; margin: 16px 0 0; color: var(--text-muted); font-size: 12px;">
+            Salve uma c&oacute;pia e leve impresso se houver atendimento presencial (cart&oacute;rio, &oacute;rg&atilde;o p&uacute;blico etc.).
         </p>
 
-        <!-- ===== UPSELL: OUTROS DOCUMENTOS ===== -->
-        <div id="extra-docs" style="margin-top: 36px;">
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div style="display: inline-block; padding: 6px 14px; border-radius: 999px; background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 10px;">
-                    &#127873; B&ocirc;nus de cliente
-                </div>
-                <h2 style="font-size: 22px; font-weight: 800; color: var(--text-primary); margin: 0 0 6px; letter-spacing: -.02em;">
+        <!-- ===== UPSELL: t&iacute;tulo + grid de cards (apenas 1 em destaque) ===== -->
+        <div id="extra-docs" style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);">
+            <div style="text-align: center; margin-bottom: 14px;">
+                <span class="upsell-badge">&#127873; B&ocirc;nus de cliente</span>
+                <h2 style="font-size: 18px; font-weight: 800; color: var(--text-primary); margin: 8px 0 4px; letter-spacing: -.02em;">
                     Outros documentos que podem te ajudar
                 </h2>
-                <p class="small" style="color: var(--text-secondary); margin: 0; max-width: 560px; margin-left:auto; margin-right:auto; font-size: 13.5px;">
-                    Como voc&ecirc; j&aacute; finalizou uma compra, ganha <strong>10% OFF</strong> no pr&oacute;ximo documento (cupom <code style="background: var(--bg-secondary); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); font-weight: 700;">VOLTA10</code> aplicado automaticamente).
+                <p class="small" style="color: var(--text-muted); margin: 0; font-size: 12.5px;">
+                    10% OFF no pr&oacute;ximo (cupom <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 700;">VOLTA10</code> aplicado).
                 </p>
             </div>
 
-            <div style="display:grid; gap:14px; max-width: 880px; margin: 0 auto;">
+            <div style="display:grid; gap:12px;">
                     <a href="/viagem.html" data-doc="viagem" data-slug="autorizacao-viagem-menor" data-price="39.90" data-discounted="35.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
                         <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
                         <div class="small" style="font-weight:600; margin-bottom:4px;">Autorização de Viagem para Menor</div>
@@ -357,8 +414,17 @@
                         </div>
                     </a>
                 </div>
-            </div>
+        </div><!-- /extra-docs -->
+
+    </div><!-- /container -->
+
+    <!-- ===== STICKY CTA (botão flutuante no mobile) ===== -->
+    <div class="sticky-cta" id="sticky-cta" style="display:none;">
+        <button class="btn btn-primary btn-xl" id="btnPdfSticky" style="width:100%;">
+            &#11015; Baixar PDF
+        </button>
     </div>
+
 
     <footer class="footer">
         <div class="container">
@@ -499,6 +565,18 @@
 
             if (navExtra) navExtra.style.display = 'flex';
 
+            // ===== STICKY CTA: mostrar quando ações de download visíveis, e
+            // sincronizar btnPdfSticky com btnPdf (mesmo handler de download) =====
+            var stickyCta = document.getElementById('sticky-cta');
+            var btnPdfSticky = document.getElementById('btnPdfSticky');
+            if (stickyCta && actions && actions.style.display !== 'none' && actions.style.display !== '') {
+                stickyCta.style.display = 'block';
+            }
+            if (btnPdfSticky && btnPdf) {
+                btnPdfSticky.onclick = function () { btnPdf.click(); };
+            }
+            // Em desktop ou em viewports largos já escondido por CSS
+
             if (emailSection) emailSection.style.display = 'block';
             if (payload && payload.email) {
                 emailInput.value = payload.email;
@@ -582,6 +660,10 @@
                 // Limpa e constrói DOM seguro
                 docBox.innerHTML = '';
 
+                // Espelha título no cabeçalho do card premium (acima do papel)
+                var docCardTitleEl = document.getElementById('doc-card-title');
+                if (docCardTitleEl) docCardTitleEl.textContent = tituloDoc;
+
                 // Header
                 var header = document.createElement('div');
                 header.style.cssText = 'text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;';
@@ -627,6 +709,9 @@
             if (info) {
                 info.textContent = 'Documento gerado com sucesso! Baixe seu PDF abaixo.';
             }
+            // Esconde o spinner pq o documento já apareceu
+            var sp = document.getElementById('info-spinner');
+            if (sp) sp.style.display = 'none';
 
             attachActions(fullText, payload || null);
         }
