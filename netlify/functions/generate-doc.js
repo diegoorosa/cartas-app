@@ -233,6 +233,44 @@ exports.handler = async function(event) {
             if (cached && cached.length) {
                 return { statusCode: 200, body: JSON.stringify({ output: cached[0].output_json, input_json: cached[0].input_json, cached: true }) };
             }
+
+            // NOVO: se o payload só tem order_id (cliente abriu o link sem os
+            // dados do formulário — outro dispositivo/browser, ou localStorage
+            // expirado), e não há cache no Supabase ainda, NÃO gera placeholder.
+            // Antes de desistir, tenta achar o payload real em checkout_intents
+            // (o capture-lead salva lá antes do pagamento). Se achar, usa ele.
+            // Se não achar, retorna ai_pendente para o success.html continuar
+            // pingando ao invés de cravar um doc vazio que o cliente vai baixar.
+            const FIELDS_FANTASMA = ['order_id', 'orderId', 'ultima_tentativa', 'slug'];
+            const temFieldsReais = p && Object.keys(p).some(k => !FIELDS_FANTASMA.includes(k) && p[k]);
+            if (!temFieldsReais) {
+                try {
+                    const { data: intent } = await supabase
+                        .from('checkout_intents')
+                        .select('payload')
+                        .eq('order_id', ordId)
+                        .maybeSingle();
+                    if (intent && intent.payload && Object.keys(intent.payload).some(k => !FIELDS_FANTASMA.includes(k))) {
+                        // Achou o payload real — recombina com order_id e segue pra geração
+                        Object.assign(p, intent.payload);
+                        p.order_id = ordId;
+                    } else {
+                        // Não tem payload real em lugar nenum — diz pro cliente esperar
+                        return { statusCode: 200, body: JSON.stringify({
+                            output: null,
+                            ai_pendente: true,
+                            motivo: 'payload_incompleto'
+                        }) };
+                    }
+                } catch (e) {
+                    console.warn('[generate-doc] lookup checkout_intents falhou:', e.message);
+                    return { statusCode: 200, body: JSON.stringify({
+                        output: null,
+                        ai_pendente: true,
+                        motivo: 'lookup_falhou'
+                    }) };
+                }
+            }
         }
 
         // Detecta tipo pelo slug / payload — lógica do generate-doc original

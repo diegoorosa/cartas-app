@@ -54,3 +54,18 @@ All serverless functions rely on these: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 
 ## Session history
 See `SESSION_LOG.md` for detailed context on past bugs (the orphan `}` SyntaxError, the 505-line CSS deletion, CSP breakage, admin backdoor removal, price audits). Read it before making CSS or CSP changes.
+
+## Bug known: success.html não mostra o documento se o webhook MP chegar depois do polling
+- **Sintoma real observado (2026-07-27)**: cliente pagou, recebeu o e-mail de pagamento aprovado, mas o documento NÃO gerou na primeira abertura do /success.html. Só apareceu quando a pessoa reabriu o link um tempo depois.
+- **Causa raiz**: `mp-webhook.js` roda assíncrono quando o MP dispara o webhook de `approved`. Esse webhook frequentemente chega 30–60s DEPOIS do redirect do cliente para `/success.html?s=success`. O `success.html` faz polling de `order-status` por **apenas 30s** no fluxo `s=success` (linha 936: `maxPollTime = s === 'pending' ? 120000 : 30000`). Quando o polling expira antes do webhook processar:
+  1. `order-status` ainda não acha nada em `generations` (o webhook ainda não rodou) nem `_payment_id` em `checkout_intents` → retorna `pending`.
+  2. `success.html` cai no bloco `for (var i = 0; i < 3; i++)` (linha 964) chamando `generate-doc` com `localPayload || { order_id: orderId, ... }`. Se `localPayload` está faltando (cliente abriu o link num dispositivo/browser diferente do que pagou), o payload fica só com `order_id`, sem os campos reais do formulário, e o doc sai genérico/placeholder.
+  3. `generate-doc` faz cache lookup por `order_id` em `generations` — mas nada foi salvo ainda, então também falha. Resultado: cliente vê só o preview local "Processando..." e/ou um doc vazio.
+  4. Quando o cliente **reabre** mais tarde, o webhook já rodou, salvou em `generations`, e o cache lookup acerta → doc aparece.
+- **Bug relacionado em `success.html` linha 955–962**: se `!confirmed`, mostra "Tentando localizar seu documento..." mas **imediatamente** sobrescreve com "Pagamento confirmado. Carregando documento final..." — texto mentiroso, sem `return` nem ramo separado. Fluxo desce direto pra geração mesmo sem confirmar.
+- **`mp-webhook.js` linha 238**: quando falham as 3 tentativas de gerar (timeout Gemini ou Supabase down), retorna **500** — faz MP reenviar, mas pode deixar cliente preso no success.html.
+- **Fix recomendado** (não aplicado ainda):
+  1. Aumentar `maxPollTime` para 60–90s no caso `s=success` (ou unificar com pending = 120s).
+  2. Em `generate-doc.js`, quando receber só `{ order_id, ultima_tentativa }` sem fields reais E não achar cache, deve retornar status explícito `ai_pendente = true` para o cliente esperar/pingar, em vez de gerar placeholder.
+  3. Corrigir a sobrescrita "Pagamento confirmado" mentirosa no `success.html` — separar o ramo `!confirmed` com `return` ou mensagem honesta.
+  4. Considerar um endpoint `get-doc?order_id=` que só consulta `generations` (sem regenerar) pra success.html usar no fallback.

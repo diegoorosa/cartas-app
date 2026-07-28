@@ -23,140 +23,225 @@
     </script>
     <title>Modelo de documento gerado | CartasApp</title>
     <meta name="robots" content="noindex, nofollow">
-    <!-- ===== STYLE refinamento app-like + mobile-first (bottom sheet) ===== -->
+    <!-- ===== STYLE — design Stripe Checkout-inspired ===== -->
     <style>
         body {
             -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
             background: var(--bg-secondary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
-        /* ===== HERO (mantém gradiente, mas mais curto) ===== */
-        .success-hero { transition: padding .2s ease; }
+        /* ===== HERO compacto (24% da viewport) ===== */
+        .success-hero {
+            position: relative;
+            padding: 22px 24px 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            text-align: center;
+            overflow: hidden;
+            transition: padding .2s ease;
+        }
+        .success-hero .hero-check {
+            width: 44px; height: 44px; margin: 0 auto 8px;
+            border-radius: 50%; background: #fff;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,.15);
+            color: #059669; font-size: 24px; font-weight: 900;
+            line-height: 1;
+        }
+        .success-hero h1 {
+            margin: 0; color: #fff; font-size: 20px; font-weight: 700;
+            letter-spacing: -.01em; line-height: 1.2;
+        }
+        .success-hero .hero-sub {
+            margin: 2px 0 0; color: rgba(255,255,255,.88);
+            font-size: 13px; font-weight: 400;
+        }
 
-        /* ===== INFO BAR compacta — substitui o card antigo cheio de desculpas ===== */
+        /* ===== INFO BAR minimal — 1 linha pela qual o JS atualiza status ===== */
         .info-compact {
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 14px; border-radius: 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 12px; border-radius: 10px;
+            background: var(--card-bg); border: 1px solid var(--border);
         }
         .info-compact .info-icon {
-            flex: 0 0 32px; width: 32px; height: 32px;
+            flex: 0 0 24px; width: 24px; height: 24px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-success), #059669);
-            color: #fff; display: flex; align-items: center; justify-content: center;
-            font-size: 16px; font-weight: 700;
+            background: var(--accent-success); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; line-height: 1;
         }
         .info-compact #info {
-            margin: 0; flex: 1; font-size: 13.5px; line-height: 1.45;
+            margin: 0; flex: 1; font-size: 12.5px; line-height: 1.4;
             color: var(--text-primary); font-weight: 500;
         }
-        /* Spinner durante polling */
         .info-spinner {
-            width: 18px; height: 18px; border-radius: 50%;
-            border: 2px solid var(--border); border-top-color: var(--accent-primary);
-            animation: spin 0.7s linear infinite;
+            width: 14px; height: 14px; border-radius: 50%;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent-primary);
+            animation: spin .7s linear infinite;
+            flex: 0 0 14px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== DETAILS colapsáveis (aviso jurídico + slug-warning) ===== */
+        /* ===== DISCLAIMER colapsável discreto (vai no rodapé no novo layout) ===== */
         details.disclaimer {
-            padding: 0; border-radius: 10px;
-            background: var(--card-bg); border: 1px solid var(--border);
-            overflow: hidden;
+            padding: 0; border-radius: 8px;
+            background: transparent;
         }
         details.disclaimer > summary {
             list-style: none; cursor: pointer;
-            padding: 11px 14px; display: flex; align-items: center; gap: 8px;
-            font-size: 13px; color: var(--text-muted); font-weight: 500;
+            padding: 6px 0; display: flex; align-items: center; gap: 6px;
+            font-size: 11.5px; color: var(--text-muted); font-weight: 500;
         }
         details.disclaimer > summary::-webkit-details-marker { display: none; }
         details.disclaimer > summary::after {
-            content: '▸'; margin-left: auto; font-size: 11px; transition: transform .2s;
+            content: '▾'; margin-left: auto; font-size: 9px;
+            transition: transform .2s;
         }
-        details.disclaimer[open] > summary::after { transform: rotate(90deg); }
-        details.disclaimer > summary > .warn-icon { font-size: 14px; }
-        details.disclaimer[open] > summary {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-        }
+        details.disclaimer[open] > summary::after { transform: rotate(180deg); }
         details.disclaimer .disclaimer-body {
-            padding: 12px 14px; font-size: 12.5px; line-height: 1.55;
-            color: var(--text-secondary);
+            padding: 8px 0 4px; font-size: 11.5px; line-height: 1.55;
+            color: var(--text-muted);
         }
-        details.disclaimer .disclaimer-body ul { margin: 6px 0 0 16px; padding: 0; }
-        details.disclaimer .disclaimer-body li { margin-bottom: 4px; }
+        details.disclaimer .disclaimer-body ul { margin: 4px 0 0 14px; padding: 0; }
+        details.disclaimer .disclaimer-body li { margin-bottom: 3px; }
 
-        /* ===== CARD PREMIUM da prévia do documento ===== */
+        /* ===== CARD do documento (premium) ===== */
         .doc-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            box-shadow: var(--shadow-md);
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.04);
             overflow: hidden;
         }
         .doc-card-header {
-            padding: 12px 16px;
-            background: linear-gradient(90deg, rgba(59,130,246,.05), rgba(6,182,212,.05));
+            padding: 14px 18px;
             border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; gap: 12px;
+            background: var(--card-bg);
         }
         .doc-card-header .doc-icon {
-            width: 34px; height: 34px; border-radius: 8px;
+            width: 40px; height: 40px; border-radius: 10px;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             color: #fff; display: flex; align-items: center; justify-content: center;
-            font-size: 18px;
+            font-size: 20px; font-weight: 700;
         }
         .doc-card-header .doc-label {
-            font-size: 11px; color: var(--text-muted); text-transform: uppercase;
-            letter-spacing: .04em; font-weight: 600; margin: 0 0 2px;
+            font-size: 10.5px; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: .06em; font-weight: 600; margin: 0 0 2px;
         }
         .doc-card-header .doc-title-text {
-            font-size: 14px; color: var(--text-primary); font-weight: 700; margin: 0;
+            font-size: 15px; color: var(--text-primary); font-weight: 700; margin: 0;
+            line-height: 1.3;
         }
-        .doc-card-body { background: var(--bg-secondary); padding: 14px; }
+        .doc-card-body { background: #f1f5f9; padding: 16px; }
         #doc {
             -webkit-overflow-scrolling: touch;
             background: #ffffff;
-            border-radius: 8px;
-            padding: 28px 24px;
-            max-height: 460px;
+            border-radius: 6px;
+            padding: 32px 28px;
+            max-height: 440px;
             overflow: auto;
-            box-shadow: 0 8px 24px rgba(15,23,42,.10);
+            box-shadow: 0 4px 12px rgba(15,23,42,.08);
             font-family: 'Times New Roman', Georgia, serif;
-            font-size: 14px; line-height: 1.7; color: #111827;
+            font-size: 14px; line-height: 1.75; color: #111827;
         }
 
-        /* ===== AÇÕES: 1 CTA + menu horizontal de secundárias (app-like) ===== */
-        .dl-cta {
-            display: flex; align-items: stretch; gap: 10px;
-            margin-top: 12px;
+        /* ===== AÇÕES DE DOWNLOAD — PDF primário + Word secundário c/ label ===== */
+        .dl-block { margin-top: 14px; }
+        .dl-block .dl-label {
+            font-size: 11px; font-weight: 600; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: .06em;
+            margin: 0 0 8px;
         }
-        .btn-xl {
-            min-height: 56px; padding: 14px 22px; font-size: 15.5px; font-weight: 700;
-            border-radius: 14px;
+        .dl-row { display: flex; gap: 10px; }
+        .btn-pdf {
+            flex: 1; min-height: 52px; padding: 14px 20px;
+            font-size: 15px; font-weight: 700;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff !important;
+            box-shadow: 0 4px 14px rgba(59,130,246,.32);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            border: none; cursor: pointer; transition: transform .12s, box-shadow .12s;
+        }
+        .btn-pdf:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,130,246,.42); }
+        .btn-pdf:active { transform: translateY(0); }
+        .btn-word {
+            min-height: 52px; padding: 14px 18px;
+            font-size: 14px; font-weight: 600;
+            border-radius: 12px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1.5px solid var(--border);
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            cursor: pointer; transition: border-color .12s, background .12s;
+            white-space: nowrap;
+        }
+        .btn-word:hover { border-color: var(--accent-primary); background: var(--bg-secondary); }
+        .btn-word .word-icon {
+            width: 20px; height: 20px; flex: 0 0 20px;
+            background: #2b579a; color: #fff;
+            border-radius: 4px; font-size: 11px; font-weight: 800;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+
+        /* ===== DL-CTA row — PDF grande à esquerda + Word secundário c/ label ===== */
+        .dl-cta {
+            display: flex; align-items: stretch; gap: 10px; flex-wrap: nowrap;
         }
         .btn-secondary-icon {
-            min-height: 56px; width: 56px; flex: 0 0 56px;
-            border-radius: 14px; background: var(--card-bg);
-            border: 1px solid var(--border); color: var(--text-primary);
-            display: inline-flex; align-items: center; justify-content: center;
-            font-size: 22px; cursor: pointer;
-            transition: background .15s, border-color .15s;
+            min-height: 52px; min-width: 96px; padding: 12px 16px;
+            font-size: 14px; font-weight: 600;
+            border-radius: 12px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1.5px solid var(--border);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; transition: border-color .12s, background .12s, transform .12s;
+            white-space: nowrap; flex: 0 0 auto;
         }
-        .btn-secondary-icon:hover {
-            background: var(--bg-secondary); border-color: var(--accent-primary);
+        .btn-secondary-icon:hover { border-color: var(--accent-primary); background: var(--bg-secondary); }
+        .btn-secondary-icon:active { transform: translateY(0); }
+        .btn-secondary-icon .word-ico {
+            width: 22px; height: 22px; flex: 0 0 22px;
+            background: #2b579a; color: #fff;
+            border-radius: 5px; font-size: 12px; font-weight: 800;
+            display: inline-flex; align-items: center; justify-content: center;
         }
 
-        /* ===== STICKY CTA no rodapé no mobile (estilo app) ===== */
-        .sticky-cta {
-            position: sticky; bottom: 0; left: 0; right: 0;
-            padding: 12px 14px env(safe-area-inset-bottom, 12px);
-            background: linear-gradient(to top, var(--bg-primary) 60%, transparent);
-            backdrop-filter: blur(4px);
-            z-index: 50;
+
+        /* ===== AÇÕES SECUNDÁRIAS — share row discreta ===== */
+        .share-row {
+            display: flex; gap: 8px; margin-top: 10px;
+            justify-content: center; flex-wrap: wrap;
         }
+        .share-btn {
+            min-height: 40px; padding: 8px 14px;
+            font-size: 12.5px; font-weight: 500;
+            border-radius: 10px;
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-secondary);
+            display: inline-flex; align-items: center; gap: 6px;
+            cursor: pointer; text-decoration: none;
+            transition: background .12s, color .12s, border-color .12s;
+        }
+        .share-btn:hover { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-hover); }
+        .share-btn .ico { font-size: 14px; }
+
+        /* ===== STICKY CTA — só aparece via JS quando PDF sai da viewport ===== */
+        .sticky-cta {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            padding: 10px 14px calc(env(safe-area-inset-bottom, 8px) + 8px);
+            background: rgba(255,255,255,.94);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border-top: 1px solid var(--border);
+            z-index: 50;
+            transform: translateY(110%);
+            transition: transform .25s ease-out;
+            display: none; /* controlado por JS */
+        }
+        .sticky-cta.visible { transform: translateY(0); }
         @media (min-width: 641px) { .sticky-cta { display: none !important; } }
 
         /* ===== EMAIL card compacto ===== */
@@ -165,48 +250,66 @@
             border: 1px solid var(--border); border-radius: 12px;
         }
         .email-card-lead {
-            font-size: 13px; color: var(--text-primary); font-weight: 600; margin: 0 0 6px;
+            font-size: 13px; color: var(--text-primary); font-weight: 600; margin: 0 0 4px;
             display: flex; align-items: center; gap: 6px;
         }
-        .email-card-hint { font-size: 12px; color: var(--text-muted); margin: 0 0 10px; }
+        .email-card-hint { font-size: 11.5px; color: var(--text-muted); margin: 0 0 10px; }
+        .email-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .email-row .input { flex: 1; min-width: 200px; padding: 11px 14px; min-height: 44px; border-radius: 10px; }
+        .email-row .btn { min-height: 44px; padding: 11px 18px; border-radius: 10px; font-weight: 600; font-size: 14px; }
 
         /* ===== NAV compacta ===== */
-        .nav-mini { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-mini { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
         .nav-mini .btn {
             min-height: 44px; padding: 10px 16px; border-radius: 10px;
-            font-size: 13.5px;
+            font-size: 13px; font-weight: 500;
         }
 
-        /* ===== UPSELL: 1 card destacado + "ver mais" ===== */
-        .upsell-badge {
-            display: inline-block; padding: 5px 12px; border-radius: 999px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            color: #fff; font-size: 11px; font-weight: 700;
-            letter-spacing: .04em; text-transform: uppercase;
+        /* ===== UPSELL minimal (1 produto recomendado) ===== */
+        .upsell-section {
+            margin-top: 32px; padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        .upsell-title {
+            font-size: 14px; font-weight: 700; color: var(--text-primary);
+            margin: 0 0 4px; text-align: center;
+        }
+        .upsell-subtitle {
+            font-size: 12px; color: var(--text-muted); margin: 0 0 14px;
+            text-align: center;
         }
         .upsell-card {
             display: block; text-decoration: none;
-            padding: 16px; border-radius: 14px;
+            padding: 14px 16px; border-radius: 12px;
             border: 1px solid var(--border); background: var(--card-bg);
             position: relative; box-shadow: var(--shadow-sm);
-            transition: transform .15s, box-shadow .15s;
+            transition: transform .12s, box-shadow .12s;
         }
-        .upsell-card:hover {
-            transform: translateY(-2px); box-shadow: var(--shadow-md);
+        .upsell-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .upsell-card .upsell-name {
+            font-size: 13.5px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px;
         }
-        .upsell-card .small { font-size: 12.5px; }
+        .upsell-card .upsell-desc {
+            font-size: 12px; color: var(--text-secondary); margin: 0 0 8px; line-height: 1.45;
+        }
+        .upsell-card .upsell-price {
+            font-size: 13.5px; font-weight: 700; color: var(--accent-success);
+        }
+        .upsell-card .upsell-price-strike {
+            font-size: 12px; color: var(--text-muted); text-decoration: line-through; margin-left: 4px;
+        }
 
-        /* ===== Animação leve (guardada por prefers-reduced-motion) ===== */
+        /* ===== Animação leve (prefers-reduced-motion) ===== */
         @media (prefers-reduced-motion: no-preference) {
-            .hero-pop { animation: popOk .55s cubic-bezier(.34,1.56,.64,1) both; }
-            @keyframes popOk {
-                0%   { transform: scale(.6); opacity: 0; }
-                60%  { transform: scale(1.06); opacity: 1; }
+            .check-pop { animation: checkPop .5s cubic-bezier(.34,1.56,.64,1) both; }
+            @keyframes checkPop {
+                0%   { transform: scale(.4); opacity: 0; }
+                60%  { transform: scale(1.1); opacity: 1; }
                 100% { transform: scale(1); }
             }
-            .slide-in { animation: slideIn .4s ease-out both; }
+            .slide-in { animation: slideIn .35s ease-out both; }
             @keyframes slideIn {
-                from { opacity: 0; transform: translateY(8px); }
+                from { opacity: 0; transform: translateY(6px); }
                 to   { opacity: 1; transform: translateY(0); }
             }
         }
@@ -214,22 +317,30 @@
         /* ===== MOBILE 375px ===== */
         @media (max-width: 640px) {
             .success-hero {
-                padding: 28px 18px 24px !important;
+                padding: 18px 18px 16px !important;
                 margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%);
                 padding-left: 18px !important; padding-right: 18px !important;
             }
-            .success-hero h1 { font-size: 24px !important; }
-            .success-hero p { font-size: 14.5px !important; }
-            .container.sx { padding-left: 14px !important; padding-right: 14px !important; }
-            #doc { padding: 22px 18px !important; font-size: 13.5px !important; line-height: 1.65 !important; max-height: 380px !important; }
-            .btn-xl { min-height: 54px; padding: 14px 18px; font-size: 15px; }
-            .btn-secondary-icon { width: 54px; height: 54px; flex: 0 0 54px; }
-            .upsell-card { padding: 14px !important; }
-            .upsell-card .small { font-size: 12px !important; }
+            .success-hero .hero-check { width: 38px; height: 38px; margin-bottom: 6px; font-size: 20px; }
+            .success-hero h1 { font-size: 18px !important; }
+            .success-hero .hero-sub { font-size: 12.5px !important; }
+            .container.sx { padding-left: 14px !important; padding-right: 14px !important; padding-top: 14px !important; }
+            #doc { padding: 22px 18px !important; font-size: 13px !important; line-height: 1.65 !important; max-height: 360px !important; }
+            #doc { padding: 14px !important; }
+            .doc-card-body { padding: 12px !important; }
+            .btn-pdf { min-height: 50px; font-size: 14.5px; }
+            .btn-word { min-height: 50px; padding: 12px 14px; font-size: 13px; }
+            .btn-secondary-icon { min-height: 50px; min-width: 86px; padding: 11px 13px; font-size: 13px; }
+            .share-btn { font-size: 12px; padding: 7px 12px; }
+            .upsell-card { padding: 12px 14px !important; }
+            /* padding-bottom no container pra o sticky não cobrir o rodapé/upsell
+               quando o cliente rola até o final no mobile */
+            .container.sx { padding-bottom: 80px !important; }
         }
 
         /* focus-visible — a11y */
-        .btn:focus-visible, a.btn:focus-visible, button:focus-visible, summary:focus-visible, .upsell-card:focus-visible {
+        .btn:focus-visible, a.btn:focus-visible, button:focus-visible, summary:focus-visible,
+        .upsell-card:focus-visible, .share-btn:focus-visible {
             outline: 2px solid var(--accent-primary); outline-offset: 2px;
         }
     </style>
@@ -319,7 +430,9 @@
                 <button class="btn btn-primary btn-xl" id="btnPdf" style="flex:1;">
                     &#11015; Baixar PDF
                 </button>
-                <button class="btn-secondary-icon" id="btnDoc" title="Baixar em Word">&#128209;</button>
+                <button class="btn-secondary-icon" id="btnDoc" title="Baixar em Word">
+                    <span class="word-ico">W</span> Word
+                </button>
             </div>
             <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 4px;">
                 <button class="btn btn-outline" id="btnZap" style="padding: 10px 16px; font-size: 13px; min-height: 44px;">
@@ -565,11 +678,28 @@
 
             if (navExtra) navExtra.style.display = 'flex';
 
-            // ===== STICKY CTA: mostrar quando ações de download visíveis, e
-            // sincronizar btnPdfSticky com btnPdf (mesmo handler de download) =====
+            // ===== STICKY CTA: só aparece no mobile quando o btnPdf real
+            // SAI da viewport (rolou pra baixo). Quando o btnPdf volta a ficar
+            // visível, o sticky some — assim nunca ficam dois "Baixar PDF" na
+            // tela ao mesmo tempo. Display:block aqui é só pra destravar o
+            // elemento; a visibilidade real é controlada pela classe .visible.
             var stickyCta = document.getElementById('sticky-cta');
             var btnPdfSticky = document.getElementById('btnPdfSticky');
-            if (stickyCta && actions && actions.style.display !== 'none' && actions.style.display !== '') {
+            if (stickyCta && btnPdf && window.IntersectionObserver) {
+                stickyCta.style.display = 'block'; // destrava; CSS mobile já limita a <641px
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        // e.isIntersecting === true → btnPdf visível → esconde sticky
+                        if (e.isIntersecting) {
+                            stickyCta.classList.remove('visible');
+                        } else {
+                            stickyCta.classList.add('visible');
+                        }
+                    });
+                }, { threshold: 0, rootMargin: '0px 0px -10px 0px' });
+                io.observe(btnPdf);
+            } else if (stickyCta && actions && actions.style.display !== 'none' && actions.style.display !== '') {
+                // Fallback (browser sem IntersectionObserver): comportamento antigo
                 stickyCta.style.display = 'block';
             }
             if (btnPdfSticky && btnPdf) {
@@ -848,10 +978,14 @@
             }
 
             // --- POLLING: aguarda confirmação de pagamento ---
-            // Para PIX/bank_transfer pode demorar mais, estende para 120s
+            // Para PIX/bank_transfer pode demorar mais, estende para 120s.
+            // Para s=success também estendemos para 120s porque o webhook MP
+            // de "approved" frequentemente chega 30–60s DEPOIS do redirect do
+            // cliente, e o polling de 30s anteriores fazia o cliente ver
+            // "Processando..." sem nunca baixar o doc até reabrir o link.
             var start = Date.now();
             var confirmed = false;
-            var maxPollTime = (s === 'pending') ? 120000 : 30000; // 120s para pending, 30s para success
+            var maxPollTime = 120000; // unificado: 120s para success E pending
 
             while (Date.now() - start < maxPollTime) {
                 var st = await getOrderStatus().catch(function () { return null; });
@@ -871,13 +1005,14 @@
             }
 
             if (!confirmed) {
-                // Mesmo não confirmado via polling, TENTA buscar o documento no Supabase
-                // (o webhook pode ter processado e salvo enquanto esperávamos)
-                info.textContent = 'Tentando localizar seu documento...';
+                // Polling expirou sem order-status confirmar (comum: o webhook MP
+                // chega depois da janela de polling). NÃO minta "Pagamento confirmado".
+                // Tenta buscar o documento no Supabase umas 3x estendidas, e se
+                // mesmo assim nada apareceu, mostra mensagem honesta pedindo reload.
+                info.textContent = 'Pagamento em confirmação final. Aguarde e recarregue em instantes...';
+            } else {
+                info.textContent = 'Pagamento confirmado. Carregando documento final...';
             }
-
-            // Pagamento confirmado - busca doc definitivo no Supabase (cache hit)
-            info.textContent = 'Pagamento confirmado. Carregando documento final...';
 
             for (var i = 0; i < 3; i++) {
                 try {
@@ -904,7 +1039,11 @@
             }
 
             // Fallback: se não achou no Supabase, mantém o que já mostrou do cache local
-            if (info && !docWrapper.style.display) {
+            // ou mostra mensagem honesta pedindo reload (não simula sucesso).
+            if (!confirmed) {
+                info.textContent = 'O documento ainda está sendo processado no servidor. Aguarde 1–2 minutos e recarregue esta página (F5). Se já recebeu o e-mail de pagamento, o documento chegará também.';
+                if (retry) retry.style.display = 'flex';
+            } else if (info && !docWrapper.style.display) {
                 info.textContent = 'Documento carregado (versão local). Se houver diferenças, recarregue a página em alguns instantes.';
             } else if (retry) {
                 retry.style.display = 'flex';
