@@ -46,6 +46,14 @@ function getTodaySimple() {
     return date.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'America/Sao_Paulo' });
 }
 
+function getTodayFormatted() {
+    const date = new Date();
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
 function sanitize(str) {
     if (!str || typeof str !== 'string') return str;
     return DOMPurify.sanitize(str, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
@@ -75,6 +83,69 @@ function formatarDocumento(cpf, doc) {
 }
 
 // --- MOTORES DE GERAÇÃO DE TEXTO (TEMPLATES) ---
+
+function gerarNotificacaoExtrajudicial(p) {
+    // Formatação de documento (CPF/CNPJ)
+    function formatarDoc(doc) {
+        if (!doc || doc.trim() === '') return '';
+        const limpo = doc.replace(/\D/g, '');
+        if (limpo.length === 11) {
+            // CPF
+            return limpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        } else if (limpo.length === 14) {
+            // CNPJ
+            return limpo.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+        }
+        return doc;
+    }
+
+    // Formatação de valor monetário
+    function formatarValor(valor) {
+        if (!valor) return '0,00';
+        const num = parseFloat(valor.toString().replace(/[^\d,.-]/g, '').replace(',', '.'));
+        if (isNaN(num)) return '0,00';
+        return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Formatação de data para DD/MM/AAAA
+    function formatarDataDDMMYYYY(dataStr) {
+        if (!dataStr) return '___/___/_____';
+        try {
+            const partes = dataStr.split('-');
+            const data = new Date(partes[0], partes[1] - 1, partes[2]);
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            return `${dia}/${mes}/${ano}`;
+        } catch (e) {
+            return '___/___/_____';
+        }
+    }
+
+    const nomeCredor = p.nome_credor || '____________________';
+    const documentoCredor = formatarDoc(p.documento_credor);
+    const chavePix = p.chave_pix || '____________________';
+    const cidadeCredor = p.cidade_credor || '____________________';
+    const nomeDevedor = p.nome_devedor || '____________________';
+    const documentoDevedor = formatarDoc(p.documento_devedor);
+    const tipoDivida = p.tipo_divida || '____________________';
+    const descricaoDivida = p.descricao_divida || '____________________';
+    const valorDivida = formatarValor(p.valor_divida);
+    const dataVencimento = formatarDataDDMMYYYY(p.data_vencimento);
+    const prazoQuitacao = p.prazo_quitacao || '____________________';
+    const dataAtualDDMMYYYY = getTodayFormatted();
+
+    return {
+        saudacao: "NOTIFICAÇÃO EXTRAJUDICIAL PARA CONSTITUIÇÃO EM MORA",
+        corpo_paragrafos: [
+            `<strong>Subtítulo:</strong> Conforme Artigos 389, 395 e 406 do Código Civil Brasileiro`,
+            `Pelo presente instrumento, <strong>${nomeCredor}</strong>${documentoCredor ? ', inscrito(a) sob o CPF/CNPJ nº ' + documentoCredor : ''}, com domicílio na cidade de <strong>${cidadeCredor}</strong>, vem, respeitosamente, <strong>NOTIFICAR EXTRAJUDICIALMENTE</strong> <strong>${nomeDevedor}</strong>${documentoDevedor ? ', inscrito(a) sob o CPF/CNPJ nº ' + documentoDevedor : ''}, a respeito da dívida pendente referente a: <em>${descricaoDivida}</em>.`,
+            `O valor da dívida é de <strong>R$ ${valorDivida}</strong>, com vencimento originário em <strong>${dataVencimento}</strong>. Concede-se o prazo de <strong>${prazoQuitacao}</strong> para quitação integral do débito, contado a partir do efetivo recebimento desta notificação.`,
+            `Para quitação, o devedor poderá realizar o pagamento via <strong>Transferência Pix</strong> utilizando a chave: <strong>${chavePix}</strong>. O descumprimento do prazo estipulado ensejará a imediata adoção de todas as medidas legais cabíveis, incluindo: protesto da dívida em Cartório de Títulos e Documentos, inscrição do débito nos órgãos de proteção ao crédito (SPC/Serasa) e ajuizamento de Ação de Cobrança perante o Juizado Especial Cível.`,
+            `Fundamentação legal: a presente notificação tem fulcro nos <strong>Artigos 389, 395 e 406 do Código Civil Brasileiro (Lei nº 10.406/2002)</strong>, que estabelecem que o inadimplemento da obrigação constitui o devedor em mora, respondendo este por perdas e danos, juros moratórios e correção monetária.`
+        ]
+    };
+}
 
 function gerarViagem(p) {
     let paragrafos = [];
@@ -158,7 +229,8 @@ function gerarReembolsoPassagem(p) {
 }
 
 async function gerarConsumoGenerico(p, tipo, slug) {
-    let empresa = (p.empresa || p.loja || '').trim();
+    // Prioridade: entidade (vem do frontend via slugs.js brand) > empresa > loja > slug
+    let empresa = (p.entidade || p.empresa || p.loja || '').trim();
     if (!empresa) {
         const raw = '-' + String(slug || '').toLowerCase() + '-';
         const BRANDS = [
@@ -196,15 +268,24 @@ REGRAS OBRIGATÓRIAS: (1) Baseie-se EXCLUSIVAMENTE nos fatos relatados; NÃO inv
     }
 
     let paragrafos = [];
-    paragrafos.push(`Eu, ${p.nome || '____________________'}, portador(a) do CPF nº ${p.cpf || '___________'}, venho por meio deste documento formalizar notificação e requerimento extrajudicial em face desta empresa.`);
 
-    if (p.contrato || p.pedido) {
-        paragrafos.push(`Sou titular do contrato / pedido / instalação identificado como "${p.contrato || p.pedido}", firmado com esta prestadora.`);
+    // Parágrafo 1: Qualificação + direcionamento à empresa específica
+    const destinatario = temEmpresa ? empresa : 'esta empresa';
+    paragrafos.push(`Eu, ${p.nome || '____________________'}, portador(a) do CPF nº ${p.cpf || '___________'}, venho por meio deste documento formalizar notificação e requerimento extrajudicial em face de ${destinatario}.`);
+
+    // Parágrafo 2: Vinculação contratual (mais direto, sem "contrato/pedido/instalação")
+    // Só mostra se tiver contrato/pedido real (não só cidade/UF)
+    const identificador = p.contrato || p.pedido;
+    const pareceCidade = identificador && /^[A-ZÀ-Ú][a-zà-ú]+(\s+[A-ZÀ-Ú][a-zà-ú]+)*\s*\/\s*[A-Z]{2}$/.test(identificador.trim());
+    if (identificador && !pareceCidade) {
+        paragrafos.push(`Sou titular do vínculo identificado como "${identificador}", firmado com ${destinatario}.`);
     }
 
+    // Parágrafo 3: Motivo (argumentação)
     paragrafos.push(paragrafoMotivo);
 
-    paragrafos.push(`Diante do exposto, e amparado pelas normas do Código de Defesa do Consumidor (Lei 8.078/1990), exijo o atendimento e a resolução imediata desta solicitação. A ausência de solução pacífica no prazo razoável ensejará a abertura de reclamações junto aos órgãos de proteção ao crédito (PROCON, Consumidor.gov) e o ajuizamento de ação competente para reparação de danos.`);
+    // Parágrafo 4: Pedido final mais direto e assertivo
+    paragrafos.push(`Com base no exposto e amparado pelo Código de Defesa do Consumidor (Lei 8.078/1990), exijo a resolução imediata desta solicitação. Caso não haja solução pacífica no prazo razoável, adotarei as medidas cabíveis, incluindo reclamação junto aos órgãos de defesa do consumidor (PROCON, Consumidor.gov) e o ajuizamento de ação judicial para reparação de danos.`);
 
     return {
         aiOk: aiOk,
@@ -283,13 +364,15 @@ exports.handler = async function(event) {
             tipo = 'multa';
         } else if (effectiveSlug.includes('reembolso-cancelamento-passagem') || effectiveSlug.includes('voo')) {
             tipo = 'reembolso_passagem';
+        } else if (effectiveSlug.includes('notificacao-extrajudicial') || effectiveSlug.includes('cobranca') || p.nome_credor || p.chave_pix) {
+            tipo = 'notificacao_extrajudicial';
         } else {
             tipo = 'consumo_generico';
         }
 
         // --- GERAÇÃO DO TEXTO ---
         let output = { saudacao: "", corpo_paragrafos: [] };
-        let aiOk = true; // viagem e reembolso não usam IA, sempre "ok"
+        let aiOk = true; // viagem, reembolso e notificação extrajudicial não usam IA, sempre "ok"
 
         if (tipo === 'autorizacao_viagem') {
             output = gerarViagem(p);
@@ -299,6 +382,8 @@ exports.handler = async function(event) {
             aiOk = r.aiOk;
         } else if (tipo === 'reembolso_passagem') {
             output = gerarReembolsoPassagem(p);
+        } else if (tipo === 'notificacao_extrajudicial') {
+            output = gerarNotificacaoExtrajudicial(p);
         } else {
             const r = await gerarConsumoGenerico(p, tipo, slug);
             output = r.doc;
@@ -307,7 +392,7 @@ exports.handler = async function(event) {
 
         // --- FECHAMENTO E ASSINATURAS ---
         if (tipo === 'autorizacao_viagem') {
-            const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
+            const espacoForcado = '\n \n \n \n';
             const cidadeData = `${espacoForcado}${p.cidade_uf_emissao || 'Local'}, ${getTodaySimple()}.`;
 
             let assinaturas = `\n\n\n\n\n__________________________________________________\n${p.resp1_nome || 'Responsável'}`;
@@ -321,9 +406,17 @@ exports.handler = async function(event) {
             }
             output.fechamento = `${cidadeData}${assinaturas}`;
 
+        } else if (tipo === 'notificacao_extrajudicial') {
+            // Fechamento específico: cidade do credor + data atual + assinatura do notificante (centralizada)
+            const espacoForcado = '\n \n \n \n';
+            const dataFormatada = getTodayFormatted();
+            const cidadeData = `${espacoForcado}Feito em ${p.cidade_credor || 'Local'}, ${dataFormatada}.`;
+            const assinatura = `\n\n\n\n\n______________________________\n${p.nome_credor || 'Assinatura'}\nNotificante`;
+            output.fechamento = `${cidadeData}${assinatura}`;
+
         } else {
             const cidade = p.cidade_uf || p.cidade || 'Local';
-            const espacoForcado = '\n\u00A0\n\u00A0\n\u00A0\n';
+            const espacoForcado = '\n \n \n \n';
             const cidadeData = `${espacoForcado}${cidade}, ${getTodaySimple()}.`;
             const assinatura = `\n\n\n\n\n__________________________________________________\n${p.nome || 'Assinatura'}\nCPF: ${p.cpf || '___________'}`;
             output.fechamento = `${cidadeData}${assinatura}`;

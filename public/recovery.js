@@ -16,7 +16,7 @@
             // DETECTA SE É CELULAR (Android, iOS ou tela pequena)
             var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
             var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
-            
+
             // DETECTA TÍTULO pelo conteúdo real do documento (nesta função o texto final já chegou, não é placeholder)
             var htmlLower = html.toLowerCase();
             var tituloViagem = "MODELO DE DOCUMENTO";
@@ -32,6 +32,8 @@
                 tituloViagem = "SOLICITAÇÃO DE REEMBOLSO";
             } else if (htmlLower.includes("bagagem")) {
                 tituloViagem = "RECLAMAÇÃO DE BAGAGEM";
+            } else if (htmlLower.includes("notificação extrajudicial") || htmlLower.includes("notificante (credor)") || htmlLower.includes("artigo 389") || htmlLower.includes("artigo 395") || htmlLower.includes("chave pix para quitação")) {
+                tituloViagem = "NOTIFICAÇÃO EXTRAJUDICIAL";
             }
 
             var host = document.createElement('div');

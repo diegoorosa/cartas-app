@@ -3,6 +3,7 @@
 const PRICE_MAP = {
     'default': 39.90,
     'autorizacao-viagem-menor': 39.90,
+    'notificacao-extrajudicial': 9.90,
     "recurso-multa-transito": 19.90,
     'reembolso-cancelamento-passagem': 19.90,
     'carta-bagagem': 19.90,

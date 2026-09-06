@@ -526,6 +526,17 @@
                             <span style="background:#fef3c7; color:#92400e; font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px;">Economize R$ 1,99</span>
                         </div>
                     </a>
+
+                    <a href="/cobranca.html" data-doc="notificacao" data-slug="notificacao-extrajudicial" data-price="9.90" data-discounted="8.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
+                        <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
+                        <div class="small" style="font-weight:600; margin-bottom:4px;">Notificação Extrajudicial / Cobrança Formal</div>
+                        <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Modelo formal de constituição em mora com fundamento legal (CC Arts. 389, 395) e quitação via Pix.</div>
+                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px;">
+                            <span style="text-decoration:line-through; color:var(--text-muted); font-size:13px;">R$ 9,90</span>
+                            <span style="font-weight:700; color:#10b981; font-size:16px;">R$ 8,91</span>
+                            <span style="background:#fef3c7; color:#92400e; font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px;">Economize R$ 0,99</span>
+                        </div>
+                    </a>
                 </div>
         </div><!-- /extra-docs -->
 
@@ -573,6 +584,18 @@
                     '<li>viagem internacional, por precaução: reconheça firma em <strong>3 vias ou mais</strong> (não só as 2 exigidas) e tire foto/scan da autorização assinada. Companhias aéreas no exterior podem pedir pra ver o documento também no check-in da volta — não é regra fixa, é pra você não ficar sem via nenhuma pra apresentar na Polícia Federal na entrada no Brasil;</li>' +
                     '<li>em situações de guarda, disputa entre os pais ou dúvidas jurídicas, procure a Vara da Infância e Juventude ou um advogado.</li>' +
                     '</ul>';
+            } else if (sl.indexOf('notificacao-extrajudicial') > -1 || sl.indexOf('cobranca') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for uma Notificação Extrajudicial de Cobrança:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de notificação extrajudicial</strong>; revise todo o texto antes de enviar;</li>' +
+                    '<li>a notificação deve ser enviada preferencialmente via <strong>Carta Registrada com AR (Aviso de Recebimento)</strong> ou via Cartório de Títulos e Documentos para prova documental;</li>' +
+                    '<li>o prazo de quitação escolhido (24h, 48h ou 5 dias úteis) começa a contar do <strong>efetivo recebimento</strong> pelo devedor — guarde o comprovante de entrega (AR assinado ou certidão cartorial);</li>' +
+                    '<li>caso o devedor não pague no prazo, você poderá: (a) protestar a dívida em cartório; (b) negativar nos órgãos de proteção ao crédito (SPC/Serasa); (c) ajuizar Ação de Cobrança no Juizado Especial Cível (até 20 salários-mínimos, sem advogado obrigatório);</li>' +
+                    '<li>a chave Pix informada é para recebimento — certifique-se de que está correta e ativa antes de enviar a notificação;</li>' +
+                    '<li>em caso de dúvidas jurídicas complexas ou valores elevados, consulte um advogado.</li>' +
+                    '</ul>';
             }
         })();
 
@@ -605,6 +628,7 @@
             if (s.indexOf('bagagem') > -1) return '/bagagem.html'; // Serve para extraviada e danificada
             if (s.indexOf('reembolso') > -1) return '/reembolso-cancelamento-passagem.html';
             if (s.indexOf('ecommerce') > -1) return '/ecommerce.html';
+            if (s.indexOf('notificacao-extrajudicial') > -1 || s.indexOf('cobranca') > -1) return '/cobranca.html';
 
             // Padrão (Smart Fit, Bancos, etc)
             if (slugStr) return '/doc.html?slug=' + encodeURIComponent(slugStr);
@@ -633,6 +657,89 @@
             // -------------------------------------------------------
             var filename = 'CartasApp Documento'; // Nome padrão
 
+            // -------------------------------------------------------
+            // WHATSAPP KIT — só para notificacao-extrajudicial / cobranca
+            // -------------------------------------------------------
+            var sl = (slug || '').toLowerCase();
+            if ((sl.indexOf('notificacao-extrajudicial') > -1 || sl.indexOf('cobranca') > -1) && payload) {
+                var waContainer = document.getElementById('whatsapp-kit');
+                if (!waContainer) {
+                    waContainer = document.createElement('div');
+                    waContainer.id = 'whatsapp-kit';
+                    waContainer.style.cssText = 'margin-top:24px; padding:16px; background:#f0fdf4; border:1px solid #a7f3d0; border-radius:12px;';
+                    // Insere depois do #actions
+                    var actionsEl = document.getElementById('actions');
+                    if (actionsEl && actionsEl.parentNode) {
+                        actionsEl.parentNode.insertBefore(waContainer, actionsEl.nextSibling);
+                    }
+                }
+
+                var nomeDevedor = payload.nome_devedor || '[Nome do Devedor]';
+                var valorDivida = payload.valor_divida || '[Valor]';
+                var prazoQuitacao = payload.prazo_quitacao === '24h' ? '24 horas' : (payload.prazo_quitacao === '48h' ? '48 horas' : '5 dias úteis');
+                var chavePix = payload.chave_pix || '[Chave Pix]';
+                // Limpa valor para evitar duplicidade de "R$ " (o payload já vem formatado com R$)
+                var valorLimpo = String(valorDivida).replace(/^R\$\s*/, '');
+
+                var msg1 = 'Olá, ' + nomeDevedor + '. Segue anexa a Notificação Extrajudicial formal referente ao débito pendente de R$ ' + valorLimpo + '. O documento estipula o prazo de ' + prazoQuitacao + ' para liquidação via Chave Pix: ' + chavePix + '. Solicito a gentileza de acusar o recebimento.';
+                var msg2 = 'Olá, ' + nomeDevedor + '. Lembrando que o prazo fixado na Notificação Extrajudicial enviada encerra-se hoje. Aguardo o comprovante via Pix para baixa da pendência.';
+                var msg3 = nomeDevedor + ', o prazo da Notificação expirou sem retorno. Como não houve manifestação ou quitação, daremos andamento às providências legais informadas (protesto em cartório e juizado competente).';
+
+                waContainer.innerHTML =
+                    '<div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">' +
+                    '  <span style="font-size:20px;">📱</span>' +
+                    '  <strong style="font-size:15px; color:#065f46;">Kit de Cobrança via WhatsApp</strong>' +
+                    '</div>' +
+                    '<p style="font-size:12px; color:#052e16; margin:0 0 12px;">Mensagens prontas para copiar e enviar. Substitua os dados entre colchetes se necessário.</p>' +
+                    '<div style="display:flex; flex-direction:column; gap:10px;">' +
+                    '  <div style="background:white; border:1px solid #bbf7d0; border-radius:8px; padding:12px;">' +
+                    '    <div style="font-size:11px; color:#166534; font-weight:600; margin-bottom:6px; text-transform:uppercase;">Mensagem 1 — Envio com o anexo</div>' +
+                    '    <p class="wa-msg-text" style="font-size:13px; color:#14532d; margin:0 0 8px; line-height:1.5;"></p>' +
+                    '    <button class="btn btn-outline wa-copy" data-msg="" style="font-size:12px; padding:6px 12px;">📋 Copiar</button>' +
+                    '  </div>' +
+                    '  <div style="background:white; border:1px solid #bbf7d0; border-radius:8px; padding:12px;">' +
+                    '    <div style="font-size:11px; color:#166534; font-weight:600; margin-bottom:6px; text-transform:uppercase;">Mensagem 2 — Lembrete de Vencimento</div>' +
+                    '    <p class="wa-msg-text" style="font-size:13px; color:#14532d; margin:0 0 8px; line-height:1.5;"></p>' +
+                    '    <button class="btn btn-outline wa-copy" data-msg="" style="font-size:12px; padding:6px 12px;">📋 Copiar</button>' +
+                    '  </div>' +
+                    '  <div style="background:white; border:1px solid #bbf7d0; border-radius:8px; padding:12px;">' +
+                    '    <div style="font-size:11px; color:#166534; font-weight:600; margin-bottom:6px; text-transform:uppercase;">Mensagem 3 — Último Aviso</div>' +
+                    '    <p class="wa-msg-text" style="font-size:13px; color:#14532d; margin:0 0 8px; line-height:1.5;"></p>' +
+                    '    <button class="btn btn-outline wa-copy" data-msg="" style="font-size:12px; padding:6px 12px;">📋 Copiar</button>' +
+                    '  </div>' +
+                    '</div>';
+
+                // Set messages safely using textContent / setAttribute to avoid HTML injection / escaping issues
+                var waCards = waContainer.querySelectorAll('.wa-copy');
+                var waMsgs = waContainer.querySelectorAll('.wa-msg-text');
+                if (waMsgs[0]) waMsgs[0].textContent = msg1;
+                if (waMsgs[1]) waMsgs[1].textContent = msg2;
+                if (waMsgs[2]) waMsgs[2].textContent = msg3;
+                if (waCards[0]) waCards[0].setAttribute('data-msg', msg1);
+                if (waCards[1]) waCards[1].setAttribute('data-msg', msg2);
+                if (waCards[2]) waCards[2].setAttribute('data-msg', msg3);
+
+                // Attach copy handlers
+                setTimeout(function() {
+                    document.querySelectorAll('#whatsapp-kit .wa-copy').forEach(function(btn) {
+                        btn.onclick = function() {
+                            var msg = this.getAttribute('data-msg');
+                            navigator.clipboard.writeText(msg).then(function() {
+                                var old = btn.textContent;
+                                btn.textContent = '✅ Copiado!';
+                                btn.style.background = '#dcfce7';
+                                btn.style.borderColor = '#86efac';
+                                setTimeout(function() {
+                                    btn.textContent = old;
+                                    btn.style.background = '';
+                                    btn.style.borderColor = '';
+                                }, 1500);
+                            });
+                        };
+                    });
+                }, 0);
+            }
+
             if (payload) {
                 // Função para limpar string (sem acentos, mantém espaços)
                 function sanitizeName(str) {
@@ -650,6 +757,10 @@
                 else if (payload.placa) {
                     // Ex: Recurso de Multa - ABC1234
                     filename = 'Recurso de Multa - ' + sanitizeName(payload.placa);
+                }
+                else if (payload.nome_devedor) {
+                    // Ex: Notificacao Extrajudicial - Maria Oliveira
+                    filename = 'Notificacao Extrajudicial - ' + sanitizeName(payload.nome_devedor);
                 }
                 else if (payload.nome) {
                     // Ex: Documento - Joao Silva
@@ -777,6 +888,7 @@
                 } else if (sSlug.indexOf('multa') > -1) tituloDoc = "RECURSO DE MULTA";
                 else if (sSlug.indexOf('reembolso') > -1) tituloDoc = "SOLICITAÇÃO DE REEMBOLSO";
                 else if (sSlug.indexOf('bagagem') > -1) tituloDoc = "RECLAMAÇÃO DE BAGAGEM";
+                else if (sSlug.indexOf('notificacao-extrajudicial') > -1 || sSlug.indexOf('cobranca') > -1) tituloDoc = "NOTIFICAÇÃO EXTRAJUDICIAL PARA CONSTITUIÇÃO EM MORA";
                 else if (sSlug.indexOf('consumo') > -1 || sSlug.indexOf('generico') > -1) tituloDoc = "NOTIFICAÇÃO EXTRAJUDICIAL";
                 else if (sSlug.indexOf('academia') > -1) tituloDoc = "CARTA DE CANCELAMENTO - ACADEMIA";
                 else if (sSlug.indexOf('cartao') > -1 || sSlug.indexOf('cartão') > -1) tituloDoc = "RECLAMAÇÃO - CARTÃO DE CRÉDITO";
@@ -797,9 +909,12 @@
                 // Header
                 var header = document.createElement('div');
                 header.style.cssText = 'text-align:center; border-bottom:2px solid #000; padding-bottom:15px; margin-bottom:25px;';
+                var subtituloHeader = (sSlug.indexOf('notificacao-extrajudicial') > -1 || sSlug.indexOf('cobranca') > -1)
+                    ? 'Conforme Artigos 389, 395 e 406 do Código Civil Brasileiro'
+                    : 'Conforme legislação vigente e resoluções aplicáveis';
                 header.innerHTML = '<div style="font-size:32px; margin-bottom:5px;">⚖️</div>' +
                     '<h2 style="font-family:\'Times New Roman\',serif; text-transform:uppercase; margin:0; font-size:18px; color:#000;">' + tituloDoc + '</h2>' +
-                    '<p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">Conforme legislação vigente e resoluções aplicáveis</p>';
+                    '<p style="font-family:Arial,sans-serif; font-size:11px; margin:5px 0 0 0; color:#555;">' + subtituloHeader + '</p>';
                 docBox.appendChild(header);
 
                 // Body - texto seguro via textContent
@@ -1064,7 +1179,8 @@
                     'autorizacao-viagem-menor': 39.90,
                     'recurso-multa-transito': 19.90,
                     'reembolso-cancelamento-passagem': 19.90,
-                    'carta-bagagem': 19.90
+                    'carta-bagagem': 19.90,
+                    'notificacao-extrajudicial': 9.90
                 };
 
                 function hide(docType) {
@@ -1162,6 +1278,18 @@
                                 if (payload.data_voo) prefillData.data_voo = payload.data_voo;
                                 if (payload.numero_bagagem) prefillData.numero_bagagem = payload.numero_bagagem;
                                 if (payload.tipo_problema) prefillData.tipo_problema = payload.tipo_problema;
+                            } else if (targetSlug === 'notificacao-extrajudicial') {
+                                if (payload.nome_credor) prefillData.nome_credor = payload.nome_credor;
+                                if (payload.documento_credor) prefillData.documento_credor = payload.documento_credor;
+                                if (payload.chave_pix) prefillData.chave_pix = payload.chave_pix;
+                                if (payload.cidade_credor) prefillData.cidade_credor = payload.cidade_credor;
+                                if (payload.nome_devedor) prefillData.nome_devedor = payload.nome_devedor;
+                                if (payload.documento_devedor) prefillData.documento_devedor = payload.documento_devedor;
+                                if (payload.tipo_divida) prefillData.tipo_divida = payload.tipo_divida;
+                                if (payload.descricao_divida) prefillData.descricao_divida = payload.descricao_divida;
+                                if (payload.valor_divida) prefillData.valor_divida = payload.valor_divida;
+                                if (payload.data_vencimento) prefillData.data_vencimento = payload.data_vencimento;
+                                if (payload.prazo_quitacao) prefillData.prazo_quitacao = payload.prazo_quitacao;
                             }
 
                             // Modifica a URL com parâmetros de prefill + cupom
@@ -1198,6 +1326,10 @@
                     // Comprou RECURSO DE MULTA
                     hide('multa');
                     prioritize(['reembolso', 'bagagem', 'viagem']);
+                } else if (s.indexOf('notificacao-extrajudicial') > -1 || s.indexOf('cobranca') > -1) {
+                    // Comprou NOTIFICAÇÃO EXTRAJUDICIAL
+                    hide('notificacao');
+                    prioritize(['reembolso', 'multa', 'bagagem', 'viagem']);
                 } else {
                     // Outros tipos (academias, serviços etc.)
                     prioritize(['reembolso', 'multa', 'bagagem', 'viagem']);

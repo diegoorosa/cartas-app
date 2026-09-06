@@ -30,7 +30,8 @@ const COUPONS = {
 
 // Títulos amigáveis para o item exibido no checkout do Mercado Pago
 const TITLE_MAP = {
-    'autorizacao-viagem-menor': 'Autorização de Viagem para Menor'
+    'autorizacao-viagem-menor': 'Autorização de Viagem para Menor',
+    'notificacao-extrajudicial': 'Notificação Extrajudicial / Cobrança Formal'
 };
 
 function tituloAmigavel(slug) {
