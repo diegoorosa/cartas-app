@@ -4,7 +4,6 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
-
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const TEMPLATE_PATH = path.join(PUBLIC_DIR, 'doc.html');
 const SLUGS_PATH = path.join(PUBLIC_DIR, 'slugs.js');
@@ -24,7 +23,7 @@ function sitemapSlugs() {
 }
 
 function escapeHtml(s) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return s.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
 }
 
 function buildPage(template, cfg) {
@@ -65,7 +64,8 @@ function buildPage(template, cfg) {
     null,
     4
   );
-  html = html.replace('</head>', `    <script type="application/ld+json">\n${jsonLd}\n    </script>\n</head>`);
+  html = html.replace('<meta name="robots" content="noindex, follow" />', '');
+  html = html.replace('</head>', `    <meta name="robots" content="noindex, follow">\n    <script type="application/ld+json">\n${jsonLd}\n    </script>\n</head>`);
 
   return html;
 }
