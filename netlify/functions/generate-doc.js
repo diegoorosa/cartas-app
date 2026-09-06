@@ -102,7 +102,8 @@ function gerarNotificacaoExtrajudicial(p) {
     // Formatação de valor monetário
     function formatarValor(valor) {
         if (!valor) return '0,00';
-        const num = parseFloat(valor.toString().replace(/[^\d,.-]/g, '').replace(',', '.'));
+        const limpo = valor.toString().replace(/[^\d,.-]/g, '').replace(',', '.');
+        const num = parseFloat(limpo);
         if (isNaN(num)) return '0,00';
         return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
@@ -122,6 +123,15 @@ function gerarNotificacaoExtrajudicial(p) {
         }
     }
 
+    // Converte prazo bruto para texto legível
+    function formatarPrazo(prazo) {
+        if (!prazo) return '____________________';
+        if (prazo === '5d') return '5 dias úteis';
+        if (prazo === '48h') return '48 horas';
+        if (prazo === '24h') return '24 horas';
+        return prazo; // fallback
+    }
+
     const nomeCredor = p.nome_credor || '____________________';
     const documentoCredor = formatarDoc(p.documento_credor);
     const chavePix = p.chave_pix || '____________________';
@@ -132,13 +142,13 @@ function gerarNotificacaoExtrajudicial(p) {
     const descricaoDivida = p.descricao_divida || '____________________';
     const valorDivida = formatarValor(p.valor_divida);
     const dataVencimento = formatarDataDDMMYYYY(p.data_vencimento);
-    const prazoQuitacao = p.prazo_quitacao || '____________________';
+    const prazoQuitacao = formatarPrazo(p.prazo_quitacao);
     const dataAtualDDMMYYYY = getTodayFormatted();
 
     return {
         saudacao: "NOTIFICAÇÃO EXTRAJUDICIAL PARA CONSTITUIÇÃO EM MORA",
         corpo_paragrafos: [
-            `<strong>Subtítulo:</strong> Conforme Artigos 389, 395 e 406 do Código Civil Brasileiro`,
+            `Conforme Artigos 389, 395 e 406 do Código Civil Brasileiro`,
             `Pelo presente instrumento, <strong>${nomeCredor}</strong>${documentoCredor ? ', inscrito(a) sob o CPF/CNPJ nº ' + documentoCredor : ''}, com domicílio na cidade de <strong>${cidadeCredor}</strong>, vem, respeitosamente, <strong>NOTIFICAR EXTRAJUDICIALMENTE</strong> <strong>${nomeDevedor}</strong>${documentoDevedor ? ', inscrito(a) sob o CPF/CNPJ nº ' + documentoDevedor : ''}, a respeito da dívida pendente referente a: <em>${descricaoDivida}</em>.`,
             `O valor da dívida é de <strong>R$ ${valorDivida}</strong>, com vencimento originário em <strong>${dataVencimento}</strong>. Concede-se o prazo de <strong>${prazoQuitacao}</strong> para quitação integral do débito, contado a partir do efetivo recebimento desta notificação.`,
             `Para quitação, o devedor poderá realizar o pagamento via <strong>Transferência Pix</strong> utilizando a chave: <strong>${chavePix}</strong>. O descumprimento do prazo estipulado ensejará a imediata adoção de todas as medidas legais cabíveis, incluindo: protesto da dívida em Cartório de Títulos e Documentos, inscrição do débito nos órgãos de proteção ao crédito (SPC/Serasa) e ajuizamento de Ação de Cobrança perante o Juizado Especial Cível.`,
