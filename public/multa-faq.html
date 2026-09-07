@@ -330,6 +330,45 @@
             icon.textContent = el.parentElement.classList.contains('active') ? '-' : '+';
         }
     </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var title = document.title;
+  var url = window.location.href;
+  var text = 'Olha esse artigo que encontrei: ' + title + '
+' + url;
+
+  // WhatsApp direct
+  document.querySelectorAll('.btn-share-wa').forEach(function(el) {
+    el.href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(text);
+  });
+
+  // Native share (mobile)
+  document.querySelectorAll('.btn-share-native').forEach(function(btn) {
+    if (!navigator.share) {
+      btn.style.display = 'none';
+      return;
+    }
+    btn.onclick = function() {
+      navigator.share({ title: title, url: url }).catch(function() {});
+    };
+  });
+
+  // Copiar link
+  document.querySelectorAll('.btn-copy-link').forEach(function(btn) {
+    btn.onclick = function() {
+      navigator.clipboard.writeText(url).then(function() {
+        var original = btn.innerHTML;
+        btn.innerHTML = '<span>✅</span> Copiado!';
+        btn.style.borderColor = 'var(--accent-success)';
+        setTimeout(function() {
+          btn.innerHTML = original;
+          btn.style.borderColor = '';
+        }, 2000);
+      });
+    };
+  });
+});
+</script>
 </body>
 
 </html>
