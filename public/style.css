@@ -1834,6 +1834,7 @@ html[data-theme="dark"] .input-error {
 .article-container {
   max-width: 760px;
   margin: 0 auto;
+  padding: 0 24px;
 }
 
 .article-header {
