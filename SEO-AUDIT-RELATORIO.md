@@ -44,17 +44,32 @@ Site estático na Netlify (~175 HTML em `public/`), conteúdo jurídico-consumid
 
 ---
 
-## ⏳ Pendente
-
-### Deploy
-- **Publicar no Netlify** — todos os commits estão no `main`, mas o deploy ainda não foi feito.
+## ✅ Medium e Low (concluídos 8/set/2026)
 
 ### Medium
-- **FAQPage schema**: páginas com FAQ visível não têm FAQPage JSON-LD. Restrição Google (ago/2023): rich results só para gov/saúde — para site comercial o benefício é citação por IA (LLMs), prioridade Info, não Critical.
-- **Imagens sem `alt`** em alguns artigos.
+| Item | Escopo | Status |
+|---|---|---|
+| FAQPage schema | 3 páginas com FAQ visível real: como-fazer-autorizacao-viagem-menor (5 Q&As), modelo-word-pdf-autorizacao-viagem (3), quanto-custa-autorizacao-viagem (4). Demais páginas "faq" são hubs de links, não FAQ-onpage. | ✅ commitado |
+| Imagens sem `alt` | Corrigido nos artigos | ✅ commitado |
 
 ### Low
-- Itens de polimento backlog (a levantar do relatório original do audit).
+| Item | Escopo | Status |
+|---|---|---|
+| Duplicação de conteúdo | 15 páginas tinham o artigo inteiro repetido após `</section>` (H1 órfão + cópia completa) — removido em todas | ✅ commitado |
+| Títulos >65 chars | 39 títulos encurtados para ≤65 (truncamento mobile); `og:title`/`twitter:title` sincronizados | ✅ commitado |
+| dateModified × sitemap lastmod | 33 divergências — ambos atualizados para 2026-09-08 (páginas de fato modificadas) | ✅ commitado |
+| Páginas técnicas no sitemap | **Nada a fazer**: privacidade/termos/recuperar/success são `noindex` por design (adicionar geraria erro "Submitted URL marked noindex" no GSC); sobre/contato já estavam no sitemap | ✅ verificado |
+| og:title faltando | Única indexável sem og:title era o arquivo de verificação do Google (não é página) — nada a fazer | ✅ verificado |
+
+**Validações finais:** 0 títulos >65 no site · dateModified = lastmod em 100% das páginas com schema · JSON-LD válido em todos os blocos (0 erros) · sitemap XML válido (166 URLs, sem duplicatas, sem noindex) · todos os HTML com um único H1.
+
+Commits Low: `2798513` (71 arquivos: títulos, datas, duplicatas, FAQPage, alt) + `49b8d31` (chore).
+
+---
+
+## Deploy
+
+- **Netlify**: deploy automático via push em `main` — pushes de 8/set/2026 inclusos.
 
 ---
 
