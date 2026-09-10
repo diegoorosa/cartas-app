@@ -7,7 +7,6 @@ const path = require('path');
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const TEMPLATE_PATH = path.join(PUBLIC_DIR, 'doc.html');
 const SLUGS_PATH = path.join(PUBLIC_DIR, 'slugs.js');
-const SITEMAP_PATH = path.join(PUBLIC_DIR, 'sitemap.xml');
 const OUT_DIR = path.join(PUBLIC_DIR, 'doc');
 
 function loadSlugs() {
@@ -16,11 +15,6 @@ function loadSlugs() {
   return fn();
 }
 
-function sitemapSlugs() {
-  const xml = fs.readFileSync(SITEMAP_PATH, 'utf8');
-  const matches = [...xml.matchAll(/cartasapp\.com\.br\/doc\/([a-z0-9-]+)/g)];
-  return new Set(matches.map((m) => m[1]));
-}
 
 function escapeHtml(s) {
   return s.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
@@ -73,12 +67,10 @@ function buildPage(template, cfg) {
 function main() {
   const template = fs.readFileSync(TEMPLATE_PATH, 'utf8');
   const slugs = loadSlugs();
-  const wanted = sitemapSlugs();
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
   let count = 0;
   for (const cfg of slugs) {
-    if (!wanted.has(cfg.slug)) continue;
     fs.writeFileSync(path.join(OUT_DIR, `${cfg.slug}.html`), buildPage(template, cfg), 'utf8');
     count++;
   }

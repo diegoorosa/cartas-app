@@ -465,6 +465,41 @@
         </div>
     </footer>
 
+    <!-- Modal de Termos (igual viagem.html) -->
+    <div id="modalTermos"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:100001; align-items:center; justify-content:center; padding:20px; backdrop-filter: blur(4px);">
+        <div
+            style="background:var(--bg-primary); border:1px solid var(--border); border-radius:16px; max-width:500px; width:100%; padding:24px; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; max-height: 90vh;">
+
+            <h3 style="margin-top:0; font-size:20px; color:var(--text-primary); flex-shrink: 0;">Antes de continuar</h3>
+
+            <div
+                style="flex: 1; min-height: 0; margin: 16px 0; background: #f0faf4; border: 1px solid #a7f3d0; border-radius: 8px; padding: 16px; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+                <div style="font-size:14px; color:var(--text-secondary); line-height:1.5;">
+                    <p style="margin-bottom:10px; margin-top:0;">Você está adquirindo um <strong>modelo de carta/documento formal</strong> estruturado com base no Código de Defesa do Consumidor e legislação aplicável, preenchido com seus dados e pronto para imprimir.</p>
+                    <p style="margin-bottom:0;">O documento <strong>não garante o resultado</strong> (cancelamento, estorno, etc.). A decisão final é da empresa ou, em último caso, do Judiciário. Este site não substitui advogado ou consultoria jurídica individual.</p>
+                </div>
+            </div>
+
+            <div style="flex-shrink: 0;">
+                <label class="small"
+                    style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; background:var(--bg-secondary); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                    <input type="checkbox" id="aceite_termos"
+                        style="margin-top:2px; min-width:20px; min-height:20px; cursor:pointer;" />
+                    <span style="font-weight:600; color:var(--text-primary); line-height: 1.4;">
+                        Li, compreendi e concordo com as informações acima e com os <a href="/termos.html"
+                            target="_blank" style="color:#9C7A35; text-decoration:underline;">Termos de Uso</a>.
+                    </span>
+                </label>
+                <div id="err_aceite_termos" class="small" style="display:none;color:#fca5a5;margin-top:6px;">Marque a caixa acima para continuar.</div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button id="btnCancelarTermos" class="btn btn-secondary" style="flex:1;">Cancelar</button>
+                    <button id="btnConfirmarTermos" class="btn btn-primary" style="flex:1;">Confirmar e Pagar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <a href="https://wa.me/5547988616874?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20no%20CartasApp." class="whatsapp-float"
         target="_blank" aria-label="Falar no WhatsApp">
         <svg viewBox="0 0 24 24" class="whatsapp-icon">
@@ -770,8 +805,38 @@
             tentarGerar(1);
         });
 
-        btnPagar.addEventListener('click', async function () {
-            btnPagar.disabled = true; btnPagar.textContent = 'Preparando...';
+        // PAGAR - Abre modal de termos igual ao viagem.html
+        btnPagar.addEventListener('click', function () {
+            var termosVersionEl = document.getElementById('terms_version');
+            if (!termosVersionEl) {
+                termosVersionEl = document.createElement('input');
+                termosVersionEl.type = 'hidden';
+                termosVersionEl.id = 'terms_version';
+                termosVersionEl.value = '2026-09';
+                document.body.appendChild(termosVersionEl);
+            }
+            document.getElementById('modalTermos').style.display = 'flex';
+        });
+
+        // Fechar modal termos
+        document.getElementById('btnCancelarTermos').onclick = function () {
+            document.getElementById('modalTermos').style.display = 'none';
+        };
+
+        // Confirmar termos e ir pro pagamento
+        document.getElementById('btnConfirmarTermos').onclick = async function () {
+            var btnConfirm = document.getElementById('btnConfirmarTermos');
+            var checkbox = document.getElementById('aceite_termos');
+            var errTermos = document.getElementById('err_aceite_termos');
+            if (!checkbox.checked) {
+                if (errTermos) { errTermos.textContent = 'Marque a caixa acima para continuar.'; errTermos.style.display = 'block'; }
+                return;
+            }
+            if (errTermos) errTermos.style.display = 'none';
+            btnConfirm.disabled = true;
+            btnConfirm.classList.add('loading');
+            btnConfirm.textContent = 'Processando...';
+
             try {
                 var payload = getPayload();
                 if (!validateAll(payload)) {
@@ -783,6 +848,10 @@
                 localStorage.setItem('pendingPayload', JSON.stringify(payload));
                 var slugStr = 'carta-negativacao-indevida';
 
+                payload.accepted_terms = true;
+                payload.terms_version = document.getElementById('terms_version') ? document.getElementById('terms_version').value : '2026-09';
+                payload.accepted_at = new Date().toISOString();
+
                 var r = await fetch('/.netlify/functions/mp-checkout', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ slug: slugStr, payload: payload, utm: (window.LMUTM ? LMUTM.get() : {}) })
@@ -790,85 +859,23 @@
                 var data = await r.json();
                 if (!r.ok) throw new Error(data.error || 'Erro no pagamento');
 
+                document.getElementById('modalTermos').style.display = 'none';
                 localStorage.setItem('lastOrderId', data.order_id || '');
                 if (typeof gtag === 'function') {
                     gtag('event', 'begin_checkout', { value: 19.90, currency: 'BRL', items: [{ item_id: slugStr }] });
                 }
-                showPaymentModal(data.init_point, data.order_id, slugStr);
+                // Redirect DIRETO (mesma aba) igual viagem.html - sem polling docReady
+                location.href = data.init_point;
             } catch (e) {
-                if (e.message !== 'Campos inválidos') alert('Erro: ' + e.message);
-                btnPagar.disabled = false; btnPagar.textContent = 'Gerar documento completo (R$ 19,90)';
-            }
-        });
-
-        function showPaymentModal(initPoint, orderId, slug) {
-            var isLight = (document.documentElement.getAttribute('data-theme') === 'light');
-            var cardBG = isLight ? '#ffffff' : '#111827';
-            var cardText = isLight ? '#0f172a' : '#e6eefb';
-
-            var overlay = document.createElement('div');
-            overlay.style = 'position:fixed;inset:0;background:rgba(2,6,23,.85);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
-
-            overlay.innerHTML =
-                '<div style="background:' + cardBG + ';color:' + cardText + ';border:1px solid var(--border);border-radius:16px;max-width:400px;width:90%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.4);text-align:center;">' +
-                '<h3 style="margin:0 0 12px;font-size:20px;">Quase lá!</h3>' +
-                '<p style="margin:0 0 20px;line-height:1.5;color:var(--text-secondary);">Clique no botão abaixo para finalizar o pagamento com segurança no Mercado Pago.</p>' +
-
-                '<div style="display:flex;flex-direction:column;gap:12px;">' +
-                '<button id="lm-goPay" class="btn btn-primary" style="width:100%;padding:14px;font-size:16px;justify-content:center;">Ir para Pagamento (Pix ou Cartão)</button>' +
-                '<button id="lm-close" class="btn btn-outline" style="width:100%;justify-content:center;border:none;">Fechar e corrigir dados</button>' +
-                '</div>' +
-
-                '<p id="lm-statusPay" class="small" style="margin-top:16px;font-size:12px;opacity:0.8;"></p>' +
-                '</div>';
-
-            document.body.appendChild(overlay);
-
-            document.getElementById('lm-close').onclick = function () {
-                overlay.remove();
-                var btnPagar = document.getElementById('btnPagar');
-                if (btnPagar) {
-                    btnPagar.disabled = false;
-                    btnPagar.textContent = 'Gerar documento completo (R$ 19,90)';
+                if (e.message !== 'Campos inválidos' && errTermos) {
+                    errTermos.textContent = 'Não foi possível iniciar o pagamento. Tente novamente em instantes. (' + e.message + ')';
+                    errTermos.style.display = 'block';
                 }
-            };
-
-            async function docReady() {
-                try {
-                    var r = await fetch('/.netlify/functions/generate-doc', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payload: { order_id: orderId }, preview: false })
-                    });
-                    if (!r.ok) return false;
-                    var j = await r.json();
-                    return !!(j && j.output);
-                } catch (e) { return false; }
+                btnConfirm.disabled = false;
+                btnConfirm.classList.remove('loading');
+                btnConfirm.textContent = 'Confirmar e Pagar';
             }
-
-            document.getElementById('lm-goPay').onclick = function () {
-                window.open(initPoint, '_blank', 'noopener');
-
-                var btn = this;
-                btn.textContent = 'Verificando pagamento...';
-                document.getElementById('lm-statusPay').textContent = 'Aguarde, estamos confirmando seu pagamento...';
-
-                var iv = setInterval(async function () {
-                    try {
-                        if (await docReady()) {
-                            clearInterval(iv);
-                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success';
-                            return;
-                        }
-                        var rr = await fetch('/.netlify/functions/order-status?o=' + encodeURIComponent(orderId));
-                        var jj = rr.ok ? await rr.json() : null;
-                        if (jj && jj.status === 'paid') {
-                            clearInterval(iv);
-                            location.href = '/success.html?o=' + encodeURIComponent(orderId) + '&slug=' + encodeURIComponent(slug) + '&s=success';
-                        }
-                    } catch (e) { }
-                }, 3000);
-            };
-        }
+        };
     </script>
     <script>
         // Re-engaja usuários que já compraram e voltam à página

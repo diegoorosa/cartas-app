@@ -325,16 +325,22 @@ exports.handler = async function(event) {
                 return { statusCode: 200, body: JSON.stringify({ output: cached[0].output_json, input_json: cached[0].input_json, cached: true }) };
             }
 
-            // NOVO: se o payload só tem order_id (cliente abriu o link sem os
-            // dados do formulário — outro dispositivo/browser, ou localStorage
-            // expirado), e não há cache no Supabase ainda, NÃO gera placeholder.
-            // Antes de desistir, tenta achar o payload real em checkout_intents
-            // (o capture-lead salva lá antes do pagamento). Se achar, usa ele.
-            // Se não achar, retorna ai_pendente para o success.html continuar
-            // pingando ao invés de cravar um doc vazio que o cliente vai baixar.
+            // BLOQUEIO: geração final (preview=false) só com ghost fields + lookup checkout_intents
+            // NÃO deve gerar doc - o checkout_intents tem o payload ANTES do pagamento.
+            // O success.html envia payload completo do localStorage; o docReady() do polling manda só order_id.
             const FIELDS_FANTASMA = ['order_id', 'orderId', 'ultima_tentativa', 'slug'];
             const temFieldsReais = p && Object.keys(p).some(k => !FIELDS_FANTASMA.includes(k) && p[k]);
-            if (!temFieldsReais) {
+            if (!temFieldsReais && !preview) {
+                // Geração final sem dados reais = polling ou acesso direto sem pagar
+                // NÃO busca em checkout_intents (payload pré-pagamento)
+                return { statusCode: 200, body: JSON.stringify({
+                    output: null,
+                    ai_pendente: true,
+                    motivo: 'pagamento_nao_confirmado'
+                }) };
+            }
+            // Preview (preview=true) ou payload completo: pode tentar lookup em checkout_intents para recovery
+            if (!temFieldsReais && preview) {
                 try {
                     const { data: intent } = await supabase
                         .from('checkout_intents')
@@ -342,11 +348,9 @@ exports.handler = async function(event) {
                         .eq('order_id', ordId)
                         .maybeSingle();
                     if (intent && intent.payload && Object.keys(intent.payload).some(k => !FIELDS_FANTASMA.includes(k))) {
-                        // Achou o payload real — recombina com order_id e segue pra geração
                         Object.assign(p, intent.payload);
                         p.order_id = ordId;
                     } else {
-                        // Não tem payload real em lugar nenum — diz pro cliente esperar
                         return { statusCode: 200, body: JSON.stringify({
                             output: null,
                             ai_pendente: true,
