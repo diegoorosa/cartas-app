@@ -80,12 +80,12 @@
 
             var content = `
                 <div id="p" style="${finalPageStyle}">
-                    
+
                     <div style="position: absolute; top: ${borderMargin}; left: ${borderMargin}; right: ${borderMargin}; bottom: ${borderMargin}; border: 2px solid #000; pointer-events: none; z-index: 0;"></div>
                     <div style="position: absolute; top: ${borderMargin2}; left: ${borderMargin2}; right: ${borderMargin2}; bottom: ${borderMargin2}; border: 1px solid #000; pointer-events: none; z-index: 0;"></div>
 
                     <div style="position: relative; z-index: 1;">
-                        
+
                         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 15px;">
                             <div style="font-size: ${iconSize}; line-height: 1; margin-bottom: 2px;">⚖️</div>
                             <h1 style="font-size: ${h1Size}; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">${tituloViagem}</h1>
@@ -93,6 +93,7 @@
                         </div>
 
                         <div style="text-align: justify; min-height: 350px;">
+                            <style>#p p{margin:0 0 12pt 0;text-indent:1.25cm}#p p:first-child{text-indent:0}</style>
                             ${html}
                         </div>
 

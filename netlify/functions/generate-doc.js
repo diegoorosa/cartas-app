@@ -84,25 +84,36 @@ function formatarDocumento(cpf, doc) {
 
 // --- MOTORES DE GERAÇÃO DE TEXTO (TEMPLATES) ---
 
-function gerarNotificacaoExtrajudicial(p) {
-    // Formatação de documento (CPF/CNPJ)
-    function formatarDoc(doc) {
-        if (!doc || doc.trim() === '') return '';
-        const limpo = doc.replace(/\D/g, '');
-        if (limpo.length === 11) {
-            // CPF
-            return limpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-        } else if (limpo.length === 14) {
-            // CNPJ
-            return limpo.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-        }
-        return doc;
+// Formata CPF/CNPJ com máscara (compartilhada entre template e assinatura)
+function formatarDoc(doc) {
+    if (!doc || doc.trim() === '') return '';
+    const limpo = doc.replace(/\D/g, '');
+    if (limpo.length === 11) {
+        return limpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    } else if (limpo.length === 14) {
+        return limpo.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
     }
+    return doc;
+}
 
-    // Formatação de valor monetário
+function gerarNotificacaoExtrajudicial(p) {
+
+    // Formatação de valor monetário (aceita "R$ 1.000,00", "1000", "1000,50", "1000.50", "1.000")
     function formatarValor(valor) {
         if (!valor) return '0,00';
-        const limpo = valor.toString().replace(/[^\d,.-]/g, '').replace(',', '.');
+        let limpo = valor.toString().replace(/[^\d.,-]/g, '');
+        const temVirgula = limpo.includes(',');
+        const temPonto = limpo.includes('.');
+        if (temVirgula) {
+            // BR: vírgula é decimal; pontos (se houver) são milhar → "1.000,00" vira "1000.00"
+            limpo = limpo.replace(/\./g, '').replace(',', '.');
+        } else if (temPonto) {
+            // Só ponto: "1.000"/"1.000.000" = milhar; "1000.50" = decimal
+            const partes = limpo.split('.');
+            if (partes.length > 2 || (partes.length === 2 && partes[1].length === 3)) {
+                limpo = limpo.replace(/\./g, '');
+            }
+        }
         const num = parseFloat(limpo);
         if (isNaN(num)) return '0,00';
         return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -425,7 +436,8 @@ exports.handler = async function(event) {
             const espacoForcado = '\n \n \n \n';
             const dataFormatada = getTodayFormatted();
             const cidadeData = `${espacoForcado}Feito em ${p.cidade_credor || 'Local'}, ${dataFormatada}.`;
-            const assinatura = `\n\n\n\n\n______________________________\n${p.nome_credor || 'Assinatura'}\nNotificante`;
+            const docCredor = formatarDoc(p.documento_credor);
+            const assinatura = `\n\n\n\n\n______________________________\n${p.nome_credor || 'Assinatura'}${docCredor ? '\nCPF/CNPJ: ' + docCredor : ''}\nNotificante`;
             output.fechamento = `${cidadeData}${assinatura}`;
 
         } else {

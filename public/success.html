@@ -791,10 +791,12 @@
                 var chavePix = payload.chave_pix || '[Chave Pix]';
                 // Limpa valor para evitar duplicidade de "R$ " (o payload já vem formatado com R$)
                 var valorLimpo = String(valorDivida).replace(/^R\$\s*/, '');
+                // Link para o devedor acessar/ver o documento oficial
+                var docLinkKit = location.origin + '/success.html?o=' + encodeURIComponent(orderId || '') + (slug ? '&slug=' + encodeURIComponent(slug) : '');
 
-                var msg1 = 'Olá, ' + nomeDevedor + '. Segue anexa a Notificação Extrajudicial formal referente ao débito pendente de R$ ' + valorLimpo + '. O documento estipula o prazo de ' + prazoQuitacao + ' para liquidação via Chave Pix: ' + chavePix + '. Solicito a gentileza de acusar o recebimento.';
-                var msg2 = 'Olá, ' + nomeDevedor + '. Lembrando que o prazo fixado na Notificação Extrajudicial enviada encerra-se hoje. Aguardo o comprovante via Pix para baixa da pendência.';
-                var msg3 = nomeDevedor + ', o prazo da Notificação expirou sem retorno. Como não houve manifestação ou quitação, daremos andamento às providências legais informadas (protesto em cartório e juizado competente).';
+                var msg1 = 'Olá, ' + nomeDevedor + '. Segue o link da Notificação Extrajudicial formal referente ao débito pendente de R$ ' + valorLimpo + ': ' + docLinkKit + ' — o documento estipula o prazo de ' + prazoQuitacao + ' para liquidação via Chave Pix: ' + chavePix + '. Solicito a gentileza de acusar o recebimento.';
+                var msg2 = 'Olá, ' + nomeDevedor + '. Lembrando que o prazo fixado na Notificação Extrajudicial enviada (disponível em: ' + docLinkKit + ') encerra-se hoje. Aguardo o comprovante via Pix para baixa da pendência.';
+                var msg3 = nomeDevedor + ', o prazo da Notificação (disponível em: ' + docLinkKit + ') expirou sem retorno. Como não houve manifestação ou quitação, daremos andamento às providências legais informadas (protesto em cartório e juizado competente).';
 
                 waContainer.innerHTML =
                     '<div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">' +
@@ -880,14 +882,18 @@
             }
             // -------------------------------------------------------
 
-            btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(fullText); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar texto'; }, 1200); } catch (e) { } };
+            // Link de acesso ao documento (compartilhável — quem abrir pode baixar o PDF)
+            var docLink = location.origin + '/success.html?o=' + encodeURIComponent(orderId || '') + (slug ? '&slug=' + encodeURIComponent(slug) : '');
+
+            btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(docLink); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar'; }, 1200); } catch (e) { } };
 
             // Aqui passamos o "filename" dinâmico para as funções de download
             btnDoc.onclick = function () { LMRecovery.doc(bodyHtml, filename); };
             btnPdf.onclick = function () { LMRecovery.pdf(bodyHtml, filename); };
 
-            btnZap.onclick = function () { var url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(fullText); window.open(url, '_blank'); };
-            btnSuporte.href = 'https://wa.me/5547988616874?text=' + encodeURIComponent('Oi! Preciso de ajuda. Pedido: ' + (orderId || '') + ' | Tipo: ' + (payload && payload.tipo || slug || ''));
+            var docTitleZap = getDocTitleFromSlug(slug) || 'Documento';
+            btnZap.onclick = function () { var msgZap = 'Olá! Gerei meu documento "' + docTitleZap + '" no CartasApp. Acesse aqui: ' + docLink; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msgZap), '_blank'); };
+            btnSuporte.href = 'https://wa.me/5547988616874?text=' + encodeURIComponent('Oi! Preciso de ajuda com meu pedido (Pedido: ' + (orderId || '') + ' | Tipo: ' + (payload && payload.tipo || slug || '') + '). Link do documento: ' + docLink);
 
             // Salvamos também no histórico com o nome correto
             LMRecovery.saveGeneratedDoc({ html: bodyHtml, payload: payload || null, meta: { type: (payload && payload.tipo) || slug || '', orderId: orderId || '', filename: filename } });
