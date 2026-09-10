@@ -649,6 +649,117 @@
         async function sha256Hex(s) { if (!s) return ''; var enc = new TextEncoder().encode(s); var buf = await crypto.subtle.digest('SHA-256', enc); var a = Array.from(new Uint8Array(buf)); return a.map(function (b) { return b.toString(16).padStart(2, '0'); }).join(''); }
         async function buildECData() { try { var p = JSON.parse(localStorage.getItem('pendingPayload') || '{}'); var em = normalizeEmail(p.email); var ph = normalizePhone(p.telefone); var ec = {}; if (em) ec.email = await sha256Hex(em); if (ph) ec.phone_number = await sha256Hex(ph); ec.address = { country: 'BR' }; return ec; } catch (e) { return { address: { country: 'BR' } }; } }
 
+        // Catálogo de títulos por slug (espelha public/slugs.js) — usado para título bonito no card do documento
+        var SLUG_TITLES = {
+            "carta-cancelamento-smart-fit": "Carta de Cancelamento — Smart Fit",
+            "carta-reclamacao-smart-fit-cobranca-indevida": "Reclamação por Cobrança Indevida — Smart Fit",
+            "carta-cancelamento-bluefit": "Carta de Cancelamento — Bluefit",
+            "carta-reclamacao-bluefit-cobranca-indevida": "Reclamação por Cobrança Indevida — Bluefit",
+            "carta-cancelamento-selfit": "Carta de Cancelamento — Selfit",
+            "carta-reclamacao-selfit-cobranca-indevida": "Reclamação por Cobrança Indevida — Selfit",
+            "carta-cancelamento-bodytech": "Carta de Cancelamento — Bodytech",
+            "carta-reclamacao-bodytech-cobranca-indevida": "Reclamação por Cobrança Indevida — Bodytech",
+            "carta-cancelamento-academia-por-mudanca-de-cidade": "Carta de Cancelamento de Academia por Mudança de Cidade",
+            "carta-cancelamento-academia-por-motivo-de-saude": "Carta de Cancelamento por Motivo de Saúde — Academia",
+            "carta-cancelamento-academia-fim-de-fidelidade": "Carta de Cancelamento — Fim de Fidelidade (Academia)",
+            "carta-cancelamento-academia-fechamento-da-unidade": "Carta de Cancelamento por Fechamento da Unidade — Academia",
+            "carta-reclamacao-academia-servico-nao-prestado": "Reclamação — Academia (serviço não prestado)",
+            "carta-reclamacao-academia-problema-na-cobranca": "Reclamação — Academia (problema na cobrança)",
+            "carta-cancelamento-vivo-fibra": "Carta de Cancelamento — Vivo Fibra",
+            "carta-cancelamento-vivo-movel": "Carta de Cancelamento — Vivo Móvel",
+            "carta-reclamacao-vivo-cobranca-indevida": "Reclamação por Cobrança Indevida — Vivo",
+            "carta-cancelamento-claro-net": "Carta de Cancelamento — Claro NET",
+            "carta-cancelamento-claro-movel": "Carta de Cancelamento — Claro Móvel",
+            "carta-reclamacao-claro-cobranca-indevida": "Reclamação por Cobrança Indevida — Claro",
+            "carta-cancelamento-tim": "Carta de Cancelamento — TIM",
+            "carta-reclamacao-tim-cobranca-indevida": "Reclamação por Cobrança Indevida — TIM",
+            "carta-cancelamento-oi": "Carta de Cancelamento — Oi",
+            "carta-reclamacao-oi-cobranca-indevida": "Reclamação por Cobrança Indevida — Oi",
+            "carta-cancelamento-sky-tv": "Carta de Cancelamento — SKY TV",
+            "carta-reclamacao-sky-cobranca-indevida": "Reclamação por Cobrança Indevida — SKY",
+            "carta-cancelamento-plano-de-saude": "Carta de Cancelamento — Plano de Saúde",
+            "carta-reclamacao-plano-de-saude-negativa-de-atendimento": "Reclamação — Negativa de Atendimento (Plano de Saúde)",
+            "carta-cancelamento-internet": "Carta de Cancelamento — Internet (genérico)",
+            "carta-cancelamento-tv-por-assinatura": "Carta de Cancelamento — TV por Assinatura",
+            "carta-cancelamento-telefonia-movel": "Carta de Cancelamento — Telefonia Móvel",
+            "carta-reclamacao-cobranca-indevida-internet": "Reclamação — Cobrança Indevida (Internet)",
+            "carta-reclamacao-cobranca-indevida-tv": "Reclamação — Cobrança Indevida (TV)",
+            "carta-direito-arrependimento-ecommerce": "Carta — Direito de Arrependimento (7 dias, e‑commerce)",
+            "carta-troca-ou-devolucao-produto": "Carta — Troca/Devolução de Produto",
+            "carta-cancelamento-smart-fit-unidade": "Carta de Cancelamento — Smart Fit (informar unidade)",
+            "carta-cancelamento-bluefit-unidade": "Carta de Cancelamento — Bluefit (informar unidade)",
+            "carta-cancelamento-selfit-unidade": "Carta de Cancelamento — Selfit (informar unidade)",
+            "carta-cancelamento-bodytech-unidade": "Carta de Cancelamento — Bodytech (informar unidade)",
+            "carta-cancelamento-bio-ritmo": "Carta de Cancelamento — Bio Ritmo",
+            "carta-reclamacao-bio-ritmo-cobranca-indevida": "Reclamação por Cobrança Indevida — Bio Ritmo",
+            "carta-cancelamento-just-fit": "Carta de Cancelamento — Just Fit",
+            "carta-reclamacao-just-fit-cobranca-indevida": "Reclamação por Cobrança Indevida — Just Fit",
+            "carta-cancelamento-oi-fibra": "Carta de Cancelamento — Oi Fibra",
+            "carta-cancelamento-algar-fibra": "Carta de Cancelamento — Algar Fibra",
+            "carta-cancelamento-claro-tv": "Carta de Cancelamento — Claro TV",
+            "carta-cancelamento-vivo-tv": "Carta de Cancelamento — Vivo TV",
+            "carta-cancelamento-sky-banda-larga": "Carta de Cancelamento — SKY Banda Larga",
+            "carta-reclamacao-oi-cobranca-indevida-internet": "Reclamação — Oi (cobr. indevida Internet)",
+            "carta-reclamacao-algar-cobranca-indevida": "Reclamação — Algar (cobrança indevida)",
+            "carta-reclamacao-claro-tv-cobranca-indevida": "Reclamação — Claro TV (cobrança indevida)",
+            "carta-reclamacao-vivo-tv-cobranca-indevida": "Reclamação — Vivo TV (cobrança indevida)",
+            "carta-reclamacao-sky-banda-larga-cobranca-indevida": "Reclamação — SKY Banda Larga (cobrança indevida)",
+            "carta-cancelamento-cartao-nubank": "Carta de Cancelamento — Cartão Nubank",
+            "carta-cancelamento-cartao-itau": "Carta de Cancelamento — Cartão Itaú",
+            "carta-cancelamento-cartao-santander": "Carta de Cancelamento — Cartão Santander",
+            "carta-cancelamento-cartao-bradesco": "Carta de Cancelamento — Cartão Bradesco",
+            "carta-cancelamento-cartao-caixa": "Carta de Cancelamento — Cartão Caixa",
+            "carta-cancelamento-cartao-banco-do-brasil": "Carta de Cancelamento — Cartão Banco do Brasil",
+            "carta-reclamacao-cobranca-indevida-cartao-nubank": "Reclamação — cobrança indevida (cartão Nubank)",
+            "carta-reclamacao-cobranca-indevida-cartao-itau": "Reclamação — cobrança indevida (cartão Itaú)",
+            "carta-reclamacao-cobranca-indevida-cartao-santander": "Reclamação — cobrança indevida (cartão Santander)",
+            "carta-reclamacao-cobranca-indevida-cartao-bradesco": "Reclamação — cobrança indevida (cartão Bradesco)",
+            "carta-reclamacao-cobranca-indevida-cartao-caixa": "Reclamação — cobrança indevida (cartão Caixa)",
+            "carta-reclamacao-cobranca-indevida-cartao-banco-do-brasil": "Reclamação — cobrança indevida (cartão Banco do Brasil)",
+            "carta-reclamacao-energia-enel-cobranca-indevida": "Reclamação — ENEL (cobrança indevida)",
+            "carta-reclamacao-energia-light-cobranca-indevida": "Reclamação — Light (cobrança indevida)",
+            "carta-reclamacao-energia-cemig-cobranca-indevida": "Reclamação — CEMIG (cobrança indevida)",
+            "carta-reclamacao-energia-cpfl-cobranca-indevida": "Reclamação — CPFL (cobrança indevida)",
+            "carta-reclamacao-energia-coelba-cobranca-indevida": "Reclamação — COELBA (cobrança indevida)",
+            "carta-reclamacao-agua-sabesp-cobranca-indevida": "Reclamação — SABESP (cobrança indevida)",
+            "carta-reclamacao-agua-copasa-cobranca-indevida": "Reclamação — COPASA (cobrança indevida)",
+            "carta-reembolso-atraso-voo-gol": "Carta — Reembolso por Atraso de Voo (GOL)",
+            "carta-reembolso-atraso-voo-latam": "Carta — Reembolso por Atraso de Voo (LATAM)",
+            "carta-reembolso-atraso-voo-azul": "Carta — Reembolso por Atraso de Voo (Azul)",
+            "carta-reembolso-cancelamento-voo-gol": "Carta — Reembolso por Cancelamento de Voo (GOL)",
+            "carta-reembolso-cancelamento-voo-latam": "Carta — Reembolso por Cancelamento de Voo (LATAM)",
+            "carta-reembolso-cancelamento-voo-azul": "Carta — Reembolso por Cancelamento de Voo (Azul)",
+            "carta-reclamacao-produto-defeituoso-vicio-oculto": "Reclamação — Produto com defeito (vício oculto)",
+            "carta-reclamacao-produto-nao-entregue": "Reclamação — Produto não entregue",
+            "carta-reembolso-atraso-entrega-ecommerce": "Carta — Reembolso por atraso de entrega (e‑commerce)",
+            "carta-cancelamento-curso-online": "Carta de Cancelamento — Curso Online",
+            "carta-cancelamento-curso-presencial": "Carta de Cancelamento — Curso Presencial",
+            "carta-cancelamento-matricula-faculdade": "Carta de Cancelamento — Matrícula/Faculdade",
+            "carta-reembolso-matricula-faculdade": "Carta — Reembolso de Matrícula/Faculdade",
+            "carta-bagagem-extraviada": "Carta — Bagagem Extraviada (companhia aérea)",
+            "carta-bagagem-danificada": "Carta — Bagagem Danificada (companhia aérea)",
+
+            // Slugs das páginas de compra legadas (não estão em slugs.js)
+            "reembolso-passagem": "Reembolso de Passagem Aérea",
+            "autorizacao-viagem-menor": "Autorização de Viagem para Menor",
+            "recurso-multa-transito": "Recurso de Multa de Trânsito",
+            "reembolso-cancelamento-passagem": "Reembolso de Passagem Aérea",
+            "carta-bagagem": "Reclamação de Bagagem Extraviada ou Danificada",
+            "notificacao-extrajudicial": "Notificação Extrajudicial / Cobrança Formal",
+            "carta-direito-arrependimento-compra-online": "Carta — Direito de Arrependimento (compra online)",
+            "carta-consumo-generico": "Notificação Extrajudicial (consumo genérico)",
+            "carta-contestacao-cartao-credito": "Contestação de Cobrança — Cartão de Crédito",
+            "carta-ecommerce": "Reclamação — E-commerce",
+            "carta-negativacao-indevida": "Carta — Negativação Indevida",
+            "carta-negativa-plano-saude": "Carta — Negativa de Atendimento (Plano de Saúde)"
+        };
+
+        function getDocTitleFromSlug(slugStr) {
+            if (!slugStr) return 'MODELO DE DOCUMENTO';
+            var s = slugStr.toLowerCase();
+            return SLUG_TITLES[s] || 'MODELO DE DOCUMENTO';
+        }
+
         function attachActions(fullText, payload) {
             var bodyHtml = htmlBodyFromText(fullText);
 
@@ -875,29 +986,9 @@
         function showDocAndScroll(fullText, payload) {
             // Se tiver o elemento docBox, construímos DOM de forma segura
             if (docBox) {
-                // Título decidido pelo produto comprado (slug), nao pelo texto --
-                // o texto pode ainda ser so o placeholder "processando" enquanto o doc real nao chegou.
+                // Título decidido pelo produto comprado (slug), usando catálogo completo
                 var sSlug = (slug || '').toLowerCase();
-                var tituloDoc = "MODELO DE DOCUMENTO";
-                var textoLower = fullText.toLowerCase();
-
-                if (sSlug.indexOf('viagem') > -1) {
-                    tituloDoc = "AUTORIZAÇÃO DE VIAGEM";
-                    if (textoLower.includes("viagem internacional")) tituloDoc += " INTERNACIONAL";
-                    else if (textoLower.includes("viagem nacional")) tituloDoc += " NACIONAL";
-                } else if (sSlug.indexOf('multa') > -1) tituloDoc = "RECURSO DE MULTA";
-                else if (sSlug.indexOf('reembolso') > -1) tituloDoc = "SOLICITAÇÃO DE REEMBOLSO";
-                else if (sSlug.indexOf('bagagem') > -1) tituloDoc = "RECLAMAÇÃO DE BAGAGEM";
-                else if (sSlug.indexOf('notificacao-extrajudicial') > -1 || sSlug.indexOf('cobranca') > -1) tituloDoc = "NOTIFICAÇÃO EXTRAJUDICIAL PARA CONSTITUIÇÃO EM MORA";
-                else if (sSlug.indexOf('consumo') > -1 || sSlug.indexOf('generico') > -1) tituloDoc = "NOTIFICAÇÃO EXTRAJUDICIAL";
-                else if (sSlug.indexOf('academia') > -1) tituloDoc = "CARTA DE CANCELAMENTO - ACADEMIA";
-                else if (sSlug.indexOf('cartao') > -1 || sSlug.indexOf('cartão') > -1) tituloDoc = "RECLAMAÇÃO - CARTÃO DE CRÉDITO";
-                else if (sSlug.indexOf('internet') > -1 || sSlug.indexOf('telecom') > -1 || sSlug.indexOf('telefone') > -1) tituloDoc = "CARTA DE CANCELAMENTO - INTERNET/TELEFONE";
-                else if (sSlug.indexOf('ecommerce') > -1) tituloDoc = "RECLAMAÇÃO - E-COMMERCE";
-                else if (sSlug.indexOf('energia') > -1 || sSlug.indexOf('luz') > -1) tituloDoc = "RECLAMAÇÃO - CONTA DE ENERGIA";
-                else if (sSlug.indexOf('agua') > -1 || sSlug.indexOf('água') > -1) tituloDoc = "RECLAMAÇÃO - CONTA DE ÁGUA";
-                else if (sSlug.indexOf('plano') > -1 || sSlug.indexOf('saude') > -1 || sSlug.indexOf('saúde') > -1) tituloDoc = "CARTA - PLANO DE SAÚDE";
-                else if (sSlug.indexOf('educacao') > -1 || sSlug.indexOf('educação') > -1 || sSlug.indexOf('curso') > -1 || sSlug.indexOf('faculdade') > -1) tituloDoc = "CARTA - CANCELAMENTO CURSO/FACULDADE";
+                var tituloDoc = getDocTitleFromSlug(sSlug);
 
                 // Limpa e constrói DOM seguro
                 docBox.innerHTML = '';
@@ -1093,14 +1184,14 @@
             }
 
             // --- POLLING: aguarda confirmação de pagamento ---
-            // Para PIX/bank_transfer pode demorar mais, estende para 120s.
-            // Para s=success também estendemos para 120s porque o webhook MP
-            // de "approved" frequentemente chega 30–60s DEPOIS do redirect do
-            // cliente, e o polling de 30s anteriores fazia o cliente ver
-            // "Processando..." sem nunca baixar o doc até reabrir o link.
+            // Para PIX/bank_transfer pode demorar mais. Estende para 180s (3 min)
+            // porque o webhook MP de "approved" frequentemente chega 30–90s DEPOIS
+            // do redirect do cliente, e PIX pode levar minutos para ser confirmado.
+            // O polling de 120s anteriores fazia o cliente ver "Processando..."
+            // sem nunca baixar o doc até reabrir o link.
             var start = Date.now();
             var confirmed = false;
-            var maxPollTime = 120000; // unificado: 120s para success E pending
+            var maxPollTime = 180000; // 180s (3 min) — cobre PIX + webhook delay
 
             while (Date.now() - start < maxPollTime) {
                 var st = await getOrderStatus().catch(function () { return null; });
@@ -1114,43 +1205,61 @@
                 // Atualiza mensagem a cada 10s
                 var elapsed = Math.floor((Date.now() - start) / 1000);
                 if (elapsed % 10 === 0 && elapsed > 0) {
-                    info.textContent = 'Aguardando confirmação do pagamento... ' + elapsed + 's (transferências podem levar minutos)';
+                    info.textContent = 'Aguardando confirmação do pagamento... ' + elapsed + 's (PIX/transferências podem levar alguns minutos)';
                 }
                 await new Promise(function (r) { setTimeout(r, 1500); });
             }
 
+            // Se polling expirou sem confirmar, NÃO desista — continua tentando
+            // buscar o documento por mais tempo, pois o webhook pode chegar tarde.
+            // Faz tentativas espaçadas: 3 rápidas, depois 3 a cada 5s, depois 3 a cada 15s.
             if (!confirmed) {
-                // Polling expirou sem order-status confirmar (comum: o webhook MP
-                // chega depois da janela de polling). NÃO minta "Pagamento confirmado".
-                // Tenta buscar o documento no Supabase umas 3x estendidas, e se
-                // mesmo assim nada apareceu, mostra mensagem honesta pedindo reload.
-                info.textContent = 'Pagamento em confirmação final. Aguarde e recarregue em instantes...';
+                info.textContent = 'Pagamento em confirmação final. Aguarde, buscando documento...';
             } else {
                 info.textContent = 'Pagamento confirmado. Carregando documento final...';
             }
 
-            for (var i = 0; i < 3; i++) {
-                try {
-                    var rs = await fetch('/.netlify/functions/generate-doc', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                                slug: slug,
-                                payload: localPayload || { order_id: orderId, ultima_tentativa: i === 2 },
-                                preview: false
-                            })
-                    });
-                    if (rs.ok) {
-                        var js = await rs.json();
-                        if (js && js.output && (!js.ai_pendente || i === 2)) {
-                            var confirmedPayload = js.input_json || localPayload;
-                            var fullText = renderDocText(js.output, confirmedPayload);
-                            showDocAndScroll(fullText, confirmedPayload);
-                            return;
+            // Tentativas de buscar documento (cache do webhook em generations)
+            // Fase 1: 3 rápidas (1s) — caso webhook já tenha chegado
+            // Fase 2: 6 a cada 5s (30s) — caso webhook chegue logo
+            // Fase 3: 6 a cada 15s (90s) — caso webhook atrase mais (comum em PIX)
+            var attempt = 0;
+            var phases = [
+                { count: 3, delay: 1000 },   // 3s total
+                { count: 6, delay: 5000 },   // 30s total
+                { count: 6, delay: 15000 }   // 90s total
+            ];
+            // Total adicional: ~2 min além do polling inicial
+
+            for (var phaseIdx = 0; phaseIdx < phases.length; phaseIdx++) {
+                var phase = phases[phaseIdx];
+                for (var i = 0; i < phase.count; i++) {
+                    try {
+                        var rs = await fetch('/.netlify/functions/generate-doc', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                    slug: slug,
+                                    payload: localPayload || { order_id: orderId, ultima_tentativa: false },
+                                    preview: false
+                                })
+                        });
+                        if (rs.ok) {
+                            var js = await rs.json();
+                            if (js && js.output && !js.ai_pendente) {
+                                var confirmedPayload = js.input_json || localPayload;
+                                var fullText = renderDocText(js.output, confirmedPayload);
+                                showDocAndScroll(fullText, confirmedPayload);
+                                return;
+                            }
+                            // Se ai_pendente: webhook ainda não cacheou — continua tentando
                         }
+                    } catch (e) { }
+                    attempt++;
+                    if (i < phase.count - 1 || phaseIdx < phases.length - 1) {
+                        await new Promise(function (r) { setTimeout(r, phase.delay); });
                     }
-                } catch (e) { }
-                await new Promise(function (r) { setTimeout(r, 1000); });
+                }
             }
 
             // Fallback: se não achou no Supabase, mantém o que já mostrou do cache local
