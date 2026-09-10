@@ -3,6 +3,11 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 
+function normalizeEmail(v) {
+  if (!v) return '';
+  return String(v).trim().toLowerCase();
+}
+
 // Slugs "produto principal" que não passam pelo catálogo genérico de slugs.js
 const TOP_LEVEL_TITLES = {
   'autorizacao-viagem-menor': 'Autorização de Viagem para Menor',
@@ -32,27 +37,57 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  // Verifica autenticação interna
+  // Verifica autenticação interna (para webhooks, cron jobs, etc)
   const authHeader = event.headers['x-internal-secret'] || event.headers['authorization'];
   const INTERNAL_SECRET = process.env.INTERNAL_FUNCTION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
   const isInternal = authHeader === INTERNAL_SECRET || authHeader === `Bearer ${INTERNAL_SECRET}`;
-  
-  if (!isInternal) {
-    console.warn('[send-email] Tentativa não autorizada');
-    return { statusCode: 401, body: 'Unauthorized' };
-  }
 
   try {
     const body = JSON.parse(event.body);
     const { order_id, email_to, recovery_mode, reminder_mode, coupon, final_price, checkout_url, slug } = body;
 
-    console.log(`[send-email] Modo: ${recovery_mode ? 'recuperação' : 'transacional'} | Email: ${email_to} | Order: ${order_id}`);
+    console.log(`[send-email] Modo: ${recovery_mode ? 'recuperação' : 'transacional'} | Email: ${email_to} | Order: ${order_id} | Internal: ${isInternal}`);
 
     if (!order_id || !email_to) {
       return { statusCode: 400, body: 'Faltando order_id ou email_to' };
     }
 
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+    // Se não é chamada interna (ex: frontend success.html), valida que email_to corresponde ao pedido
+    if (!isInternal) {
+      // Busca o email original do checkout_intents ou generations
+      let originalEmail = null;
+
+      const { data: intent } = await supabase
+        .from('checkout_intents')
+        .select('payload')
+        .eq('order_id', order_id)
+        .maybeSingle();
+
+      if (intent?.payload?.email) {
+        originalEmail = normalizeEmail(intent.payload.email);
+      } else {
+        // Fallback: busca no generations
+        const { data: gen } = await supabase
+          .from('generations')
+          .select('input_json')
+          .eq('order_id', order_id)
+          .maybeSingle();
+        if (gen?.input_json?.email) {
+          originalEmail = normalizeEmail(gen.input_json.email);
+        }
+      }
+
+      const requestedEmail = normalizeEmail(email_to);
+
+      if (!originalEmail || requestedEmail !== originalEmail) {
+        console.warn('[send-email] Email não confere com o do pedido', { requestedEmail, originalEmail });
+        return { statusCode: 403, body: 'Não autorizado a enviar para este e-mail' };
+      }
+
+      console.log('[send-email] Validação de email OK para frontend:', requestedEmail);
+    }
     const BASE_URL = process.env.SITE_URL || 'https://www.cartasapp.com.br';
     const logoUrl = `${BASE_URL}/logo.png`;
 
