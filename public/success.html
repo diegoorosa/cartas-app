@@ -791,22 +791,22 @@
                 var chavePix = payload.chave_pix || '[Chave Pix]';
                 // Limpa valor para evitar duplicidade de "R$ " (o payload já vem formatado com R$)
                 var valorLimpo = String(valorDivida).replace(/^R\$\s*/, '');
-                // Link para o devedor acessar/ver o documento oficial
-                var docLinkKit = location.origin + '/success.html?o=' + encodeURIComponent(orderId || '') + (slug ? '&slug=' + encodeURIComponent(slug) : '');
 
-                var msg1 = 'Olá, ' + nomeDevedor + '. Segue o link da Notificação Extrajudicial formal referente ao débito pendente de R$ ' + valorLimpo + ': ' + docLinkKit + ' — o documento estipula o prazo de ' + prazoQuitacao + ' para liquidação via Chave Pix: ' + chavePix + '. Solicito a gentileza de acusar o recebimento.';
-                var msg2 = 'Olá, ' + nomeDevedor + '. Lembrando que o prazo fixado na Notificação Extrajudicial enviada (disponível em: ' + docLinkKit + ') encerra-se hoje. Aguardo o comprovante via Pix para baixa da pendência.';
-                var msg3 = nomeDevedor + ', o prazo da Notificação (disponível em: ' + docLinkKit + ') expirou sem retorno. Como não houve manifestação ou quitação, daremos andamento às providências legais informadas (protesto em cartório e juizado competente).';
+                // SEM link do success nas mensagens: o link é privado do comprador.
+                // O devedor recebe a mensagem + o PDF anexado manualmente.
+                var msg1 = 'Olá, ' + nomeDevedor + '. Segue anexa a Notificação Extrajudicial formal referente ao débito pendente de R$ ' + valorLimpo + '. O documento estipula o prazo de ' + prazoQuitacao + ' para liquidação via Chave Pix: ' + chavePix + '. Solicito a gentileza de acusar o recebimento.';
+                var msg2 = 'Olá, ' + nomeDevedor + '. Lembrando que o prazo fixado na Notificação Extrajudicial enviada encerra-se hoje. Aguardo o comprovante via Pix para baixa da pendência.';
+                var msg3 = nomeDevedor + ', o prazo da Notificação expirou sem retorno. Como não houve manifestação ou quitação, daremos andamento às providências legais informadas (protesto em cartório e juizado competente).';
 
                 waContainer.innerHTML =
                     '<div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">' +
                     '  <span style="font-size:20px;">📱</span>' +
                     '  <strong style="font-size:15px; color:#065f46;">Kit de Cobrança via WhatsApp</strong>' +
                     '</div>' +
-                    '<p style="font-size:12px; color:#052e16; margin:0 0 12px;">Mensagens prontas para copiar e enviar. Substitua os dados entre colchetes se necessário.</p>' +
+                    '<p style="font-size:12px; color:#052e16; margin:0 0 12px;">Mensagens prontas para copiar e enviar junto com o PDF baixado acima (anexe o arquivo manualmente no WhatsApp). Substitua os dados entre colchetes se necessário.</p>' +
                     '<div style="display:flex; flex-direction:column; gap:10px;">' +
                     '  <div style="background:white; border:1px solid #bbf7d0; border-radius:8px; padding:12px;">' +
-                    '    <div style="font-size:11px; color:#166534; font-weight:600; margin-bottom:6px; text-transform:uppercase;">Mensagem 1 — Envio com o anexo</div>' +
+                    '    <div style="font-size:11px; color:#166534; font-weight:600; margin-bottom:6px; text-transform:uppercase;">Mensagem 1 — Envio com o PDF anexado</div>' +
                     '    <p class="wa-msg-text" style="font-size:13px; color:#14532d; margin:0 0 8px; line-height:1.5;"></p>' +
                     '    <button class="btn btn-outline wa-copy" data-msg="" style="font-size:12px; padding:6px 12px;">📋 Copiar</button>' +
                     '  </div>' +
