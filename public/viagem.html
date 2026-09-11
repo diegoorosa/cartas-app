@@ -2168,14 +2168,14 @@
                 saveForm();
                 localStorage.setItem('pendingPayload', JSON.stringify(payload));
                 var slugStr = 'autorizacao-viagem-menor';
+                // Cupom da URL (cross-sell do success.html)
+                var coupon = new URL(location.href).searchParams.get('coupon');
+                var body = { slug: slugStr, payload: payload, utm: (window.LMUTM ? LMUTM.get() : {}) };
+                if (coupon) body.coupon = coupon;
                 var r = await fetch('/.netlify/functions/mp-checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        slug: slugStr,
-                        payload: payload,
-                        utm: (window.LMUTM ? LMUTM.get() : {})
-                    })
+                    body: JSON.stringify(body)
                 });
                 var data = await r.json();
                 if (!r.ok) throw new Error(data.error || 'Erro no pagamento');

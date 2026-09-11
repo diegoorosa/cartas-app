@@ -830,14 +830,15 @@
                 p.terms_version = document.getElementById('terms_version') ? document.getElementById('terms_version').value : '2026-09';
                 p.accepted_at = new Date().toISOString();
 
+                // Cupom da URL (cross-sell do success.html)
+                var coupon = new URL(location.href).searchParams.get('coupon');
+                var body = { slug: 'recurso-multa-transito', payload: p, utm: (window.LMUTM ? LMUTM.get() : {}) };
+                if (coupon) body.coupon = coupon;
+
                 var r = await fetch('/.netlify/functions/mp-checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        slug: 'recurso-multa-transito',
-                        payload: p,
-                        utm: (window.LMUTM ? LMUTM.get() : {})
-                    })
+                    body: JSON.stringify(body)
                 });
                 var data = await r.json();
                 if (!r.ok) throw new Error(data.error);

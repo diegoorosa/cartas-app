@@ -1347,14 +1347,14 @@
 
     <script src="/slugs.js"></script>
     <script>
-        // ===== UPSELL DINÂMICO: monta cards a partir do catálogo completo (slugs.js) =====
+        // ===== UPSELL DINÂMICO: catálogo slugs.js + 5 produtos top-level =====
         document.addEventListener('DOMContentLoaded', function () {
             var grid = document.getElementById('upsell-grid');
-            if (!grid || !window.SLUGS || !window.SLUGS.length) return;
+            if (!grid) return;
 
             var comprado = (slug || '').toLowerCase();
 
-            // Mesmos preços do backend (price-map.js) — price explícito no slugs.js vence
+            // Preços (espelha price-map.js) — preço explícito no slugs.js vence
             var PRICE_MAP = {
                 'default': 39.90,
                 'autorizacao-viagem-menor': 39.90,
@@ -1368,17 +1368,17 @@
             function precoDe(s) { return s.price || PRICE_MAP[s.slug] || PRICE_MAP['default']; }
             function fmtBRL(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
 
-            // Encontra o registro do slug comprado (se for do catálogo)
-            var item = window.SLUGS.filter(function (s) { return s.slug === comprado; })[0];
+            // Produtos top-level (não estão no slugs.js) — entry points do site
+            var TOP_LEVEL = {
+                'autorizacao-viagem-menor': { url: '/viagem.html', title: 'Autorização de Viagem para Menor', desc: 'Autorize a viagem do seu filho (nacional/internacional)', price: 39.90 },
+                'recurso-multa-transito': { url: '/multa.html', title: 'Recurso de Multa de Trânsito', desc: 'Defesa Prévia e JARI com base no CTB', price: 19.90 },
+                'reembolso-cancelamento-passagem': { url: '/reembolso-cancelamento-passagem.html', title: 'Reembolso de Passagem Aérea', desc: 'Exija seu reembolso com base no Art. 740 do CC', price: 19.90 },
+                'carta-bagagem': { url: '/bagagem.html', title: 'Reclamação de Bagagem', desc: 'Extraviada, danificada ou atrasada — indenização', price: 19.90 },
+                'notificacao-extrajudicial': { url: '/cobranca.html', title: 'Notificação Extrajudicial / Cobrança', desc: 'Constituição em mora formal com chave Pix', price: 9.90 }
+            };
 
-            // Seleção: prioriza mesmo brand (documento complementar), depois mesmo tipo,
-            // depois top-sellers de outras categorias.
-            var EVERGREEN = [
-                { slug: 'recurso-multa-transito', title: 'Recurso de Multa de Trânsito', desc: 'Conteste sua multa com fundamento legal' },
-                { slug: 'reembolso-cancelamento-passagem', title: 'Reembolso de Passagem Aérea', desc: 'Peça reembolso com base no Art. 740 do CC' },
-                { slug: 'carta-bagagem', title: 'Carta de Bagagem Extraviada/Danificada', desc: 'Indenização por problema com bagagem' },
-                { slug: 'autorizacao-viagem-menor', title: 'Autorização de Viagem para Menor', desc: 'Autorize a viagem do seu filho' }
-            ];
+            // Encontra o registro do slug comprado (se for do catálogo)
+            var item = window.SLUGS ? window.SLUGS.filter(function (s) { return s.slug === comprado; })[0] : null;
 
             var picks = [];
             function addPick(s) {
@@ -1387,8 +1387,8 @@
                 picks.push(s);
             }
 
+            // 1) Complementar da mesma marca (catálogo)
             if (item) {
-                // 1) Documento complementar da mesma marca (reclamação ↔ cancelamento)
                 window.SLUGS.forEach(function (s) {
                     if (s.brand === item.brand && s.tipo !== item.tipo && s.slug.indexOf('unidade') === -1) addPick(s);
                 });
@@ -1398,30 +1398,38 @@
                 });
             }
 
-            // 3) Evergreen (top-sellers) para preencher até 4 cards
-            var evergreenSlugs = EVERGREEN.map(function (e) { return e.slug; });
-            window.SLUGS.forEach(function (s) {
-                if (evergreenSlugs.indexOf(s.slug) > -1) addPick(s);
+            // 3) Top-level (sempre inclui, são os mais vendidos)
+            Object.keys(TOP_LEVEL).forEach(function (k) {
+                if (k !== comprado && picks.length < 4) {
+                    var t = TOP_LEVEL[k];
+                    addPick({ slug: k, title: t.title, desc: t.desc, price: t.price, url: t.url, isTopLevel: true });
+                }
             });
+
+            // 4) Evergreen do catálogo pra completar
+            if (picks.length < 4 && window.SLUGS) {
+                var evergreenSlugs = ['recurso-multa-transito', 'reembolso-cancelamento-passagem', 'carta-bagagem', 'autorizacao-viagem-menor'];
+                window.SLUGS.forEach(function (s) {
+                    if (evergreenSlugs.indexOf(s.slug) > -1 && s.slug !== comprado) addPick(s);
+                });
+            }
 
             picks = picks.slice(0, 4);
             if (!picks.length) return;
 
-            // Descrições curtas — marca → texto padrão
+            // Descrições para catálogo
             function descDe(s) {
-                var e = EVERGREEN.filter(function (x) { return x.slug === s.slug; })[0];
-                if (e) return e.desc;
+                if (s.desc) return s.desc;
                 return s.tipo === 'cancelamento'
                     ? 'Cancele seu contrato sem multa abusiva'
                     : 'Reclame e resolva seu problema com fundamento legal';
             }
 
-            // Cards top-sellers (evergreen) têm link direto /doc/{slug}; do catálogo vão pra home filtrada
+            // Gera cards
             var htmlCards = picks.map(function (s) {
                 var base = precoDe(s);
                 var desc = descDe(s);
-                var isEvergreen = evergreenSlugs.indexOf(s.slug) > -1;
-                var href = isEvergreen ? '/doc/' + s.slug : '/?doc=' + s.slug;
+                var href = s.url || '/doc/' + s.slug; // top-level tem url próprio; catálogo vai pra /doc/
                 return '<a class="upsell-card" href="' + href + '" data-slug="' + s.slug + '" data-price="' + base + '">' +
                     '<p class="upsell-name">' + s.title + '</p>' +
                     '<p class="upsell-desc">' + desc + '</p>' +
@@ -1432,8 +1440,22 @@
 
             grid.innerHTML = htmlCards;
 
-            // Pré-preenchimento: leva dados comuns da compra atual pro formulário de destino
+            // Pré-preenchimento: só funciona em /doc/{slug} (doc.html lê ?prefill=true)
+            // Top-level pages não têm prefill via URL — só levam o cupom
             grid.querySelectorAll('.upsell-card').forEach(function (card) {
+                var isDocPage = card.href && card.href.indexOf('/doc/') > -1;
+
+                if (!isDocPage) {
+                    // Top-level: só anexa o cupom VOLTA10 (páginas agora leem ?coupon=)
+                    card.addEventListener('click', function (e) {
+                        var url = new URL(this.href, location.origin);
+                        url.searchParams.set('coupon', 'VOLTA10');
+                        e.preventDefault();
+                        location.href = url.toString();
+                    });
+                    return;
+                }
+
                 card.addEventListener('click', function (e) {
                     var payloadStr = localStorage.getItem('pendingPayload');
                     if (!payloadStr) return; // navegação normal
