@@ -284,6 +284,14 @@
                         </p>
                     </div>
 
+                    <!-- Documentos relacionados (dinâmico via slugs.js) -->
+                    <div id="relatedDocs" style="margin-top:32px;border-top:1px solid var(--border);padding-top:24px;display:none;">
+                        <h2 class="section-title" style="font-size: 22px; margin-bottom: 12px;">
+                            Documentos relacionados
+                        </h2>
+                        <div id="relatedDocsGrid" style="display:grid;gap:10px;"></div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -492,6 +500,40 @@
             });
         })();
         // ===== FIM PRÉ-PREENCHIMENTO =====
+
+        // ===== DOCUMENTOS RELACIONADOS (mesma marca/tipo do catálogo) =====
+        (function () {
+            var box = document.getElementById('relatedDocs');
+            var grid = document.getElementById('relatedDocsGrid');
+            if (!box || !grid || !window.SLUGS || !cfg) return;
+
+            var picks = [];
+            function add(s) {
+                if (!s || s.slug === cfg.slug) return;
+                for (var i = 0; i < picks.length; i++) if (picks[i].slug === s.slug) return;
+                if (picks.length < 3) picks.push(s);
+            }
+
+            // 1) Complementar da mesma marca (reclamação ↔ cancelamento)
+            window.SLUGS.forEach(function (s) {
+                if (s.brand === cfg.brand && s.tipo !== cfg.tipo && s.slug.indexOf('unidade') === -1) add(s);
+            });
+            // 2) Mesmo tipo, outra marca (variação do mesmo problema)
+            window.SLUGS.forEach(function (s) {
+                if (s.tipo === cfg.tipo && s.brand !== cfg.brand && s.slug.indexOf('unidade') === -1) add(s);
+            });
+
+            if (!picks.length) return;
+
+            grid.innerHTML = picks.map(function (s) {
+                return '<a href="/doc/' + s.slug + '" style="display:block;padding:12px 14px;border:1px solid var(--border);border-radius:10px;text-decoration:none;background:var(--card-bg);">' +
+                    '<strong style="color:var(--text-primary);font-size:14px;">' + s.title + '</strong>' +
+                    '<span style="display:block;color:var(--text-muted);font-size:12.5px;margin-top:2px;">Ver modelo e gerar &rarr;</span>' +
+                    '</a>';
+            }).join('');
+            box.style.display = '';
+        })();
+        // ===== FIM RELACIONADOS =====
 
         function maskCPF(v) {
             v = (v || '').replace(/\D/g, '').slice(0, 11);

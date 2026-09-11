@@ -470,7 +470,7 @@
             Salve uma c&oacute;pia e leve impresso se houver atendimento presencial (cart&oacute;rio, &oacute;rg&atilde;o p&uacute;blico etc.).
         </p>
 
-        <!-- ===== UPSELL: t&iacute;tulo + grid de cards (apenas 1 em destaque) ===== -->
+        <!-- ===== UPSELL: t&iacute;tulo + grid de cards (dinâmico pelo catálogo) ===== -->
         <div id="extra-docs" style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);">
             <div style="text-align: center; margin-bottom: 14px;">
                 <span class="upsell-badge">&#127873; B&ocirc;nus de cliente</span>
@@ -482,62 +482,9 @@
                 </p>
             </div>
 
-            <div style="display:grid; gap:12px;">
-                    <a href="/viagem.html" data-doc="viagem" data-slug="autorizacao-viagem-menor" data-price="39.90" data-discounted="35.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
-                        <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
-                        <div class="small" style="font-weight:600; margin-bottom:4px;">Autorização de Viagem para Menor</div>
-                        <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Modelo baseado nas orientações da Polícia Federal e CNJ, para imprimir, assinar e reconhecer firma.</div>
-                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px;">
-                            <span style="text-decoration:line-through; color:var(--text-muted); font-size:13px;">R$ 39,90</span>
-                            <span style="font-weight:700; color:#10b981; font-size:16px;">R$ 35,91</span>
-                            <span style="background:#fef3c7; color:#92400e; font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px;">Economize R$ 3,99</span>
-                        </div>
-                    </a>
-
-                    <a href="/multa.html" data-doc="multa" data-slug="recurso-multa-transito" data-price="19.90" data-discounted="17.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
-                        <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
-                        <div class="small" style="font-weight:600; margin-bottom:4px;">Recurso de Multa de Trânsito</div>
-                        <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Modelo de recurso personalizado (Defesa Prévia ou JARI) para apresentar ao órgão de trânsito.</div>
-                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px;">
-                            <span style="text-decoration:line-through; color:var(--text-muted); font-size:13px;">R$ 19,90</span>
-                            <span style="font-weight:700; color:#10b981; font-size:16px;">R$ 17,91</span>
-                            <span style="background:#fef3c7; color:#92400e; font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px;">Economize R$ 1,99</span>
-                        </div>
-                    </a>
-
-                    <a href="/reembolso-cancelamento-passagem.html" data-doc="reembolso" data-slug="reembolso-cancelamento-passagem" data-price="19.90" data-discounted="17.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
-                        <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
-                        <div class="small" style="font-weight:600; margin-bottom:4px;">Reembolso de Passagem Aérea</div>
-                        <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Carta-modelo para exigir reembolso quando a companhia desconta mais que o permitido por lei.</div>
-                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px;">
-                            <span style="text-decoration:line-through; color:var(--text-muted); font-size:13px;">R$ 19,90</span>
-                            <span style="font-weight:700; color:#10b981; font-size:16px;">R$ 17,91</span>
-                            <span style="background:#fef3c7; color:#92400e; font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px;">Economize R$ 1,99</span>
-                        </div>
-                    </a>
-
-                    <a href="/bagagem.html" data-doc="bagagem" data-slug="carta-bagagem" data-price="19.90" data-discounted="17.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
-                        <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
-                        <div class="small" style="font-weight:600; margin-bottom:4px;">Reclamação de Bagagem Extraviada ou Danificada</div>
-                        <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Modelo de reclamação para companhias aéreas em caso de extravio, dano ou atraso na entrega da bagagem.</div>
-                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px;">
-                            <span style="text-decoration:line-through; color:var(--text-muted); font-size:13px;">R$ 19,90</span>
-                            <span style="font-weight:700; color:#10b981; font-size:16px;">R$ 17,91</span>
-                            <span style="background:#fef3c7; color:#92400e; font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px;">Economize R$ 1,99</span>
-                        </div>
-                    </a>
-
-                    <a href="/cobranca.html" data-doc="notificacao" data-slug="notificacao-extrajudicial" data-price="9.90" data-discounted="8.91" style="display:block; text-decoration:none; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg-secondary); position:relative;" class="upsell-card">
-                        <div style="position:absolute; top:-8px; right:-8px; background:#10b981; color:white; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">10% OFF</div>
-                        <div class="small" style="font-weight:600; margin-bottom:4px;">Notificação Extrajudicial / Cobrança Formal</div>
-                        <div class="small" style="color:var(--text-secondary); margin-bottom:8px;">Modelo formal de constituição em mora com fundamento legal (CC Arts. 389, 395) e quitação via Pix.</div>
-                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px;">
-                            <span style="text-decoration:line-through; color:var(--text-muted); font-size:13px;">R$ 9,90</span>
-                            <span style="font-weight:700; color:#10b981; font-size:16px;">R$ 8,91</span>
-                            <span style="background:#fef3c7; color:#92400e; font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px;">Economize R$ 0,99</span>
-                        </div>
-                    </a>
-                </div>
+            <div id="upsell-grid" style="display:grid; gap:12px;">
+                <!-- Cards serão injetados dinamicamente via JS baseado no slug comprado -->
+            </div>
         </div><!-- /extra-docs -->
 
     </div><!-- /container -->
@@ -1398,176 +1345,118 @@
         flow();
     </script>
 
+    <script src="/slugs.js"></script>
     <script>
+        // ===== UPSELL DINÂMICO: monta cards a partir do catálogo completo (slugs.js) =====
         document.addEventListener('DOMContentLoaded', function () {
-            try {
-                var s = (slug || '').toLowerCase();
-                var cards = document.querySelectorAll('#extra-docs a[data-doc]');
-                if (!cards.length) return;
+            var grid = document.getElementById('upsell-grid');
+            if (!grid || !window.SLUGS || !window.SLUGS.length) return;
 
-                // Mapa de preços (baseado no PRICE_MAP do backend)
-                var PRICE_MAP = {
-                    'autorizacao-viagem-menor': 39.90,
-                    'recurso-multa-transito': 19.90,
-                    'reembolso-cancelamento-passagem': 19.90,
-                    'carta-bagagem': 19.90,
-                    'notificacao-extrajudicial': 9.90
-                };
+            var comprado = (slug || '').toLowerCase();
 
-                function hide(docType) {
-                    cards.forEach(function (c) {
-                        if (c.getAttribute('data-doc') === docType) {
-                            c.style.display = 'none';
-                        }
-                    });
-                }
+            // Mesmos preços do backend (price-map.js) — price explícito no slugs.js vence
+            var PRICE_MAP = {
+                'default': 39.90,
+                'autorizacao-viagem-menor': 39.90,
+                'notificacao-extrajudicial': 9.90,
+                'recurso-multa-transito': 19.90,
+                'reembolso-cancelamento-passagem': 19.90,
+                'carta-bagagem': 19.90,
+                'carta-ecommerce': 9.90
+            };
 
-                function prioritize(order) {
-                    var container = document.querySelector('#extra-docs > div');
-                    if (!container) return;
-                    order.forEach(function (docType) {
-                        cards.forEach(function (c) {
-                            if (c.getAttribute('data-doc') === docType) {
-                                container.prepend(c);
-                            }
-                        });
-                    });
-                }
+            function precoDe(s) { return s.price || PRICE_MAP[s.slug] || PRICE_MAP['default']; }
+            function fmtBRL(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
 
-                // Atualiza preços nos cards com desconto de 10%
-                cards.forEach(function(card) {
-                    var slug = card.getAttribute('data-slug');
-                    var basePrice = PRICE_MAP[slug] || parseFloat(card.getAttribute('data-price')) || 0;
-                    var discounted = basePrice * 0.9;
-                    var savings = basePrice - discounted;
+            // Encontra o registro do slug comprado (se for do catálogo)
+            var item = window.SLUGS.filter(function (s) { return s.slug === comprado; })[0];
 
-                    // Atualiza elementos de preço
-                    var priceContainer = card.querySelector('div[style*="display:flex"]');
-                    if (priceContainer) {
-                        var originalPriceEl = priceContainer.querySelector('span[style*="line-through"]');
-                        var discountedPriceEl = priceContainer.querySelector('span[style*="color:#10b981"]');
-                        var savingsEl = priceContainer.querySelector('span[style*="background:#fef3c7"]');
+            // Seleção: prioriza mesmo brand (documento complementar), depois mesmo tipo,
+            // depois top-sellers de outras categorias.
+            var EVERGREEN = [
+                { slug: 'recurso-multa-transito', title: 'Recurso de Multa de Trânsito', desc: 'Conteste sua multa com fundamento legal' },
+                { slug: 'reembolso-cancelamento-passagem', title: 'Reembolso de Passagem Aérea', desc: 'Peça reembolso com base no Art. 740 do CC' },
+                { slug: 'carta-bagagem', title: 'Carta de Bagagem Extraviada/Danificada', desc: 'Indenização por problema com bagagem' },
+                { slug: 'autorizacao-viagem-menor', title: 'Autorização de Viagem para Menor', desc: 'Autorize a viagem do seu filho' }
+            ];
 
-                        if (originalPriceEl) originalPriceEl.textContent = 'R$ ' + basePrice.toFixed(2).replace('.', ',');
-                        if (discountedPriceEl) discountedPriceEl.textContent = 'R$ ' + discounted.toFixed(2).replace('.', ',');
-                        if (savingsEl) savingsEl.textContent = 'Economize R$ ' + savings.toFixed(2).replace('.', ',');
-                    }
-                });
-
-                // Handler de clique para pré-preencher form no destino
-                cards.forEach(function(card) {
-                    card.addEventListener('click', function(e) {
-                        var targetSlug = this.getAttribute('data-slug');
-                        var targetDoc = this.getAttribute('data-doc');
-                        var targetUrl = this.href;
-
-                        // Pega payload do localStorage (dados da compra atual)
-                        var payloadStr = localStorage.getItem('pendingPayload');
-                        if (!payloadStr) return; // Deixa navegação normal
-
-                        try {
-                            var payload = JSON.parse(payloadStr);
-
-                            // Prepara dados para pré-preencher (campos comuns)
-                            var prefillData = {};
-                            if (payload.nome) prefillData.nome = payload.nome;
-                            if (payload.cpf) prefillData.cpf = payload.cpf;
-                            if (payload.email) prefillData.email = payload.email;
-                            if (payload.telefone) prefillData.telefone = payload.telefone;
-                            if (payload.cidade) prefillData.cidade = payload.cidade;
-                            if (payload.contrato) prefillData.contrato = payload.contrato;
-                            if (payload.motivo) prefillData.motivo = payload.motivo;
-
-                            // Campos específicos por tipo
-                            if (targetSlug === 'autorizacao-viagem-menor') {
-                                if (payload.menor_nome) prefillData.menor_nome = payload.menor_nome;
-                                if (payload.menor_nascimento) prefillData.menor_nascimento = payload.menor_nascimento;
-                                if (payload.menor_documento) prefillData.menor_documento = payload.menor_documento;
-                                if (payload.destino) prefillData.destino = payload.destino;
-                                if (payload.data_ida) prefillData.data_ida = payload.data_ida;
-                                if (payload.data_volta) prefillData.data_volta = payload.data_volta;
-                                if (payload.acompanhante_nome) prefillData.acompanhante_nome = payload.acompanhante_nome;
-                                if (payload.acompanhante_documento) prefillData.acompanhante_documento = payload.acompanhante_documento;
-                            } else if (targetSlug === 'recurso-multa-transito') {
-                                if (payload.placa) prefillData.placa = payload.placa;
-                                if (payload.renavam) prefillData.renavam = payload.renavam;
-                                if (payload.cnh) prefillData.cnh = payload.cnh;
-                                if (payload.auto_infracao) prefillData.auto_infracao = payload.auto_infracao;
-                                if (payload.data_infracao) prefillData.data_infracao = payload.data_infracao;
-                                if (payload.local_infracao) prefillData.local_infracao = payload.local_infracao;
-                                if (payload.velocidade) prefillData.velocidade = payload.velocidade;
-                            } else if (targetSlug === 'reembolso-cancelamento-passagem') {
-                                if (payload.cia_aerea) prefillData.cia_aerea = payload.cia_aerea;
-                                if (payload.voo) prefillData.voo = payload.voo;
-                                if (payload.data_voo) prefillData.data_voo = payload.data_voo;
-                                if (payload.origem) prefillData.origem = payload.origem;
-                                if (payload.destino) prefillData.destino = payload.destino;
-                                if (payload.valor_passagem) prefillData.valor_passagem = payload.valor_passagem;
-                            } else if (targetSlug === 'carta-bagagem') {
-                                if (payload.cia_aerea) prefillData.cia_aerea = payload.cia_aerea;
-                                if (payload.voo) prefillData.voo = payload.voo;
-                                if (payload.data_voo) prefillData.data_voo = payload.data_voo;
-                                if (payload.numero_bagagem) prefillData.numero_bagagem = payload.numero_bagagem;
-                                if (payload.tipo_problema) prefillData.tipo_problema = payload.tipo_problema;
-                            } else if (targetSlug === 'notificacao-extrajudicial') {
-                                if (payload.nome_credor) prefillData.nome_credor = payload.nome_credor;
-                                if (payload.documento_credor) prefillData.documento_credor = payload.documento_credor;
-                                if (payload.chave_pix) prefillData.chave_pix = payload.chave_pix;
-                                if (payload.cidade_credor) prefillData.cidade_credor = payload.cidade_credor;
-                                if (payload.nome_devedor) prefillData.nome_devedor = payload.nome_devedor;
-                                if (payload.documento_devedor) prefillData.documento_devedor = payload.documento_devedor;
-                                if (payload.tipo_divida) prefillData.tipo_divida = payload.tipo_divida;
-                                if (payload.descricao_divida) prefillData.descricao_divida = payload.descricao_divida;
-                                if (payload.valor_divida) prefillData.valor_divida = payload.valor_divida;
-                                if (payload.data_vencimento) prefillData.data_vencimento = payload.data_vencimento;
-                                if (payload.prazo_quitacao) prefillData.prazo_quitacao = payload.prazo_quitacao;
-                            }
-
-                            // Modifica a URL com parâmetros de prefill + cupom
-                            var url = new URL(targetUrl);
-                            url.searchParams.set('prefill', 'true');
-                            Object.keys(prefillData).forEach(function(k) {
-                                url.searchParams.set(k, prefillData[k]);
-                            });
-                            url.searchParams.set('coupon', 'VOLTA10');
-
-                            // Navega com a URL modificada
-                            e.preventDefault();
-                            location.href = url.toString();
-
-                        } catch (err) {
-                            console.error('Cross-sell prefill error:', err);
-                        }
-                    });
-                });
-
-                if (s.indexOf('viagem') > -1) {
-                    // Comprou AUTORIZAÇÃO DE VIAGEM
-                    hide('viagem');
-                    prioritize(['reembolso', 'bagagem', 'multa']);
-                } else if (s.indexOf('reembolso') > -1) {
-                    // Comprou REEMBOLSO DE PASSAGEM
-                    hide('reembolso');
-                    prioritize(['bagagem', 'viagem', 'multa']);
-                } else if (s.indexOf('bagagem') > -1) {
-                    // Comprou BAGAGEM
-                    hide('bagagem');
-                    prioritize(['reembolso', 'viagem', 'multa']);
-                } else if (s.indexOf('multa') > -1) {
-                    // Comprou RECURSO DE MULTA
-                    hide('multa');
-                    prioritize(['reembolso', 'bagagem', 'viagem']);
-                } else if (s.indexOf('notificacao-extrajudicial') > -1 || s.indexOf('cobranca') > -1) {
-                    // Comprou NOTIFICAÇÃO EXTRAJUDICIAL
-                    hide('notificacao');
-                    prioritize(['reembolso', 'multa', 'bagagem', 'viagem']);
-                } else {
-                    // Outros tipos (academias, serviços etc.)
-                    prioritize(['reembolso', 'multa', 'bagagem', 'viagem']);
-                }
-            } catch (e) {
-                console.error('Upsell error', e);
+            var picks = [];
+            function addPick(s) {
+                if (!s || s.slug === comprado) return;
+                for (var i = 0; i < picks.length; i++) if (picks[i].slug === s.slug) return;
+                picks.push(s);
             }
+
+            if (item) {
+                // 1) Documento complementar da mesma marca (reclamação ↔ cancelamento)
+                window.SLUGS.forEach(function (s) {
+                    if (s.brand === item.brand && s.tipo !== item.tipo && s.slug.indexOf('unidade') === -1) addPick(s);
+                });
+                // 2) Mesmo tipo, marcas diferentes
+                window.SLUGS.forEach(function (s) {
+                    if (s.tipo === item.tipo && s.brand !== item.brand && s.slug.indexOf('unidade') === -1) addPick(s);
+                });
+            }
+
+            // 3) Evergreen (top-sellers) para preencher até 4 cards
+            var evergreenSlugs = EVERGREEN.map(function (e) { return e.slug; });
+            window.SLUGS.forEach(function (s) {
+                if (evergreenSlugs.indexOf(s.slug) > -1) addPick(s);
+            });
+
+            picks = picks.slice(0, 4);
+            if (!picks.length) return;
+
+            // Descrições curtas — marca → texto padrão
+            function descDe(s) {
+                var e = EVERGREEN.filter(function (x) { return x.slug === s.slug; })[0];
+                if (e) return e.desc;
+                return s.tipo === 'cancelamento'
+                    ? 'Cancele seu contrato sem multa abusiva'
+                    : 'Reclame e resolva seu problema com fundamento legal';
+            }
+
+            // Cards top-sellers (evergreen) têm link direto /doc/{slug}; do catálogo vão pra home filtrada
+            var htmlCards = picks.map(function (s) {
+                var base = precoDe(s);
+                var desc = descDe(s);
+                var isEvergreen = evergreenSlugs.indexOf(s.slug) > -1;
+                var href = isEvergreen ? '/doc/' + s.slug : '/?doc=' + s.slug;
+                return '<a class="upsell-card" href="' + href + '" data-slug="' + s.slug + '" data-price="' + base + '">' +
+                    '<p class="upsell-name">' + s.title + '</p>' +
+                    '<p class="upsell-desc">' + desc + '</p>' +
+                    '<span class="upsell-price">' + fmtBRL(base * 0.9) + '</span>' +
+                    '<span class="upsell-price-strike">' + fmtBRL(base) + '</span>' +
+                    '</a>';
+            }).join('');
+
+            grid.innerHTML = htmlCards;
+
+            // Pré-preenchimento: leva dados comuns da compra atual pro formulário de destino
+            grid.querySelectorAll('.upsell-card').forEach(function (card) {
+                card.addEventListener('click', function (e) {
+                    var payloadStr = localStorage.getItem('pendingPayload');
+                    if (!payloadStr) return; // navegação normal
+
+                    try {
+                        var payload = JSON.parse(payloadStr);
+                        var prefillData = {};
+                        ['nome', 'cpf', 'email', 'telefone', 'cidade', 'contrato', 'motivo'].forEach(function (k) {
+                            if (payload[k]) prefillData[k] = payload[k];
+                        });
+
+                        var url = new URL(this.href, location.origin);
+                        url.searchParams.set('prefill', 'true');
+                        Object.keys(prefillData).forEach(function (k) {
+                            url.searchParams.set(k, prefillData[k]);
+                        });
+                        url.searchParams.set('coupon', 'VOLTA10');
+
+                        e.preventDefault();
+                        location.href = url.toString();
+                    } catch (err) { /* navegação normal */ }
+                });
+            });
         });
         // Re-engaja usuários que já compraram e voltam à página
         // LMRecovery.offerRecover() SÓ deve rodar quando o usuário VOLTA à página depois
