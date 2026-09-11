@@ -55,17 +55,17 @@
                 position: relative;
             `;
 
-            // CONFIGURAÇÃO MOBILE (COMPACTA) - Para evitar quebra de página
+            // CONFIGURAÇÃO MOBILE (COMPACTA) - Para caber tudo em UMA folha A4
             var styleMobile = `
                 width: 210mm;
-                min-height: 296mm; 
-                padding: 12mm 15mm; 
+                min-height: auto;
+                padding: 10mm 12mm;
                 box-sizing: border-box;
                 background: #fff;
                 color: #000;
                 font-family: 'Times New Roman', Times, serif;
-                font-size: 10pt; 
-                line-height: 1.3; 
+                font-size: 9pt;
+                line-height: 1.2;
                 position: relative;
             `;
 
@@ -73,10 +73,10 @@
             var finalPageStyle = isMobile ? styleMobile : stylePC;
             
             // Ajusta tamanho da fonte do título também
-            var h1Size = isMobile ? '14pt' : '16pt';
-            var iconSize = isMobile ? '28px' : '32px';
-            var borderMargin = isMobile ? '5mm' : '8mm'; // Borda mais perto da extremidade no mobile
-            var borderMargin2 = isMobile ? '6mm' : '9mm';
+            var h1Size = isMobile ? '12pt' : '16pt';
+            var iconSize = isMobile ? '24px' : '32px';
+            var borderMargin = isMobile ? '4mm' : '8mm';
+            var borderMargin2 = isMobile ? '5mm' : '9mm';
 
             var content = `
                 <div id="p" style="${finalPageStyle}">
@@ -86,18 +86,18 @@
 
                     <div style="position: relative; z-index: 1;">
 
-                        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 15px;">
-                            <div style="font-size: ${iconSize}; line-height: 1; margin-bottom: 2px;">⚖️</div>
+                        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: ${isMobile ? '8px' : '15px'};">
+                            <div style="font-size: ${iconSize}; line-height: 1; margin-bottom: ${isMobile ? '1px' : '2px'};">⚖️</div>
                             <h1 style="font-size: ${h1Size}; margin: 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">${tituloViagem}</h1>
-                            ${tituloViagem.indexOf('AUTORIZAÇÃO DE VIAGEM') === 0 ? '<p style="font-size: 8pt; margin: 2px 0 0 0; font-style: italic;">Conforme Resolução CNJ nº 295/2019</p>' : ''}
+                            ${tituloViagem.indexOf('AUTORIZAÇÃO DE VIAGEM') === 0 ? '<p style="font-size: 7pt; margin: 1px 0 0 0; font-style: italic;">Conforme Resolução CNJ nº 295/2019</p>' : ''}
                         </div>
 
-                        <div style="text-align: justify; min-height: 350px;">
-                            <style>#p p{margin:0 0 12pt 0;text-indent:1.25cm}#p p:first-child{text-indent:0}</style>
+                        <div style="text-align: justify; min-height: auto;">
+                            <style>#p p{margin:0 0 ${isMobile ? '8pt' : '12pt'} 0;text-indent:${isMobile ? '0.8cm' : '1.25cm'}}#p p:first-child{text-indent:0}</style>
                             ${html}
                         </div>
 
-                        <div style="margin-top: 15px; border-top: 1px dashed #666; padding-top: 5px; text-align: center; font-size: 8pt; color: #444;">
+                        <div style="margin-top: ${isMobile ? '8px' : '15px'}; border-top: 1px dashed #666; padding-top: 3px; text-align: center; font-size: ${isMobile ? '7pt' : '8pt'}; color: #444;">
                             Este documento foi gerado digitalmente através da plataforma <strong>CartasApp.com.br</strong>.<br>
                             Para validade legal, é necessário o reconhecimento de firma em cartório presencial.
                         </div>
