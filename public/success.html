@@ -1117,6 +1117,7 @@
                 // Espelha título no cabeçalho do card premium (acima do papel)
                 var docCardTitleEl = document.getElementById('doc-card-title');
                 if (docCardTitleEl) docCardTitleEl.textContent = tituloDoc;
+                document.title = tituloDoc + ' | CartasApp';
 
                 // Header
                 var header = document.createElement('div');
