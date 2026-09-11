@@ -597,6 +597,117 @@
                     '<li>envie a mensagem ou carta preferencialmente em <strong>dias úteis e horário comercial (entre 8h e 19h)</strong>: além de transmitir postura estritamente institucional, evita questionamentos sobre perturbação do descanso (Art. 71 do CDC e Art. 187 do Código Civil);</li>' +
                     '<li>em caso de dúvidas jurídicas complexas ou valores elevados, consulte um advogado.</li>' +
                     '</ul>';
+            } else if (sl.indexOf('multa') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for um Recurso de Multa de Trânsito:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de recurso administrativo</strong>; revise todo o texto antes de enviar;</li>' +
+                    '<li>respeite o <strong>prazo legal de defesa</strong> indicado na notificação da infração — recurso fora do prazo é arquivado;</li>' +
+                    '<li>envie pelo canal indicado na notificação (DER/DETTRAN ou Painel do Condutor) e <strong>guarde o protocolo de envio</strong>;</li>' +
+                    '<li>junte provas: fotos, documentos, trechos de vídeo — o recurso é decisivo melhor com evidências;</li>' +
+                    '<li>a defesa prévia e o recurso à JARI são gratuitos e não exigem advogado.</li>' +
+                    '</ul>';
+            } else if (sl.indexOf('bagagem') > -1 || sl.indexOf('voo') > -1 || sl.indexOf('passagem') > -1 || sl.indexOf('reembolso') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for uma reclamação/reembolso de voo ou bagagem:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de reclamação</strong>; revise os dados do voo, reserva e valores antes de enviar;</li>' +
+                    '<li>anexe cópias do <strong>bilhete, cartão de embarque, recibos e comprovantes</strong> — sem eles a companhia costuma indeferir;</li>' +
+                    '<li>registre primeiro o reclamo no <strong>atendimento da companhia e guarde o protocolo</strong>; a ANAC recomenda esgotar o canal da empresa antes de acionar a agência;</li>' +
+                    '<li>para bagagem, apresente o <strong>Termo Irregular de Bagagem (TIR)</strong> registrado no aeroporto na hora do problema — é a prova essencial;</li>' +
+                    '<li>se não houver resposta em 15 dias ou a resposta for insuficiente, abra reclamação gratuita no <strong>consumidor.gov.br</strong> ou na <strong>ANAC</strong>.</li>' +
+                    '</ul>';
+            } else if (sl.indexOf('academia') > -1 || sl.indexOf('smart-fit') > -1 || sl.indexOf('bluefit') > -1 || sl.indexOf('selfit') > -1 || sl.indexOf('bodytech') > -1 || sl.indexOf('bio-ritmo') > -1 || sl.indexOf('just-fit') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for um cancelamento/reclamação de academia:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de carta</strong>; revise o contrato (número de matrícula, unidade e fidelidade) antes de enviar;</li>' +
+                    '<li>por lei, <strong>rescisão unilateral de serviços contínuos é permitida</strong> (Art. 57 CCP) — aviso prévio de até 60 dias não pode ser cobrado integralmente de uma vez;</li>' +
+                    '<li>envie por e-mail oficial da rede e <strong>guarde o protocolo/comprovante de envio</strong>; entrega em mãos deve ser registrada com protocolo assinado;</li>' +
+                    '<li>para cobrança indevida após o cancelamento, reúna: contrato, comprovantes de pagamento e a prova do cancelamento;</li>' +
+                    '<li>sem solução em até 30 dias, registre reclamação gratuita no <strong>consumidor.gov.br</strong>, <strong>Procon</strong> ou na ouvidoria da empresa.</li>' +
+                    '</ul>';
+            } else if (sl.indexOf('vivo') > -1 || sl.indexOf('claro') > -1 || sl.indexOf('tim') > -1 || sl.indexOf('oi-') > -1 || sl.indexOf('sky') > -1 || sl.indexOf('algar') > -1 || sl.indexOf('telefonia') > -1 || sl.indexOf('internet') > -1 || sl.indexOf('tv-por-assinatura') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for um cancelamento/reclamação de telefonia, internet ou TV:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de carta</strong>; confira o número do contrato/linha e CPF do titular antes de enviar;</li>' +
+                    '<li>cancelamento deve ser <strong>imediato e sem custo</strong> quando solicitado pelo consumidor (Art. 57 CCP / regulamentação Anatel);</li>' +
+                    '<li>exija <strong>número de protocolo</strong> do atendimento e guarde-o — é sua prova de quando pediu o cancelamento;</li>' +
+                    '<li>para cobrança após cancelamento, a fatura deve ser estornada; pagamento indevido dá direito à <strong>repetição do indébito</strong> (Art. 42 CDC);</li>' +
+                    '<li>sem solução, registre na <strong>Anatel</strong> (telefone 1331 ou site) — a operadora tem 5 dias úteis para responder.</li>' +
+                    '</ul>';
+            } else if (sl.indexOf('plano-de-saude') > -1 || sl.indexOf('saude') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for um cancelamento/reclamação de plano de saúde:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de carta</strong>; revise o número da carteirinha/contrato antes de enviar;</li>' +
+                    '<li>negativa de atendimento/cobertura deve ser <strong>justificada por escrito</strong> (RN 259 ANS) — exija o motivo formal;</li>' +
+                    '<li>em urgência/emergência a operadora não pode recusar atendimento; negativa indevida autoriza reembolso posterior;</li>' +
+                    '<li>guarde: negativa por escrito, prescrição médica, laudos e comprovantes de pagamento;</li>' +
+                    '<li>sem solução, registre na <strong>ANS</strong> (0800 701 9656) ou nos órgãos de defesa do consumidor — prazo de resposta é 5 dias úteis.</li>' +
+                    '</ul>';
+            } else if (sl.indexOf('cartao') > -1 || sl.indexOf('nubank') > -1 || sl.indexOf('itau') > -1 || sl.indexOf('santander') > -1 || sl.indexOf('bradesco') > -1 || sl.indexOf('caixa') > -1 || sl.indexOf('banco-do-brasil') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for um cancelamento/reclamação de cartão ou banco:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de carta</strong>; confira agência, conta e número do cartão antes de enviar;</li>' +
+                    '<li>protesto de cobrança indevida: o banco tem <strong>5 dias úteis</strong> para devolver valor debitado sem autorização (Art. 40 CDC / regulamentação CMN);</li>' +
+                    '<li>envie pelo canal oficial (agência/ouvidoria) e <strong>exija protocolo</strong> — sem ele o banco alega não ter recebido;</li>' +
+                    '<li>guarde extratos, faturas e comprovantes — são a base da reclamação;</li>' +
+                    '<li>sem solução, registre no <strong>Banco Central</strong> (bcc.gov.br) ou <strong>consumidor.gov.br</strong>.</li>' +
+                    '</ul>';
+            } else if (sl.indexOf('energia') > -1 || sl.indexOf('enel') > -1 || sl.indexOf('light') > -1 || sl.indexOf('cemig') > -1 || sl.indexOf('cpfl') > -1 || sl.indexOf('coelba') > -1 || sl.indexOf('agua') > -1 || sl.indexOf('sabesp') > -1 || sl.indexOf('copasa') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for uma reclamação de energia ou água:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de carta</strong>; confira número da unidade consumidora (instalação) e titular antes de enviar;</li>' +
+                    '<li>conta em atraso não pode gerar <strong>corte imediato</strong> — a concessionária deve avisar com 15 dias de antecedência (RCE 456/2001 ANEEL);</li>' +
+                    '<li>para revisão de fatura, o pedido formal suspende ações de corte enquanto analisa (medição irregular é caso específico);</li>' +
+                    '<li>guarde a conta contestada, o protocolo do atendimento e fotos do medidor se houver suspeita de erro;</li>' +
+                    '<li>sem solução, registre na <strong>ANEEL</strong> (0800 728 7282 / energia) ou na ouvidoria da companhia de água.</li>' +
+                    '</ul>';
+            } else if (sl.indexOf('ecommerce') > -1 || sl.indexOf('produto') > -1 || sl.indexOf('troca') > -1 || sl.indexOf('devolucao') > -1 || sl.indexOf('entrega') > -1) {
+                box	.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for uma reclamação de compra online/produto:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de carta</strong>; confira número do pedido e dados da loja antes de enviar;</li>' +
+                    '<li><strong>direito de arrependimento</strong>: 7 dias para desistir sem justificativa em compras online/telas (Art. 49 CDC) — estorno integral;</li>' +
+                    '<li>produto com defeito: 30 dias (durável) / 90 dias (não-durável) para reclamar (Art. 26 CDC); loja tem 30 dias para resolver (Art. 18 CDC);</li>' +
+                    '<li>produto não entregue no prazo: consumidor pode <strong>cancelar e exigir estorno imediato</strong> com correção monetária;</li>' +
+                    '<li>guarde: comprovante do pedido, conversas com o suporte e propaganda que prometeu o produto/prazo;</li>' +
+                    '<li>sem solução, registre no <strong>consumidor.gov.br</strong> ou Procon — grátis e as empresas respondem em até 10 dias.</li>' +
+                    '</ul>';
+            } else if (sl.indexOf('curso') > -1 || sl.indexOf('matricula') > -1 || sl.indexOf('faculdade') > -1) {
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Se este documento for um cancelamento/reembolso de curso ou matrícula:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de carta</strong>; confira número da matrícula/contrato antes de enviar;</li>' +
+                    '<li>antes da entrega do serviço, cancelamento tem <strong>retenção máxima de 10%</strong> do valor (Art. 49 CCP / CDC);</li>' +
+                    '<li>evite o "trancamento de matrícula" se quiser reembolso — o cancelamento definitivo devolve proporcional ao não-cursado;</li>' +
+                    '<li>envie por e-mail oficial e <strong>guarde protocolo</strong>; siga o contrato quanto ao canal de denúncia/cancelamento;</li>' +
+                    '<li>sem solução, registre no <strong>consumidor.gov.br</strong>, Procon ou ouvidoria da instituição (MEC para faculdades).</li>' +
+                    '</ul>';
+            } else {
+                // Aviso padrão para os demais tipos de documento
+                box.style.display = 'block';
+                box.innerHTML =
+                    '<strong>Antes de usar este documento:</strong>' +
+                    '<ul style="margin:6px 0 0 18px; padding:0; list-style:disc;">' +
+                    '<li>trata-se de um <strong>modelo de documento</strong>; revise todo o texto antes de enviar/assinar;</li>' +
+                    '<li>envie por canal que deixe prova (e-mail com protocolo, AR ou cartório) e <strong>guarde o comprovante</strong>;</li>' +
+                    '<li>se não houver resposta em até 30 dias, registre reclamação gratuita no <strong>consumidor.gov.br</strong> ou Procon;</li>' +
+                    '<li>em caso de dúvidas jurídicas, consulte um advogado.</li>' +
+                    '</ul>';
             }
         })();
 
