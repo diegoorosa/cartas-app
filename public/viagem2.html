@@ -1169,6 +1169,20 @@
                                     <div id="walletBrick_container" style="display:none;"></div>
                                     <div id="walletBrick_error" style="display:none; margin-top:12px; padding:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#991b1b; font-size:14px;"></div>
 
+                                    <!-- Fallback: Checkout Pro (Pix/Cartão sem conta MP) -->
+                                    <div id="fallbackPay_container" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+                                        <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:0 0 10px;">
+                                            Não tem conta no Mercado Pago ou prefere pagar direto?
+                                        </p>
+                                        <button class="btn btn-secondary" id="btnFallbackPay"
+                                            style="width: 100%; font-size: 15px; padding: 14px; font-weight: 600;">
+                                            Pix / Cartão (sem conta MP)
+                                        </button>
+                                        <p style="font-size:11px; color:var(--text-muted); text-align:center; margin:8px 0 0;">
+                                            Redireciona para checkout do Mercado Pago — paga como convidado
+                                        </p>
+                                    </div>
+
 
                                     <div class="guarantee-badge" style="margin-top: 12px;">
                                         <svg class="guarantee-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
@@ -2228,6 +2242,9 @@
                 // Mostra o container do Wallet Brick
                 var wbContainer = document.getElementById('walletBrick_container');
                 if (wbContainer) wbContainer.style.display = 'block';
+                // Mostra fallback (Pix/Cartão sem conta MP)
+                var fbContainer = document.getElementById('fallbackPay_container');
+                if (fbContainer) fbContainer.style.display = 'block';
                 // Foca o usuário na área de pagamento
                 var ps = document.getElementById('paySection');
                 if (ps) ps.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2242,6 +2259,45 @@
                 btnConfirm.textContent = 'Confirmar e Pagar';
             }
         };
+
+        // Fallback: Checkout Pro (Pix/Cartão sem conta MP)
+        document.getElementById('btnFallbackPay').addEventListener('click', async function () {
+            var btn = document.getElementById('btnFallbackPay');
+            var originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Redirecionando...';
+            try {
+                var payload = getPayload();
+                saveForm();
+                localStorage.setItem('pendingPayload', JSON.stringify(payload));
+                if (payload.email || payload.telefone) captureLead(payload);
+                var slugStr = 'autorizacao-viagem-menor';
+                var coupon = new URL(location.href).searchParams.get('coupon');
+                var body = { slug: slugStr, payload: payload, utm: (window.LMUTM ? LMUTM.get() : {}) };
+                if (coupon) body.coupon = coupon;
+                var r = await fetch('/.netlify/functions/mp-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                var data = await r.json();
+                if (!r.ok) throw new Error(data.error || 'Erro no pagamento');
+                localStorage.setItem('lastOrderId', data.order_id || '');
+                if (typeof gtag === 'function') {
+                    gtag('event', 'begin_checkout', {
+                        value: data.final_price || 39.9,
+                        currency: 'BRL',
+                        items: [{ item_id: slugStr }]
+                    });
+                }
+                location.href = data.init_point;
+            } catch (e) {
+                alert('Erro: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
 
         // Admin mode removed - moved to protected Netlify Function with proper auth
         // Re-engaja usuários que já compraram e voltam à página
