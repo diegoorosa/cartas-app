@@ -2289,9 +2289,16 @@
 
         // Botão "conta Mercado Pago": monta o Wallet Brick sob demanda (1x)
         var btnWalletMP = document.getElementById('btnWalletMP');
+        var btnWalletMPHTML = btnWalletMP ? btnWalletMP.innerHTML : '';
         if (btnWalletMP) btnWalletMP.addEventListener('click', async function () {
             btnWalletMP.disabled = true;
-            btnWalletMP.textContent = 'Carregando...';
+            btnWalletMP.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;"><span style="width:18px;height:18px;border:2px solid #fff;border-right-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></span>Carregando...</span>';
+            if (!document.getElementById('spin-style')) {
+                var ss = document.createElement('style');
+                ss.id = 'spin-style';
+                ss.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+                document.head.appendChild(ss);
+            }
             try {
                 if (!window._walletBrick) await initWalletBrick();
                 var wbErr = document.getElementById('walletBrick_error');
@@ -2301,7 +2308,7 @@
                 btnWalletMP.style.display = 'none';
             } catch (e) {
                 btnWalletMP.disabled = false;
-                btnWalletMP.textContent = '🔒 Pagar com conta Mercado Pago (1‑click)';
+                btnWalletMP.innerHTML = btnWalletMPHTML;
             }
         });
 
