@@ -77,6 +77,30 @@ exports.handler = async (event) => {
             console.error('[mp-create-preference] ERRO ao salvar intent:', e);
         }
 
+        // Grava consentimento dos termos — paridade com mp-checkout.js
+        // (mesma lógica de logConsent, não bloqueia o fluxo)
+        try {
+            if (payload && payload.accepted_terms) {
+                const headers = event.headers || {};
+                const ip = headers['x-nf-client-connection-ip'] ||
+                    (headers['x-forwarded-for'] || '').split(',')[0] || null;
+                const { error: consentError } = await supabase.from('consent_logs').insert({
+                    order_id: orderId,
+                    slug: slug || (payload.slug || 'documento'),
+                    accepted_terms: true,
+                    terms_version: payload.terms_version || null,
+                    accepted_at: payload.accepted_at || new Date().toISOString(),
+                    ip,
+                    user_agent: headers['user-agent'] || null,
+                    email: payload.email || null,
+                    telefone: payload.telefone || null
+                });
+                if (consentError) console.error('[mp-create-preference] Erro ao salvar consentimento:', consentError);
+            }
+        } catch (err) {
+            console.error('[mp-create-preference] Exceção ao salvar consentimento:', err);
+        }
+
         // Cria preferência do Mercado Pago
         const pref = {
             items: [{
