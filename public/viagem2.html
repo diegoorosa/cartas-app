@@ -1160,27 +1160,33 @@
                                         </div>
                                     </div>
 
+                                    <!-- Botão inicial: abre modal de termos -->
                                     <button class="btn btn-primary" id="btnPagar"
                                         style="width: 100%; font-size: 16px; padding: 16px; font-weight: 600;">
                                         IR PARA PAGAMENTO SEGURO
                                     </button>
 
-                                    <!-- Wallet Brick Container (montado após aceite dos termos) -->
-                                    <div id="walletBrick_container" style="display:none;"></div>
-                                    <div id="walletBrick_error" style="display:none; margin-top:12px; padding:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#991b1b; font-size:14px;"></div>
-
-                                    <!-- Fallback: Checkout Pro (Pix/Cartão sem conta MP) -->
-                                    <div id="fallbackPay_container" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
-                                        <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:0 0 10px;">
-                                            Não tem conta no Mercado Pago ou prefere pagar direto?
-                                        </p>
-                                        <button class="btn btn-secondary" id="btnFallbackPay"
-                                            style="width: 100%; font-size: 15px; padding: 14px; font-weight: 600;">
-                                            Pix / Cartão (sem conta MP)
+                                    <!-- Botões de pagamento (após aceite dos termos) -->
+                                    <div id="payButtons_container" style="display:none;">
+                                        <!-- PRINCIPAL: Pix/Cartão sem conta MP -->
+                                        <button class="btn btn-primary" id="btnFallbackPay"
+                                            style="width: 100%; font-size: 16px; padding: 16px; font-weight: 600;">
+                                            💳 Pagar com Pix ou Cartão
                                         </button>
-                                        <p style="font-size:11px; color:var(--text-muted); text-align:center; margin:8px 0 0;">
-                                            Redireciona para checkout do Mercado Pago — paga como convidado
+                                        <p style="font-size:12px; color:var(--text-muted); text-align:center; margin:6px 0 0;">
+                                            Paga direto — sem precisar de conta no Mercado Pago
                                         </p>
+
+                                        <!-- OU -->
+                                        <div style="text-align:center; margin:16px 0; font-size:13px; color:var(--text-muted); font-weight:600;">OU</div>
+
+                                        <!-- SECUNDÁRIO: Wallet Brick (conta MP) -->
+                                        <button class="btn btn-secondary" id="btnWalletMP"
+                                            style="width: 100%; font-size: 14px; padding: 12px; font-weight: 600;">
+                                            🔒 Pagar com conta Mercado Pago (1‑click)
+                                        </button>
+                                        <div id="walletBrick_container" style="display:none; margin-top:12px;"></div>
+                                        <div id="walletBrick_error" style="display:none; margin-top:12px; padding:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#991b1b; font-size:14px;"></div>
                                     </div>
 
 
@@ -2234,17 +2240,12 @@
             btnConfirm.textContent = 'Carregando pagamento...';
 
             try {
-                // Garante que o brick está montado (idempotente: só monta 1x)
-                if (!window._walletBrick) await initWalletBrick();
                 document.getElementById('modalTermos').style.display = 'none';
-                var wbErr = document.getElementById('walletBrick_error');
-                if (wbErr) wbErr.style.display = 'none';
-                // Mostra o container do Wallet Brick
-                var wbContainer = document.getElementById('walletBrick_container');
-                if (wbContainer) wbContainer.style.display = 'block';
-                // Mostra fallback (Pix/Cartão sem conta MP)
-                var fbContainer = document.getElementById('fallbackPay_container');
-                if (fbContainer) fbContainer.style.display = 'block';
+                // Oculta o botão inicial — as opções de pagamento assumem
+                if (btnPagar) btnPagar.style.display = 'none';
+                // Mostra as opções (Pix/Cartão principal em cima, conta MP embaixo)
+                var pbContainer = document.getElementById('payButtons_container');
+                if (pbContainer) pbContainer.style.display = 'block';
                 // Foca o usuário na área de pagamento
                 var ps = document.getElementById('paySection');
                 if (ps) ps.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2260,7 +2261,25 @@
             }
         };
 
-        // Fallback: Checkout Pro (Pix/Cartão sem conta MP)
+        // Botão "conta Mercado Pago": monta o Wallet Brick sob demanda (1x)
+        var btnWalletMP = document.getElementById('btnWalletMP');
+        if (btnWalletMP) btnWalletMP.addEventListener('click', async function () {
+            btnWalletMP.disabled = true;
+            btnWalletMP.textContent = 'Carregando...';
+            try {
+                if (!window._walletBrick) await initWalletBrick();
+                var wbErr = document.getElementById('walletBrick_error');
+                if (wbErr) wbErr.style.display = 'none';
+                var wbContainer = document.getElementById('walletBrick_container');
+                if (wbContainer) wbContainer.style.display = 'block';
+                btnWalletMP.style.display = 'none';
+            } catch (e) {
+                btnWalletMP.disabled = false;
+                btnWalletMP.textContent = '🔒 Pagar com conta Mercado Pago (1‑click)';
+            }
+        });
+
+        // Principal: Checkout Pro (Pix/Cartão sem conta MP)
         document.getElementById('btnFallbackPay').addEventListener('click', async function () {
             var btn = document.getElementById('btnFallbackPay');
             var originalText = btn.textContent;
