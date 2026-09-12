@@ -86,6 +86,12 @@
             </ul>
             <p>Cada isenção tem seu documento: atestado médico com CRM para saúde; contrato de aluguel ou conta de luz no novo endereço para mudança; e para o fechamento da unidade, a comunicação oficial da Bluefit (ou prints do grupo/app da academia avisando o encerramento). Sem o documento adequado, a academia tende a enquadrar o cancelamento como "com multa" — com ele, a isenção é objetiva.</p>
 
+            <div class="article-cta article-cta-urgent" style="margin: 2.5em 0;">
+                <h3>Precisa da Carta Formal Agora?</h3>
+                <p>PDF e Word prontos — prova jurídica com base na Lei 13.455/2017 e CDC.</p>
+                <a href="/doc.html?slug=carta-cancelamento-bluefit" class="btn btn-primary" style="width: 100%; max-width: 400px; padding: 14px 24px; font-size: 16px; font-weight: 600;">Gerar Carta Bluefit (R$ 9,90)</a>
+            </div>
+
             <h2>Se a Bluefit Recusar ou Dificultar</h2>
             <p>A recusa de cancelamento é prática abusiva (CDC Art. 39, V — o fornecedor é obrigado a facilitar o encerramento). O roteiro que funciona:</p>
             <ol>
@@ -111,6 +117,34 @@
             <div class="faq-item"><summary>Cancelei e a Bluefit continuou cobrando. O que fazer?</summary><div class="faq-answer">Conteste por escrito citando o protocolo de cancelamento e exija estorno. Cobrança após cancelamento aceito é indevida — o CDC Art. 42, parágrafo único, prevê devolução em dobro. Sem resposta, registre no Procon.</div></div>
             <div class="faq-item"><summary>A multa de 30% pode ser cobrada em qualquer mês da fidelidade?</summary><div class="faq-answer">Não. A multa deve ser proporcional ao tempo restante do contrato — quem cancela no 11º mês de uma fidelidade de 12 paga proporcional a 1 mês, não o teto. Percentual fixo ignorando o tempo decorrido é abusivo (Lei 13.455/2017).</div></div>
         </div></div></section>
+
+    <!-- Sticky CTA Mobile -->
+    <div class="sticky-cta-mobile" style="display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-primary); border-top:1px solid var(--border); padding:12px 16px; z-index:100; box-shadow:0 -4px 20px rgba(0,0,0,.08);">
+        <div style="max-width:640px; margin:0 auto; display:flex; gap:12px; align-items:center; justify-content:space-between;">
+            <div style="flex:1; min-width:0;">
+                <div style="font-weight:700; font-size:14px; color:var(--text-primary);">Gerar Carta Bluefit</div>
+                <div style="font-size:12px; color:var(--text-muted);">R$ 9,90 · PDF + Word · Lei 13.455/2017</div>
+            </div>
+            <a href="/doc.html?slug=carta-cancelamento-bluefit" class="btn btn-primary" style="white-space:nowrap; padding:10px 16px; font-size:14px;">Gerar Agora</a>
+        </div>
+    </div>
+    <script>
+    (function() {
+        var sticky = document.querySelector('.sticky-cta-mobile');
+        if (!sticky) return;
+        var lastScroll = window.scrollY;
+        var articleEnd = document.querySelector('section.article-page');
+        var threshold = articleEnd ? articleEnd.getBoundingClientRect().bottom + window.scrollY - window.innerHeight * 0.3 : 0;
+        function onScroll() {
+            var scrollY = window.scrollY;
+            var show = scrollY > threshold && window.innerWidth <= 768;
+            sticky.style.display = show ? 'block' : 'none';
+            lastScroll = scrollY;
+        }
+        window.addEventListener('scroll', onScroll, {passive: true});
+        onScroll();
+    })();
+    </script>
 
     <footer class="footer">
         <div class="container">
