@@ -1471,7 +1471,7 @@
                     try {
                         var payload = JSON.parse(payloadStr);
                         var prefillData = {};
-                        ['nome', 'cpf', 'email', 'telefone', 'cidade', 'contrato', 'motivo'].forEach(function (k) {
+                        ['nome', 'cpf', 'email', 'telefone', 'cidade', 'motivo'].forEach(function (k) {
                             if (payload[k]) prefillData[k] = payload[k];
                         });
 

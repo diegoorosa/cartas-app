@@ -186,8 +186,6 @@
                         </label>
                         <input class="input" id="cidade" placeholder="Ex.: São Paulo/SP" />
 
-                        <label class="label">Unidade/Contrato (opcional)</label>
-                        <input class="input" id="contrato" placeholder="Ex.: Unidade Vila Mariana, Contrato 12345" />
 
                         <label class="label">Motivo ou resumo do caso <span class="required-star">*</span></label>
                         <textarea class="input" id="motivo" rows="3"
@@ -437,7 +435,6 @@
                 'email': 'email',
                 'telefone': 'telefone',
                 'cidade': 'cidade',
-                'contrato': 'contrato',
                 'motivo': 'motivo',
                 // viagem
                 'menor_nome': 'menor_nome',
@@ -562,7 +559,6 @@
         var nomeInput = document.getElementById('nome'),
             cpfInput = document.getElementById('cpf'),
             cidadeInput = document.getElementById('cidade'),
-            contratoInput = document.getElementById('contrato'),
             motivoInput = document.getElementById('motivo');
         cpfInput.addEventListener('input', function () { this.value = maskCPF(this.value); });
 
@@ -577,7 +573,6 @@
                 email: document.getElementById('email').value.trim(),
                 telefone: document.getElementById('telefone').value.trim(),
                 cidade_uf: cidadeInput.value.trim(),
-                contrato: contratoInput.value.trim(),
                 motivo: motivoInput.value.trim(),
                 utm: window.LMUTM ? LMUTM.get() : {}
             };
