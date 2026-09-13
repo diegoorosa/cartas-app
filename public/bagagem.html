@@ -543,6 +543,21 @@
       return ok;
     }
 
+    function captureLead(p) {
+      if (!p.email) return;
+      fetch('/.netlify/functions/capture-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: p.email,
+          telefone: p.telefone,
+          nome: p.nome,
+          slug: 'carta-bagagem',
+          payload: p
+        })
+      }).catch(function (e) { console.log('Lead capture bg error', e); });
+    }
+
     // ---------- MULTI-STEP ----------
     var currentStep = 1;
     function showStep(step) {
@@ -648,6 +663,8 @@
             btnPreview.textContent = 'Gerar prévia gratuita';
             return;
           }
+
+          captureLead(p);
 
           var r = await fetch('/.netlify/functions/generate-doc', {
             method: 'POST',
