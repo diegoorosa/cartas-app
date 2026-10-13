@@ -121,7 +121,7 @@ exports.handler = async (event) => {
         ? `⏰ ÚLTIMA CHANCE — "${docTitle}" — ${discountPercent} OFF expira em 12h`
         : `⏰ Sua prévia de "${docTitle}" expira em 24h — ${discountPercent} OFF`;
 
-      textBody = `Olá!\n\nVocê preencheu os dados para "${docTitle}" mas não finalizou o pagamento.\n\nA prévia expira em 24 horas. Use o cupom ${coupon || 'VOLTA10'} para ${discountPercent} OFF:\n${actionLink}\n\nPreço com desconto: ${priceDisplay}\n\n---\nAVISO: este é um modelo de documento gerado automaticamente. O CartasApp não presta assessoria jurídica e não garante aceitação por órgãos públicos, cartórios ou empresas. Revise os dados antes de assinar.\n`;
+      textBody = `Olá!\n\nVocê preencheu os dados para "${docTitle}" mas não finalizou o pagamento.\n\nA prévia expira em 24 horas. Use o cupom ${coupon || 'VOLTA10'} para ${discountPercent} OFF:\n${actionLink}\n\nPreço com desconto: ${priceDisplay}\nPagamento via Mercado Pago (Pix ou cartão, sem criar conta). Após pagar, o documento aparece na tela e chega no seu e-mail em até 1 minuto. Garantia de 7 dias: se não usar, devolvemos 100%.\n\n---\nAVISO: este é um modelo de documento gerado automaticamente. O CartasApp não presta assessoria jurídica e não garante aceitação por órgãos públicos, cartórios ou empresas. Revise os dados antes de assinar.\n`;
 
       htmlBody = `
         <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
@@ -163,6 +163,9 @@ exports.handler = async (event) => {
 
           <p style="font-size: 14px; color: #666; margin-top: 24px;">
             <strong>Dica:</strong> Após o pagamento, você poderá baixar o documento em PDF diretamente pelo link enviado no e-mail de confirmação.
+          </p>
+          <p style="font-size: 13px; color: #666; margin-top: 8px;">
+            <strong>Pagamento fácil:</strong> pelo Mercado Pago, com Pix ou cartão à vista — não precisa criar conta. O documento aparece na tela e chega no seu e-mail em até 1 minuto. Garantia de 7 dias: se não usar, devolvemos 100%.
           </p>
 
           <hr style="border: 0; border-top: 1px solid #eee; margin: 24px 0;">
