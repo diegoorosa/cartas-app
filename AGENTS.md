@@ -55,7 +55,8 @@ All serverless functions rely on these: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_K
 ## Session history
 See `SESSION_LOG.md` for detailed context on past bugs (the orphan `}` SyntaxError, the 505-line CSS deletion, CSP breakage, admin backdoor removal, price audits). Read it before making CSS or CSP changes.
 
-## Bug known: success.html não mostra o documento se o webhook MP chegar depois do polling
+## Bug (RESOLVIDO): success.html não mostrava o documento se o webhook MP chegasse depois do polling
+- **Status (2026-10-12): resolvido.** `success.html` agora usa `maxPollTime = 180000` (3 min) unificado (linha ~1271), cobrindo PIX + delay do webhook. A mensagem mentirosa "Pagamento confirmado" e o polling de 30s do fluxo `s=success` existem apenas no backup `success.html.v6-backup` — não no arquivo ativo.
 - **Sintoma real observado (2026-07-27)**: cliente pagou, recebeu o e-mail de pagamento aprovado, mas o documento NÃO gerou na primeira abertura do /success.html. Só apareceu quando a pessoa reabriu o link um tempo depois.
 - **Causa raiz**: `mp-webhook.js` roda assíncrono quando o MP dispara o webhook de `approved`. Esse webhook frequentemente chega 30–60s DEPOIS do redirect do cliente para `/success.html?s=success`. O `success.html` faz polling de `order-status` por **apenas 30s** no fluxo `s=success` (linha 936: `maxPollTime = s === 'pending' ? 120000 : 30000`). Quando o polling expira antes do webhook processar:
   1. `order-status` ainda não acha nada em `generations` (o webhook ainda não rodou) nem `_payment_id` em `checkout_intents` → retorna `pending`.
