@@ -136,6 +136,14 @@
     <section class="article-page"><div class="article-container"><div class="article-header"><a href="/" class="article-back-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg> ← Voltar para Dicas</a><h1 class="article-title">Autorização para Excursão Escolar: O que os pais precisam saber</h1><div class="article-meta"><p class="small">Atualizado em 2026 • Tempo de leitura: 3 min</p></div></div><div class="article-body">
                 <p>Passeios pedagógicos e viagens de formatura são momentos incríveis, mas a burocracia é pesada. A escola organiza o transporte, mas a responsabilidade pela documentação legal é dos pais.</p>
 
+                <div style="margin: 24px 0; padding: 18px 20px; background: var(--bg-secondary); border: 1px solid var(--border); border-left: 4px solid var(--accent-primary); border-radius: 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px;">
+                    <div style="flex: 1 1 260px; font-size: 15px; color: var(--text-primary); line-height: 1.55;">
+                        <strong>A excursão é interestadual, tem pernoite ou é viagem de formatura?</strong><br>
+                        A autorização simples da escola não vale nesses casos. Gere a autorização formal (ECA/CNJ), com prévia grátis.
+                    </div>
+                    <a href="/viagem.html" class="btn btn-primary" style="white-space: nowrap;">Gerar autorização — R$ 39,90</a>
+                </div>
+
                 <h2>O "Papelzinho" da Escola não basta?</h2>
                 <p>Muitas vezes, a escola envia um bilhete simples na agenda para os pais assinarem. Isso serve para a escola se organizar internamente, mas <strong>não tem valor legal para a Polícia Rodoviária Federal</strong> em viagens interestaduais.</p>
                 <p>Se o ônibus for parado na estrada e o aluno não tiver a autorização nos moldes do CNJ/ECA, o veículo pode ser retido ou o aluno impedido de seguir viagem.</p>
@@ -200,13 +208,38 @@
 
                 <hr>
 
-                <div style="text-align:center;">
+                <div style="text-align:center; padding: 24px; background: var(--bg-secondary); border-radius: 12px;">
                     <h2>Evite que seu filho perca o passeio</h2>
-                    <p>Garanta a documentação correta em 5 minutos.</p>
-                    <a href="/viagem.html" class="btn btn-primary btn-lg" style="margin-top:10px;">Gerar Documento Agora</a>
+                    <p>Autorização no padrão CNJ/ECA, aceita no transporte e na hospedagem. Pronta em 5 minutos.</p>
+                    <a href="/viagem.html" class="btn btn-primary btn-lg" style="margin-top:10px;">Gerar Autorização (R$ 39,90)</a>
+                    <p class="small" style="margin: 10px 0 0; color: var(--text-muted);">Pix ou cartão • Prévia grátis antes de pagar • Garantia de 7 dias</p>
                 </div>
 
             </div></div></section>
+
+    <!-- Sticky CTA Mobile -->
+    <div class="sticky-cta-mobile" style="display:none; position:fixed; bottom:0; left:0; right:0; background:var(--bg-primary); border-top:1px solid var(--border); padding:12px 16px; z-index:100; box-shadow:0 -4px 20px rgba(0,0,0,.08);">
+        <div style="max-width:640px; margin:0 auto; display:flex; gap:12px; align-items:center; justify-content:space-between;">
+            <div style="flex:1; min-width:0;">
+                <div style="font-weight:700; font-size:14px; color:var(--text-primary);">Autorização de Excursão</div>
+                <div style="font-size:12px; color:var(--text-muted);">R$ 39,90 · PDF + Word · padrão CNJ</div>
+            </div>
+            <a href="/viagem.html" class="btn btn-primary" style="white-space:nowrap; padding:10px 16px; font-size:14px;">Gerar Agora</a>
+        </div>
+    </div>
+    <script>
+    (function() {
+        var sticky = document.querySelector('.sticky-cta-mobile');
+        if (!sticky) return;
+        var articleEnd = document.querySelector('section.article-page');
+        var threshold = articleEnd ? articleEnd.getBoundingClientRect().bottom + window.scrollY - window.innerHeight * 0.3 : 0;
+        function onScroll() {
+            sticky.style.display = (window.scrollY > threshold && window.innerWidth <= 768) ? 'block' : 'none';
+        }
+        window.addEventListener('scroll', onScroll, {passive: true});
+        onScroll();
+    })();
+    </script>
 
     <footer class="footer">
         <div class="container">

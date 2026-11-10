@@ -103,3 +103,18 @@ Dono pediu analise completa: vendas baixissimas, precisa de renda. Dados GSC exp
 - SEMPRE filtrar testes do dono: diegosch.rosa@gmail.com, diego.sch.rosa@gmail.com.
 - Relatorio de termos Ads: CSV exportado do painel (colunas: Termo, Cliques, Impr., Custo, Conversoes). Negativar termos: net, cnj, conselho nacional de justica, notariado.
 
+
+### Rodada 2 (2026-11-09) â€” CTR + funil nas pÃ¡ginas de maior trÃ¡fego
+
+Auditoria: cruzei todas as pÃ¡ginas do GSC (>=200 impressÃµes) com a presenÃ§a real de funil de venda no HTML. Resultado: as pÃ¡ginas de viagem jÃ¡ tinham CTA para `/viagem.html`; o problema delas Ã© CTR/posiÃ§Ã£o. As reais oportunidades eram tÃ­tulos truncados e CTAs quebrados.
+
+- **TÃ­tulos truncados corrigidos** (Google corta ~60 chars): `/cancelar-contrato-academia-multa` (82 â†’ 60) e `/quanto-custa-autorizacao-viagem` (91 â†’ 55; o preÃ§o R$ 39,90 estava sendo cortado do snippet).
+- **TÃ­tulos reescritos em pÃ¡ginas com 0 clique**: `/multa-fidelidade-academia` (400 impr, 0 clique), `/como-reclamar-aneel-guia` (336/0 â€” tambÃ©m corrigido "Ãgua", que a ANEEL nÃ£o regula), `/quanto-custa-recorrer-multa` (308/0), `/guia-cobranca-indevida-energia` (416/2).
+- **`/autorizacao-excursao-escolar`** (13.516 impr, 3Âº maior trÃ¡fego): CTA acima da dobra qualificado para excursÃ£o interestadual/com pernoite/formatura, CTA final com preÃ§o + garantia e sticky CTA mobile.
+- **`/cancelar-contrato-academia-multa`** (47.758 impr, maior pÃ¡gina do site): sticky CTA mobile adicionado.
+- **Bug de layout corrigido** em `/viajar-com-madrasta-padrasto` e `/viagem-cruzeiro-maritimo-menor`: o botÃ£o "Gerar autorizaÃ§Ã£o" estava FORA do card (depois de `</section>`, com 2 `</div>` sobrando â€” 12 fechamentos para 10 aberturas). Trocado por bloco `.article-cta` vÃ¡lido antes do footer.
+- **CTAs de categoria â†’ produto direto** (um clique a menos): `/multa-fidelidade-academia` â†’ `carta-reclamacao-academia-problema-na-cobranca`; `/quanto-custa-recorrer-multa` â†’ `recurso-multa-transito` (R$ 19,90); `/guia-cobranca-indevida-energia` â†’ CTA direto ENEL + link para outras concessionÃ¡rias.
+- **NÃ£o alterado de propÃ³sito**: `/cancelar-bluefit-guia-completo` (melhor vendedor; CTR 2,45% limitado por posiÃ§Ã£o, nÃ£o por snippet) e pÃ¡ginas de produto autocontidas (`reembolso-cancelamento-passagem`, `plano-saude-negativa`) que jÃ¡ chamam `mp-checkout` direto.
+
+Como medir: GSC em 3-4 semanas (CTR das pÃ¡ginas alteradas) + Supabase (`generations`) para vendas. Lembrar que nov-dez Ã© alta temporada de viagem.
+
