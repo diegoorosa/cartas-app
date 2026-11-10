@@ -70,3 +70,36 @@ Em cada uma:
 
 ## Commits desta sessão (em ordem)
 `690cd9e` → `42c186c` → `190373c` → `19f1fb7` → `530dce4` → `402c038` → `2f85388`
+
+## Sprint de Monetizacao (2026-10-13 a 2026-11-09) â€” CRESCIMENTO REAL
+
+### Contexto
+Dono pediu analise completa: vendas baixissimas, precisa de renda. Dados GSC exportados + relatorio de termos Google Ads + acesso ao Supabase (chaves passadas pelo dono, salvas so no .env local, nunca commitadas).
+
+### Diagnostico inicial (01/set a 12/out)
+- 223 cliques no Ads (R$ 136,43), ~2 conversoes registradas (tag de conversao inativa desde setembro).
+- Vendas reais: apenas 3 em 42 dias (15 "vendas" eram testes do proprio dono - filtrar e-mails diegosch.rosa@ / diego.sch.rosa@ e nomes Fernanda/Frare/Fabricio/Lisa).
+- Funil real: 18 checkouts -> 3 vendas = 17%, com 13 dos 15 abandonos no produto de viagem.
+- Abandonos chegavam a criar checkout_intent (que so e criado no clique de "Confirmar e Pagar"), ou seja: o abandono acontecia NA PAGINA DO MERCADO PAGO.
+
+### Mudancas aplicadas (commits)
+1. `e7228bb` - title/description de cancelar-contrato-academia-multa (47k impressoes, CTR 0,76%) + CTA primario acima da dobra.
+2. `666c7e3` - titles de 5 paginas com CTR < 1,5% (guarda-compartilhada, madrasta, smart-fit, cruzeiro, reembolso) + CTA no topo de quanto-custa-autorizacao.
+3. `2a4d465` - correcao da tag de conversao no success.html (enhanced conversions, valor dinamico 9,90/19,90/39,90, dedupe com onceConv) + gtag AW/G- na cobranca.html. Edicao original feita pelo dono com Gemini; revisada e validada (node --check) antes do push.
+4. `53254e8` - tranquilizacao de pagamento no modal pre-pagamento de 89 paginas (MP/Pix sem conta/entrega 1 min/garantia 7 dias).
+5. `5be516e` - mesma mensagem no e-mail de recuperacao de carrinho (send-email.js).
+6. `8681f55` - nova pagina sazonal viagem-menor-ferias-fim-de-ano.html + link interno + sitemap.
+7. Guias de telefonia: cancelar-vivo-fibra-guia (title + CTA direto no produto + sticky mobile), claro-net/tim/sky-tv (CTA /telefonia.html -> /doc.html?slug=... + CTA primario no topo).
+
+### Resultado medido (20/out a 09/nov, via Supabase)
+- 8 vendas reais (6 viagem R$39,90 + 2 smart-fit R$9,90) = R$ 259,20 em 3 semanas (~11-12 vendas/mes vs 3 em 42 dias antes).
+- Funil: 16 checkouts reais -> 8 vendas = **50% de conversao** (antes 17%).
+- Atribuicao: 1-2 vendas via Ads (utm google), maioria organico/direto, recuperacao por e-mail convertendo (ex.: Francine 29/out voltou com VOLTA10).
+- Ressalva: novembro e inicio de alta temporada de viagem; parte do crescimento pode ser sazonal.
+
+### Como repetir esta analise
+- Credenciais: .env local (gitignored): SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY. URL do projeto: https://jnfbdirnvjlhgjuilguz.supabase.co
+- Vendas = linhas em `generations` (slug + input_json.email). Checkouts = `checkout_intents` (payload.email + utm). payment_id em checkout_intents fica sempre null; use generations como fonte de venda.
+- SEMPRE filtrar testes do dono: diegosch.rosa@gmail.com, diego.sch.rosa@gmail.com.
+- Relatorio de termos Ads: CSV exportado do painel (colunas: Termo, Cliques, Impr., Custo, Conversoes). Negativar termos: net, cnj, conselho nacional de justica, notariado.
+
