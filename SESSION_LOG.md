@@ -152,3 +152,40 @@ Descrições atualizadas junto (og/twitter também) — regra: responder a pergu
 **O que NÃO foi feito de propósito:** não mexer em `/cancelar-bluefit-guia-completo` (CTR 2,45%, limitado por posição — é o melhor vendedor) e não alterar a página sazonal para "fingir" demanda que não existe.
 
 **Como medir em 3–4 semanas:** GSC → CTR e posição das 8 URLs acima (esperado: smart-fit, notificação, guarda, cruzeiro, GOL, visto saindo de ~0,5% para 2%+); Supabase `generations` para vendas de viagem com `data_ida` entre 15/dez e 15/jan e UTMs `campaign=fim-de-ano` / `excursao-escolar`.
+
+### Rodada 4 (2026-11-12) — diagnóstico: por que academia vende tão pouco (commit `e0b2083`)
+
+Pergunta do dono: "venda de smart fit/bluefit não tem, é raro alguém comprar — é credibilidade? valor baixo? não é o que procuram?"
+
+**Resposta medida (Supabase, 01/jul→12/nov = 4,5 meses, só vendas reais, testes do dono excluídos):**
+
+| Linha | Vendas | Receita | % receita |
+|---|---|---|---|
+| Viagem (R$ 39,90) | 39 | R$ 1.556,10 | 96,3% |
+| Academia (R$ 9,90) | 6 | R$ 59,40 | 3,7% |
+| Outros | 2 | — | — |
+| **Total** | **47** | **R$ 1.615,50** | |
+
+Checkouts reais no mesmo período: **83** → 70 viagem, 12 academia, 1 curso.
+
+**Conversão checkout→venda:** academia 12→6 = **50%**; viagem 70→39 = **56%**. Praticamente igual.
+
+**Conclusão: NÃO é credibilidade nem preço.** Se fosse, a desistência apareceria no checkout — e ela não aparece (metade compra). O vazamento é ANTES do checkout.
+
+**Onde vaza:** GSC mostra que das consultas visíveis de academia (457 cliques / 18.514 impr):
+- **320 cliques (70%) = "como cancelar"** — a pessoa quer cancelar, a página ensina de graça (app/site/SAC), ela cancela e vai embora satisfeita.
+- **38 cliques (8%) = "problema"** (multa, nome sujo, cobrança depois) — é o único grupo que realmente precisa de documento.
+- O resto = navegação de marca.
+
+Ou seja: academia tem **mais cliques que viagem** (~1.057 vs ~949 em 3 meses no GSC) e **1/26 da receita**. Receita por clique: ~R$ 0,04 (academia) vs ~R$ 1,09 (viagem), ~29x.
+
+**Vazamento técnico encontrado:** as páginas de academia tocavam o assunto "cancelei e continuaram cobrando / negativaram meu nome" e então vendiam **carta de cancelamento** (produto errado para quem já cancelou). Pior: `carta-reclamacao-smart-fit-cobranca-indevida` e `carta-reclamacao-bluefit-cobranca-indevida` só existiam no `success.html` (upsell pós-compra) — nunca numa página de tráfego.
+
+**Correção aplicada:**
+- `como-cancelar-smart-fit.html`: na seção "Cancelei e Continuaram Cobrando", o CTA principal passou a ser a **reclamação de cobrança indevida** (CDC Art. 42, devolução em dobro), com link secundário para quem ainda não cancelou.
+- `cancelar-contrato-academia-multa.html` (47,7k impr): CTA de reclamação adicionado dentro da seção "Academia pode sujar meu nome? (Serasa/SPC)".
+- `cancelar-bluefit-guia-completo.html` (melhor vendedor): link de reclamação adicionado no CTA final, sem mexer no CTA principal.
+
+**Teto honesto:** mesmo dobrando a conversão de academia (0,8% → 1,6% de clique→checkout), seriam ~12 vendas em 4,5 meses = ~R$ 119 em vez de R$ 59. É +R$ 60 no período. **Não vale investir mais conteúdo em academia** — o dinheiro está em viagem (R$ 39,90, 96% da receita, e o pico de dezembro está na janela de compra agora).
+
+Se um dia quiser monetizar o tráfego de academia de verdade, o caminho não é documento: é captura de e-mail (lead magnet tipo "calculadora de multa") para vender depois. Fica registrado como ideia, não executado.
