@@ -118,3 +118,37 @@ Auditoria: cruzei todas as pÃ¡ginas do GSC (>=200 impressÃµes) com a presen�
 
 Como medir: GSC em 3-4 semanas (CTR das pÃ¡ginas alteradas) + Supabase (`generations`) para vendas. Lembrar que nov-dez Ã© alta temporada de viagem.
 
+
+
+### Rodada 3 (2026-11-12) — CTR por intenção de busca + links internos (commit `76e5e54`)
+
+Base: export GSC `https://www.cartasapp.com.br_-Performance-on-Search-2026-10-12` (11/jul–10/out, últimos 3 meses).
+Totais: **2.104 cliques / 125.419 impressões / CTR 1,69% / posição ~6** (celular 1.138 cliques, desktop 957).
+
+**Descoberta 1 — o CSV de Consultas não serve para totais.** O arquivo tem 1.000 linhas e cobre só 657 cliques / 23.348 impressões (cortado + consultas anonimizadas). Use `Páginas.csv` para totais e `Consultas.csv` apenas para temas. Além disso, `Import-Csv` do PowerShell falha nesse arquivo (quebras de linha dentro do campo) — usar `Microsoft.VisualBasic.FileIO.TextFieldParser` e validar com `TryParse` antes de converter CTR/posição.
+
+**Descoberta 2 — a página sazonal não tem demanda orgânica.** Zero consultas contendo "férias", "fim de ano", "natal", "dezembro" ou "virada" em 1.000 consultas. `viagem-menor-ferias-fim-de-ano.html` tem 0 impressões no GSC e 1 único link interno. Ou seja: a página serve como landing para Ads/e-mail/interno, **não** como captura orgânica. A intenção sazonal real é capturada pelas consultas "autorização de viagem", que crescem em nov–dez.
+
+**Descoberta 3 — páginas órfãs.** `/modelo-word-pdf-autorizacao-viagem` (1.117 impr, CTR 7,97% — a melhor do site), `/guarda-compartilhada-autorizacao-viagem` (1.740 impr, CTR 0,52%), `/viagem-cruzeiro-maritimo-menor` (2.216 impr, 1,22%) e `/autorizacao-excursao-escolar` (13.516 impr!) tinham apenas **2 links internos** cada. Links de entrada após a rodada: 7 / 7 / 7 / 6.
+
+**Snippets reescritos (resposta-primeiro + número quando existe):**
+| Página | Antes | Depois |
+|---|---|---|
+| `/cancelar-contrato-academia-multa` (47.758 impr, CTR 0,76%) | "Como Cancelar Academia sem Multa: Smart Fit e Bluefit (2026)" | "Cancelar Academia sem Multa: Seus Direitos e Nome Sujo" |
+| `/cancelar-smart-fit-guia-completo` (2.327 impr, 3 cliques) | "Como Cancelar Smart Fit sem Pagar Multa: Passo a Passo 2026" | "Multa Smart Fit: Quanto Custa e Como Cancelar sem Pagar" |
+| `/quanto-custa-notificacao-extrajudicial-cartorio` (1.805 impr, CTR 1%) | "Quanto Custa Notificação Extrajudicial no Cartório? \| CartasApp" | "Notificação Extrajudicial no Cartório: R$ 150 a R$ 380" |
+| `/guarda-compartilhada-autorizacao-viagem` (CTR 0,52%) | "Guarda Compartilhada: Quando Precisa de Autorização de Viagem (2026)" | "Guarda Compartilhada: Posso Viajar com Meu Filho? (2026)" |
+| `/viagem-cruzeiro-maritimo-menor` (CTR 1,22%) | "Cruzeiro com Menor: Documentos, Passaporte e Autorização (2026)" | "Cruzeiro Precisa de Passaporte? Regras por Destino (2026)" |
+| `/autorizacao-viagem-menor-gol` (CTR 0,56%) | "Autorização de Viagem Menor GOL \| Voe Junto e Regras" | "Voe Junto GOL: O Que É, Preço e Quando É Obrigatório" |
+| `/visto-eua-crianca` (330 impr, 0 clique) | "Visto Americano para Criança: Passo a Passo e Taxa 2026" | "Visto Americano para Criança: Precisa? Taxa US$ 185 (2026)" |
+| `/modelo-word-pdf-autorizacao-viagem` | "Autorização de Viagem para Menor: Word e PDF 2026" | "Formulário de Autorização de Viagem para Menor: Word e PDF" |
+
+Descrições atualizadas junto (og/twitter também) — regra: responder a pergunta na primeira metade e mostrar número (R$ 119,88 / R$ 150 a R$ 380 / US$ 185).
+
+**Links internos adicionados:** bloco "Leia também" em `viagem.html` (antes de `</main>`), `autorizacao-excursao-escolar.html` e `modelo-word-pdf-autorizacao-viagem.html`; entradas extras nas listas "Relacionados" de `guarda-compartilhada-autorizacao-viagem.html`, `quanto-custa-autorizacao-viagem.html` e `viagem-cruzeiro-maritimo-menor.html`; link para `multa-fidelidade-academia.html` dentro de `cancelar-contrato-academia-multa.html`.
+
+**Hipótese sobre a pág. de 47.758 impressões:** nenhuma consulta individual no export chega perto desse volume (máx. 1.642), então as impressões vêm de milhares de consultas de cauda longa sobre academia. Um título por marca (Smart Fit/Bluefit) só casa com uma intenção; por isso o título passou a cobrir "cancelar academia + multa + nome sujo". CTR esperado sobe de 0,76% para ~1,2–1,5%.
+
+**O que NÃO foi feito de propósito:** não mexer em `/cancelar-bluefit-guia-completo` (CTR 2,45%, limitado por posição — é o melhor vendedor) e não alterar a página sazonal para "fingir" demanda que não existe.
+
+**Como medir em 3–4 semanas:** GSC → CTR e posição das 8 URLs acima (esperado: smart-fit, notificação, guarda, cruzeiro, GOL, visto saindo de ~0,5% para 2%+); Supabase `generations` para vendas de viagem com `data_ida` entre 15/dez e 15/jan e UTMs `campaign=fim-de-ano` / `excursao-escolar`.
