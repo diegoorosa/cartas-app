@@ -28,25 +28,33 @@ to = "/failure.html"
 status = 200
 
 # Cannibalization merges — 301 redirect duplicate pages to canonical versions
+# ATENCAO: sem "force = true" o Netlify NAO aplica o 301 quando o arquivo .html existe.
 [[redirects]]
   from = "/guia-completo-autorizacao-viagem.html"
   to = "/guia-definitivo-viagem-menor.html"
   status = 301
+  force = true
 
 [[redirects]]
   from = "/viagem-internacional.html"
   to = "/guia-viagem-internacional-menor.html"
   status = 301
+  force = true
 
 [[redirects]]
   from = "/regras-idade-viagem.html"
   to = "/guia-idade-viagem-menor.html"
   status = 301
+  force = true
 
+# Direcao CORRIGIDA: /modelo-word-pdf-autorizacao-viagem.html e a pagina de melhor CTR
+# do site (7,97%, 1.117 impressoes) e nao pode ser redirecionada. A versao "para imprimir"
+# (0 impressoes) e que deve ceder o lugar.
 [[redirects]]
-  from = "/modelo-word-pdf-autorizacao-viagem.html"
-  to = "/modelo-autorizacao-viagem-para-imprimir.html"
+  from = "/modelo-autorizacao-viagem-para-imprimir.html"
+  to = "/modelo-word-pdf-autorizacao-viagem.html"
   status = 301
+  force = true
 
 # Netlify serve /viagem.html tanto em /viagem quanto /viagem.html (clean URL) — força canonical
 [[redirects]]
