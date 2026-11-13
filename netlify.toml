@@ -28,9 +28,17 @@ to = "/failure.html"
 status = 200
 
 # Cannibalization merges — 301 redirect duplicate pages to canonical versions
-# ATENCAO: sem "force = true" o Netlify NAO aplica o 301 quando o arquivo .html existe.
+# ATENCAO 1: sem "force = true" o Netlify NAO aplica o 301 quando o arquivo .html existe.
+# ATENCAO 2: o Netlify (pretty URLs) serve e linka as paginas SEM ".html", entao cada
+# regra precisa das duas formas — senao a versao sem extensao continua respondendo 200.
 [[redirects]]
   from = "/guia-completo-autorizacao-viagem.html"
+  to = "/guia-definitivo-viagem-menor.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/guia-completo-autorizacao-viagem"
   to = "/guia-definitivo-viagem-menor.html"
   status = 301
   force = true
@@ -42,7 +50,19 @@ status = 200
   force = true
 
 [[redirects]]
+  from = "/viagem-internacional"
+  to = "/guia-viagem-internacional-menor.html"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/regras-idade-viagem.html"
+  to = "/guia-idade-viagem-menor.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/regras-idade-viagem"
   to = "/guia-idade-viagem-menor.html"
   status = 301
   force = true
@@ -56,11 +76,19 @@ status = 200
   status = 301
   force = true
 
-# Netlify serve /viagem.html tanto em /viagem quanto /viagem.html (clean URL) — força canonical
+[[redirects]]
+  from = "/modelo-autorizacao-viagem-para-imprimir"
+  to = "/modelo-word-pdf-autorizacao-viagem.html"
+  status = 301
+  force = true
+
+# Netlify serve /viagem.html tanto em /viagem quanto /viagem.html (clean URL).
+# Usamos 200 (rewrite) em vez de 301: as pretty URLs reescrevem TODO link interno para
+# /viagem, e um 301 aqui custava uma ida-e-volta extra em cada clique do CTA principal.
 [[redirects]]
   from = "/viagem"
   to = "/viagem.html"
-  status = 301
+  status = 200
   force = true
 
 [[redirects]]
