@@ -189,3 +189,86 @@ Ou seja: academia tem **mais cliques que viagem** (~1.057 vs ~949 em 3 meses no 
 **Teto honesto:** mesmo dobrando a conversão de academia (0,8% → 1,6% de clique→checkout), seriam ~12 vendas em 4,5 meses = ~R$ 119 em vez de R$ 59. É +R$ 60 no período. **Não vale investir mais conteúdo em academia** — o dinheiro está em viagem (R$ 39,90, 96% da receita, e o pico de dezembro está na janela de compra agora).
 
 Se um dia quiser monetizar o tráfego de academia de verdade, o caminho não é documento: é captura de e-mail (lead magnet tipo "calculadora de multa") para vender depois. Fica registrado como ideia, não executado.
+### Rodada 5 (2026-11-12) — captura de demanda "cartório online" + consolidação de duplicatas + hub de documentos (commit `3e5896c` → `00c4776`)
+
+**Objetivo:** pegar quem pesquisa "viagem com filho / o que levar / dificuldade por idade" e descobrir que precisa de autorização, além de atacar o cluster real de intenção "cartório online / reconhecimento de firma online / e-Notariado".
+
+---
+
+#### 1) Nova página: cluster "cartório online / reconhecimento de firma online" (zero cobertura antes)
+
+Criado `public/reconhecimento-firma-online-autorizacao-viagem.html` — ataca queries reais do Google Suggest:
+- `reconhecimento de firma online` / `reconhecimento de firma online gov` / `cartorio online autorizacao de viagem` / `e-notariado` / `reconhecimento de firma digital pelo gov`
+- Explica o que **funciona** (AEV via e-Notariado com certificado digital, videoconferência com tabelião) e o que **não funciona** (gov.br não reconhece firma, não existe site do governo para isso)
+- Caminho prático: imprimir 2 vias + reconhecer firma no cartório (R$ 8–30/assinatura)
+- Adicionado ao `sitemap.xml` (+1 URL)
+
+---
+
+#### 2) Consolidação de 4 pares de páginas duplicadas (canibalização real)
+
+O Netlify serve pretty URLs **sem `.html`**, então cada redirect precisa das duas formas + `force = true` (senão o arquivo estático vence o redirect).
+
+| Duplicata (0 impressões) → | Canônica (tem tráfego) | Notas |
+|---|---|---|
+| `guia-completo-autorizacao-viagem` | `guia-definitivo-viagem-menor` (55k chars, 14 H2) | |
+| `viagem-internacional` | `guia-viagem-internacional-menor` | |
+| `regras-idade-viagem` | `guia-idade-viagem-menor` | |
+| `modelo-autorizacao-viagem-para-imprimir` | **`modelo-word-pdf-autorizacao-viagem`** | **Direção CORRIGIDA**: a página "para imprimir" (0 impr) é que redireciona para a de melhor CTR do site (7,97%, 1.117 impr) |
+
+As 4 duplicatas removidas do sitemap (total: 167 URLs limpas).
+
+---
+
+#### 3) Hub "documentos para viajar com criança" reescrito (`documentos-embarque-menor.html`)
+
+- Título: `Documentos para Viajar com Criança: Avião e Ônibus` (50 chars)
+- Description: "O que precisa para viajar com criança: certidão de nascimento vale? RG é obrigatório? Precisa de autorização? Regras da ANAC e da ANTT por idade, sem enrolação."
+- Tabela única por idade + transporte
+- Seção "Precisa de autorização?" — responde à dúvida real de quem **já comprou passagem**
+- Checklist de entretenimento por idade (bebê → 17 anos) + dificuldades reais de cada faixa
+- Linka para a nova página de reconhecimento de firma online
+
+---
+
+#### 4) Snippets answer-first (título + description que respondem à query)
+
+| Página | Título novo | Description nova |
+|---|---|---|
+| `menor-nacional-um-responsavel` | `Criança Pode Viajar com a Mãe sem Autorização do Pai?` (53) | "Em viagem nacional, a criança pode viajar com a mãe sem autorização do pai na maioria dos casos..." |
+| `viagem-avo-tio` | `Avó Pode Viajar com Neto? Precisa de Autorização? (2026)` (56) | "Avó pode viajar com neto sem autorização? Veja a regra para avós, tios e irmãos maiores de idade..." |
+| `viagem-onibus-menor-antt` | `Menor Pode Viajar de Ônibus Sozinho? Regras da ANTT (2026)` (58) | "Menor de 16 pode viajar de ônibus sozinho? Veja o que a ANTT exige..." |
+| `passaporte-de-menor` | `Passaporte para Criança: Documentos, Preço e Prazo (2026)` (57) | Curto, com números-chave |
+| `quanto-custa-autorizacao-viagem` | `Quanto Custa Autorização de Viagem para Menor? Tabela 2026` (58) | Range real: R$ 8–30 firma + R$ 39,90 doc |
+
+---
+
+#### 5) Performance: `/viagem` sem redirect extra
+
+`/viagem` → `/viagem.html` mudou de **301** para **200 (rewrite)**. Cada clique no botão principal do site economiza uma ida-e-volta HTTP desnecessária.
+
+---
+
+#### 6) Links internos nas páginas de maior tráfego
+
+A nova página de reconhecimento de firma online agora recebe link de:
+- `autorizacao-excursao-escolar` (13.516 impr / 580 cliques — maior tráfego de viagem)
+- `guia-definitivo-viagem-menor` (página-canônica consolidada)
+- `documentos-embarque-menor` (hub reescrito)
+- `viagem-avo-tio`, `menor-nacional-um-responsavel`, `passaporte-de-menor`
+- `como-fazer-autorizacao-viagem-menor`, `pai-falecido-ou-ausente-viagem-menor`
+- `cartorio-aeroporto-reconhecer-firma`, `quanto-custa-autorizacao-viagem`, `autorizacao-viagem-eletronica-aev`
+
+---
+
+#### 7) O que NÃO foi mexido (ainda 19 páginas com zero impressão no sitemap)
+
+Algumas são canônicas que mantemos (ex.: `guia-viagem-internacional-menor`, `guia-idade-viagem-menor`), outras são nichos muito específicos (cias aéreas, destinos, sazonal). O diagnóstico mostrou que **criar mais páginas não resolve** — o Google já as trata como duplicatas. O dinheiro está em reforçar as que já têm tráfego e converter melhor.
+
+---
+
+#### Próximo ciclo (3–4 semanas)
+Aguardar GSC re-rastrear e medir:
+- Impressões/cliques na nova página de reconhecimento de firma online
+- CTR das páginas com snippets reescritos
+- Vendas de `autorizacao-viagem-menor` (R$ 39,90) — pico de dezembro fecha nas próximas 2–3 semanas (compradores antecipam 36–46 dias)
