@@ -12,3 +12,6 @@ package-lock.json
 *.png.bak
 
 .env*
+
+# artefatos locais de analise do Search Console
+.gsc-analysis/
