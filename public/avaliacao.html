@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://www.cartasapp.com.br/avaliacao.html" />
     <meta property="og:title" content="Avalie sua compra — CartasApp" />
     <meta property="og:description"
-        content="Conte como foi sua experiência com o documento gerado no CartasApp. Sua avaliação aparece como depoimento real no site." />
+        content="Conte como foi sua experiência com o documento gerado no CartasApp." />
     <meta property="og:image" content="https://www.cartasapp.com.br/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -28,6 +28,184 @@
     <link rel="stylesheet" href="/style.css" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
     <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'AW-1021062139'); gtag('config', 'G-D40QPP9KNP');</script>
+    <style>
+        /* === Estrelas bonitas === */
+        .star-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 16px 0 8px 0;
+        }
+
+        .star-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 34px;
+            line-height: 1;
+            padding: 4px;
+            color: #e2e8f0;
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            user-select: none;
+        }
+
+        .star-btn:hover,
+        .star-btn:focus {
+            color: #f59e0b;
+            transform: translateY(-2px);
+        }
+
+        .star-btn.filled {
+            color: #f59e0b;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+        }
+
+        .star-btn.partial {
+            color: #fbbf24;
+        }
+
+        .star-hint {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            min-height: 20px;
+            transition: color 0.2s;
+        }
+
+        /* === Inputs === */
+        .field-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            letter-spacing: 0.2px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        }
+
+        .form-input + .form-input {
+            margin-top: 10px;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        /* === Botão === */
+        .btn-submit {
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            background: var(--accent-primary);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-bottom: 16px;
+        }
+
+        .btn-submit:hover {
+            background: #2563eb;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.99);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        /* === Mensagens === */
+        .msg {
+            display: none;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .msg-sucesso {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .msg-erro {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        /* === Card === */
+        .review-card {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        /* === Sucesso estado === */
+        .estado-sucesso {
+            text-align: center;
+            padding: 40px 24px;
+        }
+
+        .estado-sucesso .icone {
+            width: 64px;
+            height: 64px;
+            background: #dcfce7;
+            color: #16a34a;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .estado-sucesso h2 {
+            margin: 0 0 8px 0;
+            font-size: 22px;
+            color: var(--text-primary);
+        }
+
+        .estado-sucesso p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -50,57 +228,63 @@
 
     <section class="section">
         <div class="container">
-            <div style="max-width: 620px; margin: 0 auto;">
-                <div class="card">
-                    <p style="margin:0 0 10px 0; font-size:14px; color:var(--text-secondary);">Leva menos de 1 minuto</p>
-                    <h1 class="section-title">O que você achou do documento?</h1>
-                    <p style="color: var(--text-secondary); margin-bottom: 24px;">
-                        Sua avaliação ajuda outras pessoas a confiarem no CartasApp e aparece como depoimento real no
-                        site.
-                    </p>
-
-                    <div style="margin-bottom: 24px;">
-                        <label style="display:block; font-size:14px; color:var(--text-secondary); margin-bottom:8px;">Quem está avaliando?</label>
-                        <input type="text" id="reviewNome" placeholder="Seu nome" class="form-control"
-                            style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:8px; font-size:15px; background:var(--bg-primary); color:var(--text-primary);">
-                        <input type="email" id="reviewEmail" placeholder="Seu e-mail" class="form-control"
-                            style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:8px; font-size:15px; background:var(--bg-primary); color:var(--text-primary); margin-top:10px;">
+            <div id="reviewFormContainer">
+                <div class="review-card">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <p style="margin:0 0 12px 0; font-size:13px; font-weight:600; color:var(--text-secondary); letter-spacing:0.5px; text-transform:uppercase;">Leva menos de 1 minuto</p>
+                        <h1 style="font-size:24px; margin:0 0 8px 0; color:var(--text-primary);">O que você achou do documento?</h1>
+                        <p style="color: var(--text-secondary); font-size:15px;">
+                            Sua avaliação ajuda outras pessoas a confiarem no CartasApp e aparece como depoimento real
+                            no site.
+                        </p>
                     </div>
 
-                    <div style="margin-bottom: 24px;">
-                        <label style="display:block; font-size:14px; color:var(--text-secondary); margin-bottom:10px;">Quantas estrelas?</label>
-                        <div class="stars" id="starsContainer" style="display:flex; gap:8px; justify-content:center;">
-                            <button type="button" class="star-btn" data-valor="1" aria-label="1 estrela">☆</button>
-                            <button type="button" class="star-btn" data-valor="2" aria-label="2 estrelas">☆</button>
-                            <button type="button" class="star-btn" data-valor="3" aria-label="3 estrelas">☆</button>
-                            <button type="button" class="star-btn" data-valor="4" aria-label="4 estrelas">☆</button>
-                            <button type="button" class="star-btn" data-valor="5" aria-label="5 estrelas">☆</button>
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label class="field-label" for="reviewNome">Quem está avaliando?</label>
+                        <input type="text" id="reviewNome" class="form-input" placeholder="Seu nome">
+                        <input type="email" id="reviewEmail" class="form-input" placeholder="Seu e-mail">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 28px;">
+                        <label class="field-label" for="reviewEstrelas">Quantas estrelas?</label>
+                        <div class="star-group" id="starsContainer">
+                            <button type="button" class="star-btn" data-valor="1" aria-label="1 estrela">★</button>
+                            <button type="button" class="star-btn" data-valor="2" aria-label="2 estrelas">★</button>
+                            <button type="button" class="star-btn" data-valor="3" aria-label="3 estrelas">★</button>
+                            <button type="button" class="star-btn" data-valor="4" aria-label="4 estrelas">★</button>
+                            <button type="button" class="star-btn" data-valor="5" aria-label="5 estrelas">★</button>
                         </div>
                         <input type="hidden" id="reviewEstrelas" value="0">
-                        <p id="starsHint" style="font-size:13px; color:var(--text-secondary); margin-top:6px; text-align:center;">Selecione sua avaliação</p>
+                        <p class="star-hint" id="starsHint">Selecione sua avaliação</p>
                     </div>
 
-                    <div style="margin-bottom: 24px;">
-                        <label style="display:block; font-size:14px; color:var(--text-secondary); margin-bottom:8px;">Deixe um comentário (opcional)</label>
-                        <textarea id="reviewComentario" placeholder="Como foi sua experiência? O documento ajudou na viagem? ..." rows="4"
-                            style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:8px; font-size:15px; background:var(--bg-primary); color:var(--text-primary); resize:vertical;"></textarea>
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label class="field-label" for="reviewComentario">Deixe um comentário (opcional)</label>
+                        <textarea id="reviewComentario" class="form-input" placeholder="Como foi sua experiência? O documento ajudou na sua viagem?" rows="4"></textarea>
                     </div>
 
-                    <button id="btnEnviarAvaliacao" class="btn btn-primary" style="width:100%; padding:14px 24px; font-size:16px; font-weight:600; margin-bottom:16px;">
+                    <button id="btnEnviarAvaliacao" class="btn-submit">
                         Enviar avaliação
                     </button>
 
-                    <div id="msgSucesso" style="display:none; margin-top:16px; padding:16px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; color:#166534; text-align:center;">
+                    <div id="msgSucesso" class="msg msg-sucesso">
                         <strong>Obrigado!</strong> Sua avaliação foi enviada e aparecerá no site após moderação.
                     </div>
-                    <div id="msgErro" style="display:none; margin-top:16px; padding:16px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#991b1b; text-align:center;">
+                    <div id="msgErro" class="msg msg-erro">
                         Não foi possível enviar. Tente novamente em instantes.
                     </div>
 
                     <p style="margin-top:20px; font-size:13px; color:var(--text-secondary); text-align:center;">
-                        Esta avaliação está ligada ao seu pedido. Ela só será publicada após aprovação pela nossa equipe.
+                        Esta avaliação está ligada ao seu pedido. Será publicada após aprovação pela nossa equipe.
                     </p>
                 </div>
+            </div>
+
+            <div id="reviewSucesso" class="estado-sucesso" style="display:none;">
+                <div class="icone">✅</div>
+                <h2>Avaliação enviada!</h2>
+                <p>Obrigado pelo seu retorno. Ela aparecerá no site em breve.</p>
+                <a href="/" style="display:inline-block; margin-top:16px; color: var(--accent-primary); font-weight:600; text-decoration:none;">Voltar ao início →</a>
             </div>
         </div>
     </section>
@@ -136,14 +320,30 @@
             inputEstrelas.value = valor;
             botoes.forEach(b => {
                 const v = parseInt(b.dataset.valor);
-                b.textContent = v <= valor ? '★' : '☆';
-                b.style.color = v <= valor ? '#f59e0b' : '#cbd5e1';
+                if (v <= valor) {
+                    b.classList.add('filled');
+                    b.classList.remove('partial');
+                } else {
+                    b.classList.remove('filled');
+                    b.classList.remove('partial');
+                }
             });
             hint.textContent = valor ? labelPorEstrela[valor] : 'Selecione sua avaliação';
             hint.style.color = valor ? '#f59e0b' : 'var(--text-secondary)';
         }
 
+        // Hover preview: ilumina estrelas ao passar o mouse
         botoes.forEach(b => {
+            b.addEventListener('mouseenter', () => {
+                const v = parseInt(b.dataset.valor);
+                botoes.forEach(btn => {
+                    const vv = parseInt(btn.dataset.valor);
+                    btn.classList.toggle('partial', vv <= v);
+                });
+            });
+            b.addEventListener('mouseleave', () => {
+                botoes.forEach(btn => btn.classList.remove('partial'));
+            });
             b.addEventListener('click', () => atualizarEstrelas(parseInt(b.dataset.valor)));
         });
 
@@ -154,13 +354,15 @@
             const btn = document.getElementById('btnEnviarAvaliacao');
             const msgSucesso = document.getElementById('msgSucesso');
             const msgErro = document.getElementById('msgErro');
+            const formContainer = document.getElementById('reviewFormContainer');
+            const sucessoContainer = document.getElementById('reviewSucesso');
 
             if (!nome) { alert('Informe seu nome'); return; }
             if (!email) { alert('Informe seu e-mail'); return; }
             if (!estrelasSelecionadas) { alert('Selecione as estrelas'); return; }
 
             btn.disabled = true;
-            btn.textContent = 'Enviando...';
+            btn.textContent = 'Enviando…';
             msgSucesso.style.display = 'none';
             msgErro.style.display = 'none';
 
@@ -179,12 +381,8 @@
                 });
 
                 if (resposta.ok) {
-                    msgSucesso.style.display = 'block';
-                    btn.style.display = 'none';
-                    document.querySelector('.stars').style.display = 'none';
-                    document.getElementById('reviewNome').disabled = true;
-                    document.getElementById('reviewEmail').disabled = true;
-                    document.getElementById('reviewComentario').disabled = true;
+                    formContainer.style.display = 'none';
+                    sucessoContainer.style.display = 'block';
                 } else {
                     const erro = await resposta.json();
                     msgErro.textContent = (erro && erro.error) || 'Erro ao enviar avaliação';
