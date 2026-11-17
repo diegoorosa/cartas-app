@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Avalie sua compra — CartasApp</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <meta name="description"
+        content="Ajude outras pessoas: conte como foi sua experiência com o documento gerado no CartasApp. Sua avaliação aparece no site como depoimento real." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.cartasapp.com.br/avaliacao.html" />
+    <meta property="og:title" content="Avalie sua compra — CartasApp" />
+    <meta property="og:description"
+        content="Conte como foi sua experiência com o documento gerado no CartasApp. Sua avaliação aparece como depoimento real no site." />
+    <meta property="og:image" content="https://www.cartasapp.com.br/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Avalie sua compra — CartasApp" />
+    <meta name="twitter:description"
+        content="Conte como foi sua experiência com o documento gerado no CartasApp." />
+    <meta name="twitter:image" content="https://www.cartasapp.com.br/og-image.png">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1021062139"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'AW-1021062139'); gtag('config', 'G-D40QPP9KNP');</script>
+</head>
+
+<body>
+    <nav class="navbar" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <div class="container">
+            <div class="navbar-content" style="display: flex; justify-content: space-between; align-items: center; height: 60px;">
+                <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <picture><source srcset="/logo.avif" type="image/avif"><source srcset="/logo.webp" type="image/webp"><img src="/logo.png" alt="CartasApp" style="height: 42px; width: auto;"></picture>
+                    <span style="font-weight: 800; font-size: 20px; color: var(--text-primary); letter-spacing: -0.5px;">CartasApp</span>
+                </a>
+                <div class="nav-actions">
+                    <button class="btn-theme" onclick="toggleTheme()" aria-label="Alternar tema"
+                        style="background: transparent; border: 1px solid var(--border); color: var(--text-primary); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+                        🌙
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="section">
+        <div class="container">
+            <div style="max-width: 620px; margin: 0 auto;">
+                <div class="card">
+                    <p style="margin:0 0 10px 0; font-size:14px; color:var(--text-secondary);">Leva menos de 1 minuto</p>
+                    <h1 class="section-title">O que você achou do documento?</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 24px;">
+                        Sua avaliação ajuda outras pessoas a confiarem no CartasApp e aparece como depoimento real no
+                        site.
+                    </p>
+
+                    <div style="margin-bottom: 24px;">
+                        <label style="display:block; font-size:14px; color:var(--text-secondary); margin-bottom:8px;">Quem está avaliando?</label>
+                        <input type="text" id="reviewNome" placeholder="Seu nome" class="form-control"
+                            style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:8px; font-size:15px; background:var(--bg-primary); color:var(--text-primary);">
+                        <input type="email" id="reviewEmail" placeholder="Seu e-mail" class="form-control"
+                            style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:8px; font-size:15px; background:var(--bg-primary); color:var(--text-primary); margin-top:10px;">
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <label style="display:block; font-size:14px; color:var(--text-secondary); margin-bottom:10px;">Quantas estrelas?</label>
+                        <div class="stars" id="starsContainer" style="display:flex; gap:8px; justify-content:center;">
+                            <button type="button" class="star-btn" data-valor="1" aria-label="1 estrela">☆</button>
+                            <button type="button" class="star-btn" data-valor="2" aria-label="2 estrelas">☆</button>
+                            <button type="button" class="star-btn" data-valor="3" aria-label="3 estrelas">☆</button>
+                            <button type="button" class="star-btn" data-valor="4" aria-label="4 estrelas">☆</button>
+                            <button type="button" class="star-btn" data-valor="5" aria-label="5 estrelas">☆</button>
+                        </div>
+                        <input type="hidden" id="reviewEstrelas" value="0">
+                        <p id="starsHint" style="font-size:13px; color:var(--text-secondary); margin-top:6px; text-align:center;">Selecione sua avaliação</p>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <label style="display:block; font-size:14px; color:var(--text-secondary); margin-bottom:8px;">Deixe um comentário (opcional)</label>
+                        <textarea id="reviewComentario" placeholder="Como foi sua experiência? O documento ajudou na viagem? ..." rows="4"
+                            style="width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:8px; font-size:15px; background:var(--bg-primary); color:var(--text-primary); resize:vertical;"></textarea>
+                    </div>
+
+                    <button id="btnEnviarAvaliacao" class="btn btn-primary" style="width:100%; padding:14px 24px; font-size:16px; font-weight:600; margin-bottom:16px;">
+                        Enviar avaliação
+                    </button>
+
+                    <div id="msgSucesso" style="display:none; margin-top:16px; padding:16px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; color:#166534; text-align:center;">
+                        <strong>Obrigado!</strong> Sua avaliação foi enviada e aparecerá no site após moderação.
+                    </div>
+                    <div id="msgErro" style="display:none; margin-top:16px; padding:16px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#991b1b; text-align:center;">
+                        Não foi possível enviar. Tente novamente em instantes.
+                    </div>
+
+                    <p style="margin-top:20px; font-size:13px; color:var(--text-secondary); text-align:center;">
+                        Esta avaliação está ligada ao seu pedido. Ela só será publicada após aprovação pela nossa equipe.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>CartasApp &copy; 2026 &middot; <a href="/termos.html" class="footer-link">Termos de Uso</a> &middot; <a href="/privacidade.html" class="footer-link">Política de Privacidade</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Captura parâmetros da URL para pré-preencher
+        const qs = (n) => new URL(location.href).searchParams.get(n) || '';
+        const ordem = qs('order_id') || '';
+        const slug = qs('slug') || '';
+        const emailUrl = qs('email') || '';
+        const nomeUrl = qs('nome') || '';
+
+        document.getElementById('reviewNome').value = nomeUrl;
+        document.getElementById('reviewEmail').value = emailUrl;
+
+        let estrelasSelecionadas = 0;
+        const botoes = document.querySelectorAll('.star-btn');
+        const inputEstrelas = document.getElementById('reviewEstrelas');
+        const hint = document.getElementById('starsHint');
+
+        const labelPorEstrela = { 1: 'Péssimo', 2: 'Ruim', 3: 'Regular', 4: 'Bom', 5: 'Ótimo' };
+
+        function atualizarEstrelas(valor) {
+            estrelasSelecionadas = valor;
+            inputEstrelas.value = valor;
+            botoes.forEach(b => {
+                const v = parseInt(b.dataset.valor);
+                b.textContent = v <= valor ? '★' : '☆';
+                b.style.color = v <= valor ? '#f59e0b' : '#cbd5e1';
+            });
+            hint.textContent = valor ? labelPorEstrela[valor] : 'Selecione sua avaliação';
+            hint.style.color = valor ? '#f59e0b' : 'var(--text-secondary)';
+        }
+
+        botoes.forEach(b => {
+            b.addEventListener('click', () => atualizarEstrelas(parseInt(b.dataset.valor)));
+        });
+
+        document.getElementById('btnEnviarAvaliacao').addEventListener('click', async () => {
+            const nome = document.getElementById('reviewNome').value.trim();
+            const email = document.getElementById('reviewEmail').value.trim();
+            const comentario = document.getElementById('reviewComentario').value.trim();
+            const btn = document.getElementById('btnEnviarAvaliacao');
+            const msgSucesso = document.getElementById('msgSucesso');
+            const msgErro = document.getElementById('msgErro');
+
+            if (!nome) { alert('Informe seu nome'); return; }
+            if (!email) { alert('Informe seu e-mail'); return; }
+            if (!estrelasSelecionadas) { alert('Selecione as estrelas'); return; }
+
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+            msgSucesso.style.display = 'none';
+            msgErro.style.display = 'none';
+
+            try {
+                const resposta = await fetch('/.netlify/functions/submit-review', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        order_id: ordem,
+                        slug: slug,
+                        nome: nome,
+                        email: email,
+                        estrelas: estrelasSelecionadas,
+                        comentario: comentario
+                    })
+                });
+
+                if (resposta.ok) {
+                    msgSucesso.style.display = 'block';
+                    btn.style.display = 'none';
+                    document.querySelector('.stars').style.display = 'none';
+                    document.getElementById('reviewNome').disabled = true;
+                    document.getElementById('reviewEmail').disabled = true;
+                    document.getElementById('reviewComentario').disabled = true;
+                } else {
+                    const erro = await resposta.json();
+                    msgErro.textContent = (erro && erro.error) || 'Erro ao enviar avaliação';
+                    msgErro.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar avaliação';
+                }
+            } catch (e) {
+                msgErro.textContent = 'Erro de conexão. Tente novamente.';
+                msgErro.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Enviar avaliação';
+            }
+        });
+    </script>
+</body>
+
+</html>

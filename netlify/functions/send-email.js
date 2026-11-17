@@ -180,10 +180,11 @@ exports.handler = async (event) => {
       // ========== EMAIL TRANSACTIONAL PADRÃO (DOCUMENTO PRONTO) ==========
       // Tenta pegar slug do body (passado pelo webhook/success.html) ou do generations
       let docSlug = slug;
+      let nomeComprador = '';
       if (!docSlug) {
         const { data: doc, error } = await supabase
           .from('generations')
-          .select('slug')
+          .select('slug, input_json')
           .eq('order_id', order_id)
           .maybeSingle();
 
@@ -192,10 +193,12 @@ exports.handler = async (event) => {
           return { statusCode: 404, body: 'Documento não encontrado' };
         }
         docSlug = doc.slug;
+        nomeComprador = (doc.input_json && doc.input_json.nome) ? String(doc.input_json.nome).trim() : '';
       }
 
       const docTitle = friendlyTitle(docSlug);
       const recoveryLink = `${BASE_URL}/success.html?o=${order_id}&utm_source=email&utm_medium=transactional&utm_campaign=document_ready`;
+      const reviewLink = `${BASE_URL}/avaliacao.html?order_id=${encodeURIComponent(order_id)}&slug=${encodeURIComponent(docSlug)}&email=${encodeURIComponent(email_to)}&nome=${encodeURIComponent(nomeComprador)}`;
 
       subject = `Seu documento está pronto: ${docTitle}`;
 
@@ -215,6 +218,12 @@ exports.handler = async (event) => {
               📄 Baixar Documento (PDF/DOC)
             </a>
             <p style="font-size: 12px; color: #888; margin: 10px 0 0;">O PDF não vai anexado a este e-mail — clique no botão para baixar no site.</p>
+          </div>
+
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 16px 20px; border-radius: 8px; margin: 20px 0;">
+            <p style="font-size: 13px; color: #166534; margin: 0 0 10px 0;"><strong>💬 Ajude outras pessoas:</strong> conte como foi sua experiência.</p>
+            <a href="${reviewLink}" style="background-color: #10b981; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px; display: inline-block; margin-bottom: 6px;">Deixar uma avaliação ⭐</a>
+            <p style="font-size: 12px; color: #888; margin: 6px 0 0 0;">Sua avaliação aparece como depoimento real no site. Leva menos de 1 minuto.</p>
           </div>
 
           <div style="background: #fffbeb; border: 1px solid #fde68a; padding: 14px 16px; border-radius: 8px; margin: 20px 0;">
