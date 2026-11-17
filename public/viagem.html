@@ -1024,9 +1024,9 @@
                                             nascimento inválida.</div>
                                     </div>
                                     <div>
-                                        <label class="label" for="menor_doc">CPF ou RG da criança (Opcional)</label>
+                                        <label class="label" for="menor_doc">CPF, RG ou Certidão (Opcional)</label>
                                         <input class="input input-icon input-icon-doc" id="menor_doc"
-                                            placeholder="000.000.000-00 ou nº do RG" />
+                                            placeholder="CPF, RG ou nº da Certidão" />
                                         <p class="field-hint">
                                             Não tem agora? Deixe em branco e preencha no Word ou à caneta depois.
                                         </p>
@@ -2457,7 +2457,7 @@
                 textoQualificacao += ', e eu, ' + (p.resp2_nome || '____________________') + ', ' + docResp2;
             }
 
-            var docMenor = p.menor_doc ? ('portador(a) do documento/CPF nº ' + p.menor_doc) : 'portador(a) do documento/CPF nº ____________________';
+            var docMenor = p.menor_doc ? ('portador(a) do documento de identificação nº ' + p.menor_doc) : 'portador(a) do documento de identificação nº ____________________';
             var tipoViagem = (p.viagem_tipo && p.viagem_tipo.toLowerCase() === 'internacional') ? 'internacional' : 'nacional';
 
             textoQualificacao += ', na qualidade de pais/responsáveis legais do(a) menor ' + (p.menor_nome || '____________________') + ', nascido(a) em ' + (p.menor_nascimento || '___/___/____') + ', ' + docMenor + ', AUTORIZO(AMOS) EXPRESSAMENTE a referida criança/adolescente a realizar viagem ' + tipoViagem + ', conforme as especificações descritas nesta autorização.';
