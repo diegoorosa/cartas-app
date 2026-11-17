@@ -25,7 +25,7 @@ param(
     [string]$Modo = 'Teste',
 
     [string]$EmailTeste = '',
-    [int]$DelayEntreEmails = 10
+    [int]$DelayEntreEmails = 60
 )
 
 $ErrorActionPreference = 'Stop'
@@ -236,9 +236,11 @@ foreach ($item in $porEmail) {
             $mensagem.IsBodyHtml = $true
             $mensagem.Body = $corpo
             
-            $cliente = New-Object System.Net.Mail.SmtpClient($EMAIL_HOST, 465)
+            $cliente = New-Object System.Net.Mail.SmtpClient($EMAIL_HOST, 587)
             $cliente.EnableSsl = $true
+            $cliente.UseDefaultCredentials = $false
             $cliente.Credentials = New-Object System.Net.NetworkCredential($EMAIL_USER, $EMAIL_PASS)
+            $cliente.Timeout = 30000
             
             $cliente.Send($mensagem)
             $enviados++
