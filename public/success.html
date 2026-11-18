@@ -829,6 +829,17 @@
             </div>
         </div>
 
+        <!-- ===== AVALIAÇÃO (pós-compra) ===== -->
+        <div id="review-section" class="review-card" style="margin-top: 16px; padding: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px;">
+            <div style="display:flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <span style="font-size: 18px;">&#9733;</span>
+                <span style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Ajude outras pessoas: conte como foi</span>
+            </div>
+            <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 12px;">Sua avaliação aparece como depoimento real no site e leva menos de 1 minuto.</div>
+            <a href="" id="review-link" style="background: #2563eb; color: #fff; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px; display: inline-block; width: 100%; text-align: center;">&#9733; Deixar minha avaliação (1 minuto)</a>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: center;">Publicada após aprovação pela nossa equipe.</p>
+        </div>
+
         <!-- ===== ENVIAR POR E-MAIL (card compacto) ===== -->
         <div id="email-section" class="email-card" style="display:none; margin-top: 14px;">
             <p class="email-card-lead">&#9993;&#65039; Enviar c&oacute;pia por e-mail</p>
@@ -1349,6 +1360,13 @@
 
             // Link de acesso ao documento (compartilhável — quem abrir pode baixar o PDF)
             var docLink = location.origin + '/success.html?o=' + encodeURIComponent(orderId || '') + (slug ? '&slug=' + encodeURIComponent(slug) : '');
+
+            // Link de avaliação pré-preenchido com dados do pedido
+            var reviewEmail = (payload && payload.email) || '';
+            var reviewNome = (payload && payload.nome) || (payload && payload.resp1_nome) || '';
+            var reviewLink = location.origin + '/avaliacao.html?order_id=' + encodeURIComponent(orderId || '') + '&slug=' + encodeURIComponent(slug || '') + '&email=' + encodeURIComponent(reviewEmail) + (reviewNome ? '&nome=' + encodeURIComponent(reviewNome) : '');
+            var reviewLinkEl = document.getElementById('review-link');
+            if (reviewLinkEl) reviewLinkEl.href = reviewLink;
 
             btnCopiar.onclick = async function () { try { await navigator.clipboard.writeText(docLink); btnCopiar.textContent = 'Copiado!'; setTimeout(function () { btnCopiar.textContent = 'Copiar'; }, 1200); } catch (e) { } };
 
