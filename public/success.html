@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-br">
 
 <head>
@@ -1938,6 +1938,25 @@
                     });
                 };
             });
+        });
+    </script>
+    <!-- ===== LINK DE AVALIAÇÃO: configura imediatamente ao carregar ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var qs = function (n) { var u = new URL(location.href); return u.searchParams.get(n) || ''; };
+            var orderId = qs('o') || '';
+            var slug = qs('slug') || '';
+            var reviewEmail = qs('email') || '';
+            var reviewNome = qs('nome') || '';
+
+            var reviewLinkEl = document.getElementById('review-link');
+            if (reviewLinkEl) {
+                var reviewLink = location.origin + '/avaliacao.html?order_id=' + encodeURIComponent(orderId) +
+                    '&slug=' + encodeURIComponent(slug) +
+                    '&email=' + encodeURIComponent(reviewEmail) +
+                    (reviewNome ? '&nome=' + encodeURIComponent(reviewNome) : '');
+                reviewLinkEl.href = reviewLink;
+            }
         });
     </script>
 </body>
