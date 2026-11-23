@@ -7,9 +7,16 @@
 Credencial: service account `jmf-seo-bot@jmf-seo-automations.iam.gserviceaccount.com`
 (`C:\Users\Administrator\Desktop\site-jmf-astro\gsc-credentials.json`, acesso `siteOwner`).
 
-> Nota técnica: a dimensão `query` da API só devolve as ~1.000 queries de maior volume do site
+> Nota técnica 1: a dimensão `query` da API só devolve as ~1.000 queries de maior volume do site
 > (~21% das impressões). Para medir um cluster inteiro, use `dimensions: []` com
 > `dimensionFilterGroups` na query — o filtro é aplicado no servidor e o total fecha.
+>
+> Nota técnica 2 (importante): impressões por **página** e por **data** são completas, mas os
+> recortes de `query`, `device` e `country` **quando filtrados por página** cobrem só ~12% das
+> impressões (ex.: excursão escolar = 4.449 impressões na página, 543 nos recortes). Consequência:
+> a **posição média é calculada sobre esse subconjunto visível**, não sobre todas as impressões.
+> Por isso existem páginas com "posição 3,7 e CTR 1,68%" — elas aparecem em posição boa para
+> poucas queries e no fundo da SERP para uma cauda longa enorme, que só conta nas impressões.
 
 ---
 
@@ -110,9 +117,10 @@ ainda não indexou/recebeu impressão. Monitorar em dezembro.
   `autorização de viagem para menor cruzeiro msc` (26 i, pos 8,2, 0 clique) — é posição que falta.
 - **modelo-word-pdf:** CTR 12,62% (o melhor do site) em posição 6,5. Subir para o top 4
   dobra o clique sem mexer no texto.
-- **quanto-custa-autorizacao-viagem:** posição 3,7 com CTR 1,68% — anômalo para essa posição.
-  Título e description já estão bons; suspeita de rich result/PAA consumindo o clique.
-  Testar variação de title em dezembro e medir.
+- **quanto-custa-autorizacao-viagem:** posição 3,7 com CTR 1,68% — **não é problema de snippet**.
+  A página só tem 113 impressões nos recortes de query/device (posição ~3,7); as outras 3.219
+  impressões vêm de cauda longa que a API não expõe, onde ela aparece bem abaixo. Título e
+  description já estão bons. Não mexer no texto por causa desse número.
 - **notificação extrajudicial:** impressões 31 → 319 (10x), 1 clique, pos 9,1. A página
   começou a aparecer agora. Problema é posição, não snippet.
 - **viagem.html (produto):** 33 impressões, 0 clique. Esperado — é landing de Ads, não de SEO.
@@ -135,3 +143,27 @@ ainda não indexou/recebeu impressão. Monitorar em dezembro.
 5. **Não investir** em academia/`cancelar smart fit`: 2.128 impressões, 7 cliques, posição 9.
 6. **Acompanhar em dezembro:** indexação de `reconhecimento-firma-online-autorizacao-viagem`
    (0 impressões) e o CTR de `quanto-custa-autorizacao-viagem`.
+
+## 7. Páginas melhoradas em 22/11 (no ar no deploy de dezembro)
+
+Critério: páginas com **intenção de compra real** (viajar com menor) que estavam **finas** e já
+ranqueavam na página 1 — onde expandir conteúdo tende a render posição.
+
+| Página | Antes | Depois | Posição atual | Impressões 28d |
+|---|---|---|---|---|
+| `viajar-com-madrasta-padrasto.html` | 315 palavras, sem FAQ | 875 palavras, tabela + FAQ + FAQPage | 4,7 | 894 |
+| `guarda-compartilhada-autorizacao-viagem.html` | 445 palavras, sem FAQ | 888 palavras, tabela + FAQ + FAQPage | 8,0 | 810 |
+| `autorizacao-viagem-menor-gol.html` | 468 palavras, sem FAQ | 807 palavras, tabela Voe Junto + FAQ | 8,3 | 1.280 |
+
+O que foi adicionado em todas: resposta direta no início, tabela de decisão (nacional x
+internacional / quem assina), checklist de documentos do embarque, validade do documento
+(Resolução 295/CNJ) e FAQ com schema. Links internos com âncora descritiva para as páginas
+relacionadas e para a página de preço.
+
+Por que essas e não outras:
+- `passaporte-de-menor` (1.594 i, pos 9,5): intenção informacional, não vende passaporte. Fora.
+- `cancelar-contrato-academia-multa` (25 mil i): produto de R$ 9,90 e concorrência com o site
+  oficial da academia. Fora.
+- `autorizacao-excursao-escolar` (206 cliques, a maior): já é a número 1 e está em queda
+  sazonal — mexer agora só arrisca.
+
